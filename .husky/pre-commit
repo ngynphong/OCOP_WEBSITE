@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+echo "🔎 Đang kiểm tra TypeScript toàn bộ dự án..."
+npx tsc --noEmit
+
+if [ $? -ne 0 ]; then
+  echo "❌ Lỗi: Có lỗi TypeScript. Hãy sửa trước khi commit!"
+  exit 1
+fi
+
+echo "✨ Đang kiểm tra Linter & Prettier bằng lint-staged..."
+npx lint-staged
