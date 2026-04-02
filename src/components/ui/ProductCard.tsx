@@ -25,82 +25,73 @@ export function ProductCard({
   location,
 }: ProductCardProps) {
   return (
-    <div className="w-full bg-white rounded-2xl outline-1 -outline-offset-1 outline-black/5 flex flex-col justify-start items-start overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group">
-      <div className="w-full relative flex flex-col justify-center items-start overflow-hidden aspect-square border-b border-black/5">
+    <div className="w-full flex flex-col justify-start items-start gap-4 group cursor-pointer">
+      <div className="w-full relative rounded-[20px] overflow-hidden aspect-4/5 bg-stone-100">
         <Image
-          src={image || 'https://placehold.co/224x224'}
+          src={image || 'https://placehold.co/280x350'}
           alt={name}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className="object-cover group-hover:scale-105 transition-transform duration-300"
+          className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
         />
-        {ocopStar && (
-          <div className="px-2 py-1 left-3 top-3 absolute bg-lime-400/90 rounded-lg shadow-sm backdrop-blur-[2px] inline-flex justify-start items-center gap-1">
-            <div className="w-2.5 h-2.5 bg-lime-900 rounded-sm" />
-            <span className="text-lime-900 text-[10px] font-bold font-sans leading-4">
-              OCOP {ocopStar}*
+
+        {/* Top-left Badges */}
+        <div className="absolute top-4 left-4 flex flex-col gap-2">
+          {oldPrice && price < oldPrice && (
+            <div className="px-3 py-1.5 bg-white/20 backdrop-blur-md rounded-full border border-white/10 shadow-sm overflow-hidden relative">
+              <div className="absolute inset-0 bg-black/10 mix-blend-overlay"></div>
+              <span className="relative z-10 text-white text-[11px] font-bold tracking-widest uppercase">
+                {Math.round(((oldPrice - price) / oldPrice) * 100)}% OFF
+              </span>
+            </div>
+          )}
+          {ocopStar && (
+            <div className="px-3 py-1.5 bg-lime-500/80 backdrop-blur-md rounded-full shadow-sm border border-lime-400/50">
+              <span className="text-white text-[11px] font-bold tracking-widest uppercase">
+                OCOP {ocopStar}★
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Content Below Image */}
+      <div className="w-full flex flex-col gap-1.5 px-1">
+        <div className="w-full flex justify-between items-start gap-3">
+          <h3 className="text-stone-900 text-sm md:text-base font-bold font-sans uppercase tracking-wide leading-tight line-clamp-1">
+            {name}
+          </h3>
+
+          <div className="flex items-center gap-1.5 shrink-0 mt-1">
+            <svg
+              className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              stroke="none"
+            >
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+            <span className="text-stone-600 text-xs font-bold leading-none">
+              {rating.toFixed(1)}
             </span>
           </div>
-        )}
-        {oldPrice && price < oldPrice && (
-          <div className="px-2 py-1 right-3 top-3 absolute bg-red-500 rounded-lg shadow-sm font-sans flex items-center justify-center">
+        </div>
+
+        <div className="w-full flex items-baseline gap-2">
+          <span
+            suppressHydrationWarning
+            className="text-stone-600 text-sm font-semibold font-sans uppercase tracking-wider"
+          >
+            {price.toLocaleString('vi-VN')}₫
+          </span>
+          {oldPrice && (
             <span
               suppressHydrationWarning
-              className="text-white text-[10px] sm:text-xs font-bold leading-none"
+              className="text-stone-400 text-xs font-medium font-sans uppercase tracking-wider line-through"
             >
-              -{Math.round(((oldPrice - price) / oldPrice) * 100)}%
+              {oldPrice.toLocaleString('vi-VN')}₫
             </span>
-          </div>
-        )}
-      </div>
-      <div className="w-full p-4 flex flex-col justify-start items-start gap-1">
-        {location && (
-          <div className="w-full py-2 text-neutral-700 text-xs font-bold italic font-sans uppercase leading-4 tracking-wider truncate mb-1">
-            {location}
-          </div>
-        )}
-        <div className="w-full text-stone-900 text-sm font-bold font-sans leading-5 line-clamp-2 min-h-[40px]">
-          {name}
-        </div>
-        {!location && (
-          <div className="w-full inline-flex justify-start items-center gap-1 mt-1">
-            <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
-            <span className="text-neutral-500 text-[10px] font-bold font-sans leading-4">
-              {rating.toFixed(1)} ({reviewCount})
-            </span>
-          </div>
-        )}
-
-        <div className="w-full pt-2 flex justify-between items-end mt-auto h-full">
-          <div className="flex flex-col justify-start items-start">
-            <div className="flex items-baseline gap-1">
-              <span
-                suppressHydrationWarning
-                className="text-green-900 text-lg md:text-xl font-bold font-sans leading-tight"
-              >
-                {price.toLocaleString('vi-VN')}đ
-              </span>
-              {unit && (
-                <span className="text-neutral-700 text-xs font-medium font-sans leading-none">
-                  /{unit}
-                </span>
-              )}
-            </div>
-            {oldPrice && (
-              <span
-                suppressHydrationWarning
-                className="text-neutral-500 text-xs font-normal font-sans line-through leading-tight"
-              >
-                {oldPrice.toLocaleString('vi-VN')}đ
-              </span>
-            )}
-          </div>
-          <button
-            suppressHydrationWarning
-            className="w-8 h-8 md:w-10 md:h-10 bg-green-700 hover:bg-green-800 rounded-full shadow-sm flex justify-center items-center transition-colors shrink-0"
-          >
-            <ShoppingCart className="w-3.5 h-3.5 md:w-5 md:h-5 text-white" />
-          </button>
+          )}
         </div>
       </div>
     </div>
