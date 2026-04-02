@@ -128,7 +128,10 @@ export function CategoryShowcase() {
                 <span className="text-green-300 text-xl md:text-2xl lg:text-3xl font-black font-sans leading-none">
                   38.000đ/kg
                 </span>
-                <button className="w-full sm:w-auto px-6 md:px-8 py-3 bg-green-900 hover:bg-green-800 transition-colors rounded-full text-white text-sm md:text-base font-bold font-sans whitespace-nowrap shadow-md">
+                <button
+                  suppressHydrationWarning
+                  className="w-full sm:w-auto px-6 md:px-8 py-3 bg-green-900 hover:bg-green-800 transition-colors rounded-full text-white text-sm md:text-base font-bold font-sans whitespace-nowrap shadow-md"
+                >
                   Thêm vào giỏ
                 </button>
               </div>
@@ -167,7 +170,10 @@ export function CategoryShowcase() {
                 <span className="text-green-900 text-xl font-black font-sans leading-7">
                   28.000đ/kg
                 </span>
-                <button className="text-green-900 text-base font-bold font-sans hover:text-green-700">
+                <button
+                  suppressHydrationWarning
+                  className="text-green-900 text-base font-bold font-sans hover:text-green-700"
+                >
                   Chi tiết
                 </button>
               </div>

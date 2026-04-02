@@ -17,7 +17,7 @@ const openSans = Open_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'OCOP',
+  title: 'OCOP - Sàn thương mại điện tử OCOP',
   description: 'Sàn thương mại điện tử OCOP',
 };
 
@@ -27,8 +27,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" className={`${roboto.variable} ${openSans.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">
+    <html
+      lang="vi"
+      suppressHydrationWarning
+      className={`${roboto.variable} ${openSans.variable} h-full antialiased`}
+    >
+      <body suppressHydrationWarning className="min-h-full flex flex-col">
         <AppProvider>{children}</AppProvider>
       </body>
     </html>

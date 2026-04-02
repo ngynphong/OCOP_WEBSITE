@@ -62,7 +62,7 @@ export function FlashSaleSection() {
   ];
 
   return (
-    <section className="w-full max-w-7xl mx-auto my-8 px-4 sm:px-6 md:px-0">
+    <section className="w-full max-w-7xl mx-auto my-8 px-6">
       <div className="w-full px-6 md:px-12 py-10 bg-red-100/60 rounded-[32px] flex flex-col justify-start items-start gap-8 border border-red-200">
         <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="flex flex-col sm:flex-row justify-start items-start sm:items-center gap-4 sm:gap-6">

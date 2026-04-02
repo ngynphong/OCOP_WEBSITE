@@ -28,12 +28,14 @@ export function NewsletterSection() {
             <Mail className="w-5 h-5 text-emerald-100/70" />
             <input
               type="email"
+              suppressHydrationWarning
               placeholder="Email của bạn"
               className="flex-1 bg-transparent border-none outline-none text-emerald-100 placeholder:text-emerald-100/70 font-sans text-sm md:text-base input-reset"
               required
             />
           </div>
           <button
+            suppressHydrationWarning
             type="submit"
             className="w-full sm:w-auto px-8 py-4 bg-white hover:bg-emerald-50 text-green-900 rounded-full text-base font-bold font-sans shadow-lg hover:shadow-xl transition-all whitespace-nowrap"
           >
