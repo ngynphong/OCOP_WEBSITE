@@ -1,12 +1,14 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Search, ShoppingCart, User, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 
 export function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <header className="w-full flex flex-col justify-start items-center sticky top-0 z-50">
@@ -29,33 +31,73 @@ export function Header() {
             <nav className="hidden lg:flex justify-start items-center gap-6">
               <Link
                 href="/"
-                className="py-[5px] border-b-2 border-white inline-flex flex-col justify-start items-start"
+                className={
+                  pathname === '/'
+                    ? 'py-[5px] border-b-2 border-white inline-flex flex-col justify-start items-start'
+                    : "inline-flex flex-col justify-start items-start relative hover:after:content-[''] hover:after:absolute hover:after:bg-white hover:after:w-full hover:after:h-[2px] hover:after:bottom-[-5px]"
+                }
               >
-                <span className="text-white text-sm font-semibold font-sans leading-5">
+                <span
+                  className={
+                    pathname === '/'
+                      ? 'text-white text-sm font-semibold font-sans leading-5'
+                      : 'text-emerald-100 text-sm font-semibold font-sans leading-5'
+                  }
+                >
                   Trang Chủ
                 </span>
               </Link>
               <Link
-                href="/products"
-                className="inline-flex flex-col justify-start items-start relative hover:after:content-[''] hover:after:absolute hover:after:bg-white hover:after:w-full hover:after:h-[2px] hover:after:bottom-[-5px]"
+                href="/san-pham"
+                className={
+                  pathname === '/san-pham'
+                    ? 'py-[5px] border-b-2 border-white inline-flex flex-col justify-start items-start'
+                    : "inline-flex flex-col justify-start items-start relative hover:after:content-[''] hover:after:absolute hover:after:bg-white hover:after:w-full hover:after:h-[2px] hover:after:bottom-[-5px]"
+                }
               >
-                <span className="text-emerald-100 text-sm font-semibold font-sans leading-5">
+                <span
+                  className={
+                    pathname === '/san-pham'
+                      ? 'text-white text-sm font-semibold font-sans leading-5'
+                      : 'text-emerald-100 text-sm font-semibold font-sans leading-5'
+                  }
+                >
                   Sản Phẩm
                 </span>
               </Link>
               <Link
                 href="/regions"
-                className="inline-flex flex-col justify-start items-start relative hover:after:content-[''] hover:after:absolute hover:after:bg-white hover:after:w-full hover:after:h-[2px] hover:after:bottom-[-5px]"
+                className={
+                  pathname === '/regions'
+                    ? 'py-[5px] border-b-2 border-white inline-flex flex-col justify-start items-start'
+                    : "inline-flex flex-col justify-start items-start relative hover:after:content-[''] hover:after:absolute hover:after:bg-white hover:after:w-full hover:after:h-[2px] hover:after:bottom-[-5px]"
+                }
               >
-                <span className="text-emerald-100 text-sm font-semibold font-sans leading-5">
+                <span
+                  className={
+                    pathname === '/regions'
+                      ? 'text-white text-sm font-semibold font-sans leading-5'
+                      : 'text-emerald-100 text-sm font-semibold font-sans leading-5'
+                  }
+                >
                   Vùng Miền
                 </span>
               </Link>
               <Link
                 href="/stories"
-                className="inline-flex flex-col justify-start items-start relative hover:after:content-[''] hover:after:absolute hover:after:bg-white hover:after:w-full hover:after:h-[2px] hover:after:bottom-[-5px]"
+                className={
+                  pathname === '/stories'
+                    ? 'py-[5px] border-b-2 border-white inline-flex flex-col justify-start items-start'
+                    : "inline-flex flex-col justify-start items-start relative hover:after:content-[''] hover:after:absolute hover:after:bg-white hover:after:w-full hover:after:h-[2px] hover:after:bottom-[-5px]"
+                }
               >
-                <span className="text-emerald-100 text-sm font-semibold font-sans leading-5">
+                <span
+                  className={
+                    pathname === '/stories'
+                      ? 'text-white text-sm font-semibold font-sans leading-5'
+                      : 'text-emerald-100 text-sm font-semibold font-sans leading-5'
+                  }
+                >
                   Câu Chuyện
                 </span>
               </Link>
@@ -114,16 +156,44 @@ export function Header() {
           className={`w-full bg-green-800 transition-all duration-300 overflow-hidden lg:hidden ${isMenuOpen ? 'max-h-64 py-4 px-6' : 'max-h-0'}`}
         >
           <nav className="flex flex-col gap-4">
-            <Link href="/" className="text-white text-base font-semibold">
+            <Link
+              href="/"
+              className={
+                pathname === '/'
+                  ? 'text-white text-base font-semibold'
+                  : 'text-emerald-100 text-base font-semibold'
+              }
+            >
               Trang Chủ
             </Link>
-            <Link href="/products" className="text-emerald-100 text-base font-semibold">
+            <Link
+              href="/san-pham"
+              className={
+                pathname === '/san-pham'
+                  ? 'text-white text-base font-semibold'
+                  : 'text-emerald-100 text-base font-semibold'
+              }
+            >
               Sản Phẩm
             </Link>
-            <Link href="/regions" className="text-emerald-100 text-base font-semibold">
+            <Link
+              href="/regions"
+              className={
+                pathname === '/regions'
+                  ? 'text-white text-base font-semibold'
+                  : 'text-emerald-100 text-base font-semibold'
+              }
+            >
               Vùng Miền
             </Link>
-            <Link href="/stories" className="text-emerald-100 text-base font-semibold">
+            <Link
+              href="/stories"
+              className={
+                pathname === '/stories'
+                  ? 'text-white text-base font-semibold'
+                  : 'text-emerald-100 text-base font-semibold'
+              }
+            >
               Câu Chuyện
             </Link>
           </nav>

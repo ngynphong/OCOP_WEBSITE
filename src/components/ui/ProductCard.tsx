@@ -42,6 +42,16 @@ export function ProductCard({
             </span>
           </div>
         )}
+        {oldPrice && price < oldPrice && (
+          <div className="px-2 py-1 right-3 top-3 absolute bg-red-500 rounded-lg shadow-sm font-sans flex items-center justify-center">
+            <span
+              suppressHydrationWarning
+              className="text-white text-[10px] sm:text-xs font-bold leading-none"
+            >
+              -{Math.round(((oldPrice - price) / oldPrice) * 100)}%
+            </span>
+          </div>
+        )}
       </div>
       <div className="w-full p-4 flex flex-col justify-start items-start gap-1">
         {location && (

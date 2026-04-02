@@ -188,7 +188,7 @@ export function HeroSection() {
                 </div>
 
                 <div className="flex flex-col mb-6">
-                  <span className="text-[#D4AF37] font-bold text-2xl md:text-3xl font-serif">
+                  <span className="text-[#D4AF37] font-bold text-2xl md:text-3xl font-sans">
                     {item.price}
                   </span>
                   <div className="flex items-center gap-2 mt-0.5">
