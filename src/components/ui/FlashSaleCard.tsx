@@ -1,0 +1,107 @@
+'use client';
+import Image from 'next/image';
+import { Heart, Star } from 'lucide-react';
+import { useState } from 'react';
+
+interface FlashSaleCardProps {
+  name: string;
+  price: number;
+  oldPrice: number;
+  discountPercent: number;
+  soldPercent: number;
+  image: string;
+  ocopRating?: number;
+}
+
+export function FlashSaleCard({
+  name,
+  price,
+  oldPrice,
+  discountPercent,
+  soldPercent,
+  image,
+  ocopRating = 4,
+}: FlashSaleCardProps) {
+  const [isWishlist, setIsWishlist] = useState(false);
+
+  // Determine bar text and color based on sold percent
+  const isAlmostSoldOut = soldPercent >= 80;
+  const barText = isAlmostSoldOut ? 'Sắp hết hàng' : `Đã bán ${soldPercent}%`;
+
+  return (
+    <div className="group w-64 min-w-[16rem] h-84 relative bg-white rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col p-4 shrink-0 cursor-pointer border border-stone-100/50">
+      <div className="w-full relative rounded-xl overflow-hidden aspect-4/3 mb-3">
+        <Image
+          src={image || 'https://placehold.co/230x192'}
+          alt={name}
+          fill
+          className="object-cover group-hover:scale-110 transition-transform duration-500"
+        />
+
+        {/* Badges Overlay */}
+        <div className="absolute inset-x-0 top-0 p-2 flex justify-between items-start z-10">
+          <div className="flex flex-col gap-1">
+            <div className="bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-sm">
+              -{discountPercent}%
+            </div>
+            {ocopRating >= 4 && (
+              <div className="bg-emerald-600 text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-sm flex items-center gap-0.5">
+                <Star className="w-2.5 h-2.5 fill-current" />
+                OCOP {ocopRating}⭐
+              </div>
+            )}
+          </div>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsWishlist(!isWishlist);
+            }}
+            className={`p-1.5 rounded-full backdrop-blur-md transition-all duration-300 ${
+              isWishlist ? 'bg-red-50 text-red-500' : 'bg-black/10 text-white hover:bg-black/20'
+            }`}
+          >
+            <Heart className={`w-4 h-4 ${isWishlist ? 'fill-current' : ''}`} />
+          </button>
+        </div>
+      </div>
+
+      <div className="w-full flex-1 flex flex-col justify-between">
+        <div className="w-full">
+          <h3 className="text-stone-900 text-sm font-bold font-sans leading-5 line-clamp-2">
+            {name}
+          </h3>
+        </div>
+
+        <div className="w-full flex flex-col gap-2 mt-2">
+          <div className="w-full flex items-baseline gap-2">
+            <span
+              suppressHydrationWarning
+              className="text-red-700 text-lg font-bold font-sans leading-tight"
+            >
+              {price.toLocaleString('vi-VN')}đ
+            </span>
+            <span
+              suppressHydrationWarning
+              className="text-neutral-500 text-xs font-normal font-sans line-through leading-tight"
+            >
+              {oldPrice.toLocaleString('vi-VN')}đ
+            </span>
+          </div>
+
+          <div className="w-full h-4 relative bg-orange-100 rounded-full overflow-hidden">
+            <div
+              className="h-full absolute left-0 top-0 bg-red-700 rounded-full transition-all duration-500"
+              style={{ width: `${soldPercent}%` }}
+            />
+            <div className="w-full h-full absolute left-0 top-0 flex justify-center items-center">
+              <span className="text-white text-[10px] drop-shadow-md font-bold font-sans uppercase leading-tight z-10">
+                {barText}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
