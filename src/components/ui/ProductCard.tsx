@@ -95,7 +95,10 @@ export function ProductCard({
               </span>
             )}
           </div>
-          <button className="w-8 h-8 md:w-10 md:h-10 bg-green-700 hover:bg-green-800 rounded-full shadow-sm flex justify-center items-center transition-colors shrink-0">
+          <button
+            suppressHydrationWarning
+            className="w-8 h-8 md:w-10 md:h-10 bg-green-700 hover:bg-green-800 rounded-full shadow-sm flex justify-center items-center transition-colors shrink-0"
+          >
             <ShoppingCart className="w-3.5 h-3.5 md:w-5 md:h-5 text-white" />
           </button>
         </div>

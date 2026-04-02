@@ -34,7 +34,7 @@ export function TestimonialSection() {
       <div className="w-full max-w-7xl px-6 md:px-8 flex flex-col justify-start items-center gap-12 md:gap-16">
         {/* Header */}
         <div className="w-full flex flex-col justify-start items-center gap-4">
-          <h2 className="text-center text-stone-900 text-3xl font-bold font-sans leading-9">
+          <h2 className="text-center text-stone-900 text-3xl font-bold font-sans leading-9 mt-4">
             Đánh giá từ cộng đồng
           </h2>
           <p className="text-center text-neutral-600 text-base font-normal font-sans leading-6 max-w-2xl px-4">

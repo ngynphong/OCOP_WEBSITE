@@ -20,7 +20,7 @@ export function FeatureHighlights() {
   ];
 
   return (
-    <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-0 mt-4 mb-4">
+    <section className="w-full max-w-7xl mx-auto px-6 mt-4 mb-4">
       <div className="w-full px-6 md:px-12 py-8 bg-orange-100/80 rounded-[32px] grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4 shadow-sm">
         {highlights.map((item, index) => (
           <div key={index} className="flex justify-start items-center gap-4">

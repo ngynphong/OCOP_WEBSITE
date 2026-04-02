@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { Search, ShoppingCart, Star, Leaf } from 'lucide-react';
+import { Search, ShoppingCart, Star, Leaf, Heart } from 'lucide-react';
 
 const carouselItems = [
   {
@@ -77,7 +77,7 @@ export function HeroSection() {
           </p>
 
           <form
-            className="w-full max-w-xl bg-white rounded-2xl md:rounded-full p-1.5 md:p-2 flex flex-col sm:flex-row items-center shadow-2xl mb-12 transition-all focus-within:ring-4 focus-within:ring-white/20 gap-2 sm:gap-0"
+            className="w-full max-w-xl bg-white rounded-xl md:rounded-full p-1.5 md:p-2 flex flex-col sm:flex-row items-center shadow-2xl mb-12 transition-all focus-within:ring-4 focus-within:ring-white/20 gap-2 sm:gap-0"
             onSubmit={(e) => e.preventDefault()}
           >
             <div className="flex items-center w-full flex-1 px-2">
@@ -213,8 +213,8 @@ export function HeroSection() {
                     suppressHydrationWarning
                     className="px-5 py-3.5 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-all shadow-md flex items-center justify-center group active:scale-95"
                   >
-                    <ShoppingCart className="w-4 h-4 md:w-5 md:h-5 group-hover:text-red-400 transition-colors" />
-                    <span className="sr-only">Thêm vào giỏ hàng</span>
+                    <Heart className="w-4 h-4 md:w-5 md:h-5 group-hover:text-red-400 transition-colors" />
+                    <span className="sr-only">Yêu thích</span>
                   </button>
                 </div>
               </div>
@@ -225,6 +225,7 @@ export function HeroSection() {
           <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2">
             {carouselItems.map((_, idx) => (
               <button
+                suppressHydrationWarning
                 key={idx}
                 onClick={() => setCurrentIndex(idx)}
                 className={`transition-all duration-300 rounded-full cursor-pointer 

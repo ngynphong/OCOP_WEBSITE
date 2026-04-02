@@ -53,6 +53,7 @@ export function FlashSaleCard({
           </div>
 
           <button
+            suppressHydrationWarning
             onClick={(e) => {
               e.stopPropagation();
               setIsWishlist(!isWishlist);
