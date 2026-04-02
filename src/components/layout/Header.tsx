@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Search, ShoppingCart, User, Menu, X } from 'lucide-react';
 import { useState } from 'react';
+import Image from 'next/image';
 
 export function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -30,11 +31,9 @@ export function Header() {
             <Link
               href="/"
               suppressHydrationWarning
-              className="inline-flex flex-col justify-start items-start"
+              className="inline-flex flex-row justify-start items-center"
             >
-              <span className="w-36 h-8 text-white text-2xl font-bold font-sans leading-8">
-                OCOP
-              </span>
+              <Image src="/images/logo-ocop-rm.jpg" alt="Logo" width={50} height={50} />
             </Link>
             <nav className="hidden lg:flex justify-start items-center gap-6">
               <Link
