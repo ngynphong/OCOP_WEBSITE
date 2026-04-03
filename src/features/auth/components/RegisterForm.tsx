@@ -3,63 +3,87 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
-import Image from 'next/image';
 import { registerSchema, RegisterFormData } from '../types';
-import toast from 'react-hot-toast';
+import { useAuth } from '../hooks/useAuth';
 
 export function RegisterForm() {
+  const { register: registerApi, isRegistering } = useAuth();
+
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      username: '',
+      firstName: '',
+      lastName: '',
       email: '',
       password: '',
       confirmPassword: '',
+      dob: '',
       acceptTerms: true,
     },
   });
 
   const onSubmit = async (data: RegisterFormData) => {
-    try {
-      // TODO: Replace with real API call
-      console.log('Register data:', data);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      toast.success('Đăng ký thành công!');
-    } catch (error) {
-      toast.error('Đăng ký thất bại. Vui lòng thử lại.');
-    }
+    await registerApi({
+      email: data.email,
+      password: data.password,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      dob: data.dob,
+    });
   };
 
   return (
-    <div className="relative z-20 w-full max-w-sm bg-white rounded-3xl overflow-hidden shadow-2xl p-6 lg:p-8 transform hover:scale-[1.01] transition-transform duration-500">
-      <h2 className="text-stone-900 text-xl font-bold text-center mb-6 font-sans">
+    <div className="relative z-20 w-full max-w-sm bg-white rounded-3xl overflow-hidden shadow-2xl p-5 lg:p-7 transform hover:scale-[1.01] transition-transform duration-500 max-h-[90vh] overflow-y-auto custom-scrollbar">
+      <h2 className="text-stone-900 text-xl font-bold text-center mb-5 font-sans">
         Đăng ký tài khoản
       </h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
-        {/* Username Field */}
-        <div className="flex flex-col gap-1.5">
-          <label className="text-stone-400 text-[11px] font-medium ml-1">Tên đăng nhập</label>
-          <input
-            {...register('username')}
-            suppressHydrationWarning
-            type="text"
-            placeholder="Nhập tên đăng nhập"
-            className={`w-full border-b pb-1.5 pt-1 px-1 text-stone-900 font-bold text-sm placeholder:text-stone-300 focus:outline-none transition-colors bg-transparent ${
-              errors.username
-                ? 'border-red-500 focus:border-red-500'
-                : 'border-stone-200 focus:border-green-600'
-            }`}
-          />
-          {errors.username && (
-            <span className="text-red-500 text-[10px] font-semibold mt-0.5 ml-1">
-              {errors.username.message}
-            </span>
-          )}
+        {/* Row for First Name & Last Name */}
+        <div className="flex gap-2">
+          <div className="flex flex-col gap-1.5 flex-1">
+            <label className="text-stone-400 text-[11px] font-medium ml-1">Họ</label>
+            <input
+              {...register('lastName')}
+              suppressHydrationWarning
+              type="text"
+              placeholder="Nguyễn"
+              className={`w-full border-b pb-1.5 pt-1 px-1 text-stone-900 font-bold text-sm placeholder:text-stone-300 focus:outline-none transition-colors bg-transparent ${
+                errors.lastName
+                  ? 'border-red-500 focus:border-red-500'
+                  : 'border-stone-200 focus:border-green-600'
+              }`}
+            />
+            {errors.lastName && (
+              <span className="text-red-500 text-[10px] font-semibold mt-0.5 ml-1">
+                {errors.lastName.message}
+              </span>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-1.5 flex-1">
+            <label className="text-stone-400 text-[11px] font-medium ml-1">Tên</label>
+            <input
+              {...register('firstName')}
+              suppressHydrationWarning
+              type="text"
+              placeholder="Văn A"
+              className={`w-full border-b pb-1.5 pt-1 px-1 text-stone-900 font-bold text-sm placeholder:text-stone-300 focus:outline-none transition-colors bg-transparent ${
+                errors.firstName
+                  ? 'border-red-500 focus:border-red-500'
+                  : 'border-stone-200 focus:border-green-600'
+              }`}
+            />
+            {errors.firstName && (
+              <span className="text-red-500 text-[10px] font-semibold mt-0.5 ml-1">
+                {errors.firstName.message}
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Email Field */}
@@ -79,6 +103,26 @@ export function RegisterForm() {
           {errors.email && (
             <span className="text-red-500 text-[10px] font-semibold mt-0.5 ml-1">
               {errors.email.message}
+            </span>
+          )}
+        </div>
+
+        {/* DOB Field */}
+        <div className="flex flex-col gap-1.5">
+          <label className="text-stone-400 text-[11px] font-medium ml-1">Ngày sinh</label>
+          <input
+            {...register('dob')}
+            suppressHydrationWarning
+            type="date"
+            className={`w-full border-b pb-1.5 pt-1 px-1 text-stone-900 font-bold text-sm placeholder:text-stone-300 focus:outline-none transition-colors bg-transparent ${
+              errors.dob
+                ? 'border-red-500 focus:border-red-500'
+                : 'border-stone-200 focus:border-green-600'
+            }`}
+          />
+          {errors.dob && (
+            <span className="text-red-500 text-[10px] font-semibold mt-0.5 ml-1">
+              {errors.dob.message}
             </span>
           )}
         </div>
@@ -168,10 +212,10 @@ export function RegisterForm() {
         <button
           suppressHydrationWarning
           type="submit"
-          disabled={isSubmitting}
+          disabled={isRegistering}
           className="mt-3 w-full bg-green-700 hover:bg-green-800 disabled:bg-stone-400 text-white font-bold py-3 rounded-2xl transition-all shadow-lg active:scale-95 flex items-center justify-center"
         >
-          {isSubmitting ? (
+          {isRegistering ? (
             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
           ) : (
             'Tạo tài khoản'

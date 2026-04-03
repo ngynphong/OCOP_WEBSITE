@@ -5,31 +5,31 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import Image from 'next/image';
 import { loginSchema, LoginFormData } from '../types';
-import toast from 'react-hot-toast';
+import { useAuth } from '../hooks/useAuth';
 
 export function LoginForm() {
+  const { login, isLoggingIn } = useAuth();
+
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: '',
+      identity: '',
       password: '',
       remember: true,
     },
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    try {
-      // TODO: Replace with real API call
-      console.log('Login data:', data);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      toast.success('Đăng nhập thành công!');
-    } catch (error) {
-      toast.error('Đăng nhập thất bại. Vui lòng thử lại.');
-    }
+    // Thực hiện call API login từ useAuth hook
+    await login({
+      identity: data.identity,
+      password: data.password,
+      deviceType: 'WEB',
+    });
   };
 
   return (
@@ -39,23 +39,25 @@ export function LoginForm() {
       </h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-        {/* Username Field */}
+        {/* Identity Field */}
         <div className="flex flex-col gap-2">
-          <label className="text-stone-400 text-xs font-medium ml-1">Tên đăng nhập</label>
+          <label className="text-stone-400 text-xs font-medium ml-1">
+            Email hoặc Số điện thoại
+          </label>
           <input
-            {...register('username')}
+            {...register('identity')}
             suppressHydrationWarning
             type="text"
-            placeholder="Nhập tên đăng nhập"
+            placeholder="Email hoặc số điện thoại"
             className={`w-full border-b-2 pb-2 pt-1 px-1 text-stone-900 font-bold placeholder:text-stone-300 focus:outline-none transition-colors bg-transparent ${
-              errors.username
+              errors.identity
                 ? 'border-red-500 focus:border-red-500'
                 : 'border-stone-100 focus:border-green-600'
             }`}
           />
-          {errors.username && (
+          {errors.identity && (
             <span className="text-red-500 text-[10px] font-semibold mt-1 ml-1">
-              {errors.username.message}
+              {errors.identity.message}
             </span>
           )}
         </div>
@@ -119,10 +121,10 @@ export function LoginForm() {
         <button
           suppressHydrationWarning
           type="submit"
-          disabled={isSubmitting}
+          disabled={isLoggingIn}
           className="mt-4 w-full bg-green-700 hover:bg-green-800 disabled:bg-stone-400 text-white font-bold py-3 rounded-2xl transition-all shadow-lg active:scale-95 flex items-center justify-center"
         >
-          {isSubmitting ? (
+          {isLoggingIn ? (
             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
           ) : (
             'Đăng nhập'

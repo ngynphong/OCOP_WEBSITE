@@ -39,7 +39,12 @@ Dự án này tuân thủ Kiến trúc Feature-Driven Development kết hợp v�
 
 ## ⚡ 5. Error Handling & Performance
 
-1. **API Error Handling:** Các hàm trong `api/` không được giấu lỗi. Lỗi phải ném (throw) ra ngoài để hooks (React Query) bắt lỗi và hiển thị lên UI thông qua `react-hot-toast`.
+1. **Centralized API Error Handling:**
+   - Dự án sử dụng bộ đánh chặn (Interceptor) tại `src/lib/axios.ts` để xử lý lỗi tập trung.
+   - **Quy tắc Vàng:** Tuyệt đối KHÔNG dùng `try-catch` tại tầng `api/` hoặc trong `mutationFn` của React Query chỉ để `throw error`.
+   - Lỗi sẽ được Interceptor tự động bắt, hiển thị `toast.error` và chuyển đổi thành `AppError` thống nhất.
+   - Chỉ dùng `try-catch` khi cần xử lý logic nghiệp vụ đặc biệt (VD: dữ liệu dự phòng, bỏ qua lỗi cụ thể).
+   - SUCCESS CODE mặc định là **1000** (Kiểm tra dữ liệu trả về `resData.code === 1000`).
 2. Luôn xử lý triệt để 3 trạng thái: UI Loading Skeleton (`isPending`), Error State (`isError` + Error Boundaries/`error.tsx`), và Empty State (Data rỗng).
 3. **Memoization:** Cẩn trọng với `React.memo`, `useMemo` và `useCallback`. Chỉ dùng khi có render thực sự nặng hoặc truyền func props vào component con có bọc `React.memo()`.
 

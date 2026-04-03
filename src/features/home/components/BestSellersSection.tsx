@@ -11,6 +11,7 @@ export function BestSellersSection() {
       reviewCount: 128,
       image: '/images/fresh-green-produce.jpg',
       ocopStar: 5,
+      location: 'Đắk Lắk',
     },
     {
       name: 'Mật ong hoa bạc hà Mèo Vạc',
@@ -20,6 +21,7 @@ export function BestSellersSection() {
       reviewCount: 95,
       image: '/images/fresh-green-produce.jpg',
       ocopStar: 4,
+      location: 'Hà Giang',
     },
     {
       name: 'Hạt điều rang muối Bình Phước',
@@ -29,6 +31,7 @@ export function BestSellersSection() {
       reviewCount: 214,
       image: '/images/fresh-green-produce.jpg',
       ocopStar: 5,
+      location: 'Bình Phước',
     },
     {
       name: 'Cà phê Robusta Buôn Ma Thuột',
@@ -38,6 +41,7 @@ export function BestSellersSection() {
       reviewCount: 88,
       image: '/images/fresh-green-produce.jpg',
       ocopStar: 4,
+      location: 'Đắk Lắk',
     },
     {
       name: 'Dầu dừa tinh khiết Bến Tre',
@@ -47,6 +51,7 @@ export function BestSellersSection() {
       reviewCount: 52,
       image: '/images/fresh-green-produce.jpg',
       ocopStar: 3,
+      location: 'Bến Tre',
     },
   ];
 
@@ -81,6 +86,7 @@ export function BestSellersSection() {
             reviewCount={product.reviewCount}
             image={product.image}
             ocopStar={product.ocopStar}
+            location={product.location}
           />
         ))}
       </div>

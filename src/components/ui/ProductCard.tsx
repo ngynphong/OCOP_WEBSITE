@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import { Star, ShoppingCart } from 'lucide-react';
 
 interface ProductCardProps {
   name: string;
@@ -18,10 +17,10 @@ export function ProductCard({
   price,
   oldPrice,
   rating,
-  reviewCount,
+  // reviewCount,
   image,
   ocopStar,
-  unit,
+  // unit,
   location,
 }: ProductCardProps) {
   return (
@@ -61,7 +60,6 @@ export function ProductCard({
           <h3 className="text-stone-900 text-sm md:text-base font-bold font-sans uppercase tracking-wide leading-tight line-clamp-1">
             {name}
           </h3>
-
           <div className="flex items-center gap-1.5 shrink-0 mt-1">
             <svg
               className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500"
@@ -76,6 +74,9 @@ export function ProductCard({
             </span>
           </div>
         </div>
+        <p className="text-stone-500 italic text-xs font-medium font-sans uppercase tracking-wide line-clamp-1">
+          {location}
+        </p>
 
         <div className="w-full flex items-baseline gap-2">
           <span
