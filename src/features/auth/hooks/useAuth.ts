@@ -4,7 +4,14 @@ import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { authApi } from '../api/authApi';
 import { setCredentials, logout as reduxLogout } from '@/store/features/authSlice';
-import { LoginRequest, LogoutRequest, RegisterRequest } from '../types';
+import {
+  ForgotPasswordRequest,
+  LoginRequest,
+  LogoutRequest,
+  RegisterRequest,
+  ResetPasswordRequest,
+  VerifyOtpRequest,
+} from '../types';
 
 export const useAuth = () => {
   const dispatch = useDispatch();
@@ -92,6 +99,32 @@ export const useAuth = () => {
     router.push('/dang-nhap');
   };
 
+  const forgotPasswordMutation = useMutation({
+    mutationFn: (data: ForgotPasswordRequest) => authApi.forgotPassword(data),
+    onSuccess: (_, variables) => {
+      toast.success('Yêu cầu đã được gửi! Vui lòng kiểm tra email để lấy mã xác thực.');
+      router.push(`/xac-thuc-otp?email=${encodeURIComponent(variables.email)}`);
+    },
+  });
+
+  const verifyOtpMutation = useMutation({
+    mutationFn: (data: VerifyOtpRequest) => authApi.verifyOtp(data),
+    onSuccess: (res, variables) => {
+      toast.success('Mã xác thực chính xác!');
+      router.push(
+        `/dat-lai-mat-khau?token=${res.data}&email=${encodeURIComponent(variables.target)}`,
+      );
+    },
+  });
+
+  const resetPasswordMutation = useMutation({
+    mutationFn: (data: ResetPasswordRequest) => authApi.resetPassword(data),
+    onSuccess: () => {
+      toast.success('Đặt lại mật khẩu thành công! Vui lòng đăng nhập lại.');
+      router.push('/dang-nhap');
+    },
+  });
+
   return {
     login: loginMutation.mutateAsync,
     isLoggingIn: loginMutation.isPending,
@@ -104,6 +137,15 @@ export const useAuth = () => {
 
     logout: logoutMutation.mutateAsync,
     isLoggingOut: logoutMutation.isPending,
+
+    forgotPassword: forgotPasswordMutation.mutateAsync,
+    isForgottingPassword: forgotPasswordMutation.isPending,
+
+    verifyOtp: verifyOtpMutation.mutateAsync,
+    isVerifyingOtp: verifyOtpMutation.isPending,
+
+    resetPassword: resetPasswordMutation.mutateAsync,
+    isResettingPassword: resetPasswordMutation.isPending,
 
     handleClientLogout,
   };

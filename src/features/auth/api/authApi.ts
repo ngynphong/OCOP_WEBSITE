@@ -10,6 +10,12 @@ import {
   VerifyEmailResponse,
   RefreshTokenRequest,
   RefreshTokenResponse,
+  ForgotPasswordRequest,
+  VerifyOtpRequest,
+  VerifyOtpResponse,
+  ResetPasswordRequest,
+  ForgotPasswordResponse,
+  ResetPasswordResponse,
 } from '../types';
 
 export const authApi = {
@@ -31,5 +37,17 @@ export const authApi = {
 
   refreshToken: (data: RefreshTokenRequest): Promise<RefreshTokenResponse> => {
     return publicAxiosClient.post('/auth/refresh-token', data);
+  },
+
+  forgotPassword: (data: ForgotPasswordRequest): Promise<ForgotPasswordResponse> => {
+    return publicAxiosClient.post('/auth/forgot-password', data);
+  },
+
+  verifyOtp: (data: VerifyOtpRequest): Promise<VerifyOtpResponse> => {
+    return publicAxiosClient.post('/auth/verify-otp', data);
+  },
+
+  resetPassword: (data: ResetPasswordRequest): Promise<ResetPasswordResponse> => {
+    return publicAxiosClient.post('/auth/reset-password', data);
   },
 };

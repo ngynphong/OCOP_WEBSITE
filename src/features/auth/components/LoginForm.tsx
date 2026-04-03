@@ -48,7 +48,7 @@ export function LoginForm() {
             {...register('identity')}
             suppressHydrationWarning
             type="text"
-            placeholder="nhanong@ocop.vn hoặc 09..."
+            placeholder="Email hoặc số điện thoại"
             className={`w-full border-b-2 pb-2 pt-1 px-1 text-stone-900 font-bold placeholder:text-stone-300 focus:outline-none transition-colors bg-transparent ${
               errors.identity
                 ? 'border-red-500 focus:border-red-500'

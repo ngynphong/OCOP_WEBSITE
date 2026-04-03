@@ -18,9 +18,9 @@ export default function Home() {
       <main className="flex-1 flex flex-col justify-start items-center w-full">
         <div className="w-full pb-12 flex flex-col justify-start items-center gap-10 md:gap-16">
           <HeroSection />
+          <FlashSaleSection />
           <FeatureHighlights />
           <CategoryList />
-          <FlashSaleSection />
           <BestSellersSection />
           <CategoryShowcase />
         </div>
