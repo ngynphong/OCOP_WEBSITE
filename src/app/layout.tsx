@@ -19,6 +19,9 @@ const openSans = Open_Sans({
 export const metadata: Metadata = {
   title: 'OCOP - Sàn thương mại điện tử OCOP',
   description: 'Sàn thương mại điện tử OCOP',
+  icons: {
+    icon: '/logo-ocop.jpg',
+  },
 };
 
 export default function RootLayout({

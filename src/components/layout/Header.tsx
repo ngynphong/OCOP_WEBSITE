@@ -2,14 +2,47 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Search, ShoppingCart, User, Menu, X } from 'lucide-react';
+import {
+  Search,
+  ShoppingCart,
+  User,
+  Menu,
+  X,
+  LayoutDashboard,
+  LogOut,
+  ChevronDown,
+} from 'lucide-react';
 import { useState } from 'react';
 import Image from 'next/image';
+import { useAppSelector } from '@/store/hooks';
+import { useAuth } from '@/features/auth/hooks/useAuth';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ConfirmModal } from '@/components/ui/ConfirmModal';
 
 export function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+
   const pathname = usePathname();
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { logout, isLoggingOut, handleClientLogout } = useAuth();
+
+  const handleLogoutClick = () => {
+    setIsLogoutModalOpen(true);
+    setIsUserDropdownOpen(false);
+  };
+
+  const handleConfirmLogout = () => {
+    const refreshToken = localStorage.getItem('refresh_token');
+    if (refreshToken) {
+      logout({ refreshToken });
+    } else {
+      handleClientLogout();
+    }
+    setIsLogoutModalOpen(false);
+  };
 
   return (
     <header className="w-full flex flex-col justify-start items-center sticky top-0 z-50">
@@ -137,12 +170,65 @@ export function Header() {
             >
               <Search className="w-5 h-5" />
             </button>
-            <button
-              suppressHydrationWarning
-              className="hidden md:inline-flex h-10 py-px flex-col justify-center items-start text-white hover:bg-white/10 rounded-full transition-colors p-2 cursor-pointer"
-            >
-              <User className="w-5 h-5" />
-            </button>
+            {isAuthenticated ? (
+              <div
+                className="relative hidden md:block"
+                onMouseEnter={() => setIsUserDropdownOpen(true)}
+                onMouseLeave={() => setIsUserDropdownOpen(false)}
+              >
+                <button
+                  suppressHydrationWarning
+                  className="inline-flex items-center gap-1 h-10 px-3 text-white hover:bg-white/10 rounded-full transition-colors cursor-pointer"
+                >
+                  <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center border border-white/20">
+                    <User className="w-5 h-5 text-white" />
+                  </div>
+                  <ChevronDown
+                    className={`w-4 h-4 transition-transform duration-200 ${isUserDropdownOpen ? 'rotate-180' : ''}`}
+                  />
+                </button>
+
+                <AnimatePresence>
+                  {isUserDropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute right-0 mt-1 w-48 bg-white rounded-xl shadow-xl border border-stone-100 overflow-hidden z-50"
+                    >
+                      <div className="p-2">
+                        <Link
+                          href="/dashboard"
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-stone-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-lg transition-colors group"
+                        >
+                          <LayoutDashboard className="w-4 h-4 text-stone-400 group-hover:text-emerald-600" />
+                          <span>Dashboard</span>
+                        </Link>
+                        <button
+                          onClick={handleLogoutClick}
+                          disabled={isLoggingOut}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors group disabled:opacity-50"
+                        >
+                          <LogOut
+                            className={`w-4 h-4 text-red-400 group-hover:text-red-600 ${isLoggingOut ? 'animate-spin' : ''}`}
+                          />
+                          <span>{isLoggingOut ? 'Đang đăng xuất...' : 'Đăng xuất'}</span>
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <Link
+                href="/dang-nhap"
+                suppressHydrationWarning
+                className="hidden md:inline-flex h-10 px-4 py-px flex-col justify-center items-center text-green-700 bg-white hover:bg-stone-100 rounded-full transition-colors cursor-pointer text-sm font-semibold whitespace-nowrap"
+              >
+                Đăng nhập
+              </Link>
+            )}
             <button
               suppressHydrationWarning
               className="h-10 py-px inline-flex flex-col justify-center items-start text-white hover:bg-white/10 rounded-full transition-colors p-2 relative cursor-pointer group"
@@ -223,6 +309,18 @@ export function Header() {
           </nav>
         </div>
       </div>
+
+      {/* Logout Confirmation Modal */}
+      <ConfirmModal
+        isOpen={isLogoutModalOpen}
+        title="Đăng xuất tài khoản"
+        message="Bạn có chắc chắn muốn đăng xuất khỏi hệ thống OCOP không?"
+        confirmText="Đăng xuất ngay"
+        cancelText="Để sau"
+        type="danger"
+        onConfirm={handleConfirmLogout}
+        onCancel={() => setIsLogoutModalOpen(false)}
+      />
     </header>
   );
 }

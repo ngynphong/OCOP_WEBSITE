@@ -1,6 +1,5 @@
 import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 import toast from 'react-hot-toast';
-import Cookies from 'js-cookie';
 import { AppError } from '../utils/error';
 
 export interface ApiErrorResponse {
@@ -10,22 +9,27 @@ export interface ApiErrorResponse {
 }
 
 const axiosClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://ap-learning.site/ocop/api/v1',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Flag ngăn đụng độ khi có nhiều request cùng bị 401 tại cùng 1 thời điểm
+const publicAxiosClient = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://ap-learning.site/ocop/api/v1',
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
 let isRefreshing = false;
-// Queue lưu trữ các request bị treo lại chờ token mới
 let failedQueue: Array<{
   resolve: (value?: unknown) => void;
   reject: (reason?: unknown) => void;
 }> = [];
 
-// Xử lý chạy lại / hủy bỏ các request trong queue
 const processQueue = (error: Error | null, token: string | null = null) => {
   failedQueue.forEach((prom) => {
     if (error) {
@@ -38,14 +42,16 @@ const processQueue = (error: Error | null, token: string | null = null) => {
   failedQueue = [];
 };
 
+import { store } from '../store/store';
+import { setLoading } from '../store/features/uiSlice';
+
 // =================== REQUEST INTERCEPTOR ===================
 axiosClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // 1. Đọc access_token từ Cookie
-    // js-cookie chỉ dùng được cho môi trường Client-side.
+    store.dispatch(setLoading({ isLoading: true }));
     let token = '';
     if (typeof window !== 'undefined') {
-      token = Cookies.get('access_token') || '';
+      token = localStorage.getItem('access_token') || '';
     }
 
     if (token && config.headers) {
@@ -54,111 +60,146 @@ axiosClient.interceptors.request.use(
 
     return config;
   },
-  (error: AxiosError) => Promise.reject(error),
+  (error: AxiosError) => {
+    store.dispatch(setLoading({ isLoading: false }));
+    return Promise.reject(error);
+  },
 );
 
-// =================== RESPONSE INTERCEPTOR ===================
-axiosClient.interceptors.response.use(
-  (response: AxiosResponse) => {
-    // Thường backend trả vể cấu trúc { message, data, ... }
-    return response.data;
+publicAxiosClient.interceptors.request.use(
+  (config: InternalAxiosRequestConfig) => {
+    store.dispatch(setLoading({ isLoading: true }));
+    return config;
   },
-  async (error: AxiosError) => {
-    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+  (error: AxiosError) => {
+    store.dispatch(setLoading({ isLoading: false }));
+    return Promise.reject(error);
+  },
+);
 
-    // 1. Không kết nối được tới server (Network Error, Timeout)
-    if (!error.response) {
-      toast.error('Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng!');
-      return Promise.reject(new AppError('Network Error / Timeout', 503));
-    }
+// =================== RESPONSE INTERCEPTOR LOGIC ===================
+const onResponse = (response: AxiosResponse) => {
+  store.dispatch(setLoading({ isLoading: false }));
+  const resData = response.data;
 
-    const { status, data } = error.response;
-    const errorData = data as ApiErrorResponse;
-    const errorMessage =
-      errorData?.message || errorData?.error || 'Có lỗi xảy ra, vui lòng thử lại sau';
+  if (resData && typeof resData.code === 'number' && resData.code !== 1000) {
+    const errorMessage = resData.message || 'Lỗi hệ thống';
 
-    // 2. Xử lý Token hết hạn (401 Unauthorized)
-    if (status === 401 && originalRequest && !originalRequest._retry) {
-      // Nếu đang refresh dở, nhét request này vào hàng đợi (queue)
-      if (isRefreshing) {
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
+    const error = new AxiosError(
+      errorMessage,
+      String(resData.code),
+      response.config,
+      response.request,
+      response,
+    );
+    return Promise.reject(error);
+  }
+
+  return resData;
+};
+
+const onResponseError = async (error: AxiosError) => {
+  store.dispatch(setLoading({ isLoading: false }));
+  const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+
+  // 1. Lỗi mạng hoặc server không phản hồi
+  if (!error.response) {
+    toast.error('Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng!');
+    return Promise.reject(new AppError('Network Error / Timeout', 503));
+  }
+
+  // 2. Lấy dữ liệu lỗi từ response
+  const { status, data: responseBody } = error.response;
+  const errorData = responseBody as ApiErrorResponse;
+
+  const code = (errorData?.code as number) ?? status;
+  const errorMessage =
+    errorData?.message ||
+    errorData?.error ||
+    error.message ||
+    'Có lỗi xảy ra, vui lòng thử lại sau';
+
+  // 3. Xử lý Token hết hạn (Code 1009 theo spec) - Chỉ áp dụng cho axiosClient (có Authorization)
+  if (
+    code === 1009 &&
+    originalRequest &&
+    !originalRequest._retry &&
+    originalRequest.headers.Authorization
+  ) {
+    if (isRefreshing) {
+      return new Promise((resolve, reject) => {
+        failedQueue.push({ resolve, reject });
+      })
+        .then((token) => {
+          if (originalRequest.headers) {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+          }
+          return axiosClient(originalRequest);
         })
-          .then((token) => {
-            if (originalRequest.headers) {
-              originalRequest.headers.Authorization = `Bearer ${token}`;
-            }
-            return axiosClient(originalRequest);
-          })
-          .catch((err) => Promise.reject(err));
-      }
-
-      originalRequest._retry = true;
-      isRefreshing = true;
-
-      try {
-        const refreshToken = Cookies.get('refresh_token');
-        if (!refreshToken) {
-          throw new Error('Không tìm thấy Refresh Token');
-        }
-
-        // Dùng axios thuần để gọi api đổi token, tránh việc chạy vào interceptor axiosClient gây loop
-        const { data: refreshData } = await axios.post(
-          `${axiosClient.defaults.baseURL}/auth/refresh-token`,
-          { refresh_token: refreshToken },
-        );
-
-        // Map cấu trúc trả về
-        const newAccessToken = refreshData?.access_token || refreshData?.data?.access_token;
-        if (!newAccessToken) {
-          throw new Error('Dữ liệu trả về mới không chứa Access Token');
-        }
-
-        // Setup lại session Cookie
-        Cookies.set('access_token', newAccessToken, { secure: true, sameSite: 'strict' });
-        const newRefreshToken = refreshData?.refresh_token || refreshData?.data?.refresh_token;
-        if (newRefreshToken) {
-          Cookies.set('refresh_token', newRefreshToken, { secure: true, sameSite: 'strict' });
-        }
-
-        processQueue(null, newAccessToken);
-
-        // Gắn header và gọi lại api gốc đã bị lỗi do 401 đầu tiên
-        if (originalRequest.headers) {
-          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-        }
-        return axiosClient(originalRequest);
-      } catch (refreshError) {
-        processQueue(refreshError as Error, null);
-
-        // Dọn Cookie rác
-        Cookies.remove('access_token');
-        Cookies.remove('refresh_token');
-
-        toast.error('Phiên đăng nhập hết hạn. Bạn sẽ được chuyển hướng về trang chủ.');
-
-        // Redirect logic sau ít giây delays
-        if (typeof window !== 'undefined') {
-          setTimeout(() => {
-            // Tuỳ chọn redirect: có thể là /login
-            window.location.href = '/login';
-          }, 1500);
-        }
-
-        return Promise.reject(new AppError('Session expired', 401));
-      } finally {
-        isRefreshing = false;
-      }
+        .catch((err) => Promise.reject(err));
     }
 
-    // 3. Hiển thị Toast cho các lỗi thông thường khác (400, 403, 404, 500)
-    // Chỉ trừ lỗi 401 đã bật Toast ở trong khối catch refresh token fail, còn lại thì hiển thị
-    if (status !== 401) {
-      toast.error(errorMessage);
+    originalRequest._retry = true;
+    isRefreshing = true;
+
+    try {
+      const refreshToken = localStorage.getItem('refresh_token');
+      if (!refreshToken) {
+        throw new Error('Không tìm thấy Refresh Token');
+      }
+
+      const response = await axios.post(`${axiosClient.defaults.baseURL}/auth/refresh-token`, {
+        refreshToken,
+      });
+
+      const refreshData = response.data;
+      const newAccessToken = refreshData?.data?.accessToken || refreshData?.accessToken;
+      const newRefreshToken = refreshData?.data?.refreshToken || refreshData?.refreshToken;
+
+      if (!newAccessToken) {
+        throw new Error('Dữ liệu trả về mới không chứa Access Token');
+      }
+
+      localStorage.setItem('access_token', newAccessToken);
+      if (newRefreshToken) {
+        localStorage.setItem('refresh_token', newRefreshToken);
+      }
+
+      processQueue(null, newAccessToken);
+
+      if (originalRequest.headers) {
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+      }
+      return axiosClient(originalRequest);
+    } catch (refreshError) {
+      processQueue(refreshError as Error, null);
+
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+
+      toast.error('Phiên đăng nhập hết hạn. Bạn sẽ được chuyển hướng về trang chủ.');
+      if (typeof window !== 'undefined') {
+        setTimeout(() => {
+          window.location.href = '/dang-nhap';
+        }, 1500);
+      }
+
+      return Promise.reject(new AppError('Session expired', 1009));
+    } finally {
+      isRefreshing = false;
     }
+  }
 
-    return Promise.reject(new AppError(errorMessage, status, errorData));
-  },
-);
+  // 4. Hiển thị thông báo lỗi cho các trường hợp khác
+  if (code !== 1009) {
+    toast.error(errorMessage);
+  }
 
-export default axiosClient;
+  return Promise.reject(new AppError(errorMessage, code, errorData));
+};
+
+// Gán interceptor cho cả 2 client
+axiosClient.interceptors.response.use(onResponse, onResponseError);
+publicAxiosClient.interceptors.response.use(onResponse, onResponseError);
+
+export { axiosClient, publicAxiosClient };

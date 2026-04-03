@@ -103,14 +103,16 @@ export function ConfirmModal({
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row-reverse gap-3 mt-8">
             <button
+              suppressHydrationWarning
               onClick={onConfirm}
-              className={`w-full sm:w-auto inline-flex justify-center items-center px-6 py-2.5 text-sm font-bold text-white rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors ${currentConfig.btnConfirm}`}
+              className={`w-full cursor-pointer sm:w-auto inline-flex justify-center items-center px-6 py-2.5 text-sm font-bold text-white rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors ${currentConfig.btnConfirm}`}
             >
               {confirmText}
             </button>
             <button
               onClick={onCancel}
-              className="w-full sm:w-auto inline-flex justify-center items-center px-6 py-2.5 text-sm font-bold text-stone-700 bg-white border border-stone-300 rounded-xl hover:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-stone-500 transition-colors"
+              suppressHydrationWarning
+              className="w-full cursor-pointer sm:w-auto inline-flex justify-center items-center px-6 py-2.5 text-sm font-bold text-stone-700 bg-white border border-stone-300 rounded-xl hover:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-stone-500 transition-colors"
             >
               {cancelText}
             </button>
