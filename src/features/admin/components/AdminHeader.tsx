@@ -17,7 +17,7 @@ const AdminHeader = () => {
           <input
             type="text"
             placeholder="Tìm kiếm hệ thống..."
-            className="w-full h-10 pl-10 pr-4 bg-stone-100 border-none rounded-full text-sm focus:bg-white focus:ring-2 focus:ring-emerald-500/10 transition-all duration-300 outline-none"
+            className="w-full h-10 pl-10 pr-4 text-gray-700 bg-stone-100 border-none rounded-full text-sm focus:bg-white focus:ring-2 focus:ring-emerald-500/10 transition-all duration-300 outline-none"
           />
         </div>
 

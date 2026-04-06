@@ -5,7 +5,7 @@ import AdminSidebar from '@/features/admin/components/AdminSidebar';
 import AdminHeader from '@/features/admin/components/AdminHeader';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { profile, isLoadingProfile } = useAuth();
@@ -40,7 +40,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F3EF]">
+    <div className="min-h-screen">
       <AdminSidebar />
       <div className="ml-64 transition-all duration-300">
         <AdminHeader />

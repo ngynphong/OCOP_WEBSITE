@@ -10,6 +10,7 @@ import {
   FiHelpCircle,
   FiDatabase,
   FiBox,
+  FiUsers,
 } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 
@@ -20,6 +21,7 @@ const AdminSidebar = () => {
     { label: 'Tổng quan', icon: FiGrid, href: '/admin', id: 'overview' },
     { label: 'Phê duyệt', icon: FiCheckSquare, href: '/admin/phe-duyet', id: 'approval' },
     { label: 'Tài chính', icon: FiDollarSign, href: '/admin/tai-chinh', id: 'financials' },
+    { label: 'Người dùng', icon: FiUsers, href: '/admin/users', id: 'users' },
     { label: 'Vận hành', icon: FiSettings, href: '/admin/van-hanh', id: 'operations' },
     { label: 'Dữ liệu gốc', icon: FiDatabase, href: '/admin/du-lieu', id: 'master-data' },
   ];
