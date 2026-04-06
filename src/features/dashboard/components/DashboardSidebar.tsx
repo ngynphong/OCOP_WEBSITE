@@ -13,10 +13,13 @@ import {
 } from 'react-icons/fi';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import Image from 'next/image';
+import { ConfirmModal } from '@/components/ui/ConfirmModal';
+import { useState } from 'react';
 
 const DashboardSidebar = () => {
   const pathname = usePathname();
-  const { logout, profile } = useAuth();
+  const { logout, profile, isLoggingOut, handleClientLogout } = useAuth();
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   const menuItems = [
     { id: 'overview', label: 'Tổng quan', icon: FiGrid, href: '/dashboard' },
@@ -26,11 +29,18 @@ const DashboardSidebar = () => {
     { id: 'security', label: 'Bảo mật', icon: FiShield, href: '/dashboard/bao-mat' },
   ];
 
-  const handleLogout = async () => {
-    if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
-      const refreshToken = localStorage.getItem('refresh_token');
-      await logout({ refreshToken: refreshToken || '' });
+  const handleConfirmLogout = () => {
+    const refreshToken = localStorage.getItem('refresh_token');
+    if (refreshToken) {
+      logout({ refreshToken });
+    } else {
+      handleClientLogout();
     }
+    setIsLogoutModalOpen(false);
+  };
+
+  const handleLogoutClick = () => {
+    setIsLogoutModalOpen(true);
   };
 
   return (
@@ -86,7 +96,8 @@ const DashboardSidebar = () => {
         <div className="my-2 border-t border-stone-50" />
 
         <button
-          onClick={handleLogout}
+          onClick={handleLogoutClick}
+          disabled={isLoggingOut}
           suppressHydrationWarning
           className="flex items-center gap-3 px-4 py-3.5 rounded-2xl text-red-500 hover:bg-red-50 transition-all duration-300 group"
         >
@@ -94,6 +105,16 @@ const DashboardSidebar = () => {
           <span className="font-semibold text-sm">Đăng xuất</span>
         </button>
       </nav>
+      <ConfirmModal
+        isOpen={isLogoutModalOpen}
+        title="Đăng xuất tài khoản"
+        message="Bạn có chắc chắn muốn đăng xuất khỏi hệ thống OCOP không?"
+        confirmText="Đăng xuất ngay"
+        cancelText="Để sau"
+        type="danger"
+        onConfirm={handleConfirmLogout}
+        onCancel={() => setIsLogoutModalOpen(false)}
+      />
     </div>
   );
 };

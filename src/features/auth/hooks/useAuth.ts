@@ -38,7 +38,13 @@ export const useAuth = () => {
           }),
         );
         toast.success('Đăng nhập thành công');
-        router.push('/');
+
+        const isAdmin = roles?.some((role: string) => role === 'ADMIN' || role === 'SUPER_ADMIN');
+        if (isAdmin) {
+          router.push('/admin');
+        } else {
+          router.push('/');
+        }
       }
     },
     onError: () => {
@@ -75,7 +81,13 @@ export const useAuth = () => {
           }),
         );
         toast.success('Xác thực thành công! Hệ thống đã tự động đăng nhập.');
-        router.push('/');
+
+        const isAdmin = roles?.some((role: string) => role === 'ADMIN' || role === 'SUPER_ADMIN');
+        if (isAdmin) {
+          router.push('/admin');
+        } else {
+          router.push('/');
+        }
       } else {
         toast.success('Xác thực thành công! Vui lòng đăng nhập.');
         router.push('/dang-nhap');

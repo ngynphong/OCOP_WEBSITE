@@ -11,6 +11,19 @@
   --font-roboto: var(--font-roboto);
   --font-open-sans: var(--font-open-sans);
   --font-sans: var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
+
+  /* Admin Custom Colors */
+  --color-admin-emerald: #0d631b;
+  --color-admin-surface: #f5f3ef;
+}
+
+.emerald-gradient {
+  background: linear-gradient(135deg, #00490e 0%, #0d631b 100%);
+}
+
+.glass-effect {
+  backdrop-filter: blur(12px);
+  background-color: rgba(245, 243, 239, 0.8);
 }
 
 @media (prefers-color-scheme: dark) {
