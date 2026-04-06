@@ -17,15 +17,17 @@ export default function AppProvider({ children }: { children: React.ReactNode })
     if (token) {
       store.dispatch({
         type: 'auth/setCredentials',
-        payload: { token, roles: [] }, // roles will be filled after profile fetch if needed
+        payload: { token, roles: [] },
       });
     }
 
     // 2. Simple Client-side Route Protection
-    const protectedRoutes = ['/dashboard', '/profile', '/don-hang'];
+    const protectedRoutes = ['/dashboard', '/don-hang'];
     const currentPath = window.location.pathname;
 
-    if (protectedRoutes.some((route) => currentPath.startsWith(route)) && !token) {
+    const isProtectedRoute = protectedRoutes.some((route) => currentPath.startsWith(route));
+
+    if (isProtectedRoute && !token) {
       window.location.href = '/dang-nhap';
     }
   }, []);

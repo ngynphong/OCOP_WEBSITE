@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
@@ -10,12 +10,15 @@ import {
   LogoutRequest,
   RegisterRequest,
   ResetPasswordRequest,
+  UpdateProfileRequest,
   VerifyOtpRequest,
+  ChangePasswordRequest,
 } from '../types';
 
 export const useAuth = () => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const loginMutation = useMutation({
     mutationFn: (data: LoginRequest) => authApi.login(data),
@@ -125,7 +128,59 @@ export const useAuth = () => {
     },
   });
 
+  const profileQuery = useQuery({
+    queryKey: ['profile'],
+    queryFn: () => authApi.getProfile(),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 1,
+  });
+
+  const updateProfileMutation = useMutation({
+    mutationFn: (data: UpdateProfileRequest) => authApi.updateProfile(data),
+    onSuccess: () => {
+      toast.success('Cập nhật thông tin thành công');
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
+    },
+  });
+
+  const updateAvatarMutation = useMutation({
+    mutationFn: (file: File) => authApi.updateAvatar(file),
+    onSuccess: () => {
+      toast.success('Cập nhật ảnh đại diện thành công');
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
+    },
+  });
+
+  const deleteAvatarMutation = useMutation({
+    mutationFn: () => authApi.deleteAvatar(),
+    onSuccess: () => {
+      toast.success('Đã xóa ảnh đại diện');
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
+    },
+  });
+
+  const changePasswordMutation = useMutation({
+    mutationFn: (data: ChangePasswordRequest) => authApi.changePassword(data),
+    onSuccess: () => {
+      toast.success('Đổi mật khẩu thành công');
+    },
+  });
+
   return {
+    // ... rest
+    profile: profileQuery.data?.data,
+    isLoadingProfile: profileQuery.isLoading,
+    isErrorProfile: profileQuery.isError,
+    refetchProfile: profileQuery.refetch,
+
+    updateProfile: updateProfileMutation.mutateAsync,
+    isUpdatingProfile: updateProfileMutation.isPending,
+
+    updateAvatar: updateAvatarMutation.mutateAsync,
+    isUpdatingAvatar: updateAvatarMutation.isPending,
+
+    deleteAvatar: deleteAvatarMutation.mutateAsync,
+    isDeletingAvatar: deleteAvatarMutation.isPending,
     login: loginMutation.mutateAsync,
     isLoggingIn: loginMutation.isPending,
 
@@ -146,6 +201,9 @@ export const useAuth = () => {
 
     resetPassword: resetPasswordMutation.mutateAsync,
     isResettingPassword: resetPasswordMutation.isPending,
+
+    changePassword: changePasswordMutation.mutateAsync,
+    isChangingPassword: changePasswordMutation.isPending,
 
     handleClientLogout,
   };

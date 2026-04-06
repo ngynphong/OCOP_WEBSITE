@@ -151,3 +151,64 @@ export const resetPasswordSchema = z
   });
 
 export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
+
+export interface UserProfile {
+  id: string;
+  email: string;
+  phoneNumber: string;
+  affiliateCode: string;
+  firstName: string;
+  lastName: string;
+  gender: 'MALE' | 'FEMALE' | 'OTHER';
+  dob: string;
+  avatarUrl: string;
+  status: 'ACTIVE' | 'INACTIVE';
+  emailVerified: boolean;
+  phoneVerified: boolean;
+  lastLoginAt: string;
+  roles: string[];
+  twoFaEnabled: boolean;
+}
+
+export type UserProfileResponse = AuthResponseBase<UserProfile>;
+
+export interface UpdateProfileRequest {
+  firstName: string;
+  lastName: string;
+  gender: string;
+  dob: string;
+  phoneNumber: string;
+}
+
+export const updateProfileSchema = z.object({
+  firstName: z.string().min(1, 'Vui lòng nhập tên'),
+  lastName: z.string().min(1, 'Vui lòng nhập họ'),
+  phoneNumber: z
+    .string()
+    .min(10, 'Số điện thoại không hợp lệ')
+    .regex(/^[0-9]+$/, 'Số điện thoại chỉ được chứa chữ số'),
+  gender: z.enum(['MALE', 'FEMALE', 'OTHER']),
+  dob: z.string().min(1, 'Vui lòng chọn ngày sinh'),
+});
+
+export type UpdateProfileFormData = z.infer<typeof updateProfileSchema>;
+
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
+export type ChangePasswordResponse = AuthResponseBase<string>;
+
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, 'Vui lòng nhập mật khẩu hiện tại'),
+    newPassword: z.string().min(8, 'Mật khẩu mới phải có ít nhất 8 ký tự'),
+    confirmPassword: z.string().min(1, 'Vui lòng xác nhận mật khẩu mới'),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: 'Mật khẩu xác nhận không khớp',
+    path: ['confirmPassword'],
+  });
+
+export type ChangePasswordFormData = z.infer<typeof changePasswordSchema>;

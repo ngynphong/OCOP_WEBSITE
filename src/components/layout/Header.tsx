@@ -12,7 +12,7 @@ import {
   LogOut,
   ChevronDown,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useAppSelector } from '@/store/hooks';
 import { useAuth } from '@/features/auth/hooks/useAuth';
@@ -24,10 +24,18 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   const pathname = usePathname();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const { logout, isLoggingOut, handleClientLogout } = useAuth();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsHydrated(true);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleLogoutClick = () => {
     setIsLogoutModalOpen(true);
@@ -170,7 +178,9 @@ export function Header() {
             >
               <Search className="w-5 h-5" />
             </button>
-            {isAuthenticated ? (
+            {!isHydrated ? (
+              <div className="w-10 h-10 rounded-full bg-white/10 animate-pulse" />
+            ) : isAuthenticated ? (
               <div
                 className="relative hidden md:block"
                 onMouseEnter={() => setIsUserDropdownOpen(true)}
@@ -199,11 +209,18 @@ export function Header() {
                     >
                       <div className="p-2">
                         <Link
+                          href="/dashboard/ho-so"
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-stone-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-lg transition-colors group"
+                        >
+                          <User className="w-4 h-4 text-stone-400 group-hover:text-emerald-600" />
+                          <span>Hồ sơ cá nhân</span>
+                        </Link>
+                        <Link
                           href="/dashboard"
                           className="flex items-center gap-3 px-4 py-2.5 text-sm text-stone-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-lg transition-colors group"
                         >
                           <LayoutDashboard className="w-4 h-4 text-stone-400 group-hover:text-emerald-600" />
-                          <span>Dashboard</span>
+                          <span>Tổng quan</span>
                         </Link>
                         <button
                           onClick={handleLogoutClick}

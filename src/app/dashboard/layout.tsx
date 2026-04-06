@@ -1,0 +1,58 @@
+'use client';
+
+import React from 'react';
+import DashboardSidebar from '@/features/dashboard/components/DashboardSidebar';
+import { Breadcrumb } from '@/components/ui/Breadcrumb';
+import { usePathname } from 'next/navigation';
+
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+
+  const getPageTitle = () => {
+    if (pathname.includes('/ho-so')) return 'Hồ sơ cá nhân';
+    if (pathname.includes('/don-hang')) return 'Đơn hàng của tôi';
+    if (pathname.includes('/dia-chi')) return 'Địa chỉ nhận hàng';
+    if (pathname.includes('/bao-mat')) return 'Bảo mật';
+    return 'Tổng quan';
+  };
+
+  return (
+    <div className="min-h-screen pb-20">
+      {/* Header & Breadcrumb */}
+      <div className="bg-white border-b border-stone-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <Breadcrumb
+            items={[
+              { label: 'Trang chủ', href: '/' },
+              { label: 'Dashboard', href: '/dashboard' },
+              { label: getPageTitle() },
+            ]}
+          />
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Sidebar */}
+          <aside className="lg:col-span-1">
+            <DashboardSidebar />
+          </aside>
+
+          {/* Main Content Area */}
+          <main className="lg:col-span-3">
+            <div className="bg-white rounded-3xl border border-stone-100 shadow-xl shadow-stone-200/50 overflow-hidden min-h-[600px]">
+              <div className="p-8 border-b border-stone-50 bg-linear-to-r from-stone-50/50 to-white">
+                <h1 className="text-2xl font-bold text-stone-900">{getPageTitle()}</h1>
+                <p className="text-stone-500 text-sm mt-1">
+                  Quản lý tài khoản và theo dõi hoạt động của bạn trên OCOP.
+                </p>
+              </div>
+
+              <div className="p-8">{children}</div>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+  );
+}
