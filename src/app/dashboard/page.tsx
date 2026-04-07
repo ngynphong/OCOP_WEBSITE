@@ -10,6 +10,7 @@ import {
   FiArrowRight,
   FiUser,
   FiShield,
+  FiTag,
 } from 'react-icons/fi';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import Link from 'next/link';
@@ -67,7 +68,26 @@ const DashboardPage = () => {
         ))}
       </div>
 
-      {/* Recent Activity Section */}
+      {/* Seller CTA Banner */}
+      <Link
+        href="/dashboard/cua-hang"
+        className="group flex items-center gap-5 p-5 rounded-2xl bg-linear-to-r from-green-700 to-emerald-600 text-white shadow-xl shadow-green-700/25 hover:shadow-green-600/40 transition-all hover:-translate-y-0.5"
+      >
+        <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center shrink-0">
+          <FiTag size={22} />
+        </div>
+        <div className="flex-1">
+          <p className="font-extrabold text-base">Trở thành Nhà bán hàng OCOP</p>
+          <p className="text-xs text-green-100 mt-0.5">
+            Mở shop và tiếp cận hàng triệu khách hàng yêu thích đặc sản Việt Nam.
+          </p>
+        </div>
+        <FiArrowRight
+          size={20}
+          className="shrink-0 opacity-70 group-hover:translate-x-1 transition-transform"
+        />
+      </Link>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Recent Orders */}
         <div className="space-y-4">

@@ -13,6 +13,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     if (pathname.includes('/don-hang')) return 'Đơn hàng của tôi';
     if (pathname.includes('/dia-chi')) return 'Địa chỉ nhận hàng';
     if (pathname.includes('/bao-mat')) return 'Bảo mật';
+    if (pathname.includes('/cua-hang/dang-ky')) return 'Đăng ký mở shop';
+    if (pathname.includes('/cua-hang')) return 'Cửa hàng của tôi';
     return 'Tổng quan';
   };
 

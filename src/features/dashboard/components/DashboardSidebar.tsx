@@ -10,6 +10,7 @@ import {
   FiLogOut,
   FiGrid,
   FiChevronRight,
+  FiTag,
 } from 'react-icons/fi';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import Image from 'next/image';
@@ -27,6 +28,7 @@ const DashboardSidebar = () => {
     { id: 'orders', label: 'Đơn hàng của tôi', icon: FiShoppingBag, href: '/dashboard/don-hang' },
     { id: 'addresses', label: 'Địa chỉ nhận hàng', icon: FiMapPin, href: '/dashboard/dia-chi' },
     { id: 'security', label: 'Bảo mật', icon: FiShield, href: '/dashboard/bao-mat' },
+    { id: 'shop', label: 'Cửa hàng của tôi', icon: FiTag, href: '/dashboard/cua-hang' },
   ];
 
   const handleConfirmLogout = () => {

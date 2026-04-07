@@ -135,6 +135,7 @@ export function Pagination({
 
             return (
               <button
+                suppressHydrationWarning
                 key={`page-${pageNum}`}
                 onClick={() => onPageChange(pageNum)}
                 className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs transition-all ${
@@ -151,6 +152,7 @@ export function Pagination({
         </div>
 
         <button
+          suppressHydrationWarning
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages || totalPages === 0}
           className="w-8 h-8 rounded-lg flex items-center justify-center text-stone-400 border border-stone-200 hover:bg-emerald-50 hover:text-emerald-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all"

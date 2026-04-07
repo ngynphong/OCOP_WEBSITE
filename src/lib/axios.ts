@@ -191,7 +191,9 @@ const onResponseError = async (error: AxiosError) => {
   }
 
   // 4. Hiển thị thông báo lỗi cho các trường hợp khác
-  if (code !== 1009) {
+  // Bỏ qua toast cho: 1009 (token hết hạn, đã xử lý riêng) và 403 (chưa có quyền SELLER — UI tự xử lý bằng empty state)
+  const SILENT_CODES = [1009, 403];
+  if (!SILENT_CODES.includes(status) && !SILENT_CODES.includes(code)) {
     toast.error(errorMessage);
   }
 
