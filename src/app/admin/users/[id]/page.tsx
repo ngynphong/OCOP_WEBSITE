@@ -31,15 +31,18 @@ const UserDetailPage = () => {
   const {
     useUserDetailQuery,
     useUserPermissionsQuery,
+    useAllPermissionsQuery,
     updateUserStatus,
     updateUserRoles,
     grantPermissions,
     revokePermissions,
     deleteUser,
+    deletePermission,
   } = useAdminUsers();
 
   const { data: userRes, isLoading: isLoadingUser } = useUserDetailQuery(id as string);
   const { data: permRes, isLoading: isLoadingPerms } = useUserPermissionsQuery(id as string);
+  const { data: allPermsRes } = useAllPermissionsQuery();
 
   const user = userRes?.data;
   const permissions = permRes?.data || [];
@@ -50,6 +53,11 @@ const UserDetailPage = () => {
   // Modal States
   const [showLockModal, setShowLockModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [permToDelete, setPermToDelete] = useState<string | null>(null);
+
+  const allPermissions = allPermsRes?.data || [];
+  const userPermissionNames = permissions.map((p) => p.name);
+  const availablePermissions = allPermissions.filter((p) => !userPermissionNames.includes(p.name));
 
   if (isLoadingUser) {
     return (
@@ -148,7 +156,6 @@ const UserDetailPage = () => {
               <h3 className="text-xl font-black text-stone-900 mb-1">
                 {user.lastName} {user.firstName}
               </h3>
-              <p className="text-xs font-bold text-stone-400 mb-4">{user.id}</p>
 
               <span
                 className={`text-[10px] font-black px-4 py-1 rounded-full border mb-8 ${statusColors[user.status as keyof typeof statusColors]}`}
@@ -296,7 +303,7 @@ const UserDetailPage = () => {
               <FiCheckCircle className="text-blue-600" /> Quyền truy cập
             </h4>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div className="flex flex-wrap gap-3 mb-8">
               {isLoadingPerms ? (
                 <div className="col-span-2 text-stone-400 text-xs font-bold animate-pulse">
                   Đang định danh quyền...
@@ -309,13 +316,13 @@ const UserDetailPage = () => {
                 permissions.map((perm: UserPermission) => (
                   <div
                     key={perm.name}
-                    className="p-4 bg-stone-50 rounded-2xl border border-stone-100 flex justify-between items-start group"
+                    className="p-4 bg-stone-50 rounded-2xl border border-stone-100 flex justify-between items-start group min-w-[240px]"
                   >
                     <div>
                       <p className="text-xs font-black text-stone-900 uppercase mb-1">
                         {perm.name}
                       </p>
-                      <p className="text-[10px] text-stone-400 leading-relaxed">
+                      <p className="text-[10px] text-stone-400 leading-relaxed max-w-[180px]">
                         {perm.description}
                       </p>
                     </div>
@@ -323,30 +330,83 @@ const UserDetailPage = () => {
                       onClick={() =>
                         revokePermissions({ userId: user.id, permissions: [perm.name] })
                       }
-                      className="text-stone-300 hover:text-red-500 transition-colors"
+                      title="Thu hồi quyền"
+                      className="text-stone-300 hover:text-amber-600 transition-colors"
                     >
-                      <FiTrash2 />
+                      <FiX size={16} />
                     </button>
                   </div>
                 ))
               )}
             </div>
 
-            <div className="flex gap-2 p-1 bg-stone-50 rounded-2xl border border-stone-100 max-w-sm">
-              <input
-                value={newPermission}
-                onChange={(e) => setNewPermission(e.target.value.toUpperCase())}
-                placeholder="Tên quyền (e.g. UPDATE_API)..."
-                className="flex-1 bg-transparent border-none text-xs text-gray-700 font-bold px-3 outline-none"
-              />
-              <button
-                onClick={handleGrantPermission}
-                className="px-4 py-2 bg-blue-600 text-white text-[10px] font-black rounded-xl uppercase hover:bg-blue-700 transition-all flex items-center gap-1.5"
-              >
-                <FiPlus /> Cấp quyền
-              </button>
+            <div className="flex flex-col gap-4">
+              <h5 className="text-[10px] font-black text-stone-400 uppercase tracking-widest">
+                Cấp quyền mới từ hệ thống
+              </h5>
+              <div className="flex gap-2">
+                <select
+                  value={newPermission}
+                  onChange={(e) => setNewPermission(e.target.value)}
+                  className="flex-1 bg-stone-50 border border-stone-100 text-xs text-gray-700 font-bold px-4 py-2.5 rounded-xl outline-none focus:ring-2 focus:ring-blue-500/10 transition-all cursor-pointer"
+                >
+                  <option value="">Chọn quyền để cấp...</option>
+                  {availablePermissions.map((p) => (
+                    <option key={p.name} value={p.name}>
+                      {p.name} - {p.description}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  onClick={handleGrantPermission}
+                  disabled={!newPermission}
+                  className="px-6 py-2.5 bg-blue-600 text-white text-[10px] font-black rounded-xl uppercase hover:bg-blue-700 transition-all flex items-center gap-1.5 disabled:opacity-50 disabled:grayscale"
+                >
+                  <FiPlus /> Cấp quyền
+                </button>
+              </div>
+            </div>
+
+            {/* Global Permission Management (Deletion) */}
+            <div className="mt-12 pt-8 border-t border-stone-50">
+              <h5 className="text-[10px] font-black text-red-400 uppercase tracking-widest mb-6">
+                Quản lý quyền hệ thống (Nguy hiểm)
+              </h5>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                {allPermissions.map((p) => (
+                  <div
+                    key={p.name}
+                    className="flex items-center justify-between px-3 py-2 bg-red-50/30 rounded-xl border border-red-100 group"
+                  >
+                    <span className="text-[9px] font-black text-red-900 truncate" title={p.name}>
+                      {p.name}
+                    </span>
+                    <button
+                      onClick={() => setPermToDelete(p.name)}
+                      className="text-red-300 hover:text-red-600 transition-colors"
+                    >
+                      <FiTrash2 size={12} />
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
+
+          <ConfirmModal
+            isOpen={!!permToDelete}
+            title="Xóa quyền khỏi hệ thống?"
+            message={`Bạn đang thực hiện xóa vĩnh viễn quyền '${permToDelete}' khỏi hệ thống. Việc này sẽ thu hồi quyền này từ TẤT CẢ người dùng đang sở hữu nó. Bạn có chắc chắn?`}
+            type="danger"
+            confirmText="Xóa vĩnh viễn"
+            onConfirm={async () => {
+              if (permToDelete) {
+                await deletePermission(permToDelete);
+                setPermToDelete(null);
+              }
+            }}
+            onCancel={() => setPermToDelete(null)}
+          />
 
           {/* Staff Profile - Only if USER is staff or admin wants to manage */}
           {user.staffProfile && (

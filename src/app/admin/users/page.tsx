@@ -10,6 +10,7 @@ import {
   FiMail,
   FiPhone,
   FiCalendar,
+  FiShield,
 } from 'react-icons/fi';
 import { useAdminUsers } from '@/features/admin/hooks/useAdminUsers';
 import { GetUsersParams, AdminUserListItem } from '@/features/admin/types/adminTypes';
@@ -71,6 +72,12 @@ const UserListPage = () => {
             Danh sách toàn bộ thành viên, đối tác và nhân viên trong hệ thống.
           </p>
         </div>
+        <Link
+          href="/admin/roles"
+          className="flex items-center gap-2 px-6 py-3 bg-emerald-900 text-white text-sm font-black rounded-2xl hover:bg-emerald-800 transition-all shadow-lg shadow-emerald-900/10 active:scale-95"
+        >
+          <FiShield size={18} /> Quản lý Vai trò
+        </Link>
       </div>
 
       {/* Filters & Search */}
@@ -161,9 +168,6 @@ const UserListPage = () => {
                         <div>
                           <p className="text-sm font-black text-stone-900 leading-tight">
                             {user.lastName} {user.firstName}
-                          </p>
-                          <p className="text-[10px] text-stone-400 font-bold uppercase tracking-tighter">
-                            ID: {user.id.slice(0, 8)}...
                           </p>
                         </div>
                       </div>

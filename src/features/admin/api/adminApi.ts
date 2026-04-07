@@ -15,6 +15,17 @@ import {
   AdminShopDocumentResponse,
   OverridePlanRequest,
   AdminOverridePlanResponse,
+  // Subscription Plan
+  CreateSubscriptionPlanRequest,
+  UpdateSubscriptionPlanRequest,
+  AdminSubscriptionPlanListResponse,
+  AdminSubscriptionPlanDetailResponse,
+  // Roles & Permissions
+  AdminRole,
+  AdminRoleListResponse,
+  AdminRoleDetailResponse,
+  CreateRoleRequest,
+  RolePermissionsRequest,
 } from '../types/adminTypes';
 
 export const adminApi = {
@@ -63,7 +74,8 @@ export const adminApi = {
     return axiosClient.put(`/admin/users/${userId}/staff-profile`, data);
   },
 
-  // Shop Management
+  // ─── Shop Management ─────────────────────────────────────────────────────
+
   getShops: (params: GetShopsParams): Promise<AdminShopListResponse> => {
     const filteredParams = Object.fromEntries(
       Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== ''),
@@ -126,5 +138,70 @@ export const adminApi = {
     data: OverridePlanRequest,
   ): Promise<AdminOverridePlanResponse> => {
     return axiosClient.post(`/admin/shops/${shopId}/override-plan`, data);
+  },
+
+  // ─── Subscription Plans ─────────────────────────────────────────────────────
+
+  getSubscriptionPlans: (): Promise<AdminSubscriptionPlanListResponse> => {
+    return axiosClient.get('/admin/subscription-plans');
+  },
+
+  createSubscriptionPlan: (
+    data: CreateSubscriptionPlanRequest,
+  ): Promise<AdminSubscriptionPlanDetailResponse> => {
+    return axiosClient.post('/admin/subscription-plans', data);
+  },
+
+  updateSubscriptionPlan: (
+    planId: string,
+    data: UpdateSubscriptionPlanRequest,
+  ): Promise<AdminSubscriptionPlanDetailResponse> => {
+    return axiosClient.put(`/admin/subscription-plans/${planId}`, data);
+  },
+
+  toggleSubscriptionPlan: (planId: string): Promise<AdminSubscriptionPlanDetailResponse> => {
+    return axiosClient.patch(`/admin/subscription-plans/${planId}/toggle`);
+  },
+
+  // ─── Permissions ──────────────────────────────────────────────────────────
+
+  getPermissions: (): Promise<AdminUserPermissionsResponse> => {
+    return axiosClient.get('/permissions');
+  },
+
+  deletePermission: (permission: string): Promise<AuthResponseBase<string>> => {
+    return axiosClient.delete(`/permissions/${permission}`);
+  },
+
+  // ─── Roles Management ──────────────────────────────────────────────────────
+
+  getRoles: (): Promise<AdminRoleListResponse> => {
+    return axiosClient.get('/roles');
+  },
+
+  createRole: (data: CreateRoleRequest): Promise<AdminRoleDetailResponse> => {
+    return axiosClient.post('/roles', data);
+  },
+
+  getRolePermissions: (roleName: string): Promise<AdminUserPermissionsResponse> => {
+    return axiosClient.get(`/roles/${roleName}/permissions`);
+  },
+
+  addRolePermissions: (
+    roleName: string,
+    data: RolePermissionsRequest,
+  ): Promise<AdminRoleDetailResponse> => {
+    return axiosClient.post(`/roles/${roleName}/permissions`, data);
+  },
+
+  removeRolePermissions: (
+    roleName: string,
+    data: RolePermissionsRequest,
+  ): Promise<AdminRoleDetailResponse> => {
+    return axiosClient.delete(`/roles/${roleName}/permissions`, { data });
+  },
+
+  deleteRole: (roleName: string): Promise<AuthResponseBase<string>> => {
+    return axiosClient.delete(`/roles/${roleName}`);
   },
 };

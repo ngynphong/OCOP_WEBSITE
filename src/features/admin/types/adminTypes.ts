@@ -55,9 +55,27 @@ export interface UserPermission {
   description: string;
 }
 
+export interface AdminRole {
+  name: string;
+  description: string;
+  permissions: UserPermission[];
+}
+
 export type AdminUserListResponse = AuthResponseBase<PaginatedResponse<AdminUserListItem>>;
 export type AdminUserDetailResponse = AuthResponseBase<AdminUserListItem>;
 export type AdminUserPermissionsResponse = AuthResponseBase<UserPermission[]>;
+export type AdminRoleListResponse = AuthResponseBase<AdminRole[]>;
+export type AdminRoleDetailResponse = AuthResponseBase<AdminRole>;
+
+export interface CreateRoleRequest {
+  name: string;
+  description: string;
+  permissions: string[];
+}
+
+export interface RolePermissionsRequest {
+  permissionNames: string[];
+}
 
 export interface UpdateStaffProfileRequest {
   employeeId: string;
@@ -160,3 +178,36 @@ export type AdminOverridePlanResponse = AuthResponseBase<{
   createdAt: string;
   active: boolean;
 }>;
+
+// ─── Subscription Plan Management Types ───────────────────────────────────────
+
+export interface SubscriptionPlan {
+  id: string;
+  name: string;
+  slug: string;
+  priceMonthly: number;
+  priceYearly: number;
+  maxProducts: number;
+  maxImagesPerProduct: string;
+  commissionRate: number;
+  features: string;
+  isActive: boolean;
+  sortOrder: string;
+}
+
+export interface CreateSubscriptionPlanRequest {
+  name: string;
+  slug: string;
+  priceMonthly: number;
+  priceYearly: number;
+  maxProducts: number;
+  maxImagesPerProduct: string;
+  commissionRate: number;
+  features: string;
+  sortOrder: string;
+}
+
+export type UpdateSubscriptionPlanRequest = CreateSubscriptionPlanRequest;
+
+export type AdminSubscriptionPlanListResponse = AuthResponseBase<SubscriptionPlan[]>;
+export type AdminSubscriptionPlanDetailResponse = AuthResponseBase<SubscriptionPlan>;

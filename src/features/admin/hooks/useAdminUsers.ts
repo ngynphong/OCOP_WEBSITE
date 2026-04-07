@@ -29,6 +29,13 @@ export const useAdminUsers = () => {
     });
   };
 
+  const useAllPermissionsQuery = () => {
+    return useQuery({
+      queryKey: ['admin-all-permissions'],
+      queryFn: () => adminApi.getPermissions(),
+    });
+  };
+
   const updateUserStatusMutation = useMutation({
     mutationFn: ({ userId, status }: { userId: string; status: string }) =>
       adminApi.updateUserStatus(userId, status),
@@ -84,6 +91,15 @@ export const useAdminUsers = () => {
     },
   });
 
+  const deletePermissionMutation = useMutation({
+    mutationFn: (permission: string) => adminApi.deletePermission(permission),
+    onSuccess: () => {
+      toast.success('Đã xóa quyền khỏi hệ thống');
+      queryClient.invalidateQueries({ queryKey: ['admin-all-permissions'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-user-permissions'] });
+    },
+  });
+
   return {
     useUsersQuery,
     useUserDetailQuery,
@@ -100,5 +116,8 @@ export const useAdminUsers = () => {
     isDeletingUser: deleteUserMutation.isPending,
     updateStaffProfile: updateStaffProfileMutation.mutateAsync,
     isUpdatingStaffProfile: updateStaffProfileMutation.isPending,
+    useAllPermissionsQuery,
+    deletePermission: deletePermissionMutation.mutateAsync,
+    isDeletingPermission: deletePermissionMutation.isPending,
   };
 };

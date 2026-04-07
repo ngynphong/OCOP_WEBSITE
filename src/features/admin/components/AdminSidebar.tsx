@@ -14,7 +14,9 @@ import {
   FiShoppingBag,
   FiChevronLeft,
   FiChevronRight,
+  FiCreditCard,
 } from 'react-icons/fi';
+
 import { motion } from 'framer-motion';
 
 interface AdminSidebarProps {
@@ -31,6 +33,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
     { label: 'Phê duyệt', icon: FiCheckSquare, href: '/admin/phe-duyet', id: 'approval' },
     { label: 'Tài chính', icon: FiDollarSign, href: '/admin/tai-chinh', id: 'financials' },
     { label: 'Người dùng', icon: FiUsers, href: '/admin/users', id: 'users' },
+    { label: 'Gói đăng ký', icon: FiCreditCard, href: '/admin/subscriptions', id: 'subscriptions' },
     { label: 'Vận hành', icon: FiSettings, href: '/admin/van-hanh', id: 'operations' },
     { label: 'Dữ liệu gốc', icon: FiDatabase, href: '/admin/du-lieu', id: 'master-data' },
   ];
