@@ -10,8 +10,9 @@ import { useEffect } from 'react';
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { profile, isLoadingProfile } = useAuth();
   const router = useRouter();
-  const hasAdminRole = profile?.roles?.some((role) => role === 'ADMIN' || role === 'SUPER_ADMIN');
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(false);
 
+  const hasAdminRole = profile?.roles?.some((role) => role === 'ADMIN' || role === 'SUPER_ADMIN');
   const isAuthorized = !isLoadingProfile && !!profile && hasAdminRole;
 
   useEffect(() => {
@@ -41,9 +42,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="min-h-screen">
-      <AdminSidebar />
-      <div className="ml-64 transition-all duration-300">
-        <AdminHeader />
+      <AdminSidebar
+        isCollapsed={isSidebarCollapsed}
+        onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+      />
+      <div className={`transition-all duration-300 ${isSidebarCollapsed ? 'ml-20' : 'ml-64'}`}>
+        <AdminHeader isSidebarCollapsed={isSidebarCollapsed} />
         <main className="pt-24 px-8 pb-12">{children}</main>
       </div>
     </div>

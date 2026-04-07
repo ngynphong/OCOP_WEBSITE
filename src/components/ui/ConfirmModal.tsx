@@ -1,7 +1,12 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useSyncExternalStore } from 'react';
+import { createPortal } from 'react-dom';
 import { AlertCircle, X, CheckCircle2, Info } from 'lucide-react';
+
+const emptySubscribe = () => () => {};
+const getSnapshot = () => true;
+const getServerSnapshot = () => false;
 
 export interface ConfirmModalProps {
   isOpen: boolean;
@@ -24,7 +29,8 @@ export function ConfirmModal({
   onCancel,
   type = 'warning',
 }: ConfirmModalProps) {
-  // Prevent scrolling when modal is open
+  const mounted = useSyncExternalStore(emptySubscribe, getSnapshot, getServerSnapshot);
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -36,7 +42,7 @@ export function ConfirmModal({
     };
   }, [isOpen]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
   // Type configuration mapping
   const config = {
@@ -64,8 +70,8 @@ export function ConfirmModal({
 
   const currentConfig = config[type];
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto px-4 outline-none focus:outline-none">
+  const modalContent = (
+    <div className="fixed inset-0 z-9999 flex items-center justify-center overflow-x-hidden overflow-y-auto px-4 outline-none focus:outline-none">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
@@ -74,7 +80,7 @@ export function ConfirmModal({
       />
 
       {/* Modal Dialog */}
-      <div className="relative z-50 w-full max-w-md bg-white rounded-2xl shadow-2xl transform transition-all animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative z-10000 w-full max-w-md bg-white rounded-2xl shadow-2xl transform transition-all animate-in fade-in zoom-in-95 duration-200">
         {/* Close button top right */}
         <button
           onClick={onCancel}
@@ -121,4 +127,6 @@ export function ConfirmModal({
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }

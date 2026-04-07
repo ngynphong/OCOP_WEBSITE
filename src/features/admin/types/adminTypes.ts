@@ -74,3 +74,89 @@ export interface GetUsersParams {
   status?: string | undefined;
   sorts?: string[] | undefined;
 }
+
+// Shop Management Types
+export type ShopStatus = 'PENDING' | 'ACTIVE' | 'LOCKED' | 'REJECTED';
+export type ShopDocumentType = 'BUSINESS_LICENSE';
+
+export interface ShopDocument {
+  id: number;
+  docType: ShopDocumentType;
+  fileUrl: string;
+  isVerified: boolean;
+  verifiedByEmail: string | null;
+  verifiedAt: string | null;
+  note: string | null;
+  createdAt: string;
+}
+
+export interface ShopListItem {
+  id: number;
+  name: string;
+  slug: string;
+  logoUrl: string;
+  bannerUrl: string;
+  description: string;
+  status: ShopStatus;
+  rejectionNote: string | null;
+  ownerEmail: string;
+  ownerName: string;
+  provinceName: string;
+  districtName: string;
+  wardName: string;
+  addressLine: string;
+  taxCode: string;
+  businessRegNo: string;
+  ratingAvg: number;
+  totalReviews: number;
+  planName: string;
+  approvedByEmail: string | null;
+  approvedAt: string | null;
+  createdAt: string;
+  documents?: ShopDocument[];
+}
+
+export interface ShopStatusLog {
+  id: number;
+  fromStatus: ShopStatus;
+  toStatus: ShopStatus;
+  reason: string;
+  changedByEmail: string;
+  changedAt: string;
+}
+
+export interface GetShopsParams {
+  pageNo?: number;
+  pageSize?: number;
+  keyword?: string;
+  status?: ShopStatus;
+  provinceId?: number;
+}
+
+export interface OverridePlanRequest {
+  planId: string;
+  billingCycle: string;
+  paymentMethod: string;
+  paymentRef: string;
+}
+
+export interface ShopActionRequest {
+  note: string;
+}
+
+export type AdminShopListResponse = AuthResponseBase<PaginatedResponse<ShopListItem>>;
+export type AdminShopDetailResponse = AuthResponseBase<ShopListItem>;
+export type AdminShopStatusLogsResponse = AuthResponseBase<ShopStatusLog[]>;
+export type AdminShopDocumentResponse = AuthResponseBase<ShopDocument>;
+export type AdminOverridePlanResponse = AuthResponseBase<{
+  id: number;
+  planName: string;
+  planSlug: string;
+  startedAt: string;
+  expiredAt: string;
+  amountPaid: number;
+  paymentRef: string;
+  status: string;
+  createdAt: string;
+  active: boolean;
+}>;
