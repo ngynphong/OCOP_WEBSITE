@@ -47,6 +47,17 @@ Dự án này tuân thủ Kiến trúc Feature-Driven Development kết hợp v�
    - SUCCESS CODE mặc định là **1000** (Kiểm tra dữ liệu trả về `resData.code === 1000`).
 2. Luôn xử lý triệt để 3 trạng thái: UI Loading Skeleton (`isPending`), Error State (`isError` + Error Boundaries/`error.tsx`), và Empty State (Data rỗng).
 3. **Memoization:** Cẩn trọng với `React.memo`, `useMemo` và `useCallback`. Chỉ dùng khi có render thực sự nặng hoặc truyền func props vào component con có bọc `React.memo()`.
+4. **Standalone Hooks Principle (BẮT BUỘC):** Tuyệt đối KHÔNG được định nghĩa `useQuery` hoặc `useMutation` bên trong một function/hook khác (Hook-Inside-Hook anti-pattern). Mọi query hooks phải là standalone exported functions để tránh memory leak từ `QueryObserver`.
+
+## ⚡ 7. Tối ưu Hiệu năng & Tài nguyên (Performance & Resource Management)
+
+1. **Static Data Hoisting:** Các mảng dữ liệu tĩnh, cấu hình menu, danh sách KPI... PHẢI được đưa ra ngoài component (hoist) hoặc bọc trong `useMemo` để tránh việc React khởi tạo lại object mới mỗi lần render gây áp lực lên Garbage Collector.
+2. **Auth Hook Optimization:** Tách biệt giữa `useAuthProfile` (chỉ dùng để lấy data user) và `useAuth` (chứa các mutations). Điều này giúp tránh khởi tạo hàng loạt mutations không cần thiết tại các Layout/Header.
+3. **Global Loading Control:**
+   - Interceptor tại `lib/axios.ts` phải sử dụng **Request Counter** (bộ đếm request) để quản lý `isLoading`.
+   - Chỉ tắt loading khi request CUỐI CÙNG hoàn thành.
+   - Luôn sử dụng debounce (khoảng 50ms) cho trạng thái loading để tránh flickering (nháy màn hình) và cascade re-renders.
+4. **Animation Efficiency:** Ưu tiên sử dụng **CSS Animation** thuần cho các thành phần lặp vô tận (Spinner, Pulse, Rotate) thay vì dùng Framer Motion. Framer Motion chỉ dùng cho các hiệu ứng chuyển cảnh (Entrance/Exit) hoặc tương tác người dùng phức tạp.
 
 ## 📦 6. Quy Tắc Viết Code Rõ Ràng (Clean Code)
 
@@ -59,6 +70,8 @@ Dự án này tuân thủ Kiến trúc Feature-Driven Development kết hợp v�
 **🛑 CHECKLIST TRƯỚC KHI COMMIT LÊN PRODUCTION:**
 
 - [ ] Tính năng đã nằm đúng thư mục theo `Feature-Driven` chưa?
-- [ ] Gọi API bằng React Query chưa hay vẫn dùng custom `useEffect`?
+- [ ] Gọi API bằng React Query theo dạng Standalone Hooks chưa?
+- [ ] Các mảng dữ liệu tĩnh đã được hoist ra ngoài component chưa?
+- [ ] Loading state có bị flicker hay gây re-render toàn app không?
 - [ ] Forms và tham số đầu vào đã có Zod validation chưa?
 - [ ] Không có Warning `any` và không thừa `console.log`?
