@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { loginSchema, LoginFormData } from '../types';
 import { useAuth } from '../hooks/useAuth';
+import { Button } from '@/components/ui/AppButton';
 
 export function LoginForm() {
   const { login, isLoggingIn } = useAuth();
@@ -118,18 +119,9 @@ export function LoginForm() {
         </div>
 
         {/* Submit Button */}
-        <button
-          suppressHydrationWarning
-          type="submit"
-          disabled={isLoggingIn}
-          className="mt-4 w-full bg-green-700 hover:bg-green-800 disabled:bg-stone-400 text-white font-bold py-3 rounded-2xl transition-all shadow-lg active:scale-95 flex items-center justify-center"
-        >
-          {isLoggingIn ? (
-            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-          ) : (
-            'Đăng nhập'
-          )}
-        </button>
+        <Button type="submit" isLoading={isLoggingIn} className="mt-4">
+          Đăng nhập
+        </Button>
       </form>
 
       {/* Embedded Image Inside Card */}

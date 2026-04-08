@@ -1,12 +1,32 @@
 import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 import toast from 'react-hot-toast';
 import { AppError } from '../utils/error';
+import { store } from '../store/store';
+import { setLoading } from '../store/features/uiSlice';
 
 export interface ApiErrorResponse {
   message?: string;
   error?: string;
   [key: string]: unknown;
 }
+
+// Biến điều khiển loading toàn cục có bộ đếm để tránh flickering và race conditions
+let activeRequests = 0;
+
+const updateLoadingState = (delta: number) => {
+  activeRequests = Math.max(0, activeRequests + delta);
+  // Sử dụng setTimeout(0) để gom nhóm (batch) các thay đổi liên tục của loading state
+  // Tránh việc UI bị re-render liên tục khi có nhiều request đồng thời
+  if (activeRequests === 0) {
+    setTimeout(() => {
+      if (activeRequests === 0) {
+        store.dispatch(setLoading({ isLoading: false }));
+      }
+    }, 50);
+  } else {
+    store.dispatch(setLoading({ isLoading: true }));
+  }
+};
 
 const axiosClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://ap-learning.site/ocop/api/v1',
@@ -42,44 +62,32 @@ const processQueue = (error: Error | null, token: string | null = null) => {
   failedQueue = [];
 };
 
-import { store } from '../store/store';
-import { setLoading } from '../store/features/uiSlice';
-
 // =================== REQUEST INTERCEPTOR ===================
-axiosClient.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
-    store.dispatch(setLoading({ isLoading: true }));
-    let token = '';
-    if (typeof window !== 'undefined') {
-      token = localStorage.getItem('access_token') || '';
-    }
+const onRequest = (config: InternalAxiosRequestConfig) => {
+  updateLoadingState(1);
+  let token = '';
+  if (typeof window !== 'undefined') {
+    token = localStorage.getItem('access_token') || '';
+  }
 
-    if (token && config.headers) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+  if (token && config.headers) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
 
-    return config;
-  },
-  (error: AxiosError) => {
-    store.dispatch(setLoading({ isLoading: false }));
-    return Promise.reject(error);
-  },
-);
+  return config;
+};
 
-publicAxiosClient.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
-    store.dispatch(setLoading({ isLoading: true }));
-    return config;
-  },
-  (error: AxiosError) => {
-    store.dispatch(setLoading({ isLoading: false }));
-    return Promise.reject(error);
-  },
-);
+const onRequestError = (error: AxiosError) => {
+  updateLoadingState(-1);
+  return Promise.reject(error);
+};
+
+axiosClient.interceptors.request.use(onRequest, onRequestError);
+publicAxiosClient.interceptors.request.use(onRequest, onRequestError);
 
 // =================== RESPONSE INTERCEPTOR LOGIC ===================
 const onResponse = (response: AxiosResponse) => {
-  store.dispatch(setLoading({ isLoading: false }));
+  updateLoadingState(-1);
   const resData = response.data;
 
   if (resData && typeof resData.code === 'number' && resData.code !== 1000) {
@@ -99,7 +107,7 @@ const onResponse = (response: AxiosResponse) => {
 };
 
 const onResponseError = async (error: AxiosError) => {
-  store.dispatch(setLoading({ isLoading: false }));
+  updateLoadingState(-1);
   const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
 
   // 1. Lỗi mạng hoặc server không phản hồi
@@ -119,7 +127,7 @@ const onResponseError = async (error: AxiosError) => {
     error.message ||
     'Có lỗi xảy ra, vui lòng thử lại sau';
 
-  // 3. Xử lý Token hết hạn (Code 1009 theo spec) - Chỉ áp dụng cho axiosClient (có Authorization)
+  // 3. Xử lý Token hết hạn (Code 1009 theo spec)
   if (
     code === 1009 &&
     originalRequest &&
@@ -191,7 +199,8 @@ const onResponseError = async (error: AxiosError) => {
   }
 
   // 4. Hiển thị thông báo lỗi cho các trường hợp khác
-  if (code !== 1009) {
+  const SILENT_CODES = [1009, 403];
+  if (!SILENT_CODES.includes(status) && !SILENT_CODES.includes(code)) {
     toast.error(errorMessage);
   }
 

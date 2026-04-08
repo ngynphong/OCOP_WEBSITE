@@ -2,7 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { Search, ShoppingCart, Star, Leaf, Heart } from 'lucide-react';
+import {
+  Search,
+  ShoppingCart,
+  Star,
+  Leaf,
+  Heart,
+  Apple,
+  Citrus,
+  Grape,
+  Carrot,
+} from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const carouselItems = [
   {
@@ -47,12 +58,53 @@ export function HeroSection() {
     return () => clearInterval(timer);
   }, []);
 
+  const floatingIcons = [
+    { Icon: Apple, top: '10%', left: '5%', size: 40, delay: 0, duration: 4 },
+    { Icon: Leaf, top: '25%', right: '10%', size: 30, delay: 1, duration: 5 },
+    { Icon: Carrot, bottom: '15%', left: '12%', size: 35, delay: 2, duration: 4.5 },
+    { Icon: Citrus, top: '60%', right: '5%', size: 45, delay: 0.5, duration: 6 },
+    { Icon: Grape, top: '40%', left: '48%', size: 25, delay: 1.5, duration: 5.5 },
+    { Icon: Leaf, bottom: '5%', right: '45%', size: 20, delay: 0, duration: 4 },
+  ];
+
   return (
     <section className="relative w-full bg-[#113B28] overflow-hidden">
       {/* Background Orbs / Glow Effects */}
       <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-green-500/20 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-[#9C6644]/20 rounded-full blur-[120px] translate-x-1/3 translate-y-1/3 pointer-events-none" />
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20 mix-blend-overlay pointer-events-none" />
+
+      {/* Floating Decorative Icons */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        {floatingIcons.map(({ Icon, top, left, right, bottom, size, delay, duration }, index) => (
+          <motion.div
+            key={index}
+            initial={{ y: 0, opacity: 0, rotate: 0 }}
+            animate={{
+              y: [0, -25, 0],
+              opacity: [0.2, 0.5, 0.2],
+              rotate: [0, 8, -8, 0],
+            }}
+            transition={{
+              duration,
+              delay,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+            className="absolute text-emerald-50/30"
+            style={{
+              top,
+              left,
+              right,
+              bottom,
+              width: size,
+              height: size,
+            }}
+          >
+            <Icon size={size} strokeWidth={2} />
+          </motion.div>
+        ))}
+      </div>
 
       <div className="relative w-full max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20 flex flex-col lg:flex-row items-center gap-16 z-10">
         {/* Left Content Column */}

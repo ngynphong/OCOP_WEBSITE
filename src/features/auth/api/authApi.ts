@@ -16,6 +16,10 @@ import {
   ResetPasswordRequest,
   ForgotPasswordResponse,
   ResetPasswordResponse,
+  UpdateProfileRequest,
+  UserProfileResponse,
+  ChangePasswordRequest,
+  ChangePasswordResponse,
 } from '../types';
 
 export const authApi = {
@@ -49,5 +53,26 @@ export const authApi = {
 
   resetPassword: (data: ResetPasswordRequest): Promise<ResetPasswordResponse> => {
     return publicAxiosClient.post('/auth/reset-password', data);
+  },
+  getProfile: (): Promise<UserProfileResponse> => {
+    return axiosClient.get('/users/me');
+  },
+  updateProfile: (data: UpdateProfileRequest): Promise<UserProfileResponse> => {
+    return axiosClient.put('/users/me', data);
+  },
+  updateAvatar: (file: File): Promise<UserProfileResponse> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return axiosClient.post('/users/me/avatar', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
+  deleteAvatar: (): Promise<UserProfileResponse> => {
+    return axiosClient.delete('/users/me/avatar');
+  },
+  changePassword: (data: ChangePasswordRequest): Promise<ChangePasswordResponse> => {
+    return axiosClient.post('/auth/change-password', data);
   },
 };

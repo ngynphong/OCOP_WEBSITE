@@ -1,7 +1,12 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useSyncExternalStore } from 'react';
+import { createPortal } from 'react-dom';
 import { AlertCircle, X, CheckCircle2, Info } from 'lucide-react';
+
+const emptySubscribe = () => () => {};
+const getSnapshot = () => true;
+const getServerSnapshot = () => false;
 
 export interface ConfirmModalProps {
   isOpen: boolean;
@@ -12,6 +17,7 @@ export interface ConfirmModalProps {
   onConfirm: () => void;
   onCancel: () => void;
   type?: 'danger' | 'warning' | 'info' | 'success';
+  isLoading?: boolean;
 }
 
 export function ConfirmModal({
@@ -23,8 +29,10 @@ export function ConfirmModal({
   onConfirm,
   onCancel,
   type = 'warning',
+  isLoading = false,
 }: ConfirmModalProps) {
-  // Prevent scrolling when modal is open
+  const mounted = useSyncExternalStore(emptySubscribe, getSnapshot, getServerSnapshot);
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -36,7 +44,7 @@ export function ConfirmModal({
     };
   }, [isOpen]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
   // Type configuration mapping
   const config = {
@@ -64,8 +72,8 @@ export function ConfirmModal({
 
   const currentConfig = config[type];
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto px-4 outline-none focus:outline-none">
+  const modalContent = (
+    <div className="fixed inset-0 z-9999 flex items-center justify-center overflow-x-hidden overflow-y-auto px-4 outline-none focus:outline-none">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
@@ -74,7 +82,7 @@ export function ConfirmModal({
       />
 
       {/* Modal Dialog */}
-      <div className="relative z-50 w-full max-w-md bg-white rounded-2xl shadow-2xl transform transition-all animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative z-10000 w-full max-w-md bg-white rounded-2xl shadow-2xl transform transition-all animate-in fade-in zoom-in-95 duration-200">
         {/* Close button top right */}
         <button
           onClick={onCancel}
@@ -104,15 +112,39 @@ export function ConfirmModal({
           <div className="flex flex-col sm:flex-row-reverse gap-3 mt-8">
             <button
               suppressHydrationWarning
+              disabled={isLoading}
               onClick={onConfirm}
-              className={`w-full cursor-pointer sm:w-auto inline-flex justify-center items-center px-6 py-2.5 text-sm font-bold text-white rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors ${currentConfig.btnConfirm}`}
+              className={`w-full cursor-pointer sm:w-auto inline-flex justify-center items-center px-6 py-2.5 text-sm font-bold text-white rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${currentConfig.btnConfirm}`}
             >
+              {isLoading && (
+                <svg
+                  className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+              )}
               {confirmText}
             </button>
             <button
               onClick={onCancel}
               suppressHydrationWarning
-              className="w-full cursor-pointer sm:w-auto inline-flex justify-center items-center px-6 py-2.5 text-sm font-bold text-stone-700 bg-white border border-stone-300 rounded-xl hover:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-stone-500 transition-colors"
+              disabled={isLoading}
+              className="w-full cursor-pointer sm:w-auto inline-flex justify-center items-center px-6 py-2.5 text-sm font-bold text-stone-700 bg-white border border-stone-300 rounded-xl hover:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-stone-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {cancelText}
             </button>
@@ -121,4 +153,6 @@ export function ConfirmModal({
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }

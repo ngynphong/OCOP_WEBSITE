@@ -1,41 +1,54 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
 import { useAppSelector } from '@/store/hooks';
+import { memo } from 'react';
 
-export function LoadingOverlay() {
+export const LoadingOverlay = memo(function LoadingOverlay() {
   const { isLoading, loadingMessage } = useAppSelector((state) => state.ui);
 
-  return (
-    <AnimatePresence>
-      {isLoading && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/30 backdrop-blur-sm"
-        >
-          {/* Simple Circle Spinner */}
-          <div className="relative">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
-              className="w-12 h-12 border-4 border-stone-200 border-t-green-700 rounded-full"
-            />
-          </div>
+  if (!isLoading) return null;
 
-          {/* Loading Text */}
-          {loadingMessage && (
-            <motion.p
-              initial={{ y: 5, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              className="mt-4 text-white font-bold text-sm tracking-wide drop-shadow-sm"
-            >
-              {loadingMessage}
-            </motion.p>
-          )}
-        </motion.div>
-      )}
-    </AnimatePresence>
+  return (
+    <div className="fixed inset-0 z-9999 flex flex-col items-center justify-center bg-black/20 backdrop-blur-[2px] transition-opacity duration-300">
+      <div className="flex flex-col items-center p-6 rounded-2xl">
+        {/* Simple CSS Spinner */}
+        <div className="relative">
+          <div className="w-12 h-12 border-4 border-emerald-100 border-t-emerald-600 rounded-full animate-spin" />
+        </div>
+
+        {/* Loading Text */}
+        {loadingMessage && (
+          <p className="mt-4 text-emerald-900 font-bold text-sm tracking-wide animate-pulse">
+            {loadingMessage}
+          </p>
+        )}
+      </div>
+
+      <style jsx>{`
+        @keyframes spin {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+        .animate-spin {
+          animation: spin 1s linear infinite;
+        }
+        @keyframes pulse {
+          0%,
+          100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.7;
+          }
+        }
+        .animate-pulse {
+          animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+      `}</style>
+    </div>
   );
-}
+});
