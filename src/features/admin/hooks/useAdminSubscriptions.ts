@@ -6,20 +6,29 @@ import { CreateSubscriptionPlanRequest, UpdateSubscriptionPlanRequest } from '..
 
 const SUBSCRIPTION_PLANS_QUERY_KEY = ['admin-subscription-plans'] as const;
 
-export const useAdminSubscriptions = () => {
+// ─── Standalone Query Hook ─────────────────────────────────────────────────────
+
+export const useSubscriptionPlansQuery = () => {
+  return useQuery({
+    queryKey: SUBSCRIPTION_PLANS_QUERY_KEY,
+    queryFn: () => adminApi.getSubscriptionPlans(),
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useSubscriptionPlanQuery = (planId: string | null | undefined) => {
+  return useQuery({
+    queryKey: ['admin-subscription-plan', planId],
+    queryFn: () => adminApi.getSubscriptionPlanDetail(planId!),
+    enabled: !!planId,
+    staleTime: 60 * 1000,
+  });
+};
+
+// ─── Mutation Hook ─────────────────────────────────────────────────────────────
+
+export const useAdminSubscriptionMutations = () => {
   const queryClient = useQueryClient();
-
-  // ─── Queries ──────────────────────────────────────────────────────────────
-
-  const useSubscriptionPlansQuery = () => {
-    return useQuery({
-      queryKey: SUBSCRIPTION_PLANS_QUERY_KEY,
-      queryFn: () => adminApi.getSubscriptionPlans(),
-      staleTime: 5 * 60 * 1000, // Cache 5 phút
-    });
-  };
-
-  // ─── Mutations ────────────────────────────────────────────────────────────
 
   const createSubscriptionPlanMutation = useMutation({
     mutationFn: (data: CreateSubscriptionPlanRequest) => adminApi.createSubscriptionPlan(data),
@@ -32,24 +41,25 @@ export const useAdminSubscriptions = () => {
   const updateSubscriptionPlanMutation = useMutation({
     mutationFn: ({ planId, data }: { planId: string; data: UpdateSubscriptionPlanRequest }) =>
       adminApi.updateSubscriptionPlan(planId, data),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       toast.success('Cập nhật gói dịch vụ thành công');
       queryClient.invalidateQueries({ queryKey: SUBSCRIPTION_PLANS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: ['admin-subscription-plan', variables.planId] });
     },
   });
 
   const toggleSubscriptionPlanMutation = useMutation({
     mutationFn: (planId: string) => adminApi.toggleSubscriptionPlan(planId),
-    onSuccess: (response) => {
+    onSuccess: (response, planId) => {
       const plan = response?.data;
       const statusLabel = plan?.isActive ? 'kích hoạt' : 'vô hiệu hóa';
       toast.success(`Đã ${statusLabel} gói "${plan?.name ?? ''}"`);
       queryClient.invalidateQueries({ queryKey: SUBSCRIPTION_PLANS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: ['admin-subscription-plan', planId] });
     },
   });
 
   return {
-    useSubscriptionPlansQuery,
     createSubscriptionPlan: createSubscriptionPlanMutation.mutateAsync,
     isCreatingPlan: createSubscriptionPlanMutation.isPending,
     updateSubscriptionPlan: updateSubscriptionPlanMutation.mutateAsync,
@@ -58,3 +68,8 @@ export const useAdminSubscriptions = () => {
     isTogglingPlan: toggleSubscriptionPlanMutation.isPending,
   };
 };
+
+/**
+ * @deprecated Dùng `useSubscriptionPlansQuery` và `useAdminSubscriptionMutations` riêng lẻ.
+ */
+export const useAdminSubscriptions = () => useAdminSubscriptionMutations();

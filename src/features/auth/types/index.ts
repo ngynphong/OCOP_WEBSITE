@@ -167,6 +167,8 @@ export interface UserProfile {
   phoneVerified: boolean;
   lastLoginAt: string;
   roles: string[];
+  permissions: string[];
+  isOwnerShop: boolean;
   twoFaEnabled: boolean;
 }
 

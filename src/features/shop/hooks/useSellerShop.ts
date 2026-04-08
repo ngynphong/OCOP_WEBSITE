@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
+import { useAuthProfile } from '@/features/auth/hooks/useAuth';
 import { sellerApi } from '../api/sellerApi';
 import {
   CreateShopRequest,
@@ -13,9 +14,12 @@ export const useSellerShop = () => {
   const queryClient = useQueryClient();
 
   const useMyShopQuery = () => {
+    const { profile } = useAuthProfile();
+
     return useQuery({
       queryKey: ['seller-my-shop'],
       queryFn: () => sellerApi.getMyShop(),
+      enabled: !!profile?.isOwnerShop, // Chỉ fetch nếu profile báo user là chủ shop
       retry: 1,
     });
   };
@@ -69,6 +73,18 @@ export const useSellerShop = () => {
     onError: (error: unknown) => {
       // @ts-expect-error - Axios error structure
       toast.error(error?.response?.data?.message || 'Có lỗi khi cập nhật shop');
+    },
+  });
+
+  const resubmitShopMutation = useMutation({
+    mutationFn: () => sellerApi.resubmitShop(),
+    onSuccess: () => {
+      toast.success('Đã nộp lại hồ sơ thành công');
+      queryClient.invalidateQueries({ queryKey: ['seller-my-shop'] });
+    },
+    onError: (error: unknown) => {
+      // @ts-expect-error - Axios error structure
+      toast.error(error?.response?.data?.message || 'Có lỗi khi nộp lại hồ sơ');
     },
   });
 
@@ -157,6 +173,8 @@ export const useSellerShop = () => {
     isCreatingShop: createShopMutation.isPending,
     updateShop: updateShopMutation.mutateAsync,
     isUpdatingShop: updateShopMutation.isPending,
+    resubmitShop: resubmitShopMutation.mutateAsync,
+    isResubmittingShop: resubmitShopMutation.isPending,
 
     uploadLogo: uploadLogoMutation.mutateAsync,
     isUploadingLogo: uploadLogoMutation.isPending,

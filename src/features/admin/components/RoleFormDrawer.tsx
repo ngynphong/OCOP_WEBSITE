@@ -12,9 +12,9 @@ import {
   FiCheckCircle,
   FiSearch,
 } from 'react-icons/fi';
-import { AdminRole, UserPermission } from '../types/adminTypes';
+import { AdminRole } from '../types/adminTypes';
 import { useAdminRoles } from '../hooks/useAdminRoles';
-import { useAdminUsers } from '../hooks/useAdminUsers';
+import { useAllPermissionsQuery } from '../hooks/useAdminUsers';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -35,12 +35,18 @@ interface RoleFormDrawerProps {
 
 const RoleFormDrawer = ({ isOpen, onClose, role }: RoleFormDrawerProps) => {
   const { createRole, isCreatingRole, addRolePermissions, removeRolePermissions } = useAdminRoles();
-  const { useAllPermissionsQuery } = useAdminUsers();
   const { data: allPermsData, isLoading: isLoadingPerms } = useAllPermissionsQuery();
 
-  const allPermissions = allPermsData?.data || [];
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [prevRoleId, setPrevRoleId] = useState<string | undefined | null>(undefined);
+
+  // Sync selected permissions when role changes (Reset state when drawer opens with different role)
+  // This avoids setState in useEffect and cascading renders
+  if (role?.name !== prevRoleId) {
+    setPrevRoleId(role?.name || null);
+    setSelectedPermissions(role?.permissions.map((p) => p.name) || []);
+  }
 
   const {
     register,
@@ -57,13 +63,11 @@ const RoleFormDrawer = ({ isOpen, onClose, role }: RoleFormDrawerProps) => {
         name: role.name,
         description: role.description || '',
       });
-      setSelectedPermissions(role.permissions.map((p) => p.name));
     } else {
       reset({
         name: '',
         description: '',
       });
-      setSelectedPermissions([]);
     }
   }, [role, reset, isOpen]);
 
@@ -97,16 +101,18 @@ const RoleFormDrawer = ({ isOpen, onClose, role }: RoleFormDrawerProps) => {
       onClose();
     } catch (error) {
       // Errors handled by axios interceptor
+      console.error('Error:', error);
     }
   };
 
   const filteredPermissions = useMemo(() => {
-    return allPermissions.filter(
+    const permissions = allPermsData?.data || [];
+    return permissions.filter(
       (p) =>
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.description?.toLowerCase().includes(searchQuery.toLowerCase()),
     );
-  }, [allPermissions, searchQuery]);
+  }, [allPermsData?.data, searchQuery]);
 
   const isSubmitting = isCreatingRole;
 

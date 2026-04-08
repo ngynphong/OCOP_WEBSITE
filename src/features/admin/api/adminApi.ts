@@ -21,7 +21,6 @@ import {
   AdminSubscriptionPlanListResponse,
   AdminSubscriptionPlanDetailResponse,
   // Roles & Permissions
-  AdminRole,
   AdminRoleListResponse,
   AdminRoleDetailResponse,
   CreateRoleRequest,
@@ -123,14 +122,14 @@ export const adminApi = {
     documentId: number | string,
     data: ShopActionRequest,
   ): Promise<AdminShopDocumentResponse> => {
-    return axiosClient.patch(`/admin/shop-documents/${documentId}/verify`, data);
+    return axiosClient.post(`/admin/shops/documents/${documentId}/verify`, data);
   },
 
   rejectDocument: (
     documentId: number | string,
     data: ShopActionRequest,
   ): Promise<AdminShopDocumentResponse> => {
-    return axiosClient.patch(`/admin/shop-documents/${documentId}/reject`, data);
+    return axiosClient.post(`/admin/shops/documents/${documentId}/reject`, data);
   },
 
   overridePlan: (
@@ -144,6 +143,10 @@ export const adminApi = {
 
   getSubscriptionPlans: (): Promise<AdminSubscriptionPlanListResponse> => {
     return axiosClient.get('/admin/subscription-plans');
+  },
+
+  getSubscriptionPlanDetail: (planId: string): Promise<AdminSubscriptionPlanDetailResponse> => {
+    return axiosClient.get(`/admin/subscription-plans/${planId}`);
   },
 
   createSubscriptionPlan: (

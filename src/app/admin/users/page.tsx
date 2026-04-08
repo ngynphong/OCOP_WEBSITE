@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import { useDebounce } from '@/hooks/useDebounce';
 import {
   FiSearch,
-  FiFilter,
   FiEye,
   FiUserCheck,
   FiUserX,
@@ -12,7 +12,7 @@ import {
   FiCalendar,
   FiShield,
 } from 'react-icons/fi';
-import { useAdminUsers } from '@/features/admin/hooks/useAdminUsers';
+import { useUsersQuery, useAdminUserMutations } from '@/features/admin/hooks/useAdminUsers';
 import { GetUsersParams, AdminUserListItem } from '@/features/admin/types/adminTypes';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -27,26 +27,29 @@ const UserListPage = () => {
     pageSize: 10,
     keyword: undefined,
     status: undefined,
+    sorts: 'createdAt:desc',
   });
 
-  const { useUsersQuery, updateUserStatus } = useAdminUsers();
-  const { data, isLoading } = useUsersQuery(params);
+  const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
+  const { updateUserStatus } = useAdminUserMutations();
+
+  const queryParams = useMemo(
+    () => ({
+      ...params,
+      keyword: debouncedSearchTerm || undefined,
+    }),
+    [params, debouncedSearchTerm],
+  );
+
+  const { data, isLoading } = useUsersQuery(queryParams);
 
   // Modal State
   const [lockTarget, setLockTarget] = useState<AdminUserListItem | null>(null);
 
   const users = data?.data?.items || [];
   const totalPage = data?.data?.totalPage || 0;
-
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    setParams((prev: GetUsersParams) => ({
-      ...prev,
-      keyword: formData.get('search') as string,
-      pageNo: 0,
-    }));
-  };
 
   const statusColors = {
     ACTIVE: 'text-emerald-600 bg-emerald-50 border-emerald-100',
@@ -82,15 +85,36 @@ const UserListPage = () => {
 
       {/* Filters & Search */}
       <div className="bg-white p-4 rounded-2xl shadow-sm border border-stone-100 flex flex-wrap gap-4 items-center">
-        <form onSubmit={handleSearch} className="relative flex-1 min-w-[300px]">
+        <div className="relative flex-1 min-w-[300px]">
           <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" />
           <input
             name="search"
             type="text"
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setParams((prev) => ({ ...prev, pageNo: 1 }));
+            }}
             placeholder="Tìm theo tên, email, số điện thoại..."
-            className="w-full pl-11 pr-4 py-2.5 bg-stone-50 text-gray-700 border-none rounded-xl text-sm focus:ring-2 focus:ring-emerald-500/10 transition-all font-medium"
+            className="w-full pl-11 pr-4 py-2.5 bg-stone-50 text-gray-700 border-none rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/10 transition-all font-medium"
           />
-        </form>
+        </div>
+
+        <select
+          value={params.sorts || ''}
+          onChange={(e) =>
+            setParams((prev: GetUsersParams) => ({
+              ...prev,
+              sorts: e.target.value || undefined,
+              pageNo: 1,
+            }))
+          }
+          className="bg-stone-50 border-none rounded-xl text-sm font-bold text-stone-600 py-2.5 px-4 focus:ring-2 focus:ring-emerald-500/10"
+        >
+          <option value="">Sắp xếp</option>
+          <option value="createdAt:desc">Ngày tạo mới nhất</option>
+          <option value="createdAt:asc">Ngày tạo cũ nhất</option>
+        </select>
 
         <select
           value={params.status || ''}
@@ -98,7 +122,7 @@ const UserListPage = () => {
             setParams((prev: GetUsersParams) => ({
               ...prev,
               status: e.target.value || undefined,
-              pageNo: 0,
+              pageNo: 1,
             }))
           }
           className="bg-stone-50 border-none rounded-xl text-sm font-bold text-stone-600 py-2.5 px-4 focus:ring-2 focus:ring-emerald-500/10"
@@ -108,10 +132,6 @@ const UserListPage = () => {
           <option value="LOCKED">Đã khóa</option>
           <option value="PENDING_VERIFY">Chờ xác thực</option>
         </select>
-
-        <button className="flex items-center gap-2 px-4 py-2.5 bg-stone-100 text-stone-600 text-sm font-bold rounded-xl hover:bg-stone-200 transition-all">
-          <FiFilter /> Lọc nâng cao
-        </button>
       </div>
 
       {/* Users Table */}

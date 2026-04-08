@@ -31,6 +31,8 @@ export interface ShopInfo {
   districtName: string;
   wardName: string;
   addressLine: string;
+  taxCode: string;
+  businessRegNo: string;
   ratingAvg: number;
   totalReviews: number;
   planName: string;
@@ -70,15 +72,17 @@ export interface ShopSubscription {
 }
 
 export interface SubscriptionPlan {
-  id: string;
+  id: number;
   name: string;
   slug: string;
   priceMonthly: number;
   priceYearly: number;
+  yearlyDiscountPercent: number;
   maxProducts: number;
+  unlimitedProducts: boolean;
   maxImagesPerProduct: string;
   commissionRate: number;
-  features: string;
+  features: string | string[] | Record<string, boolean>;
   isActive: boolean;
   sortOrder: string;
 }
@@ -150,7 +154,13 @@ export interface CreateSubscriptionRequest {
 // ─── Response Types ──────────────────────────────────────────────────────────
 
 export type ShopListResponse = AuthResponseBase<PaginatedShops>;
-export type ShopDetailResponse = AuthResponseBase<ShopInfo>;
+export interface ShopDetailData {
+  shopResponse: ShopInfo;
+  missingRequiredDocuments: boolean;
+  missingFields: string[];
+}
+
+export type ShopDetailResponse = AuthResponseBase<ShopDetailData>;
 export type ShopPolicyResponse = AuthResponseBase<ShopPolicy>;
 export type SubscriptionPlanListResponse = AuthResponseBase<SubscriptionPlan[]>;
 export type ShopDocumentListResponse = AuthResponseBase<ShopDocument[]>;
@@ -190,8 +200,8 @@ export const updateShopSchema = z.object({
   districtId: z.number().min(1, 'Vui lòng chọn quận/huyện'),
   wardId: z.number().min(1, 'Vui lòng chọn phường/xã'),
   addressLine: z.string().min(5, 'Địa chỉ phải có ít nhất 5 ký tự'),
-  taxCode: z.string().min(10, 'Mã số thuế không hợp lệ'),
-  businessRegNo: z.string().min(5, 'Số ĐKKD không hợp lệ'),
+  taxCode: z.string(),
+  businessRegNo: z.string(),
 });
 
 export type UpdateShopFormData = z.infer<typeof updateShopSchema>;

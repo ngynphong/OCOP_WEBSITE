@@ -3,38 +3,46 @@ import { adminApi } from '../api/adminApi';
 import { GetUsersParams, UpdateStaffProfileRequest } from '../types/adminTypes';
 import toast from 'react-hot-toast';
 
-export const useAdminUsers = () => {
+// ─── Standalone Query Hooks ────────────────────────────────────────────────────
+
+export const useUsersQuery = (params: GetUsersParams) => {
+  return useQuery({
+    queryKey: ['admin-users', params],
+    queryFn: () => adminApi.getUsers(params),
+    staleTime: 30 * 1000,
+  });
+};
+
+export const useUserDetailQuery = (userId: string | null | undefined) => {
+  return useQuery({
+    queryKey: ['admin-user-detail', userId],
+    queryFn: () => adminApi.getUserDetail(userId!),
+    enabled: !!userId,
+    staleTime: 60 * 1000,
+  });
+};
+
+export const useUserPermissionsQuery = (userId: string | null | undefined) => {
+  return useQuery({
+    queryKey: ['admin-user-permissions', userId],
+    queryFn: () => adminApi.getUserPermissions(userId!),
+    enabled: !!userId,
+    staleTime: 60 * 1000,
+  });
+};
+
+export const useAllPermissionsQuery = () => {
+  return useQuery({
+    queryKey: ['admin-all-permissions'],
+    queryFn: () => adminApi.getPermissions(),
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+// ─── Mutation Hook ─────────────────────────────────────────────────────────────
+
+export const useAdminUserMutations = () => {
   const queryClient = useQueryClient();
-
-  const useUsersQuery = (params: GetUsersParams) => {
-    return useQuery({
-      queryKey: ['admin-users', params],
-      queryFn: () => adminApi.getUsers(params),
-    });
-  };
-
-  const useUserDetailQuery = (userId: string) => {
-    return useQuery({
-      queryKey: ['admin-user-detail', userId],
-      queryFn: () => adminApi.getUserDetail(userId),
-      enabled: !!userId,
-    });
-  };
-
-  const useUserPermissionsQuery = (userId: string) => {
-    return useQuery({
-      queryKey: ['admin-user-permissions', userId],
-      queryFn: () => adminApi.getUserPermissions(userId),
-      enabled: !!userId,
-    });
-  };
-
-  const useAllPermissionsQuery = () => {
-    return useQuery({
-      queryKey: ['admin-all-permissions'],
-      queryFn: () => adminApi.getPermissions(),
-    });
-  };
 
   const updateUserStatusMutation = useMutation({
     mutationFn: ({ userId, status }: { userId: string; status: string }) =>
@@ -101,9 +109,6 @@ export const useAdminUsers = () => {
   });
 
   return {
-    useUsersQuery,
-    useUserDetailQuery,
-    useUserPermissionsQuery,
     updateUserStatus: updateUserStatusMutation.mutateAsync,
     isUpdatingStatus: updateUserStatusMutation.isPending,
     updateUserRoles: updateUserRolesMutation.mutateAsync,
@@ -116,8 +121,12 @@ export const useAdminUsers = () => {
     isDeletingUser: deleteUserMutation.isPending,
     updateStaffProfile: updateStaffProfileMutation.mutateAsync,
     isUpdatingStaffProfile: updateStaffProfileMutation.isPending,
-    useAllPermissionsQuery,
     deletePermission: deletePermissionMutation.mutateAsync,
     isDeletingPermission: deletePermissionMutation.isPending,
   };
 };
+
+/**
+ * @deprecated Dùng `useUsersQuery`, `useUserDetailQuery`, `useAdminUserMutations` riêng lẻ.
+ */
+export const useAdminUsers = () => useAdminUserMutations();

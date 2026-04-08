@@ -3,23 +3,29 @@ import { adminApi } from '../api/adminApi';
 import { CreateRoleRequest, RolePermissionsRequest } from '../types/adminTypes';
 import toast from 'react-hot-toast';
 
-export const useAdminRoles = () => {
+// ─── Standalone Query Hooks ────────────────────────────────────────────────────
+
+export const useRolesQuery = () => {
+  return useQuery({
+    queryKey: ['admin-roles'],
+    queryFn: () => adminApi.getRoles(),
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useRolePermissionsQuery = (roleName: string | null | undefined) => {
+  return useQuery({
+    queryKey: ['admin-role-permissions', roleName],
+    queryFn: () => adminApi.getRolePermissions(roleName!),
+    enabled: !!roleName,
+    staleTime: 60 * 1000,
+  });
+};
+
+// ─── Mutation Hook ─────────────────────────────────────────────────────────────
+
+export const useAdminRoleMutations = () => {
   const queryClient = useQueryClient();
-
-  const useRolesQuery = () => {
-    return useQuery({
-      queryKey: ['admin-roles'],
-      queryFn: () => adminApi.getRoles(),
-    });
-  };
-
-  const useRolePermissionsQuery = (roleName: string) => {
-    return useQuery({
-      queryKey: ['admin-role-permissions', roleName],
-      queryFn: () => adminApi.getRolePermissions(roleName),
-      enabled: !!roleName,
-    });
-  };
 
   const createRoleMutation = useMutation({
     mutationFn: (data: CreateRoleRequest) => adminApi.createRole(data),
@@ -58,8 +64,6 @@ export const useAdminRoles = () => {
   });
 
   return {
-    useRolesQuery,
-    useRolePermissionsQuery,
     createRole: createRoleMutation.mutateAsync,
     isCreatingRole: createRoleMutation.isPending,
     addRolePermissions: addRolePermissionsMutation.mutateAsync,
@@ -70,3 +74,8 @@ export const useAdminRoles = () => {
     isDeletingRole: deleteRoleMutation.isPending,
   };
 };
+
+/**
+ * @deprecated Dùng `useRolesQuery`, `useRolePermissionsQuery`, `useAdminRoleMutations` riêng lẻ.
+ */
+export const useAdminRoles = () => useAdminRoleMutations();

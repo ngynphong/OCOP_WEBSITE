@@ -14,15 +14,15 @@ import {
   FiShoppingBag,
   FiClock,
 } from 'react-icons/fi';
-import { useAdminShops } from '@/features/admin/hooks/useAdminShops';
+import { useShopsQuery, useAdminShopMutations } from '@/features/admin/hooks/useAdminShops';
 import { GetShopsParams, ShopListItem, ShopStatus } from '@/features/admin/types/adminTypes';
 import Image from 'next/image';
+import Link from 'next/link';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { Pagination } from '@/components/ui/Pagination';
 import ShopStatusBadge from '@/features/admin/components/ShopStatusBadge';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
-import ShopDetailDrawer from '@/features/admin/components/ShopDetailDrawer';
 
 const ShopManagementPage = () => {
   const [params, setParams] = useState<GetShopsParams>({
@@ -32,11 +32,8 @@ const ShopManagementPage = () => {
     status: undefined,
   });
 
-  const { useShopsQuery, approveShop, rejectShop, lockShop, unlockShop } = useAdminShops();
+  const { approveShop, rejectShop, lockShop, unlockShop } = useAdminShopMutations();
   const { data, isLoading } = useShopsQuery(params);
-
-  // Detail Modal/Drawer State (Simplified for now, will expand later)
-  const [selectedShop, setSelectedShop] = useState<ShopListItem | null>(null);
 
   // Action Modal State
   const [actionTarget, setActionTarget] = useState<{
@@ -257,12 +254,12 @@ const ShopManagementPage = () => {
                     </td>
                     <td className="py-5 px-8 text-right">
                       <div className="flex justify-end gap-2">
-                        <button
-                          onClick={() => setSelectedShop(shop)}
-                          className="p-2 hover:bg-white rounded-lg transition-colors text-[#00490E] shadow-sm border border-transparent hover:border-stone-100"
+                        <Link
+                          href={`/admin/shops/${shop.id}`}
+                          className="p-2 hover:bg-white rounded-lg transition-colors text-[#00490E] shadow-sm border border-transparent hover:border-stone-100 flex items-center justify-center"
                         >
                           <FiEye size={18} />
-                        </button>
+                        </Link>
                         {shop.status === 'PENDING' && (
                           <>
                             <button
@@ -337,8 +334,6 @@ const ShopManagementPage = () => {
           />
         </div>
       </div>
-
-      <ShopDetailDrawer shop={selectedShop} onClose={() => setSelectedShop(null)} />
     </div>
   );
 };

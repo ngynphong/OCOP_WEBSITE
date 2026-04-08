@@ -14,21 +14,24 @@ export default function AppProvider({ children }: { children: React.ReactNode })
   useEffect(() => {
     // 1. Initialize Auth from LocalStorage
     const token = localStorage.getItem('access_token');
+    const rolesStr = localStorage.getItem('user_roles');
+
     if (token) {
+      let roles: string[] = [];
+      try {
+        roles = rolesStr ? JSON.parse(rolesStr) : [];
+      } catch (e) {
+        console.error('Failed to parse roles from localStorage', e);
+      }
+
       store.dispatch({
         type: 'auth/setCredentials',
-        payload: { token, roles: [] },
+        payload: { token, roles },
       });
-    }
-
-    // 2. Simple Client-side Route Protection
-    const protectedRoutes = ['/dashboard', '/don-hang'];
-    const currentPath = window.location.pathname;
-
-    const isProtectedRoute = protectedRoutes.some((route) => currentPath.startsWith(route));
-
-    if (isProtectedRoute && !token) {
-      window.location.href = '/dang-nhap';
+    } else {
+      store.dispatch({
+        type: 'auth/completeInitialization',
+      });
     }
   }, []);
 

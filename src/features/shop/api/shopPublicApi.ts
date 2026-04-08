@@ -26,6 +26,6 @@ export const shopPublicApi = {
   },
 
   getSubscriptionPlans: (): Promise<SubscriptionPlanListResponse> => {
-    return publicAxiosClient.get('/subscription-plans');
+    return publicAxiosClient.get('/shops/subscription-plans');
   },
 };

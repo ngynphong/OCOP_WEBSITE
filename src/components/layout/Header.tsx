@@ -28,7 +28,9 @@ export function Header() {
 
   const pathname = usePathname();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
-  const { logout, isLoggingOut, handleClientLogout } = useAuth();
+  const { logout, isLoggingOut, handleClientLogout, profile } = useAuth();
+
+  const role = useAppSelector((state) => state.auth.roles);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -190,8 +192,18 @@ export function Header() {
                   suppressHydrationWarning
                   className="inline-flex items-center gap-1 h-10 px-3 text-white hover:bg-white/10 rounded-full transition-colors cursor-pointer"
                 >
-                  <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center border border-white/20">
-                    <User className="w-5 h-5 text-white" />
+                  <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center border border-white/20 shrink-0 overflow-hidden">
+                    {profile?.avatarUrl ? (
+                      <Image
+                        src={profile.avatarUrl}
+                        alt="Avatar"
+                        width={32}
+                        height={32}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <User className="w-5 h-5 text-white" />
+                    )}
                   </div>
                   <ChevronDown
                     className={`w-4 h-4 transition-transform duration-200 ${isUserDropdownOpen ? 'rotate-180' : ''}`}
@@ -209,14 +221,22 @@ export function Header() {
                     >
                       <div className="p-2">
                         <Link
-                          href="/dashboard/ho-so"
+                          href={
+                            role.includes('ADMIN') || role.includes('SUPER_ADMIN')
+                              ? '/admin'
+                              : '/dashboard/ho-so'
+                          }
                           className="flex items-center gap-3 px-4 py-2.5 text-sm text-stone-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-lg transition-colors group"
                         >
                           <User className="w-4 h-4 text-stone-400 group-hover:text-emerald-600" />
                           <span>Hồ sơ cá nhân</span>
                         </Link>
                         <Link
-                          href="/dashboard"
+                          href={
+                            role.includes('ADMIN') || role.includes('SUPER_ADMIN')
+                              ? '/admin'
+                              : '/dashboard'
+                          }
                           className="flex items-center gap-3 px-4 py-2.5 text-sm text-stone-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-lg transition-colors group"
                         >
                           <LayoutDashboard className="w-4 h-4 text-stone-400 group-hover:text-emerald-600" />

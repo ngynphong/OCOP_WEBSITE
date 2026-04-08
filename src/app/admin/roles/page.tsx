@@ -10,15 +10,15 @@ import {
   FiInfo,
   FiCheckCircle,
 } from 'react-icons/fi';
-import { useAdminRoles } from '@/features/admin/hooks/useAdminRoles';
+import { useRolesQuery, useAdminRoleMutations } from '@/features/admin/hooks/useAdminRoles';
 import { AdminRole } from '@/features/admin/types/adminTypes';
 import Link from 'next/link';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import RoleFormDrawer from '@/features/admin/components/RoleFormDrawer';
 
 const RoleListPage = () => {
-  const { useRolesQuery, deleteRole, isDeletingRole } = useAdminRoles();
   const { data, isLoading } = useRolesQuery();
+  const { deleteRole } = useAdminRoleMutations();
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState<AdminRole | null>(null);

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { FiSearch, FiBell, FiGrid, FiChevronRight, FiUser } from 'react-icons/fi';
-import { useAuth } from '@/features/auth/hooks/useAuth';
+import { useAuth, useAuthProfile } from '@/features/auth/hooks/useAuth';
 import Image from 'next/image';
 import { LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -13,7 +13,8 @@ interface AdminHeaderProps {
 }
 
 const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
-  const { profile, logout, isLoggingOut, handleClientLogout } = useAuth();
+  const { profile } = useAuthProfile();
+  const { logout, isLoggingOut, handleClientLogout } = useAuth();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
 
@@ -83,14 +84,14 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
             </p>
           </div>
 
-          <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center border-2 border-white shadow-sm overflow-hidden">
+          <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center border-2 border-white shadow-sm overflow-hidden shrink-0">
             {profile?.avatarUrl ? (
               <Image
                 src={profile.avatarUrl}
                 alt="Admin"
                 width={40}
                 height={40}
-                className="object-cover"
+                className="w-full h-full object-cover"
               />
             ) : (
               <FiUser className="text-emerald-600" size={20} />

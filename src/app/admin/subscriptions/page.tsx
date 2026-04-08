@@ -10,7 +10,10 @@ import {
   FiTrendingUp,
   FiCheckCircle,
 } from 'react-icons/fi';
-import { useAdminSubscriptions } from '@/features/admin/hooks/useAdminSubscriptions';
+import {
+  useSubscriptionPlansQuery,
+  useAdminSubscriptionMutations,
+} from '@/features/admin/hooks/useAdminSubscriptions';
 import { SubscriptionPlan } from '@/features/admin/types/adminTypes';
 import PlanStatusBadge from '@/features/admin/components/PlanStatusBadge';
 import SubscriptionFormDrawer from '@/features/admin/components/SubscriptionFormDrawer';
@@ -18,23 +21,23 @@ import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 
 const AdminSubscriptionPage = () => {
-  const { useSubscriptionPlansQuery, toggleSubscriptionPlan } = useAdminSubscriptions();
   const { data, isLoading } = useSubscriptionPlansQuery();
+  const { toggleSubscriptionPlan } = useAdminSubscriptionMutations();
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>(null);
+  const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
   const [toggleTarget, setToggleTarget] = useState<SubscriptionPlan | null>(null);
 
   const plans = data?.data || [];
   const activePlansCount = plans.filter((p) => p.isActive).length;
 
   const handleEdit = (plan: SubscriptionPlan) => {
-    setSelectedPlan(plan);
+    setSelectedPlanId(plan.id);
     setIsDrawerOpen(true);
   };
 
   const handleAdd = () => {
-    setSelectedPlan(null);
+    setSelectedPlanId(null);
     setIsDrawerOpen(true);
   };
 
@@ -200,7 +203,7 @@ const AdminSubscriptionPage = () => {
       <SubscriptionFormDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
-        plan={selectedPlan}
+        planId={selectedPlanId}
       />
 
       {/* Confirm Toggle Modal */}

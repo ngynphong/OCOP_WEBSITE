@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useDispatch } from 'react-redux';
+import { useAppSelector } from '@/store/hooks';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { authApi } from '../api/authApi';
@@ -15,6 +16,32 @@ import {
   ChangePasswordRequest,
 } from '../types';
 
+/**
+ * Hook chuyên biệt chỉ dùng để lấy thông tin profile người dùng.
+ * Tách biệt để tránh khởi tạo dư thừa các mutations khi chỉ cần xem profile (như trong layouts/headers).
+ */
+export const useAuthProfile = () => {
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+
+  const profileQuery = useQuery({
+    queryKey: ['profile'],
+    queryFn: () => authApi.getProfile(),
+    enabled: isAuthenticated, // Chỉ fetch nếu đã login (có token)
+    staleTime: 5 * 60 * 1000, // 5 phút cache
+    retry: 1,
+  });
+
+  return {
+    profile: profileQuery.data?.data,
+    isLoadingProfile: profileQuery.isLoading,
+    isErrorProfile: profileQuery.isError,
+    refetchProfile: profileQuery.refetch,
+  };
+};
+
+/**
+ * Hook quản lý các hành động xác thực (Login, Logout, Register, etc.)
+ */
 export const useAuth = () => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -27,28 +54,15 @@ export const useAuth = () => {
 
       if (accessToken) {
         localStorage.setItem('access_token', accessToken);
-        if (refreshToken) {
-          localStorage.setItem('refresh_token', refreshToken);
-        }
+        if (refreshToken) localStorage.setItem('refresh_token', refreshToken);
+        if (roles) localStorage.setItem('user_roles', JSON.stringify(roles));
 
-        dispatch(
-          setCredentials({
-            token: accessToken,
-            roles: roles,
-          }),
-        );
+        dispatch(setCredentials({ token: accessToken, roles: roles || [] }));
         toast.success('Đăng nhập thành công');
 
         const isAdmin = roles?.some((role: string) => role === 'ADMIN' || role === 'SUPER_ADMIN');
-        if (isAdmin) {
-          router.push('/admin');
-        } else {
-          router.push('/');
-        }
+        router.push(isAdmin ? '/admin' : '/');
       }
-    },
-    onError: () => {
-      // Interceptor already handled toast
     },
   });
 
@@ -58,36 +72,22 @@ export const useAuth = () => {
       toast.success('Đăng ký thành công! Vui lòng kiểm tra email để lấy mã xác thực.');
       router.push(`/xac-thuc-email?email=${encodeURIComponent(variables.email)}`);
     },
-    onError: () => {
-      // Interceptor already handled toast
-    },
   });
 
   const verifyEmailMutation = useMutation({
     mutationFn: (data: { email: string; code: string }) => authApi.verifyEmail(data),
     onSuccess: (res) => {
       const { accessToken, refreshToken, roles } = res.data;
-
       if (accessToken) {
         localStorage.setItem('access_token', accessToken);
-        if (refreshToken) {
-          localStorage.setItem('refresh_token', refreshToken);
-        }
+        if (refreshToken) localStorage.setItem('refresh_token', refreshToken);
+        if (roles) localStorage.setItem('user_roles', JSON.stringify(roles));
 
-        dispatch(
-          setCredentials({
-            token: accessToken,
-            roles: roles || [],
-          }),
-        );
+        dispatch(setCredentials({ token: accessToken, roles: roles || [] }));
         toast.success('Xác thực thành công! Hệ thống đã tự động đăng nhập.');
 
         const isAdmin = roles?.some((role: string) => role === 'ADMIN' || role === 'SUPER_ADMIN');
-        if (isAdmin) {
-          router.push('/admin');
-        } else {
-          router.push('/');
-        }
+        router.push(isAdmin ? '/admin' : '/');
       } else {
         toast.success('Xác thực thành công! Vui lòng đăng nhập.');
         router.push('/dang-nhap');
@@ -97,11 +97,9 @@ export const useAuth = () => {
 
   const logoutMutation = useMutation({
     mutationFn: (data: LogoutRequest) => authApi.logout(data),
-    onSuccess: () => {
-      handleClientLogout();
-    },
+    onSuccess: () => handleClientLogout(),
     onError: () => {
-      toast.error('Đăng xuất có thể gặp lỗi phía server, hệ thống vẫn sẽ xóa phiên.');
+      toast.error('Đăng xuất có lỗi server, hệ thống vẫn sẽ xóa phiên tại client.');
       handleClientLogout();
     },
   });
@@ -109,15 +107,17 @@ export const useAuth = () => {
   const handleClientLogout = () => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user_roles');
     dispatch(reduxLogout());
-    toast.success('Đã đăng xuất');
+    queryClient.removeQueries({ queryKey: ['profile'] });
+    toast.success('Đăng xuất thành công');
     router.push('/dang-nhap');
   };
 
   const forgotPasswordMutation = useMutation({
     mutationFn: (data: ForgotPasswordRequest) => authApi.forgotPassword(data),
     onSuccess: (_, variables) => {
-      toast.success('Yêu cầu đã được gửi! Vui lòng kiểm tra email để lấy mã xác thực.');
+      toast.success('Yêu cầu đã gửi! Vui lòng kiểm tra email.');
       router.push(`/xac-thuc-otp?email=${encodeURIComponent(variables.email)}`);
     },
   });
@@ -138,13 +138,6 @@ export const useAuth = () => {
       toast.success('Đặt lại mật khẩu thành công! Vui lòng đăng nhập lại.');
       router.push('/dang-nhap');
     },
-  });
-
-  const profileQuery = useQuery({
-    queryKey: ['profile'],
-    queryFn: () => authApi.getProfile(),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    retry: 1,
   });
 
   const updateProfileMutation = useMutation({
@@ -173,50 +166,40 @@ export const useAuth = () => {
 
   const changePasswordMutation = useMutation({
     mutationFn: (data: ChangePasswordRequest) => authApi.changePassword(data),
-    onSuccess: () => {
-      toast.success('Đổi mật khẩu thành công');
-    },
+    onSuccess: () => toast.success('Đổi mật khẩu thành công'),
   });
 
+  // Tương thích ngược với các components cũ đang dùng profile từ useAuth
+  const { profile, isLoadingProfile, isErrorProfile, refetchProfile } = useAuthProfile();
+
   return {
-    // ... rest
-    profile: profileQuery.data?.data,
-    isLoadingProfile: profileQuery.isLoading,
-    isErrorProfile: profileQuery.isError,
-    refetchProfile: profileQuery.refetch,
+    profile,
+    isLoadingProfile,
+    isErrorProfile,
+    refetchProfile,
 
-    updateProfile: updateProfileMutation.mutateAsync,
-    isUpdatingProfile: updateProfileMutation.isPending,
-
-    updateAvatar: updateAvatarMutation.mutateAsync,
-    isUpdatingAvatar: updateAvatarMutation.isPending,
-
-    deleteAvatar: deleteAvatarMutation.mutateAsync,
-    isDeletingAvatar: deleteAvatarMutation.isPending,
     login: loginMutation.mutateAsync,
     isLoggingIn: loginMutation.isPending,
-
     register: registerMutation.mutateAsync,
     isRegistering: registerMutation.isPending,
-
     verifyEmail: verifyEmailMutation.mutateAsync,
     isVerifyingEmail: verifyEmailMutation.isPending,
-
     logout: logoutMutation.mutateAsync,
     isLoggingOut: logoutMutation.isPending,
-
     forgotPassword: forgotPasswordMutation.mutateAsync,
     isForgottingPassword: forgotPasswordMutation.isPending,
-
     verifyOtp: verifyOtpMutation.mutateAsync,
     isVerifyingOtp: verifyOtpMutation.isPending,
-
     resetPassword: resetPasswordMutation.mutateAsync,
     isResettingPassword: resetPasswordMutation.isPending,
-
+    updateProfile: updateProfileMutation.mutateAsync,
+    isUpdatingProfile: updateProfileMutation.isPending,
+    updateAvatar: updateAvatarMutation.mutateAsync,
+    isUpdatingAvatar: updateAvatarMutation.isPending,
+    deleteAvatar: deleteAvatarMutation.mutateAsync,
+    isDeletingAvatar: deleteAvatarMutation.isPending,
     changePassword: changePasswordMutation.mutateAsync,
     isChangingPassword: changePasswordMutation.isPending,
-
     handleClientLogout,
   };
 };

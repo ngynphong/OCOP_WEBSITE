@@ -24,19 +24,20 @@ interface AdminSidebarProps {
   onToggle: () => void;
 }
 
+// Hoist menu items out of the component to optimize memory
+const MENU_ITEMS = [
+  { label: 'Tổng quan', icon: FiGrid, href: '/admin', id: 'overview' },
+  { label: 'Cửa hàng', icon: FiShoppingBag, href: '/admin/shops', id: 'shops' },
+  { label: 'Phê duyệt', icon: FiCheckSquare, href: '/admin/phe-duyet', id: 'approval' },
+  { label: 'Tài chính', icon: FiDollarSign, href: '/admin/tai-chinh', id: 'financials' },
+  { label: 'Người dùng', icon: FiUsers, href: '/admin/users', id: 'users' },
+  { label: 'Gói đăng ký', icon: FiCreditCard, href: '/admin/subscriptions', id: 'subscriptions' },
+  { label: 'Vận hành', icon: FiSettings, href: '/admin/van-hanh', id: 'operations' },
+  { label: 'Dữ liệu gốc', icon: FiDatabase, href: '/admin/du-lieu', id: 'master-data' },
+];
+
 const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
   const pathname = usePathname();
-
-  const menuItems = [
-    { label: 'Tổng quan', icon: FiGrid, href: '/admin', id: 'overview' },
-    { label: 'Cửa hàng', icon: FiShoppingBag, href: '/admin/shops', id: 'shops' },
-    { label: 'Phê duyệt', icon: FiCheckSquare, href: '/admin/phe-duyet', id: 'approval' },
-    { label: 'Tài chính', icon: FiDollarSign, href: '/admin/tai-chinh', id: 'financials' },
-    { label: 'Người dùng', icon: FiUsers, href: '/admin/users', id: 'users' },
-    { label: 'Gói đăng ký', icon: FiCreditCard, href: '/admin/subscriptions', id: 'subscriptions' },
-    { label: 'Vận hành', icon: FiSettings, href: '/admin/van-hanh', id: 'operations' },
-    { label: 'Dữ liệu gốc', icon: FiDatabase, href: '/admin/du-lieu', id: 'master-data' },
-  ];
 
   return (
     <aside
@@ -75,7 +76,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
 
       {/* Navigation */}
       <nav className="flex-1 space-y-1.5">
-        {menuItems.map((item) => {
+        {MENU_ITEMS.map((item) => {
           const isActive = pathname === item.href;
           return (
             <Link

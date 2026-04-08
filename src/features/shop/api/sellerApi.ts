@@ -23,6 +23,10 @@ export const sellerApi = {
     return axiosClient.get('/seller/shop');
   },
 
+  resubmitShop: (): Promise<ShopDetailResponse> => {
+    return axiosClient.post('/seller/shop/resubmit');
+  },
+
   updateShop: (data: UpdateShopRequest): Promise<ShopDetailResponse> => {
     return axiosClient.put('/seller/shop', data);
   },

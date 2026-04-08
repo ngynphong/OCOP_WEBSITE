@@ -1,6 +1,11 @@
 'use client';
 
-import { useAdminUsers } from '@/features/admin/hooks/useAdminUsers';
+import {
+  useAdminUserMutations,
+  useUserDetailQuery,
+  useUserPermissionsQuery,
+  useAllPermissionsQuery,
+} from '@/features/admin/hooks/useAdminUsers';
 import { UserPermission } from '@/features/admin/types/adminTypes';
 import { useParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -29,16 +34,13 @@ const UserDetailPage = () => {
   const { id } = useParams();
   const router = useRouter();
   const {
-    useUserDetailQuery,
-    useUserPermissionsQuery,
-    useAllPermissionsQuery,
     updateUserStatus,
     updateUserRoles,
     grantPermissions,
     revokePermissions,
     deleteUser,
     deletePermission,
-  } = useAdminUsers();
+  } = useAdminUserMutations();
 
   const { data: userRes, isLoading: isLoadingUser } = useUserDetailQuery(id as string);
   const { data: permRes, isLoading: isLoadingPerms } = useUserPermissionsQuery(id as string);
@@ -56,8 +58,10 @@ const UserDetailPage = () => {
   const [permToDelete, setPermToDelete] = useState<string | null>(null);
 
   const allPermissions = allPermsRes?.data || [];
-  const userPermissionNames = permissions.map((p) => p.name);
-  const availablePermissions = allPermissions.filter((p) => !userPermissionNames.includes(p.name));
+  const userPermissionNames = permissions.map((p: UserPermission) => p.name);
+  const availablePermissions = allPermissions.filter(
+    (p: UserPermission) => !userPermissionNames.includes(p.name),
+  );
 
   if (isLoadingUser) {
     return (
@@ -351,7 +355,7 @@ const UserDetailPage = () => {
                   className="flex-1 bg-stone-50 border border-stone-100 text-xs text-gray-700 font-bold px-4 py-2.5 rounded-xl outline-none focus:ring-2 focus:ring-blue-500/10 transition-all cursor-pointer"
                 >
                   <option value="">Chọn quyền để cấp...</option>
-                  {availablePermissions.map((p) => (
+                  {availablePermissions.map((p: UserPermission) => (
                     <option key={p.name} value={p.name}>
                       {p.name} - {p.description}
                     </option>
@@ -373,7 +377,7 @@ const UserDetailPage = () => {
                 Quản lý quyền hệ thống (Nguy hiểm)
               </h5>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                {allPermissions.map((p) => (
+                {allPermissions.map((p: UserPermission) => (
                   <div
                     key={p.name}
                     className="flex items-center justify-between px-3 py-2 bg-red-50/30 rounded-xl border border-red-100 group"

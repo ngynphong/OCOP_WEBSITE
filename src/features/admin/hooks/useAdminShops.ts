@@ -3,30 +3,44 @@ import { adminApi } from '../api/adminApi';
 import { GetShopsParams, ShopActionRequest, OverridePlanRequest } from '../types/adminTypes';
 import toast from 'react-hot-toast';
 
-export const useAdminShops = () => {
+type ApiError = { response?: { data?: { message?: string } } };
+
+// ─── Standalone Query Hooks ──────
+
+export const useShopsQuery = (params: GetShopsParams) => {
+  return useQuery({
+    queryKey: ['admin-shops', params],
+    queryFn: () => adminApi.getShops(params),
+    staleTime: 30 * 1000, // Cache 30s
+  });
+};
+
+export const useShopDetailQuery = (shopId: number | string | null | undefined) => {
+  return useQuery({
+    queryKey: ['admin-shop-detail', shopId],
+    queryFn: () => adminApi.getShopDetail(shopId!),
+    enabled: !!shopId,
+    staleTime: 60 * 1000,
+  });
+};
+
+export const useShopStatusLogsQuery = (shopId: number | string | null | undefined) => {
+  return useQuery({
+    queryKey: ['admin-shop-status-logs', shopId],
+    queryFn: () => adminApi.getShopStatusLogs(shopId!),
+    enabled: !!shopId,
+    staleTime: 60 * 1000,
+  });
+};
+
+// ─── Mutation Hook ─────────────────────────────────────────────────────────────
+
+export const useAdminShopMutations = () => {
   const queryClient = useQueryClient();
 
-  const useShopsQuery = (params: GetShopsParams) => {
-    return useQuery({
-      queryKey: ['admin-shops', params],
-      queryFn: () => adminApi.getShops(params),
-    });
-  };
-
-  const useShopDetailQuery = (shopId: number | string) => {
-    return useQuery({
-      queryKey: ['admin-shop-detail', shopId],
-      queryFn: () => adminApi.getShopDetail(shopId),
-      enabled: !!shopId,
-    });
-  };
-
-  const useShopStatusLogsQuery = (shopId: number | string) => {
-    return useQuery({
-      queryKey: ['admin-shop-status-logs', shopId],
-      queryFn: () => adminApi.getShopStatusLogs(shopId),
-      enabled: !!shopId,
-    });
+  const invalidateShops = () => {
+    queryClient.invalidateQueries({ queryKey: ['admin-shops'] });
+    queryClient.invalidateQueries({ queryKey: ['admin-shop-detail'] });
   };
 
   const approveShopMutation = useMutation({
@@ -34,12 +48,10 @@ export const useAdminShops = () => {
       adminApi.approveShop(shopId, data),
     onSuccess: () => {
       toast.success('Duyệt shop thành công');
-      queryClient.invalidateQueries({ queryKey: ['admin-shops'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-shop-detail'] });
+      invalidateShops();
     },
-    onError: (error: unknown) => {
-      // @ts-expect-error - Axios error structure
-      toast.error(error?.response?.data?.message || 'Có lỗi xảy ra');
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data?.message || 'Có lỗi khi duyệt shop');
     },
   });
 
@@ -48,12 +60,10 @@ export const useAdminShops = () => {
       adminApi.rejectShop(shopId, data),
     onSuccess: () => {
       toast.success('Đã từ chối shop');
-      queryClient.invalidateQueries({ queryKey: ['admin-shops'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-shop-detail'] });
+      invalidateShops();
     },
-    onError: (error: unknown) => {
-      // @ts-expect-error - Axios error structure
-      toast.error(error?.response?.data?.message || 'Có lỗi xảy ra');
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data?.message || 'Có lỗi khi từ chối shop');
     },
   });
 
@@ -62,12 +72,10 @@ export const useAdminShops = () => {
       adminApi.lockShop(shopId, data),
     onSuccess: () => {
       toast.success('Đã khóa shop');
-      queryClient.invalidateQueries({ queryKey: ['admin-shops'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-shop-detail'] });
+      invalidateShops();
     },
-    onError: (error: unknown) => {
-      // @ts-expect-error - Axios error structure
-      toast.error(error?.response?.data?.message || 'Có lỗi xảy ra');
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data?.message || 'Có lỗi khi khóa shop');
     },
   });
 
@@ -76,12 +84,10 @@ export const useAdminShops = () => {
       adminApi.unlockShop(shopId, data),
     onSuccess: () => {
       toast.success('Mở khóa shop thành công');
-      queryClient.invalidateQueries({ queryKey: ['admin-shops'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-shop-detail'] });
+      invalidateShops();
     },
-    onError: (error: unknown) => {
-      // @ts-expect-error - Axios error structure
-      toast.error(error?.response?.data?.message || 'Có lỗi xảy ra');
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data?.message || 'Có lỗi khi mở khóa shop');
     },
   });
 
@@ -92,9 +98,8 @@ export const useAdminShops = () => {
       toast.success('Duyệt tài liệu thành công');
       queryClient.invalidateQueries({ queryKey: ['admin-shop-detail'] });
     },
-    onError: (error: unknown) => {
-      // @ts-expect-error - Axios error structure
-      toast.error(error?.response?.data?.message || 'Có lỗi xảy ra');
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data?.message || 'Có lỗi khi duyệt tài liệu');
     },
   });
 
@@ -105,9 +110,8 @@ export const useAdminShops = () => {
       toast.success('Đã từ chối tài liệu');
       queryClient.invalidateQueries({ queryKey: ['admin-shop-detail'] });
     },
-    onError: (error: unknown) => {
-      // @ts-expect-error - Axios error structure
-      toast.error(error?.response?.data?.message || 'Có lỗi xảy ra');
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data?.message || 'Có lỗi khi từ chối tài liệu');
     },
   });
 
@@ -118,16 +122,9 @@ export const useAdminShops = () => {
       toast.success('Gán gói thủ công thành công');
       queryClient.invalidateQueries({ queryKey: ['admin-shop-detail'] });
     },
-    onError: (error: unknown) => {
-      // @ts-expect-error - Axios error structure
-      toast.error(error?.response?.data?.message || 'Có lỗi xảy ra');
-    },
   });
 
   return {
-    useShopsQuery,
-    useShopDetailQuery,
-    useShopStatusLogsQuery,
     approveShop: approveShopMutation.mutateAsync,
     isApprovingShop: approveShopMutation.isPending,
     rejectShop: rejectShopMutation.mutateAsync,
@@ -144,3 +141,10 @@ export const useAdminShops = () => {
     isOverridingPlan: overridePlanMutation.isPending,
   };
 };
+
+/**
+ * @deprecated Dùng `useShopsQuery`, `useShopDetailQuery`, `useAdminShopMutations` riêng lẻ
+ * để tránh hook-inside-hook anti-pattern gây memory leak.
+ * Giữ lại để backward compat tạm thời.
+ */
+export const useAdminShops = () => useAdminShopMutations();

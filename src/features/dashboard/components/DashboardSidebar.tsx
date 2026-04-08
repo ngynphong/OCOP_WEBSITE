@@ -29,6 +29,12 @@ const DashboardSidebar = () => {
     { id: 'addresses', label: 'Địa chỉ nhận hàng', icon: FiMapPin, href: '/dashboard/dia-chi' },
     { id: 'security', label: 'Bảo mật', icon: FiShield, href: '/dashboard/bao-mat' },
     { id: 'shop', label: 'Cửa hàng của tôi', icon: FiTag, href: '/dashboard/cua-hang' },
+    {
+      id: 'shop-legality',
+      label: 'Hồ sơ pháp lý',
+      icon: FiShield,
+      href: '/dashboard/cua-hang/ho-so-phap-ly',
+    },
   ];
 
   const handleConfirmLogout = () => {
@@ -49,9 +55,9 @@ const DashboardSidebar = () => {
     <div className="flex flex-col gap-6">
       {/* User Info Card */}
       <div className="bg-white rounded-3xl p-6 border border-stone-100 shadow-xl shadow-stone-200/50 flex flex-col items-center">
-        <div className="w-20 h-20 rounded-full bg-linear-to-br from-green-500 to-emerald-600 border-4 border-white shadow-lg overflow-hidden flex items-center justify-center text-white text-2xl font-bold">
+        <div className="relative w-20 h-20 rounded-full bg-linear-to-br from-green-500 to-emerald-600 border-4 border-white shadow-lg overflow-hidden flex items-center justify-center text-white text-2xl font-bold">
           {profile?.avatarUrl ? (
-            <Image src={profile.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+            <Image src={profile.avatarUrl} alt="Avatar" fill className="object-cover" />
           ) : (
             <span>
               {profile?.lastName?.[0]}

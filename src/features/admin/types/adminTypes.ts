@@ -90,8 +90,10 @@ export interface GetUsersParams {
   pageSize?: number;
   keyword?: string | undefined;
   status?: string | undefined;
-  sorts?: string[] | undefined;
+  sorts?: string | undefined;
 }
+
+export type ShopDetailTabType = 'overview' | 'legality' | 'subscription' | 'history';
 
 // Shop Management Types
 export type ShopStatus = 'PENDING' | 'ACTIVE' | 'LOCKED' | 'REJECTED';
@@ -138,9 +140,9 @@ export interface ShopStatusLog {
   id: number;
   fromStatus: ShopStatus;
   toStatus: ShopStatus;
-  reason: string;
-  changedByEmail: string;
-  changedAt: string;
+  note: string;
+  createdByEmail: string;
+  createdAt: string;
 }
 
 export interface GetShopsParams {
@@ -185,14 +187,17 @@ export interface SubscriptionPlan {
   id: string;
   name: string;
   slug: string;
-  priceMonthly: number;
-  priceYearly: number;
-  maxProducts: number;
-  maxImagesPerProduct: string;
-  commissionRate: number;
-  features: string;
   isActive: boolean;
   sortOrder: string;
+  priceMonthly: number;
+  priceYearly: number;
+  yearlyDiscountPercent: number;
+  isFree: boolean;
+  maxProducts: number;
+  unlimitedProducts: boolean;
+  maxImagesPerProduct: string;
+  commissionRate: number;
+  features: string[];
 }
 
 export interface CreateSubscriptionPlanRequest {
@@ -200,10 +205,13 @@ export interface CreateSubscriptionPlanRequest {
   slug: string;
   priceMonthly: number;
   priceYearly: number;
+  yearlyDiscountPercent: number;
+  isFree: boolean;
   maxProducts: number;
+  unlimitedProducts: boolean;
   maxImagesPerProduct: string;
   commissionRate: number;
-  features: string;
+  features: string[];
   sortOrder: string;
 }
 

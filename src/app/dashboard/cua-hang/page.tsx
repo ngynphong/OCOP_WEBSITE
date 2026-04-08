@@ -19,11 +19,10 @@ import {
   FiTag,
 } from 'react-icons/fi';
 import { useSellerShop } from '@/features/shop/hooks/useSellerShop';
+import { useAuthProfile } from '@/features/auth/hooks/useAuth';
 import { ShopEditForm } from '@/features/shop/components/ShopEditForm';
 import { ShopStatus } from '@/features/shop/types/shopTypes';
 import { cn } from '@/lib/utils';
-
-// ─── Status Badge ──────────────────────────────────────────────────────────────
 
 const STATUS_CONFIG: Record<ShopStatus, { label: string; color: string; icon: React.ReactNode }> = {
   PENDING: {
@@ -63,8 +62,6 @@ const ShopStatusBadge = ({ status }: { status: ShopStatus }) => {
   );
 };
 
-// ─── Info Row ─────────────────────────────────────────────────────────────────
-
 const InfoRow = ({ label, value }: { label: string; value: React.ReactNode }) => (
   <div className="flex items-start justify-between gap-4 py-3 border-b border-stone-50 last:border-0">
     <span className="text-sm text-stone-500 shrink-0">{label}</span>
@@ -72,16 +69,22 @@ const InfoRow = ({ label, value }: { label: string; value: React.ReactNode }) =>
   </div>
 );
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
-
 export default function SellerShopPage() {
-  const { useMyShopQuery, uploadLogo, uploadBanner, isUploadingLogo, isUploadingBanner } =
-    useSellerShop();
+  const {
+    useMyShopQuery,
+    uploadLogo,
+    uploadBanner,
+    isUploadingLogo,
+    isUploadingBanner,
+    resubmitShop,
+    isResubmittingShop,
+  } = useSellerShop();
+
+  const { profile, isLoadingProfile } = useAuthProfile();
   const { data: shopData, isPending, isError } = useMyShopQuery();
   const [isEditing, setIsEditing] = useState(false);
 
-  // ─── Loading ───────────────────────────────────────────────────────────────
-  if (isPending) {
+  if (isLoadingProfile || (isPending && profile?.isOwnerShop)) {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-3 text-stone-400">
         <FiLoader size={28} className="animate-spin text-green-500" />
@@ -90,8 +93,7 @@ export default function SellerShopPage() {
     );
   }
 
-  // ─── No shop yet ───────────────────────────────────────────────────────────
-  if (isError || !shopData?.data) {
+  if (!profile?.isOwnerShop || isError || !shopData?.data) {
     return (
       <motion.div
         initial={{ opacity: 0, y: 16 }}
@@ -141,7 +143,7 @@ export default function SellerShopPage() {
     );
   }
 
-  const shop = shopData.data;
+  const { shopResponse: shop, missingRequiredDocuments, missingFields } = shopData.data;
 
   // ─── Has shop ──────────────────────────────────────────────────────────────
   return (
@@ -220,7 +222,7 @@ export default function SellerShopPage() {
             </p>
             <div className="flex items-center gap-4 mt-2">
               <span className="flex items-center gap-1 text-sm text-amber-600 font-bold">
-                <FiStar size={13} /> {shop.ratingAvg.toFixed(1)}
+                <FiStar size={13} /> {(shop?.ratingAvg ?? 0).toFixed(1)}
               </span>
               <span className="text-xs text-stone-400">({shop.totalReviews} đánh giá)</span>
               <span className="text-xs text-stone-400 bg-stone-100 px-2 py-0.5 rounded-full">
@@ -243,7 +245,40 @@ export default function SellerShopPage() {
         </div>
       </motion.div>
 
-      {/* Status Notice */}
+      {/* Resubmit Notice (When Rejected) */}
+      {shop.status === 'REJECTED' && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 bg-rose-50 border border-rose-100 rounded-[28px] shadow-sm">
+          <div className="flex gap-3">
+            <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center shrink-0">
+              <FiXCircle size={20} className="text-rose-500" />
+            </div>
+            <div>
+              <p className="text-sm font-black text-rose-900 mb-1">Cửa hàng bị từ chối phê duyệt</p>
+              <p className="text-xs text-rose-600 font-medium leading-relaxed">
+                Vui lòng kiểm tra các tài liệu còn thiếu bên dưới, cập nhật đầy đủ thông tin và tài
+                liệu theo yêu cầu trước khi nộp lại hồ sơ xét duyệt.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => resubmitShop()}
+            disabled={isResubmittingShop || missingRequiredDocuments}
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-rose-600 text-white rounded-2xl text-xs font-black shadow-lg shadow-rose-900/20 hover:bg-rose-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+          >
+            {isResubmittingShop ? (
+              <>
+                <FiLoader size={14} className="animate-spin" /> Đang xử lý...
+              </>
+            ) : (
+              <>
+                <FiCheckCircle size={14} /> Nộp lại hồ sơ ngay
+              </>
+            )}
+          </button>
+        </div>
+      )}
+
+      {/* Status Notice (General) */}
       {shop.status === 'PENDING' && (
         <div className="flex gap-3 p-4 bg-amber-50 border border-amber-200 rounded-2xl">
           <FiAlertCircle size={18} className="text-amber-600 mt-0.5 shrink-0" />
@@ -256,14 +291,27 @@ export default function SellerShopPage() {
         </div>
       )}
 
-      {shop.status === 'REJECTED' && (
-        <div className="flex gap-3 p-4 bg-red-50 border border-red-200 rounded-2xl">
-          <FiXCircle size={18} className="text-red-600 mt-0.5 shrink-0" />
-          <div>
-            <p className="text-sm font-bold text-red-800">Shop bị từ chối</p>
-            <p className="text-xs text-red-700 mt-0.5">
-              Vui lòng cập nhật thông tin và tài liệu theo yêu cầu của OCOP để nộp lại.
-            </p>
+      {/* Missing Documents Warning */}
+      {missingRequiredDocuments && (
+        <div className="flex gap-3 p-5 bg-rose-50 border border-rose-100 rounded-[24px] shadow-sm">
+          <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center shrink-0">
+            <FiAlertCircle size={20} className="text-rose-500" />
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-black text-rose-900 mb-1">Thiếu tài liệu hồ sơ</p>
+            <ul className="space-y-1">
+              {missingFields.map((field, idx) => (
+                <li key={idx} className="text-xs text-rose-600 font-medium list-disc ml-4">
+                  {field}
+                </li>
+              ))}
+            </ul>
+            <Link
+              href="/dashboard/cua-hang/ho-so-phap-ly"
+              className="inline-flex items-center gap-2 mt-4 text-[11px] font-bold text-rose-700 bg-white px-4 py-2 rounded-xl border border-rose-100 hover:bg-rose-100 transition-colors"
+            >
+              Cập nhật hồ sơ ngay
+            </Link>
           </div>
         </div>
       )}
@@ -301,7 +349,7 @@ export default function SellerShopPage() {
               <FiShoppingBag size={15} className="text-green-600" /> Hoạt động
             </h3>
             <InfoRow label="Gói dịch vụ" value={shop.planName} />
-            <InfoRow label="Đánh giá TB" value={`${shop.ratingAvg.toFixed(1)} / 5`} />
+            <InfoRow label="Đánh giá TB" value={`${(shop?.ratingAvg ?? 0).toFixed(1)} / 5`} />
             <InfoRow label="Tổng đánh giá" value={`${shop.totalReviews} lượt`} />
             <InfoRow
               label="Duyệt lúc"

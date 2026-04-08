@@ -12,64 +12,65 @@ import {
   FiArrowUpRight,
 } from 'react-icons/fi';
 
+// Hoist static data out of the component to prevent re-creation on each render
+const KPI_DATA = [
+  {
+    label: 'Doanh thu tháng',
+    value: '248,930,000đ',
+    trend: '+12.4%',
+    icon: FiTrendingUp,
+    color: 'text-emerald-600',
+    bg: 'bg-emerald-50',
+  },
+  {
+    label: 'Nhà bán hàng',
+    value: '1,204',
+    trend: '+8.2%',
+    icon: FiUsers,
+    color: 'text-blue-600',
+    bg: 'bg-blue-50',
+  },
+  {
+    label: 'Tổng người mua',
+    value: '48.5K',
+    trend: '+15.1%',
+    icon: FiShoppingBag,
+    color: 'text-purple-600',
+    bg: 'bg-purple-50',
+  },
+];
+
+const RECENT_ACTIVITY = [
+  {
+    id: 1,
+    title: 'Hợp tác xã mật ong Lâm Đồng',
+    action: 'Được phê duyệt mới',
+    time: '12 phút trước',
+    status: 'success',
+  },
+  {
+    id: 2,
+    title: 'Cảnh báo hệ thống',
+    action: 'Lưu lượng truy cập tăng đột biến tại phía Bắc',
+    time: '45 phút trước',
+    status: 'warning',
+  },
+  {
+    id: 3,
+    title: 'Sơn La Coffee',
+    action: 'Cập nhật danh mục sản phẩm',
+    time: '2 giờ trước',
+    status: 'info',
+  },
+];
+
+const TOP_CATEGORIES = [
+  { name: 'Trà Đặc Sản', share: 72, items: 428, revenue: '84.2Mđ', trend: '+18.5%' },
+  { name: 'Cà Phê Cao Cấp', share: 58, items: 315, revenue: '62.1Mđ', trend: '+12.2%' },
+  { name: 'Gia Vị Hữu Cơ', share: 45, items: 892, revenue: '45.8Mđ', trend: '-2.4%' },
+];
+
 const AdminOverview = () => {
-  const kpiData = [
-    {
-      label: 'Doanh thu tháng',
-      value: '248,930,000đ',
-      trend: '+12.4%',
-      icon: FiTrendingUp,
-      color: 'text-emerald-600',
-      bg: 'bg-emerald-50',
-    },
-    {
-      label: 'Nhà bán hàng',
-      value: '1,204',
-      trend: '+8.2%',
-      icon: FiUsers,
-      color: 'text-blue-600',
-      bg: 'bg-blue-50',
-    },
-    {
-      label: 'Tổng người mua',
-      value: '48.5K',
-      trend: '+15.1%',
-      icon: FiShoppingBag,
-      color: 'text-purple-600',
-      bg: 'bg-purple-50',
-    },
-  ];
-
-  const recentActivity = [
-    {
-      id: 1,
-      title: 'Hợp tác xã mật ong Lâm Đồng',
-      action: 'Được phê duyệt mới',
-      time: '12 phút trước',
-      status: 'success',
-    },
-    {
-      id: 2,
-      title: 'Cảnh báo hệ thống',
-      action: 'Lưu lượng truy cập tăng đột biến tại phía Bắc',
-      time: '45 phút trước',
-      status: 'warning',
-    },
-    {
-      id: 3,
-      title: 'Sơn La Coffee',
-      action: 'Cập nhật danh mục sản phẩm',
-      time: '2 giờ trước',
-      status: 'info',
-    },
-  ];
-
-  const topCategories = [
-    { name: 'Trà Đặc Sản', share: 72, items: 428, revenue: '84.2Mđ', trend: '+18.5%' },
-    { name: 'Cà Phê Cao Cấp', share: 58, items: 315, revenue: '62.1Mđ', trend: '+12.2%' },
-    { name: 'Gia Vị Hữu Cơ', share: 45, items: 892, revenue: '45.8Mđ', trend: '-2.4%' },
-  ];
-
   return (
     <div className="space-y-10">
       {/* Page Header */}
@@ -95,7 +96,7 @@ const AdminOverview = () => {
 
       {/* KPI Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {kpiData.map((stat, idx) => (
+        {KPI_DATA.map((stat, idx) => (
           <motion.div
             key={stat.label}
             initial={{ opacity: 0, y: 20 }}
@@ -143,7 +144,6 @@ const AdminOverview = () => {
           </div>
 
           <div className="h-64 bg-stone-50 rounded-2xl flex items-center justify-center border border-dashed border-stone-200">
-            {/* Simulated Chart using Frame Motion or SVG */}
             <div className="text-stone-300 flex flex-col items-center">
               <FiActivity size={48} className="animate-pulse mb-3" />
               <span className="text-xs font-bold uppercase tracking-widest">
@@ -195,7 +195,7 @@ const AdminOverview = () => {
               Hoạt động gần đây
             </h4>
             <div className="space-y-5">
-              {recentActivity.map((act) => (
+              {RECENT_ACTIVITY.map((act) => (
                 <div key={act.id} className="flex gap-4 group cursor-pointer">
                   <div className="w-8 h-8 rounded-xl bg-stone-50 flex items-center justify-center shrink-0 border border-stone-100 group-hover:bg-emerald-50 transition-colors">
                     <FiActivity className="text-emerald-600 text-xs" />
@@ -235,7 +235,7 @@ const AdminOverview = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-stone-50">
-              {topCategories.map((cat) => (
+              {TOP_CATEGORIES.map((cat) => (
                 <tr
                   key={cat.name}
                   className="hover:bg-stone-50 transition-colors group cursor-pointer"
