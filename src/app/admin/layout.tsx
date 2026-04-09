@@ -6,7 +6,8 @@ import AdminHeader from '@/features/admin/components/AdminHeader';
 import { useAuthProfile } from '@/features/auth/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { useAppSelector } from '@/store/hooks';
+import { useAppSelector, useAppDispatch } from '@/store/hooks';
+import { setLoading } from '@/store/features/uiSlice';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { profile, isLoadingProfile } = useAuthProfile();
@@ -15,6 +16,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     isInitialized,
     roles: storeRoles,
   } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(false);
 
@@ -39,19 +41,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
   }, [profile, isLoadingProfile, router, hasAdminRole, isInitialized]);
 
+  useEffect(() => {
+    if (!isInitialized || isLoadingProfile || (isAuthenticated && !profile)) {
+      dispatch(
+        setLoading({ isLoading: true, message: 'Đang xác thực quyền quản trị, vui lòng chờ...' }),
+      );
+    }
+  }, [isInitialized, isLoadingProfile, isAuthenticated, profile, dispatch]);
+
   if (!isInitialized || isLoadingProfile || (isAuthenticated && !profile)) {
-    return (
-      <div className="h-screen w-full flex flex-col items-center justify-center bg-[#F5F3EF]">
-        <div className="w-12 h-12 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin mb-4" />
-        <p className="text-emerald-800 font-bold animate-pulse text-sm uppercase tracking-widest text-center">
-          Đang xác thực quyền quản trị...
-          <br />
-          <span className="text-[10px] font-normal lowercase tracking-normal opacity-60">
-            Vui lòng chờ trong giây lát
-          </span>
-        </p>
-      </div>
-    );
+    return <div className="h-screen w-full bg-[#F5F3EF]" />;
   }
 
   return (
