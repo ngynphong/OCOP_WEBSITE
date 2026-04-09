@@ -5,9 +5,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { registerSchema, RegisterFormData } from '../types';
 import { useAuth } from '../hooks/useAuth';
+import { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 
 export function RegisterForm() {
   const { register: registerApi, isRegistering } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const {
     register,
@@ -130,17 +134,26 @@ export function RegisterForm() {
         {/* Password Field */}
         <div className="flex flex-col gap-1.5">
           <label className="text-stone-400 text-[11px] font-medium ml-1">Mật khẩu</label>
-          <input
-            {...register('password')}
-            suppressHydrationWarning
-            type="password"
-            placeholder="••••••••••"
-            className={`w-full border-b pb-1.5 pt-1 px-1 text-stone-900 font-bold text-sm tracking-widest placeholder:text-stone-300 focus:outline-none transition-colors bg-transparent ${
-              errors.password
-                ? 'border-red-500 focus:border-red-500'
-                : 'border-stone-200 focus:border-green-600'
-            }`}
-          />
+          <div className="relative">
+            <input
+              {...register('password')}
+              suppressHydrationWarning
+              type={showPassword ? 'text' : 'password'}
+              placeholder="••••••••••"
+              className={`w-full border-b pb-1.5 pt-1 px-1 text-stone-900 font-bold text-sm tracking-widest placeholder:text-stone-300 focus:outline-none transition-colors bg-transparent ${
+                errors.password
+                  ? 'border-red-500 focus:border-red-500'
+                  : 'border-stone-200 focus:border-green-600'
+              }`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-0 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 transition-colors"
+            >
+              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
+          </div>
           {errors.password && (
             <span className="text-red-500 text-[10px] font-semibold mt-0.5 ml-1">
               {errors.password.message}
@@ -151,17 +164,26 @@ export function RegisterForm() {
         {/* Confirm Password Field */}
         <div className="flex flex-col gap-1.5">
           <label className="text-stone-400 text-[11px] font-medium ml-1">Xác nhận mật khẩu</label>
-          <input
-            {...register('confirmPassword')}
-            suppressHydrationWarning
-            type="password"
-            placeholder="••••••••••"
-            className={`w-full border-b pb-1.5 pt-1 px-1 text-stone-900 font-bold text-sm tracking-widest placeholder:text-stone-300 focus:outline-none transition-colors bg-transparent ${
-              errors.confirmPassword
-                ? 'border-red-500 focus:border-red-500'
-                : 'border-stone-200 focus:border-green-600'
-            }`}
-          />
+          <div className="relative">
+            <input
+              {...register('confirmPassword')}
+              suppressHydrationWarning
+              type={showConfirmPassword ? 'text' : 'password'}
+              placeholder="••••••••••"
+              className={`w-full border-b pb-1.5 pt-1 px-1 text-stone-900 font-bold text-sm tracking-widest placeholder:text-stone-300 focus:outline-none transition-colors bg-transparent ${
+                errors.confirmPassword
+                  ? 'border-red-500 focus:border-red-500'
+                  : 'border-stone-200 focus:border-green-600'
+              }`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-0 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 transition-colors"
+            >
+              {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
+          </div>
           {errors.confirmPassword && (
             <span className="text-red-500 text-[10px] font-semibold mt-0.5 ml-1">
               {errors.confirmPassword.message}
@@ -213,7 +235,7 @@ export function RegisterForm() {
           suppressHydrationWarning
           type="submit"
           disabled={isRegistering}
-          className="mt-3 w-full bg-green-700 hover:bg-green-800 disabled:bg-stone-400 text-white font-bold py-3 rounded-2xl transition-all shadow-lg active:scale-95 flex items-center justify-center"
+          className="mt-3 w-full bg-green-700 hover:bg-green-800 disabled:bg-stone-400 text-white font-bold py-3 rounded-2xl transition-all shadow-lg active:scale-95 flex items-center justify-center cursor-pointer"
         >
           {isRegistering ? (
             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

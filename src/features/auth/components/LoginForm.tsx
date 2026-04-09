@@ -7,9 +7,12 @@ import Image from 'next/image';
 import { loginSchema, LoginFormData } from '../types';
 import { useAuth } from '../hooks/useAuth';
 import { Button } from '@/components/ui/AppButton';
+import { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 
 export function LoginForm() {
   const { login, isLoggingIn } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -66,17 +69,26 @@ export function LoginForm() {
         {/* Password Field */}
         <div className="flex flex-col gap-2 mt-2">
           <label className="text-stone-400 text-xs font-medium ml-1">Mật khẩu</label>
-          <input
-            {...register('password')}
-            suppressHydrationWarning
-            type="password"
-            placeholder="••••••••••"
-            className={`w-full border-b-2 pb-2 pt-1 px-1 text-stone-900 font-bold tracking-widest placeholder:text-stone-300 focus:outline-none transition-colors bg-transparent ${
-              errors.password
-                ? 'border-red-500 focus:border-red-500'
-                : 'border-stone-100 focus:border-green-600'
-            }`}
-          />
+          <div className="relative">
+            <input
+              {...register('password')}
+              suppressHydrationWarning
+              type={showPassword ? 'text' : 'password'}
+              placeholder="••••••••••"
+              className={`w-full border-b-2 pb-2 pt-1 px-1 text-stone-900 font-bold tracking-widest placeholder:text-stone-300 focus:outline-none transition-colors bg-transparent ${
+                errors.password
+                  ? 'border-red-500 focus:border-red-500'
+                  : 'border-stone-100 focus:border-green-600'
+              }`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-0 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 transition-colors"
+            >
+              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
+          </div>
           {errors.password && (
             <span className="text-red-500 text-[10px] font-semibold mt-1 ml-1">
               {errors.password.message}

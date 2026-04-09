@@ -219,3 +219,34 @@ export type UpdateSubscriptionPlanRequest = CreateSubscriptionPlanRequest;
 
 export type AdminSubscriptionPlanListResponse = AuthResponseBase<SubscriptionPlan[]>;
 export type AdminSubscriptionPlanDetailResponse = AuthResponseBase<SubscriptionPlan>;
+// ─── Category Management Types ──────────────────────────────────────────────
+
+export interface Category {
+  id: number;
+  name: string;
+  slug: string;
+  iconUrl: string;
+  bannerUrl: string;
+  description: string;
+  sortOrder: string;
+  isActive: boolean;
+  parentId: number | null;
+  children: Category[];
+}
+
+export interface CategoryCreateRequest {
+  name: string;
+  slug: string;
+  parentId: number | null;
+  iconUrl: string;
+  bannerUrl: string;
+  description: string;
+  sortOrder: string;
+  isActive: boolean;
+}
+
+export type CategoryUpdateRequest = CategoryCreateRequest;
+
+export type AdminCategoryListResponse = AuthResponseBase<Category[]>;
+export type AdminCategoryDetailResponse = AuthResponseBase<Category>;
+export type CategoryCheckSlugResponse = AuthResponseBase<boolean>;

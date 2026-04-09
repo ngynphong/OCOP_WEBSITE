@@ -110,7 +110,30 @@ export const registerSchema = z
     email: z.string().min(1, 'Vui lòng nhập email').email('Email không hợp lệ'),
     password: z.string().min(6, 'Mật khẩu phải có ít nhất 6 ký tự'),
     confirmPassword: z.string().min(1, 'Vui lòng xác nhận mật khẩu'),
-    dob: z.string().min(1, 'Vui lòng chọn ngày sinh (YYYY-MM-DD)'),
+    dob: z
+      .string()
+      .min(1, 'Vui lòng chọn ngày sinh')
+      .refine(
+        (val) => {
+          const birthDate = new Date(val);
+          const today = new Date();
+          return birthDate < today;
+        },
+        { message: 'Ngày sinh không thể ở tương lai' },
+      )
+      .refine(
+        (val) => {
+          const birthDate = new Date(val);
+          const today = new Date();
+          let age = today.getFullYear() - birthDate.getFullYear();
+          const monthDiff = today.getMonth() - birthDate.getMonth();
+          if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+          }
+          return age >= 15;
+        },
+        { message: 'Bạn phải ít nhất 15 tuổi để đăng ký' },
+      ),
     acceptTerms: z.boolean().refine((val) => val === true, {
       message: 'Bạn phải đồng ý với điều khoản dịch vụ',
     }),
