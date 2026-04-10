@@ -1,0 +1,5 @@
+{
+  "permissions": {
+    "allow": ["Read(//c/Users/ADMIN/.gemini/antigravity/skills/agency-frontend-developer/**)"]
+  }
+}
