@@ -3,7 +3,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiChevronRight, FiChevronLeft, FiLoader, FiCheck } from 'react-icons/fi';
 
@@ -25,9 +24,8 @@ const STEP_FIELDS: Record<number, (keyof CreateShopFormData)[]> = {
 };
 
 export const ShopRegistrationForm = () => {
-  const router = useRouter();
   const { createShop, isCreatingShop, useMyShopQuery } = useSellerShop();
-  const { data: myShopData, isPending: isCheckingShop } = useMyShopQuery();
+  const { data: myShopData } = useMyShopQuery();
 
   const [currentStep, setCurrentStep] = useState(1);
 

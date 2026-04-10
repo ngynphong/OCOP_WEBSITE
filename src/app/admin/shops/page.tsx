@@ -4,8 +4,6 @@ import { useState } from 'react';
 import {
   FiSearch,
   FiEye,
-  FiCheckCircle,
-  FiXCircle,
   FiLock,
   FiUnlock,
   FiMapPin,
@@ -259,22 +257,6 @@ const ShopManagementPage = () => {
                         >
                           <FiEye size={18} />
                         </Link>
-                        {/* {shop.status === 'PENDING' && (
-                          <>
-                            <button
-                              onClick={() => setActionTarget({ shop, type: 'APPROVE' })}
-                              className="p-2 hover:bg-emerald-50 rounded-lg transition-colors text-emerald-600 shadow-sm border border-transparent hover:border-emerald-100 cursor-pointer"
-                            >
-                              <FiCheckCircle size={18} />
-                            </button>
-                            <button
-                              onClick={() => setActionTarget({ shop, type: 'REJECT' })}
-                              className="p-2 hover:bg-red-50 rounded-lg transition-colors text-red-600 shadow-sm border border-transparent hover:border-red-100 cursor-pointer"
-                            >
-                              <FiXCircle size={18} />
-                            </button>
-                          </>
-                        )} */}
                         {shop.status === 'ACTIVE' && (
                           <button
                             onClick={() => setActionTarget({ shop, type: 'LOCK' })}

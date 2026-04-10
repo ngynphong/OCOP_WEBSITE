@@ -12,6 +12,8 @@ import {
 import { usePublicCategoriesQuery } from '@/features/products/hooks/usePublicProducts';
 import { PublicCategory } from '@/features/products/types/productTypes';
 import { Button } from '@/components/ui/AppButton';
+import { flattenCategories } from '@/features/products/utils/productUtils';
+import { PRODUCT_UNITS } from '@/features/products/utils/ProductConstants';
 
 export default function CreateProductPage() {
   const router = useRouter();
@@ -19,24 +21,6 @@ export default function CreateProductPage() {
 
   const { data: categoriesData } = usePublicCategoriesQuery();
   const categories: PublicCategory[] = categoriesData?.data ?? [];
-
-  interface CategoryNode {
-    id: number;
-    name: string;
-    children?: CategoryNode[];
-  }
-  const flattenCategories = (cats: CategoryNode[], prefix = ''): { id: number; name: string }[] => {
-    return cats.reduce(
-      (acc, cat) => {
-        acc.push({ id: cat.id, name: `${prefix}${cat.name}` });
-        if (cat.children && cat.children.length > 0) {
-          acc.push(...flattenCategories(cat.children, `${prefix}— `));
-        }
-        return acc;
-      },
-      [] as { id: number; name: string }[],
-    );
-  };
   const flatCategories = flattenCategories(categories);
 
   const {
@@ -66,7 +50,7 @@ export default function CreateProductPage() {
         <button
           type="button"
           onClick={() => router.push('/dashboard/san-pham')}
-          className="p-2 rounded-xl text-stone-400 hover:bg-stone-100 hover:text-stone-600 transition"
+          className="p-2 rounded-xl text-stone-400 hover:bg-stone-100 hover:text-stone-600 transition cursor-pointer"
         >
           <FiArrowLeft size={18} />
         </button>
@@ -152,11 +136,17 @@ export default function CreateProductPage() {
             <label className="text-xs font-bold text-stone-500 uppercase tracking-widest block mb-1.5">
               Đơn vị
             </label>
-            <input
+            <select
               {...register('unit')}
-              placeholder="hộp, kg, gói..."
-              className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-800 outline-none focus:border-emerald-400 transition"
-            />
+              className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-800 outline-none focus:border-emerald-400 transition bg-white"
+            >
+              <option value="">-- Chọn đơn vị --</option>
+              {PRODUCT_UNITS.map((unit) => (
+                <option key={unit} value={unit}>
+                  {unit}
+                </option>
+              ))}
+            </select>
           </div>
           <div>
             <label className="text-xs font-bold text-stone-500 uppercase tracking-widest block mb-1.5">

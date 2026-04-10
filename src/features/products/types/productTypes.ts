@@ -201,7 +201,7 @@ export interface CreateVariantRequest {
   costPrice?: number;
   stockQty?: number;
   weightGram?: number;
-  dimensions?: string;
+  dimensions?: string | null;
   isDefault?: boolean;
 }
 

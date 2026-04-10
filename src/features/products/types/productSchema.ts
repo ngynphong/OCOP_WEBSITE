@@ -29,7 +29,8 @@ export const createVariantSchema = z.object({
   costPrice: z.number().positive().optional(),
   stockQty: z.number().int().nonnegative().optional(),
   weightGram: z.number().int().positive().optional(),
-  dimensions: z.string().max(100).optional(),
+  dimensions: z.string().max(100).nullable().optional(),
+  optionValues: z.string().optional(),
   isDefault: z.boolean().optional(),
 });
 

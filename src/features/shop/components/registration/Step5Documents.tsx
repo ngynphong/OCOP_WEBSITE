@@ -10,7 +10,6 @@ import {
   FiLoader,
   FiAlertCircle,
   FiArrowRight,
-  FiClock,
 } from 'react-icons/fi';
 import { useSellerShop } from '@/features/shop/hooks/useSellerShop';
 import { ShopDocumentType } from '@/features/shop/types/shopTypes';

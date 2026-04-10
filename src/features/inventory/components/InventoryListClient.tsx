@@ -14,7 +14,7 @@ import { InventoryItem, InventoryListParams } from '@/features/inventory/types/i
 
 // ─── Static config ─────────────────────────────────────────────────────────────
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 
 // ─── Stock status badge ────────────────────────────────────────────────────────
 
@@ -224,10 +224,10 @@ function TableSkeleton() {
 // ─── Main component ────────────────────────────────────────────────────────────
 
 export default function InventoryListClient() {
-  const [page, setPage] = useState(0);
+  const [pageNo, setPageNo] = useState(1);
   const [action, setAction] = useState<ActionState | null>(null);
 
-  const params: InventoryListParams = { page, size: PAGE_SIZE };
+  const params: InventoryListParams = { pageNo: pageNo, pageSize: PAGE_SIZE };
   const { data, isPending, isError } = useInventoryListQuery(params);
   const { data: lowStockData } = useLowStockAlertsQuery();
 
@@ -353,18 +353,18 @@ export default function InventoryListClient() {
           </span>
           <div className="flex gap-2">
             <button
-              onClick={() => setPage((p) => Math.max(0, p - 1))}
-              disabled={page === 0}
+              onClick={() => setPageNo((p) => Math.max(1, p - 1))}
+              disabled={pageNo === 1}
               className="rounded-lg border border-stone-200 px-3 py-1.5 hover:bg-stone-50 disabled:opacity-40"
             >
               Trước
             </button>
             <span className="rounded-lg border border-stone-200 px-3 py-1.5 bg-stone-50">
-              {page + 1} / {totalPages}
+              {pageNo + 1} / {totalPages}
             </span>
             <button
-              onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
-              disabled={page >= totalPages - 1}
+              onClick={() => setPageNo((p) => Math.min(totalPages - 1, p + 1))}
+              disabled={pageNo >= totalPages - 1}
               className="rounded-lg border border-stone-200 px-3 py-1.5 hover:bg-stone-50 disabled:opacity-40"
             >
               Sau

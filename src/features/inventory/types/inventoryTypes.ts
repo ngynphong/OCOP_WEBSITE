@@ -51,8 +51,10 @@ export interface InventoryLog {
 // ─── Request interfaces ───────────────────────────────────────────────────────
 
 export interface InventoryListParams {
-  page?: number;
-  size?: number;
+  pageNo?: number;
+  pageSize?: number;
+  // keyword?: string;
+  shopId?: string | number;
 }
 
 export interface AddStockRequest {
