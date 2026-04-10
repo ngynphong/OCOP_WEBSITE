@@ -11,7 +11,9 @@ import {
   FiGrid,
   FiChevronRight,
   FiTag,
+  FiPackage,
 } from 'react-icons/fi';
+import { FaWarehouse } from 'react-icons/fa';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import Image from 'next/image';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
@@ -25,10 +27,12 @@ const DashboardSidebar = () => {
   const menuItems = [
     { id: 'overview', label: 'Tổng quan', icon: FiGrid, href: '/dashboard' },
     { id: 'profile', label: 'Hồ sơ cá nhân', icon: FiUser, href: '/dashboard/ho-so' },
+    { id: 'product', label: 'Sản phẩm', icon: FiPackage, href: '/dashboard/san-pham' },
     { id: 'orders', label: 'Đơn hàng của tôi', icon: FiShoppingBag, href: '/dashboard/don-hang' },
+    { id: 'shop', label: 'Cửa hàng của tôi', icon: FiTag, href: '/dashboard/cua-hang' },
+    { id: 'inventory', label: 'Kho hàng', icon: FaWarehouse, href: '/dashboard/kho-hang' },
     { id: 'addresses', label: 'Địa chỉ nhận hàng', icon: FiMapPin, href: '/dashboard/dia-chi' },
     { id: 'security', label: 'Bảo mật', icon: FiShield, href: '/dashboard/bao-mat' },
-    { id: 'shop', label: 'Cửa hàng của tôi', icon: FiTag, href: '/dashboard/cua-hang' },
     {
       id: 'shop-legality',
       label: 'Hồ sơ pháp lý',

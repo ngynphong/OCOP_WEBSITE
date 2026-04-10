@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { ChevronDown, X } from 'lucide-react';
 import { ProductSidebar } from '@/features/products/components/ProductSidebar';
 import { ProductPagination } from '@/features/products/components/ProductPagination';
@@ -8,6 +8,10 @@ import { ProductCard } from '@/components/ui/ProductCard';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import { usePublicProductsQuery } from '@/features/products/hooks/usePublicProducts';
+import { PublicProductListParams } from '@/features/products/types/productTypes';
+
+const PAGE_SIZE = 12;
 
 export default function ProductsPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -16,135 +20,37 @@ export default function ProductsPage() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [maxPrice, setMaxPrice] = useState<number>(2000000);
   const [sortBy, setSortBy] = useState('newest');
+  const [page, setPage] = useState(0);
 
-  // Mock data for products
-  const allProducts = [
-    {
-      name: 'Trà Xanh Đặc Sản Tân Cương',
-      price: 350000,
-      oldPrice: 400000,
-      rating: 4.9,
-      reviewCount: 128,
-      image: '/images/tra-do-uong.jpg',
-      location: 'Thái Nguyên',
-      category: 'Đồ uống',
-      ocopStar: 5,
-    },
-    {
-      name: 'Trà Tim Sen Hoàng Gia',
-      price: 280000,
-      oldPrice: 320000,
-      rating: 4.8,
-      reviewCount: 95,
-      image: '/images/tra-do-uong.jpg',
-      location: 'Cố đô Huế',
-      category: 'Đồ uống',
-      ocopStar: 4,
-    },
-    {
-      name: 'Trà Shan Tuyết Cổ Thụ',
-      price: 520000,
-      rating: 5.0,
-      reviewCount: 214,
-      image: '/images/tra-do-uong.jpg',
-      location: 'Cao nguyên Hà Giang',
-      category: 'Đồ uống',
-      ocopStar: 5,
-    },
-    {
-      name: 'Trà Thảo Mộc Actiso',
-      price: 125000,
-      oldPrice: 150000,
-      rating: 4.2,
-      reviewCount: 88,
-      image: '/images/tra-do-uong.jpg',
-      location: 'Lâm Đồng',
-      category: 'Thảo dược',
-      ocopStar: 3,
-    },
-    {
-      name: 'Trà Ô Long Tâm Châu Cao Cấp',
-      price: 420000,
-      oldPrice: 500000,
-      rating: 4.9,
-      reviewCount: 156,
-      image: '/images/tra-do-uong.jpg',
-      location: 'Bảo Lộc - Lâm Đồng',
-      category: 'Đồ uống',
-      ocopStar: 5,
-    },
-    {
-      name: 'Trà Bồ Công Anh Nguyên Chất',
-      price: 85000,
-      rating: 4.5,
-      reviewCount: 42,
-      image: '/images/tra-do-uong.jpg',
-      location: 'Đồng Nai',
-      category: 'Thảo dược',
-      ocopStar: 3,
-    },
-  ];
+  const params: PublicProductListParams = {
+    page,
+    size: PAGE_SIZE,
+    search: searchQuery || undefined,
+    ocopStar: selectedRatings.length === 1 ? selectedRatings[0] : undefined,
+    maxPrice: maxPrice < 2000000 ? maxPrice : undefined,
+    sortBy: sortBy !== 'newest' ? sortBy : undefined,
+  };
 
-  // Filtering & Sorting Logic
-  const filteredProducts = useMemo(() => {
-    const result = allProducts.filter((p) => {
-      // Filter by Search Query
-      if (searchQuery && !p.name.toLowerCase().includes(searchQuery.toLowerCase())) {
-        return false;
-      }
+  const { data, isPending, isError } = usePublicProductsQuery(params);
 
-      // Filter by OCOP Ratings
-      if (selectedRatings.length > 0 && !selectedRatings.includes(p.ocopStar)) {
-        return false;
-      }
+  const products = data?.data?.items ?? [];
+  const totalElement = data?.data?.totalElement ?? 0;
+  const totalPage = data?.data?.totalPage ?? 1;
 
-      // Filter by Price Range
-      if (p.price > maxPrice) {
-        return false;
-      }
+  const handleClearFilters = () => {
+    setSearchQuery('');
+    setSelectedRatings([]);
+    setSelectedRegions([]);
+    setSelectedCategories([]);
+    setMaxPrice(2000000);
+    setPage(0);
+  };
 
-      // Filter by Categories
-      if (selectedCategories.length > 0 && !selectedCategories.includes(p.category)) {
-        return false;
-      }
-
-      // Filter by Regions (Mock logic mapping)
-      if (selectedRegions.length > 0) {
-        const isMatch = selectedRegions.some((r) => {
-          if (
-            r === 'Miền Bắc' &&
-            (p.location.includes('Thái Nguyên') || p.location.includes('Hà Giang'))
-          )
-            return true;
-          if (r === 'Tây Nguyên' && p.location.includes('Lâm Đồng')) return true;
-          if (r === 'Miền Trung' && p.location.includes('Huế')) return true;
-          if (r === 'Đồng bằng sông Cửu Long' && p.location.includes('Đồng Nai')) return true;
-          return false;
-        });
-        if (!isMatch) return false;
-      }
-
-      return true;
-    });
-
-    // Sorting
-    switch (sortBy) {
-      case 'price-asc':
-        result.sort((a, b) => a.price - b.price);
-        break;
-      case 'price-desc':
-        result.sort((a, b) => b.price - a.price);
-        break;
-      case 'rating-desc':
-        result.sort((a, b) => b.rating - a.rating);
-        break;
-      case 'newest':
-      default:
-        break;
-    }
-
-    return result;
-  }, [searchQuery, selectedRatings, selectedRegions, selectedCategories, maxPrice, sortBy]);
+  const hasActiveFilters =
+    selectedCategories.length > 0 ||
+    selectedRegions.length > 0 ||
+    selectedRatings.length > 0 ||
+    maxPrice < 2000000;
 
   return (
     <div className="min-h-screen flex flex-col font-sans">
@@ -163,7 +69,9 @@ export default function ProductsPage() {
               {searchQuery ? `Kết quả cho '${searchQuery}'` : 'Tất cả sản phẩm'}
             </h1>
             <p className="text-base md:text-lg text-neutral-500 font-medium font-sans mt-2">
-              Tìm thấy {filteredProducts.length} sản phẩm trực tiếp từ các nghệ nhân vùng miền
+              {isPending
+                ? 'Đang tải...'
+                : `Tìm thấy ${totalElement} sản phẩm trực tiếp từ các nghệ nhân vùng miền`}
             </p>
           </div>
 
@@ -175,7 +83,10 @@ export default function ProductsPage() {
             <div className="relative">
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
+                onChange={(e) => {
+                  setSortBy(e.target.value);
+                  setPage(0);
+                }}
                 className="appearance-none bg-white px-6 py-3 pr-10 rounded-xl border border-stone-200 font-bold font-sans text-sm text-stone-700 hover:bg-stone-50 transition-colors shadow-sm outline-none cursor-pointer focus:border-green-700 focus:ring-1 focus:ring-green-700"
               >
                 <option value="newest">Mới nhất</option>
@@ -192,15 +103,30 @@ export default function ProductsPage() {
           {/* Sidebar Filter */}
           <ProductSidebar
             searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
+            setSearchQuery={(v) => {
+              setSearchQuery(v);
+              setPage(0);
+            }}
             selectedRatings={selectedRatings}
-            setSelectedRatings={setSelectedRatings}
+            setSelectedRatings={(v) => {
+              setSelectedRatings(v);
+              setPage(0);
+            }}
             selectedRegions={selectedRegions}
-            setSelectedRegions={setSelectedRegions}
+            setSelectedRegions={(v) => {
+              setSelectedRegions(v);
+              setPage(0);
+            }}
             maxPrice={maxPrice}
-            setMaxPrice={setMaxPrice}
+            setMaxPrice={(v) => {
+              setMaxPrice(v);
+              setPage(0);
+            }}
             selectedCategories={selectedCategories}
-            setSelectedCategories={setSelectedCategories}
+            setSelectedCategories={(v) => {
+              setSelectedCategories(v);
+              setPage(0);
+            }}
           />
 
           {/* Product Grid Area */}
@@ -243,17 +169,9 @@ export default function ProductsPage() {
                   <X className="w-3 h-3 text-stone-400 group-hover:text-red-500" />
                 </span>
               )}
-              {(selectedCategories.length > 0 ||
-                selectedRegions.length > 0 ||
-                selectedRatings.length > 0 ||
-                maxPrice < 2000000) && (
+              {hasActiveFilters && (
                 <span
-                  onClick={() => {
-                    setSelectedCategories([]);
-                    setSelectedRegions([]);
-                    setSelectedRatings([]);
-                    setMaxPrice(2000000);
-                  }}
+                  onClick={handleClearFilters}
                   className="inline-flex items-center px-3 py-1.5 text-green-700 text-xs font-bold cursor-pointer hover:underline"
                 >
                   Xóa tất cả bộ lọc
@@ -261,44 +179,74 @@ export default function ProductsPage() {
               )}
             </div>
 
-            {filteredProducts.length > 0 ? (
-              <>
-                <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-                  {filteredProducts.map((product, index) => (
-                    <ProductCard
-                      key={index}
-                      name={product.name}
-                      price={product.price}
-                      oldPrice={product.oldPrice}
-                      rating={product.rating}
-                      reviewCount={product.reviewCount}
-                      image={product.image}
-                      ocopStar={product.ocopStar}
-                      location={product.location}
-                    />
-                  ))}
-                </div>
-                {/* Pagination (Hidden if small amount) */}
-                {filteredProducts.length > 3 && <ProductPagination />}
-              </>
-            ) : (
-              <div className="w-full h-64 flex flex-col items-center justify-center bg-white rounded-2xl border border-stone-200 shadow-sm">
-                <p className="text-stone-500 text-lg font-medium">
-                  Không tìm thấy sản phẩm nào phù hợp với bộ lọc.
-                </p>
+            {/* Loading skeleton */}
+            {isPending && (
+              <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+                {Array.from({ length: PAGE_SIZE }).map((_, i) => (
+                  <div key={i} className="h-72 bg-stone-100 rounded-2xl animate-pulse" />
+                ))}
+              </div>
+            )}
+
+            {/* Error state */}
+            {isError && (
+              <div className="w-full h-64 flex flex-col items-center justify-center bg-red-50 rounded-2xl border border-red-100">
+                <p className="text-red-500 text-lg font-medium">Không tải được sản phẩm.</p>
                 <button
-                  onClick={() => {
-                    setSearchQuery('');
-                    setSelectedRatings([]);
-                    setSelectedRegions([]);
-                    setSelectedCategories([]);
-                    setMaxPrice(2000000);
-                  }}
+                  onClick={handleClearFilters}
                   className="mt-4 px-6 py-2 bg-green-700 text-white rounded-full font-bold text-sm shadow-sm hover:bg-green-800 transition"
                 >
-                  Xóa tất cả bộ lọc
+                  Thử lại
                 </button>
               </div>
+            )}
+
+            {/* Products grid */}
+            {!isPending && !isError && (
+              <>
+                {products.length > 0 ? (
+                  <>
+                    <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+                      {products.map((product) => {
+                        const primaryImage = product.images?.find((img) => img.isPrimary);
+                        const defaultVariant =
+                          product.variants?.find((v) => v.isDefault) ?? product.variants?.[0];
+                        return (
+                          <ProductCard
+                            key={product.id}
+                            name={product.name}
+                            price={defaultVariant?.price ?? product.minPrice}
+                            oldPrice={defaultVariant?.comparePrice ?? undefined}
+                            rating={product.ratingAvg}
+                            reviewCount={product.totalReviews}
+                            image={primaryImage?.url ?? primaryImage?.thumbnailUrl ?? ''}
+                            ocopStar={product.ocopStar}
+                            location={product.province?.name}
+                            unit={product.unit}
+                          />
+                        );
+                      })}
+                    </div>
+                    {totalPage > 1 && (
+                      <div className="mt-8">
+                        <ProductPagination />
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="w-full h-64 flex flex-col items-center justify-center bg-white rounded-2xl border border-stone-200 shadow-sm">
+                    <p className="text-stone-500 text-lg font-medium">
+                      Không tìm thấy sản phẩm nào phù hợp với bộ lọc.
+                    </p>
+                    <button
+                      onClick={handleClearFilters}
+                      className="mt-4 px-6 py-2 bg-green-700 text-white rounded-full font-bold text-sm shadow-sm hover:bg-green-800 transition"
+                    >
+                      Xóa tất cả bộ lọc
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
