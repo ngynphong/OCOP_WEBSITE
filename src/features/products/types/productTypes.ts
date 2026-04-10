@@ -144,6 +144,11 @@ export interface Product {
   approvedAt: string | null;
   createdAt: string;
   updatedAt: string;
+  // Flat API response properties for product lists
+  shopName?: string;
+  shopSlug?: string;
+  categoryName?: string;
+  provinceName?: string | null;
   shop: ProductShop;
   category: ProductCategory;
   brand: ProductBrand | null;
@@ -285,6 +290,7 @@ export interface AdminProductListParams extends ProductListParams {
 export interface PublicProductListParams {
   page?: number;
   size?: number;
+  shopSlug?: string;
   categoryId?: number;
   provinceId?: number;
   ocopStar?: number;

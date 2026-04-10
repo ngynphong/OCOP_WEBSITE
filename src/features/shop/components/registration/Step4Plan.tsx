@@ -5,7 +5,7 @@ import { UseFormRegister, FieldErrors, UseFormSetValue, Control, useWatch } from
 import { motion } from 'framer-motion';
 import { FiAlertCircle, FiLoader, FiCheck } from 'react-icons/fi';
 import { CreateShopFormData } from '@/features/shop/types/shopTypes';
-import { usePublicShop } from '@/features/shop/hooks/usePublicShop';
+import { useSubscriptionPlansQuery } from '@/features/shop/hooks/usePublicShop';
 import { cn } from '@/lib/utils';
 
 const FEATURE_LABELS: Record<string, string> = {
@@ -61,7 +61,6 @@ const getPlanFeatures = (plan: PlanData) => {
 };
 
 const Step4Plan: React.FC<Step4PlanProps> = memo(({ register, errors, control, setValue }) => {
-  const { useSubscriptionPlansQuery } = usePublicShop();
   const { data: plansData, isPending } = useSubscriptionPlansQuery();
   const selectedPlanId = useWatch({ control, name: 'planId' });
 

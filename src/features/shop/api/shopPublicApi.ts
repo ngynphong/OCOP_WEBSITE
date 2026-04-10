@@ -2,8 +2,8 @@ import { publicAxiosClient } from '@/lib/axios';
 import {
   GetShopsPublicParams,
   ShopListResponse,
-  ShopDetailResponse,
   ShopPolicyResponse,
+  ShopPublicDetailResponse,
   SubscriptionPlanListResponse,
 } from '../types/shopTypes';
 
@@ -17,7 +17,7 @@ export const shopPublicApi = {
     return publicAxiosClient.get('/shops', { params: filteredParams });
   },
 
-  getShopBySlug: (slug: string): Promise<ShopDetailResponse> => {
+  getShopBySlug: (slug: string): Promise<ShopPublicDetailResponse> => {
     return publicAxiosClient.get(`/shops/${slug}`);
   },
 
