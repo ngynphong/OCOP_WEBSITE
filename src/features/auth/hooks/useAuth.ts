@@ -108,6 +108,7 @@ export const useAuth = () => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('user_roles');
+    localStorage.removeItem('dashboard_mode');
     dispatch(reduxLogout());
     queryClient.removeQueries({ queryKey: ['profile'] });
     toast.success('Đăng xuất thành công');
