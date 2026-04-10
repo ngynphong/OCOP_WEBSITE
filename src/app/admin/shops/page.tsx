@@ -259,7 +259,7 @@ const ShopManagementPage = () => {
                         >
                           <FiEye size={18} />
                         </Link>
-                        {shop.status === 'PENDING' && (
+                        {/* {shop.status === 'PENDING' && (
                           <>
                             <button
                               onClick={() => setActionTarget({ shop, type: 'APPROVE' })}
@@ -274,7 +274,7 @@ const ShopManagementPage = () => {
                               <FiXCircle size={18} />
                             </button>
                           </>
-                        )}
+                        )} */}
                         {shop.status === 'ACTIVE' && (
                           <button
                             onClick={() => setActionTarget({ shop, type: 'LOCK' })}
