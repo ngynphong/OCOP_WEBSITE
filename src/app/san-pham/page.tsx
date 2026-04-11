@@ -12,6 +12,7 @@ import {
   usePublicProductsQuery,
   usePublicCategoriesQuery,
   usePublicProvincesQuery,
+  usePublicBrandsQuery,
 } from '@/features/products/hooks/usePublicProducts';
 import { PublicProductListParams } from '@/features/products/types/productTypes';
 import { useDebounce } from '@/hooks/useDebounce';
@@ -21,10 +22,11 @@ const PAGE_SIZE = 12;
 export default function ProductsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRatings, setSelectedRatings] = useState<number[]>([]);
-  const [selectedProvinceIds, setSelectedProvinceIds] = useState<number[]>([]);
+  const [selectedProvinceId, setSelectedProvinceId] = useState<number | null>(null);
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<number[]>([]);
+  const [selectedBrandIds, setSelectedBrandIds] = useState<number[]>([]);
   const [minPrice, setMinPrice] = useState<number>(0);
-  const [maxPrice, setMaxPrice] = useState<number>(5000000);
+  const [maxPrice, setMaxPrice] = useState<number>(MAX_PRICE_LIMIT);
   const [sortBy, setSortBy] = useState('newest');
   const [page, setPage] = useState(0);
 
@@ -36,17 +38,19 @@ export default function ProductsPage() {
   // Fetch meta-data for displaying tags
   const { data: categoriesData } = usePublicCategoriesQuery();
   const { data: provincesData } = usePublicProvincesQuery();
+  const { data: brandsData } = usePublicBrandsQuery();
 
   const params: PublicProductListParams = {
     pageNo: page + 1,
     pageSize: PAGE_SIZE,
-    search: debouncedSearch || undefined,
+    keyword: debouncedSearch || undefined,
     ocopStar: selectedRatings.length === 1 ? selectedRatings[0] : undefined,
     minPrice: debouncedMinPrice > 0 ? debouncedMinPrice : undefined,
-    maxPrice: debouncedMaxPrice < 5000000 ? debouncedMaxPrice : undefined,
+    maxPrice: debouncedMaxPrice < MAX_PRICE_LIMIT ? debouncedMaxPrice : undefined,
     sortBy: sortBy !== 'newest' ? sortBy : undefined,
     categoryIds: selectedCategoryIds.length > 0 ? selectedCategoryIds : undefined,
-    provinceIds: selectedProvinceIds.length > 0 ? selectedProvinceIds : undefined,
+    provinceId: selectedProvinceId || undefined,
+    brandIds: selectedBrandIds.length > 0 ? selectedBrandIds : undefined,
   };
 
   const { data, isPending, isError } = usePublicProductsQuery(params);
@@ -58,25 +62,28 @@ export default function ProductsPage() {
   const handleClearFilters = () => {
     setSearchQuery('');
     setSelectedRatings([]);
-    setSelectedProvinceIds([]);
+    setSelectedProvinceId(null);
     setSelectedCategoryIds([]);
+    setSelectedBrandIds([]);
     setMinPrice(0);
-    setMaxPrice(5000000);
+    setMaxPrice(MAX_PRICE_LIMIT);
     setPage(0);
   };
 
   const hasActiveFilters =
     selectedCategoryIds.length > 0 ||
-    selectedProvinceIds.length > 0 ||
+    selectedProvinceId !== null ||
     selectedRatings.length > 0 ||
+    selectedBrandIds.length > 0 ||
     minPrice > 0 ||
-    maxPrice < 5000000;
+    maxPrice < MAX_PRICE_LIMIT;
 
   // Helper to get name from ID for tags
   const getCategoryName = (id: number) =>
     categoriesData?.data?.find((c) => c.id === id)?.name || id;
   const getProvinceName = (id: number) =>
     provincesData?.data?.find((p: { id: number; name: string }) => p.id === id)?.name || id;
+  const getBrandName = (id: number) => brandsData?.data?.find((b) => b.id === id)?.name || id;
 
   return (
     <div className="min-h-screen flex flex-col font-sans bg-stone-50/30">
@@ -138,9 +145,9 @@ export default function ProductsPage() {
               setSelectedRatings(v);
               setPage(0);
             }}
-            selectedProvinceIds={selectedProvinceIds}
-            setSelectedProvinceIds={(v) => {
-              setSelectedProvinceIds(v);
+            selectedProvinceId={selectedProvinceId}
+            setSelectedProvinceId={(v) => {
+              setSelectedProvinceId(v);
               setPage(0);
             }}
             minPrice={minPrice}
@@ -152,6 +159,11 @@ export default function ProductsPage() {
             selectedCategoryIds={selectedCategoryIds}
             setSelectedCategoryIds={(v) => {
               setSelectedCategoryIds(v);
+              setPage(0);
+            }}
+            selectedBrandIds={selectedBrandIds}
+            setSelectedBrandIds={(v) => {
+              setSelectedBrandIds(v);
               setPage(0);
             }}
           />
@@ -172,15 +184,22 @@ export default function ProductsPage() {
                   <X className="w-3 h-3 text-stone-400 group-hover:text-red-500" />
                 </span>
               ))}
-              {selectedProvinceIds.map((id) => (
+              {selectedProvinceId && (
                 <span
-                  key={id}
-                  onClick={() =>
-                    setSelectedProvinceIds(selectedProvinceIds.filter((pid) => pid !== id))
-                  }
+                  onClick={() => setSelectedProvinceId(null)}
                   className="inline-flex items-center gap-1 px-3 py-1.5 bg-white border border-stone-200 shadow-sm text-stone-700 text-xs font-semibold rounded-full cursor-pointer hover:border-red-300 hover:text-red-600 transition group"
                 >
-                  {getProvinceName(id)}{' '}
+                  {getProvinceName(selectedProvinceId)}{' '}
+                  <X className="w-3 h-3 text-stone-400 group-hover:text-red-500" />
+                </span>
+              )}
+              {selectedBrandIds.map((id) => (
+                <span
+                  key={id}
+                  onClick={() => setSelectedBrandIds(selectedBrandIds.filter((bid) => bid !== id))}
+                  className="inline-flex items-center gap-1 px-3 py-1.5 bg-white border border-stone-200 shadow-sm text-stone-700 text-xs font-semibold rounded-full cursor-pointer hover:border-red-300 hover:text-red-600 transition group"
+                >
+                  {getBrandName(id)}{' '}
                   <X className="w-3 h-3 text-stone-400 group-hover:text-red-500" />
                 </span>
               ))}
@@ -193,7 +212,7 @@ export default function ProductsPage() {
                   {rating} OCOP★ <X className="w-3 h-3 text-stone-400 group-hover:text-red-500" />
                 </span>
               ))}
-              {(minPrice > 0 || maxPrice < 5000000) && (
+              {(minPrice > 0 || maxPrice < MAX_PRICE_LIMIT) && (
                 <span
                   onClick={() => {
                     setMinPrice(0);
@@ -306,3 +325,4 @@ export default function ProductsPage() {
     </div>
   );
 }
+const MAX_PRICE_LIMIT = 5000000;

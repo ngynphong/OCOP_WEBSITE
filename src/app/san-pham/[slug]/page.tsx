@@ -42,7 +42,7 @@ export default function ProductDetailPage() {
   // Fetch cross-sell: Same Province
   const { data: sameProvinceResp } = usePublicProductsQuery(
     {
-      provinceIds: product?.province?.id ? [product.province.id] : [],
+      provinceId: product?.province?.id ? product.province.id : undefined,
       pageSize: 5,
     },
     { enabled: !!product?.province?.id },

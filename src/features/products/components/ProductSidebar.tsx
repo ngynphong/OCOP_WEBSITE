@@ -2,6 +2,7 @@
 
 import { Search, Star, Loader2 } from 'lucide-react';
 import {
+  usePublicBrandsQuery,
   usePublicCategoriesQuery,
   usePublicProvincesQuery,
 } from '@/features/products/hooks/usePublicProducts';
@@ -11,34 +12,44 @@ interface ProductSidebarProps {
   setSearchQuery: (val: string) => void;
   selectedRatings: number[];
   setSelectedRatings: (val: number[]) => void;
-  selectedProvinceIds: number[];
-  setSelectedProvinceIds: (val: number[]) => void;
+  selectedProvinceId: number | null;
+  setSelectedProvinceId: (val: number | null) => void;
   minPrice: number;
   setMinPrice: (val: number) => void;
   maxPrice: number;
   setMaxPrice: (val: number) => void;
   selectedCategoryIds: number[];
   setSelectedCategoryIds: (val: number[]) => void;
+  selectedBrandIds: number[];
+  setSelectedBrandIds: (val: number[]) => void;
 }
+
+const RATING_STARS = [3, 4, 5];
+const MAX_PRICE_LIMIT = 5000000;
+const PRICE_STEP = 50000;
 
 export function ProductSidebar({
   searchQuery,
   setSearchQuery,
   selectedRatings,
   setSelectedRatings,
-  selectedProvinceIds,
-  setSelectedProvinceIds,
+  selectedProvinceId,
+  setSelectedProvinceId,
   minPrice,
   maxPrice,
   setMaxPrice,
   selectedCategoryIds,
   setSelectedCategoryIds,
+  selectedBrandIds,
+  setSelectedBrandIds,
 }: Omit<ProductSidebarProps, 'setMinPrice'>) {
   const { data: categoriesData, isPending: isLoadingCategories } = usePublicCategoriesQuery();
   const { data: provincesData, isPending: isLoadingProvinces } = usePublicProvincesQuery();
+  const { data: brandsData, isPending: isLoadingBrands } = usePublicBrandsQuery();
 
   const categories = categoriesData?.data || [];
   const provinces = provincesData?.data || [];
+  const brands = brandsData?.data || [];
 
   const toggleRating = (rating: number) => {
     setSelectedRatings(
@@ -49,11 +60,7 @@ export function ProductSidebar({
   };
 
   const toggleProvince = (id: number) => {
-    setSelectedProvinceIds(
-      selectedProvinceIds.includes(id)
-        ? selectedProvinceIds.filter((p) => p !== id)
-        : [...selectedProvinceIds, id],
-    );
+    setSelectedProvinceId(selectedProvinceId === id ? null : id);
   };
 
   const toggleCategory = (id: number) => {
@@ -61,6 +68,14 @@ export function ProductSidebar({
       selectedCategoryIds.includes(id)
         ? selectedCategoryIds.filter((c) => c !== id)
         : [...selectedCategoryIds, id],
+    );
+  };
+
+  const toggleBrand = (id: number) => {
+    setSelectedBrandIds(
+      selectedBrandIds.includes(id)
+        ? selectedBrandIds.filter((b) => b !== id)
+        : [...selectedBrandIds, id],
     );
   };
 
@@ -94,23 +109,88 @@ export function ProductSidebar({
             Đang tải...
           </div>
         ) : (
-          <div className="flex flex-wrap gap-2">
-            {categories.map((cat) => {
-              const isSelected = selectedCategoryIds.includes(cat.id);
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => toggleCategory(cat.id)}
-                  className={`px-4 py-2 rounded-full border text-xs font-semibold cursor-pointer transition-all shadow-sm ${
-                    isSelected
-                      ? 'bg-green-700 border-green-700 text-white'
-                      : 'bg-white border-stone-200 text-stone-600 hover:border-green-700 hover:text-green-700'
-                  }`}
+          <div className="space-y-4">
+            <div className="flex flex-wrap gap-2">
+              {categories
+                .filter((cat) => !cat.parentId)
+                .map((cat) => {
+                  const isSelected = selectedCategoryIds.includes(cat.id);
+                  return (
+                    <button
+                      key={cat.id}
+                      onClick={() => toggleCategory(cat.id)}
+                      className={`px-4 py-2 rounded-full border text-xs font-semibold cursor-pointer transition-all shadow-sm ${
+                        isSelected
+                          ? 'bg-green-700 border-green-700 text-white'
+                          : 'bg-white border-stone-200 text-stone-600 hover:border-green-700 hover:text-green-700'
+                      }`}
+                    >
+                      {cat.name}
+                    </button>
+                  );
+                })}
+            </div>
+
+            {/* Sub-categories tree if parent selected */}
+            {categories
+              .filter((cat) => selectedCategoryIds.includes(cat.id) && cat.children?.length > 0)
+              .map((parent) => (
+                <div
+                  key={`sub-${parent.id}`}
+                  className="pl-4 border-l-2 border-stone-200 space-y-2"
                 >
-                  {cat.name}
-                </button>
-              );
-            })}
+                  <p className="text-[10px] font-bold text-stone-400 uppercase tracking-wider mb-2">
+                    {parent.name}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {parent.children.map((child) => {
+                      const isChildSelected = selectedCategoryIds.includes(child.id);
+                      return (
+                        <button
+                          key={child.id}
+                          onClick={() => toggleCategory(child.id)}
+                          className={`px-3 py-1.5 rounded-full border text-[11px] font-medium cursor-pointer transition-all ${
+                            isChildSelected
+                              ? 'bg-green-100 border-green-600 text-green-700'
+                              : 'bg-stone-50 border-stone-200 text-stone-500 hover:border-green-600'
+                          }`}
+                        >
+                          {child.name}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+          </div>
+        )}
+      </section>
+
+      {/* Brands */}
+      <section>
+        <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-[0.2em] mb-6">
+          Thương hiệu
+        </h3>
+        {isLoadingBrands ? (
+          <div className="flex items-center gap-2 text-stone-400 text-sm italic">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            Đang tải...
+          </div>
+        ) : (
+          <div className="space-y-3 max-h-48 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-stone-200">
+            {brands.map((brand) => (
+              <label key={brand.id} className="flex items-center group cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={selectedBrandIds.includes(brand.id)}
+                  onChange={() => toggleBrand(brand.id)}
+                  className="rounded-sm border-stone-300 text-green-700 focus:ring-green-700 w-5 h-5 bg-white transition-all cursor-pointer"
+                />
+                <span className="ml-4 text-sm font-medium text-stone-700 group-hover:text-green-700 transition-colors">
+                  {brand.name}
+                </span>
+              </label>
+            ))}
           </div>
         )}
       </section>
@@ -121,7 +201,7 @@ export function ProductSidebar({
           Xếp hạng OCOP
         </h3>
         <div className="grid grid-cols-3 gap-2">
-          {[3, 4, 5].map((star) => {
+          {RATING_STARS.map((star) => {
             const isSelected = selectedRatings.includes(star);
             return (
               <button
@@ -156,8 +236,9 @@ export function ProductSidebar({
             {provinces.map((province: { id: number; name: string }) => (
               <label key={province.id} className="flex items-center group cursor-pointer">
                 <input
-                  type="checkbox"
-                  checked={selectedProvinceIds.includes(province.id)}
+                  type="radio"
+                  name="provinceId"
+                  checked={selectedProvinceId === province.id}
                   onChange={() => toggleProvince(province.id)}
                   className="rounded-sm border-stone-300 text-green-700 focus:ring-green-700 w-5 h-5 bg-white transition-all cursor-pointer"
                 />
@@ -182,15 +263,15 @@ export function ProductSidebar({
           <input
             type="range"
             min="0"
-            max="5000000"
-            step="50000"
+            max={MAX_PRICE_LIMIT}
+            step={PRICE_STEP}
             value={maxPrice}
             onChange={(e) => setMaxPrice(Number(e.target.value))}
             className="w-full h-1.5 bg-stone-200 rounded-full appearance-none cursor-pointer accent-green-700"
           />
           <div className="flex justify-between mt-4 text-[10px] font-bold text-stone-500 uppercase tracking-widest">
             <span>{minPrice.toLocaleString('vi-VN')}đ</span>
-            <span>5.000.000đ+</span>
+            <span>{MAX_PRICE_LIMIT.toLocaleString('vi-VN')}đ+</span>
           </div>
         </div>
       </section>

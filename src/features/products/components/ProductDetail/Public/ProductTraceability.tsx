@@ -5,14 +5,31 @@ import Image from 'next/image';
 import { CheckCircle2, ShieldCheck, Calendar, MapPin, QrCode, Award, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ProductJournal, ProductQrCode } from '@/features/products/types/productTypes';
+import {
+  useRecordScanMutation,
+  useTraceDetailQuery,
+} from '@/features/products/hooks/usePublicProducts';
 
 interface ProductTraceabilityProps {
   journals: ProductJournal[];
   qrCode?: ProductQrCode | null;
 }
 
-export function ProductTraceability({ journals = [] }: ProductTraceabilityProps) {
+export function ProductTraceability({ journals = [], qrCode }: ProductTraceabilityProps) {
   const sortedJournals = [...journals].sort((a, b) => a.stepOrder - b.stepOrder);
+  const code = qrCode?.qrCode;
+
+  // Track scan
+  const { mutate: recordScan } = useRecordScanMutation();
+  const { data: traceData } = useTraceDetailQuery(code);
+
+  React.useEffect(() => {
+    if (code) {
+      recordScan(code);
+    }
+  }, [code, recordScan]);
+
+  const scanCount = traceData?.data?.scanCount ?? qrCode?.scanCount ?? 0;
 
   return (
     <div className="flex flex-col gap-10 py-8 border-t border-stone-100">
@@ -78,15 +95,23 @@ export function ProductTraceability({ journals = [] }: ProductTraceabilityProps)
             </div>
 
             <div className="flex flex-col gap-2">
-              <div className="p-2.5 bg-green-50 rounded-lg flex items-center gap-2.5">
-                <div className="w-7 h-7 bg-white rounded flex items-center justify-center shadow-sm">
-                  <CheckCircle2 className="w-4 h-4 text-green-600" />
+              <div className="p-2.5 bg-green-50 rounded-lg flex items-center justify-between gap-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-7 h-7 bg-white rounded flex items-center justify-center shadow-sm">
+                    <CheckCircle2 className="w-4 h-4 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="text-[8px] font-black text-green-800 uppercase tracking-wider leading-none mb-0.5">
+                      Trạng thái
+                    </p>
+                    <p className="text-[11px] font-bold text-green-900">Đã xác minh</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-[8px] font-black text-green-800 uppercase tracking-wider leading-none mb-0.5">
-                    Trạng thái
+                <div className="flex flex-col items-end border-l border-green-200 pl-4">
+                  <p className="text-[8px] font-black text-stone-400 uppercase tracking-wider leading-none mb-0.5">
+                    Số lượt quét
                   </p>
-                  <p className="text-[11px] font-bold text-green-900">Đã xác minh thật 100%</p>
+                  <p className="text-[11px] font-bold text-stone-900">{scanCount}</p>
                 </div>
               </div>
             </div>

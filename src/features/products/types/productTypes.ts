@@ -292,12 +292,13 @@ export interface PublicProductListParams {
   pageSize?: number;
   shopSlug?: string;
   categoryIds?: number[];
-  provinceIds?: number[];
+  provinceId?: number;
   ocopStar?: number;
   minPrice?: number;
   maxPrice?: number;
-  search?: string;
+  keyword?: string;
   sortBy?: string;
+  brandIds?: number[];
 }
 
 // ─── Response type aliases ────────────────────────────────────────────────────
@@ -340,6 +341,54 @@ export interface PublicCategory {
 }
 
 export type PublicCategoryListResponse = AuthResponseBase<PublicCategory[]>;
+export type PublicCategoryDetailResponse = AuthResponseBase<PublicCategory>;
+
+// ─── Public Brand ────────────────────────────────────────────────────────────
+
+export interface PublicBrand {
+  id: number;
+  name: string;
+  slug: string;
+  logoUrl: string | null;
+  description: string | null;
+  website: string | null;
+  isActive: boolean;
+}
+
+export type PublicBrandListResponse = AuthResponseBase<PublicBrand[]>;
+export type PublicBrandDetailResponse = AuthResponseBase<PublicBrand>;
+
+// ─── Trace Detail ────────────────────────────────────────────────────────────
+
+export interface TraceProductInfo {
+  id: number;
+  name: string;
+  ocopStar: string;
+  certificationNumber: string;
+  thumbnailUrl: string;
+  shop: {
+    id: number;
+    name: string;
+    slug: string;
+    logoUrl: string;
+  };
+}
+
+export interface TraceQrInfo {
+  qrCode: string;
+  blockchainStatus: string;
+  blockchainRootHash: string | null;
+  isVerified: boolean;
+}
+
+export interface TraceDetail {
+  product: TraceProductInfo;
+  qr: TraceQrInfo;
+  journals: ProductJournal[];
+  scanCount: number;
+}
+
+export type TraceDetailResponse = AuthResponseBase<TraceDetail>;
 
 // ─── Admin-specific response ──────────────────────────────────────────────────
 

@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { publicProductApi } from '@/features/products/api/publicProductApi';
 import { PublicProductListParams } from '@/features/products/types/productTypes';
 
@@ -64,5 +64,46 @@ export const useTraceQrQuery = (qrCode: string | null | undefined) => {
     queryFn: () => publicProductApi.traceQr(qrCode!),
     enabled: !!qrCode,
     staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const usePublicCategoryDetailQuery = (slug: string | null | undefined) => {
+  return useQuery({
+    queryKey: ['public-category-detail', slug],
+    queryFn: () => publicProductApi.getCategoryBySlug(slug!),
+    enabled: !!slug,
+    staleTime: 10 * 60 * 1000,
+  });
+};
+
+export const usePublicBrandsQuery = () => {
+  return useQuery({
+    queryKey: ['public-brands'],
+    queryFn: () => publicProductApi.getBrands(),
+    staleTime: 30 * 60 * 1000,
+  });
+};
+
+export const usePublicBrandDetailQuery = (slug: string | null | undefined) => {
+  return useQuery({
+    queryKey: ['public-brand-detail', slug],
+    queryFn: () => publicProductApi.getBrandBySlug(slug!),
+    enabled: !!slug,
+    staleTime: 60 * 60 * 1000,
+  });
+};
+
+export const useTraceDetailQuery = (qrCode: string | null | undefined) => {
+  return useQuery({
+    queryKey: ['trace-detail', qrCode],
+    queryFn: () => publicProductApi.traceQrDetail(qrCode!),
+    enabled: !!qrCode,
+    staleTime: 60 * 1000,
+  });
+};
+
+export const useRecordScanMutation = () => {
+  return useMutation({
+    mutationFn: (qrCode: string) => publicProductApi.recordQrScan(qrCode),
   });
 };

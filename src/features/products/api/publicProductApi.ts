@@ -5,6 +5,11 @@ import {
   ProductListResponse,
   QrCodeResponse,
   PublicCategoryListResponse,
+  PublicCategoryDetailResponse,
+  PublicBrandListResponse,
+  PublicBrandDetailResponse,
+  TraceDetailResponse,
+  AuthResponseBase,
 } from '@/features/products/types/productTypes';
 
 export const publicProductApi = {
@@ -32,11 +37,27 @@ export const publicProductApi = {
     return publicAxiosClient.get('/categories');
   },
 
-  getProvinces: (): Promise<
-    import('@/features/products/types/productTypes').AuthResponseBase<
-      { id: number; name: string }[]
-    >
-  > => {
+  getCategoryBySlug: (slug: string): Promise<PublicCategoryDetailResponse> => {
+    return publicAxiosClient.get(`/categories/${slug}`);
+  },
+
+  getBrands: (): Promise<PublicBrandListResponse> => {
+    return publicAxiosClient.get('/brands');
+  },
+
+  getBrandBySlug: (slug: string): Promise<PublicBrandDetailResponse> => {
+    return publicAxiosClient.get(`/brands/${slug}`);
+  },
+
+  traceQrDetail: (qrCode: string): Promise<TraceDetailResponse> => {
+    return publicAxiosClient.get(`/trace/${qrCode}`);
+  },
+
+  recordQrScan: (qrCode: string): Promise<AuthResponseBase<string>> => {
+    return publicAxiosClient.post(`/trace/${qrCode}/scan`);
+  },
+
+  getProvinces: (): Promise<AuthResponseBase<{ id: number; name: string }[]>> => {
     return publicAxiosClient.get('/location/provinces');
   },
 };

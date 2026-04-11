@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   Search,
   ShoppingCart,
@@ -25,8 +25,10 @@ export function Header() {
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const pathname = usePathname();
+  const router = useRouter();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const { logout, isLoggingOut, handleClientLogout, profile } = useAuth();
 
@@ -52,6 +54,14 @@ export function Header() {
       handleClientLogout();
     }
     setIsLogoutModalOpen(false);
+  };
+
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && searchQuery.trim()) {
+      router.push(`/san-pham?search=${encodeURIComponent(searchQuery.trim())}`);
+      setIsSearchOpen(false);
+      setIsMenuOpen(false);
+    }
   };
 
   return (
@@ -106,16 +116,15 @@ export function Header() {
               </Link>
               <Link
                 href="/san-pham"
-                suppressHydrationWarning
                 className={
-                  pathname === '/san-pham'
+                  isHydrated && pathname.startsWith('/san-pham')
                     ? 'py-[5px] border-b-2 border-white inline-flex flex-col justify-start items-start'
                     : "inline-flex flex-col justify-start items-start relative hover:after:content-[''] hover:after:absolute hover:after:bg-white hover:after:w-full hover:after:h-[2px] hover:after:bottom-[-5px]"
                 }
               >
                 <span
                   className={
-                    pathname === '/san-pham'
+                    isHydrated && pathname.startsWith('/san-pham')
                       ? 'text-white text-sm font-semibold font-sans leading-5'
                       : 'text-emerald-100 text-sm font-semibold font-sans leading-5'
                   }
@@ -124,40 +133,18 @@ export function Header() {
                 </span>
               </Link>
               <Link
-                href="/regions"
-                suppressHydrationWarning
-                className={
-                  pathname === '/regions'
-                    ? 'py-[5px] border-b-2 border-white inline-flex flex-col justify-start items-start'
-                    : "inline-flex flex-col justify-start items-start relative hover:after:content-[''] hover:after:absolute hover:after:bg-white hover:after:w-full hover:after:h-[2px] hover:after:bottom-[-5px]"
-                }
+                href="/san-pham"
+                className="inline-flex flex-col justify-start items-start relative hover:after:content-[''] hover:after:absolute hover:after:bg-white hover:after:w-full hover:after:h-[2px] hover:after:bottom-[-5px]"
               >
-                <span
-                  className={
-                    pathname === '/regions'
-                      ? 'text-white text-sm font-semibold font-sans leading-5'
-                      : 'text-emerald-100 text-sm font-semibold font-sans leading-5'
-                  }
-                >
+                <span className="text-emerald-100 text-sm font-semibold font-sans leading-5">
                   Vùng Miền
                 </span>
               </Link>
               <Link
-                href="/stories"
-                suppressHydrationWarning
-                className={
-                  pathname === '/stories'
-                    ? 'py-[5px] border-b-2 border-white inline-flex flex-col justify-start items-start'
-                    : "inline-flex flex-col justify-start items-start relative hover:after:content-[''] hover:after:absolute hover:after:bg-white hover:after:w-full hover:after:h-[2px] hover:after:bottom-[-5px]"
-                }
+                href="/san-pham"
+                className="inline-flex flex-col justify-start items-start relative hover:after:content-[''] hover:after:absolute hover:after:bg-white hover:after:w-full hover:after:h-[2px] hover:after:bottom-[-5px]"
               >
-                <span
-                  className={
-                    pathname === '/stories'
-                      ? 'text-white text-sm font-semibold font-sans leading-5'
-                      : 'text-emerald-100 text-sm font-semibold font-sans leading-5'
-                  }
-                >
+                <span className="text-emerald-100 text-sm font-semibold font-sans leading-5">
                   Câu Chuyện
                 </span>
               </Link>
@@ -170,9 +157,11 @@ export function Header() {
                   <Search className="w-4 h-4 text-white/70" />
                   <input
                     type="text"
-                    suppressHydrationWarning
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={handleSearch}
                     placeholder="Tìm kiếm tinh hoa đất Việt..."
-                    className="flex-1 bg-transparent text-emerald-100 text-sm font-normal font-sans focus:outline-none placeholder:text-emerald-100/70"
+                    className="flex-1 bg-transparent text-white text-sm font-normal font-sans focus:outline-none placeholder:text-emerald-100/70"
                   />
                 </div>
               </div>
@@ -291,10 +280,12 @@ export function Header() {
           <div className="w-full px-4 py-2 bg-white/10 rounded-full inline-flex items-center gap-2 border border-emerald-300/30">
             <Search className="w-4 h-4 text-white/70" />
             <input
-              suppressHydrationWarning
               type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleSearch}
               placeholder="Tìm kiếm sản phẩm OCOP..."
-              className="flex-1 bg-transparent text-emerald-100 text-sm focus:outline-none placeholder:text-emerald-100/50"
+              className="flex-1 bg-transparent text-white text-sm focus:outline-none placeholder:text-emerald-100/50"
               autoFocus={isSearchOpen}
             />
           </div>
@@ -317,36 +308,19 @@ export function Header() {
               Trang Chủ
             </Link>
             <Link
-              suppressHydrationWarning
               href="/san-pham"
               className={
-                pathname === '/san-pham'
+                isHydrated && pathname === '/san-pham'
                   ? 'text-white text-base font-semibold'
                   : 'text-emerald-100 text-base font-semibold'
               }
             >
               Sản Phẩm
             </Link>
-            <Link
-              suppressHydrationWarning
-              href="/regions"
-              className={
-                pathname === '/regions'
-                  ? 'text-white text-base font-semibold'
-                  : 'text-emerald-100 text-base font-semibold'
-              }
-            >
+            <Link href="/san-pham" className="text-emerald-100 text-base font-semibold">
               Vùng Miền
             </Link>
-            <Link
-              suppressHydrationWarning
-              href="/stories"
-              className={
-                pathname === '/stories'
-                  ? 'text-white text-base font-semibold'
-                  : 'text-emerald-100 text-base font-semibold'
-              }
-            >
+            <Link href="/san-pham" className="text-emerald-100 text-base font-semibold">
               Câu Chuyện
             </Link>
           </nav>
