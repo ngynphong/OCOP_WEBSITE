@@ -4,8 +4,6 @@ import { useState } from 'react';
 import {
   FiSearch,
   FiEye,
-  FiCheckCircle,
-  FiXCircle,
   FiLock,
   FiUnlock,
   FiMapPin,
@@ -137,9 +135,7 @@ const ShopManagementPage = () => {
       {/* Filters & Table Section */}
       <div className="bg-white rounded-3xl shadow-sm border border-stone-100 overflow-hidden">
         <div className="p-6 border-b border-stone-50 flex flex-wrap justify-between items-center gap-4">
-          <h3 className="text-lg font-black text-[#00490E] uppercase tracking-wider">
-            Hàng đợi xét duyệt
-          </h3>
+          <h3 className="text-lg font-black text-[#00490E] uppercase tracking-wider">Hàng đợi</h3>
 
           <div className="flex items-center gap-4">
             <form onSubmit={handleSearch} className="relative w-64">
@@ -148,7 +144,7 @@ const ShopManagementPage = () => {
                 name="search"
                 type="text"
                 placeholder="Tìm tên shop..."
-                className="w-full pl-9 pr-4 py-2 bg-stone-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-emerald-500/10"
+                className="w-full pl-9 pr-4 py-2 bg-stone-50 border-none rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/10"
               />
             </form>
 
@@ -219,9 +215,6 @@ const ShopManagementPage = () => {
                         </div>
                         <div>
                           <div className="font-bold text-[#00490E] line-clamp-1">{shop.name}</div>
-                          <div className="text-[10px] text-stone-400 font-bold">
-                            ID: SHOP-{shop.id}
-                          </div>
                         </div>
                       </div>
                     </td>
@@ -233,14 +226,18 @@ const ShopManagementPage = () => {
                     </td>
                     <td className="py-5 px-8">
                       <div className="flex gap-0.5 text-amber-500">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <FiStar
-                            key={i}
-                            size={14}
-                            fill={i < Math.floor(shop.ratingAvg || 4) ? 'currentColor' : 'none'}
-                            className={i < Math.floor(shop.ratingAvg || 4) ? '' : 'text-stone-200'}
-                          />
-                        ))}
+                        {shop.ratingAvg !== 0 &&
+                          Array.from({ length: 5 }).map((_, i) => (
+                            <FiStar
+                              key={i}
+                              size={14}
+                              fill={i < Math.floor(shop.ratingAvg) ? 'currentColor' : 'none'}
+                              className={i < Math.floor(shop.ratingAvg) ? '' : 'text-stone-200'}
+                            />
+                          ))}
+                        {!shop.ratingAvg && (
+                          <span className="text-xs text-stone-400 font-bold">Chưa có đánh giá</span>
+                        )}
                       </div>
                     </td>
                     <td className="py-5 px-8 text-xs text-stone-500 font-bold">
@@ -260,26 +257,10 @@ const ShopManagementPage = () => {
                         >
                           <FiEye size={18} />
                         </Link>
-                        {shop.status === 'PENDING' && (
-                          <>
-                            <button
-                              onClick={() => setActionTarget({ shop, type: 'APPROVE' })}
-                              className="p-2 hover:bg-emerald-50 rounded-lg transition-colors text-emerald-600 shadow-sm border border-transparent hover:border-emerald-100"
-                            >
-                              <FiCheckCircle size={18} />
-                            </button>
-                            <button
-                              onClick={() => setActionTarget({ shop, type: 'REJECT' })}
-                              className="p-2 hover:bg-red-50 rounded-lg transition-colors text-red-600 shadow-sm border border-transparent hover:border-red-100"
-                            >
-                              <FiXCircle size={18} />
-                            </button>
-                          </>
-                        )}
                         {shop.status === 'ACTIVE' && (
                           <button
                             onClick={() => setActionTarget({ shop, type: 'LOCK' })}
-                            className="p-2 hover:bg-amber-50 rounded-lg transition-colors text-amber-600 shadow-sm border border-transparent hover:border-amber-100"
+                            className="p-2 hover:bg-amber-50 rounded-lg transition-colors text-amber-600 shadow-sm border border-transparent hover:border-amber-100 cursor-pointer"
                           >
                             <FiLock size={18} />
                           </button>
@@ -287,7 +268,7 @@ const ShopManagementPage = () => {
                         {shop.status === 'LOCKED' && (
                           <button
                             onClick={() => setActionTarget({ shop, type: 'UNLOCK' })}
-                            className="p-2 hover:bg-emerald-50 rounded-lg transition-colors text-emerald-600 shadow-sm border border-transparent hover:border-emerald-100"
+                            className="p-2 hover:bg-emerald-50 rounded-lg transition-colors text-emerald-600 shadow-sm border border-transparent hover:border-emerald-100 cursor-pointer"
                           >
                             <FiUnlock size={18} />
                           </button>

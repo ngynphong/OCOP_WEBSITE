@@ -110,7 +110,7 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
                 <button
                   onClick={handleLogoutClick}
                   disabled={isLoggingOut}
-                  className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors group disabled:opacity-50"
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors group disabled:opacity-50 cursor-pointer"
                 >
                   <LogOut
                     className={`w-4 h-4 text-red-400 group-hover:text-red-600 ${isLoggingOut ? 'animate-spin' : ''}`}

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import type { FieldErrors } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
@@ -55,7 +55,7 @@ export const ShopEditForm = ({ shop, onCancel }: ShopEditFormProps) => {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     formState: { errors },
   } = useForm<UpdateShopFormData>({
@@ -72,8 +72,8 @@ export const ShopEditForm = ({ shop, onCancel }: ShopEditFormProps) => {
     },
   });
 
-  const provinceId = watch('provinceId');
-  const districtId = watch('districtId');
+  const provinceId = useWatch({ control, name: 'provinceId' });
+  const districtId = useWatch({ control, name: 'districtId' });
   const { provinces, districts, wards } = useLocationQuery(
     provinceId || undefined,
     districtId || undefined,
@@ -96,12 +96,13 @@ export const ShopEditForm = ({ shop, onCancel }: ShopEditFormProps) => {
   }, [districts.data, shop.districtName, provinceId, districtId, setValue]);
 
   // Auto-mapping: Ward
+  const currentWardId = useWatch({ control, name: 'wardId' });
   useEffect(() => {
-    if (districtId && wards.data?.data && !watch('wardId')) {
+    if (districtId && wards.data?.data && !currentWardId) {
       const found = wards.data.data.find((w) => w.name === shop.wardName);
       if (found) setValue('wardId', found.id, { shouldValidate: true });
     }
-  }, [wards.data, shop.wardName, districtId, setValue, watch]);
+  }, [wards.data, shop.wardName, districtId, currentWardId, setValue]);
 
   const onSubmit = async (data: UpdateShopFormData) => {
     console.log('Submitting data:', data);

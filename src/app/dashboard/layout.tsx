@@ -4,9 +4,11 @@ import React from 'react';
 import DashboardSidebar from '@/features/dashboard/components/DashboardSidebar';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { usePathname } from 'next/navigation';
+import { useAppSelector } from '@/store/hooks';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { dashboardMode } = useAppSelector((state) => state.auth);
 
   const getPageTitle = () => {
     if (pathname.includes('/ho-so')) return 'Hồ sơ cá nhân';
@@ -16,6 +18,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     if (pathname.includes('/cua-hang/dang-ky')) return 'Đăng ký mở shop';
     if (pathname.includes('/cua-hang/ho-so-phap-ly')) return 'Hồ sơ pháp lý';
     if (pathname.includes('/cua-hang')) return 'Cửa hàng của tôi';
+    if (pathname.match(/\/san-pham\/\d+/)) return 'Chi tiết sản phẩm';
+    if (pathname.includes('/san-pham/tao-moi')) return 'Tạo sản phẩm mới';
+    if (pathname.includes('/san-pham')) return 'Sản phẩm của tôi';
     return 'Tổng quan';
   };
 
@@ -47,7 +52,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <div className="p-8 border-b border-stone-50 bg-linear-to-r from-stone-50/50 to-white">
                 <h1 className="text-2xl font-bold text-stone-900">{getPageTitle()}</h1>
                 <p className="text-stone-500 text-sm mt-1">
-                  Quản lý tài khoản và theo dõi hoạt động của bạn trên OCOP.
+                  {dashboardMode === 'SELLER'
+                    ? 'Quản lý cửa hàng, sản phẩm và theo dõi doanh thu của bạn.'
+                    : 'Quản lý tài khoản và theo dõi hoạt động mua sắm của bạn trên OCOP.'}
                 </p>
               </div>
 

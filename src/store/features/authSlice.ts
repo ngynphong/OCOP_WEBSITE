@@ -5,6 +5,7 @@ interface AuthState {
   isInitialized: boolean;
   token: string | null;
   roles: string[];
+  dashboardMode: 'USER' | 'SELLER';
 }
 
 const initialState: AuthState = {
@@ -12,6 +13,7 @@ const initialState: AuthState = {
   isInitialized: false,
   token: null,
   roles: [],
+  dashboardMode: 'USER',
 };
 
 export const authSlice = createSlice({
@@ -29,12 +31,20 @@ export const authSlice = createSlice({
       state.roles = [];
       state.isAuthenticated = false;
       state.isInitialized = true;
+      state.dashboardMode = 'USER';
     },
     completeInitialization: (state) => {
       state.isInitialized = true;
     },
+    setDashboardMode: (state, action: PayloadAction<'USER' | 'SELLER'>) => {
+      state.dashboardMode = action.payload;
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('dashboard_mode', action.payload);
+      }
+    },
   },
 });
 
-export const { setCredentials, logout, completeInitialization } = authSlice.actions;
+export const { setCredentials, logout, completeInitialization, setDashboardMode } =
+  authSlice.actions;
 export default authSlice.reducer;

@@ -25,7 +25,14 @@ import {
   AdminRoleDetailResponse,
   CreateRoleRequest,
   RolePermissionsRequest,
+  // Categories
+  CategoryCreateRequest,
+  CategoryUpdateRequest,
+  AdminCategoryListResponse,
+  AdminCategoryDetailResponse,
+  CategoryCheckSlugResponse,
 } from '../types/adminTypes';
+import { CategorySchemaType, CategoryFormSchemaType } from '../types/categorySchema';
 
 export const adminApi = {
   getUsers: (params: GetUsersParams): Promise<AdminUserListResponse> => {
@@ -206,5 +213,113 @@ export const adminApi = {
 
   deleteRole: (roleName: string): Promise<AuthResponseBase<string>> => {
     return axiosClient.delete(`/roles/${roleName}`);
+  },
+
+  // ─── Category Management ────────────────────────────────────────────────────
+
+  getCategories: (): Promise<AdminCategoryListResponse> => {
+    return axiosClient.get('/admin/categories');
+  },
+
+  getCategoryDetail: (id: number): Promise<AdminCategoryDetailResponse> => {
+    return axiosClient.get(`/admin/categories/${id}`);
+  },
+
+  createCategories: (data: CategoryCreateRequest[]): Promise<AdminCategoryListResponse> => {
+    return axiosClient.post('/admin/categories', data);
+  },
+
+  updateCategory: (
+    id: number,
+    data: CategoryUpdateRequest,
+  ): Promise<AdminCategoryDetailResponse> => {
+    return axiosClient.put(`/admin/categories/${id}`, data);
+  },
+
+  deleteCategory: (id: number): Promise<AuthResponseBase<string>> => {
+    return axiosClient.delete(`/admin/categories/${id}`);
+  },
+
+  checkCategorySlug: (slug: string): Promise<CategoryCheckSlugResponse> => {
+    return axiosClient.post('/admin/categories/check-slug', null, {
+      params: { slug },
+    });
+  },
+
+  createCategoriesFromForm: (data: CategorySchemaType[]): Promise<AdminCategoryListResponse> => {
+    return axiosClient.post('/admin/categories', data);
+  },
+
+  updateCategoryFromForm: (
+    id: number,
+    data: CategorySchemaType,
+  ): Promise<AdminCategoryDetailResponse> => {
+    return axiosClient.put(`/admin/categories/${id}`, data);
+  },
+
+  updateCategoryMultipart: (
+    id: number,
+    data: CategoryFormSchemaType,
+  ): Promise<AdminCategoryDetailResponse> => {
+    const formData = new FormData();
+
+    // Prepare data object (JSON)
+    const dataObj = {
+      name: data.name,
+      slug: data.slug,
+      parentId: data.parentId,
+      description: data.description,
+      sortOrder: data.sortOrder?.toString(),
+      isActive: data.isActive,
+    };
+
+    formData.append('data', JSON.stringify(dataObj));
+
+    if (data.iconFile && data.iconFile[0]) {
+      formData.append('icons', data.iconFile[0]);
+    }
+    if (data.bannerFile && data.bannerFile[0]) {
+      formData.append('banners', data.bannerFile[0]);
+    }
+
+    return axiosClient.put(`/admin/categories/${id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
+
+  createCategoriesMultipart: (
+    formDatas: CategoryFormSchemaType[],
+  ): Promise<AdminCategoryListResponse> => {
+    const formData = new FormData();
+
+    // Prepare data array (JSON)
+    const dataArray = formDatas.map((fd) => ({
+      name: fd.name,
+      slug: fd.slug,
+      parentId: fd.parentId,
+      description: fd.description,
+      sortOrder: fd.sortOrder?.toString(),
+      isActive: fd.isActive,
+    }));
+
+    formData.append('data', JSON.stringify(dataArray));
+
+    // Append icons and banners
+    formDatas.forEach((fd) => {
+      if (fd.iconFile && fd.iconFile[0]) {
+        formData.append('icons', fd.iconFile[0]);
+      }
+      if (fd.bannerFile && fd.bannerFile[0]) {
+        formData.append('banners', fd.bannerFile[0]);
+      }
+    });
+
+    return axiosClient.post('/admin/categories', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   },
 };

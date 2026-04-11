@@ -16,7 +16,7 @@ import {
   FiChevronRight,
   FiCreditCard,
 } from 'react-icons/fi';
-
+import { FaWarehouse } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
 interface AdminSidebarProps {
@@ -28,6 +28,8 @@ interface AdminSidebarProps {
 const MENU_ITEMS = [
   { label: 'Tổng quan', icon: FiGrid, href: '/admin', id: 'overview' },
   { label: 'Cửa hàng', icon: FiShoppingBag, href: '/admin/shops', id: 'shops' },
+  { label: 'Sản phẩm', icon: FiBox, href: '/admin/products', id: 'products' },
+  { label: 'Kho hàng', icon: FaWarehouse, href: '/admin/inventory', id: 'inventory' },
   { label: 'Phê duyệt', icon: FiCheckSquare, href: '/admin/phe-duyet', id: 'approval' },
   { label: 'Tài chính', icon: FiDollarSign, href: '/admin/tai-chinh', id: 'financials' },
   { label: 'Người dùng', icon: FiUsers, href: '/admin/users', id: 'users' },

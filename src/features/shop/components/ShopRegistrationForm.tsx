@@ -3,7 +3,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiChevronRight, FiChevronLeft, FiLoader, FiCheck } from 'react-icons/fi';
 
@@ -15,6 +14,7 @@ import Step1BasicInfo from './registration/Step1BasicInfo';
 import Step2Address from './registration/Step2Address';
 import Step3Legal from './registration/Step3Legal';
 import Step4Plan from './registration/Step4Plan';
+import Step5Documents from './registration/Step5Documents';
 
 const STEP_FIELDS: Record<number, (keyof CreateShopFormData)[]> = {
   1: ['name', 'slug', 'description'],
@@ -24,9 +24,17 @@ const STEP_FIELDS: Record<number, (keyof CreateShopFormData)[]> = {
 };
 
 export const ShopRegistrationForm = () => {
-  const router = useRouter();
+  const { createShop, isCreatingShop, useMyShopQuery } = useSellerShop();
+  const { data: myShopData } = useMyShopQuery();
+
   const [currentStep, setCurrentStep] = useState(1);
-  const { createShop, isCreatingShop } = useSellerShop();
+
+  // Persistence logic: If shop exists and pending, jump to step 5
+  React.useEffect(() => {
+    if (myShopData?.data && myShopData.data.shopResponse?.status === 'PENDING') {
+      setCurrentStep(5);
+    }
+  }, [myShopData]);
 
   const {
     register,
@@ -67,12 +75,12 @@ export const ShopRegistrationForm = () => {
     async (data: CreateShopFormData) => {
       try {
         await createShop(data);
-        router.push('/dashboard/cua-hang');
+        setCurrentStep(5);
       } catch (error) {
         console.error('Registration failed:', error);
       }
     },
-    [createShop, router],
+    [createShop],
   );
 
   const stepProps = useMemo(
@@ -96,45 +104,48 @@ export const ShopRegistrationForm = () => {
           {currentStep === 2 && <Step2Address {...stepProps} />}
           {currentStep === 3 && <Step3Legal {...stepProps} />}
           {currentStep === 4 && <Step4Plan {...stepProps} />}
+          {currentStep === 5 && <Step5Documents />}
         </motion.div>
       </AnimatePresence>
 
-      <div className="flex justify-between pt-4 border-t border-stone-100">
-        <button
-          type="button"
-          onClick={handleBack}
-          disabled={currentStep === 1}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-stone-600 hover:bg-stone-100 disabled:opacity-0 disabled:pointer-events-none transition-all"
-        >
-          <FiChevronLeft size={16} /> Quay lại
-        </button>
-
-        {currentStep < STEPS_CONFIG.length ? (
+      {currentStep < 5 && (
+        <div className="flex justify-between pt-4 border-t border-stone-100">
           <button
             type="button"
-            onClick={handleNext}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold bg-green-600 text-white hover:bg-green-700 shadow-lg shadow-green-500/20 transition-all"
+            onClick={handleBack}
+            disabled={currentStep === 1}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-stone-600 hover:bg-stone-100 disabled:opacity-0 disabled:pointer-events-none transition-all"
           >
-            Tiếp theo <FiChevronRight size={16} />
+            <FiChevronLeft size={16} /> Quay lại
           </button>
-        ) : (
-          <button
-            type="submit"
-            disabled={isCreatingShop}
-            className="flex items-center gap-2 px-7 py-2.5 rounded-xl text-sm font-bold bg-green-600 text-white hover:bg-green-700 shadow-lg shadow-green-500/20 disabled:opacity-60 transition-all"
-          >
-            {isCreatingShop ? (
-              <>
-                <FiLoader size={16} className="animate-spin" /> Đang xử lý...
-              </>
-            ) : (
-              <>
-                <FiCheck size={16} /> Đăng ký shop
-              </>
-            )}
-          </button>
-        )}
-      </div>
+
+          {currentStep < 4 ? (
+            <button
+              type="button"
+              onClick={handleNext}
+              className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold bg-green-600 text-white hover:bg-green-700 shadow-lg shadow-green-500/20 transition-all"
+            >
+              Tiếp theo <FiChevronRight size={16} />
+            </button>
+          ) : (
+            <button
+              type="submit"
+              disabled={isCreatingShop}
+              className="flex items-center gap-2 px-7 py-2.5 rounded-xl text-sm font-bold bg-green-600 text-white hover:bg-green-700 shadow-lg shadow-green-500/20 disabled:opacity-60 transition-all"
+            >
+              {isCreatingShop ? (
+                <>
+                  <FiLoader size={16} className="animate-spin" /> Đang xử lý...
+                </>
+              ) : (
+                <>
+                  <FiCheck size={16} /> Đăng ký shop
+                </>
+              )}
+            </button>
+          )}
+        </div>
+      )}
     </form>
   );
 };

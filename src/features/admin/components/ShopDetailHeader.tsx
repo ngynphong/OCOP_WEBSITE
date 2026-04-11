@@ -20,6 +20,10 @@ interface ShopDetailHeaderProps {
 const ShopDetailHeader: React.FC<ShopDetailHeaderProps> = React.memo(
   ({ shop, onConfirmAction, isActionLoading }) => {
     const router = useRouter();
+    const allDocsVerified = React.useMemo(() => {
+      if (!shop.documents || shop.documents.length === 0) return false;
+      return shop.documents.every((doc) => doc.isVerified);
+    }, [shop.documents]);
 
     return (
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -40,6 +44,11 @@ const ShopDetailHeader: React.FC<ShopDetailHeaderProps> = React.memo(
               {shop.name}
               <ShopStatusBadge status={shop.status} />
             </h1>
+            {shop.status === 'PENDING' && !allDocsVerified && (
+              <p className="text-xs font-bold text-red-500 mt-2 flex items-center gap-1 bg-red-50 w-fit px-3 py-1 rounded-lg border border-red-100">
+                <FiXCircle size={14} /> Vui lòng duyệt tất cả hồ sơ pháp lý trước khi kích hoạt Shop
+              </p>
+            )}
           </div>
         </div>
 
@@ -48,8 +57,8 @@ const ShopDetailHeader: React.FC<ShopDetailHeaderProps> = React.memo(
             <>
               <button
                 onClick={() => onConfirmAction('APPROVE')}
-                disabled={isActionLoading.isApproving}
-                className="px-6 py-3 bg-[#0D631B] text-white rounded-2xl text-sm font-black shadow-lg shadow-emerald-900/20 flex items-center gap-2 hover:opacity-90 transition-all disabled:opacity-50"
+                disabled={isActionLoading.isApproving || !allDocsVerified}
+                className="px-6 py-3 bg-[#0D631B] text-white rounded-2xl text-sm font-black shadow-lg shadow-emerald-900/20 flex items-center gap-2 hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <FiCheck /> {isActionLoading.isApproving ? 'Đang duyệt...' : 'Duyệt Shop'}
               </button>

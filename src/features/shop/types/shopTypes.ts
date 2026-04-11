@@ -161,6 +161,7 @@ export interface ShopDetailData {
 }
 
 export type ShopDetailResponse = AuthResponseBase<ShopDetailData>;
+export type ShopPublicDetailResponse = AuthResponseBase<ShopInfo>;
 export type ShopPolicyResponse = AuthResponseBase<ShopPolicy>;
 export type SubscriptionPlanListResponse = AuthResponseBase<SubscriptionPlan[]>;
 export type ShopDocumentListResponse = AuthResponseBase<ShopDocument[]>;

@@ -24,7 +24,7 @@ export default function ShopRegisterPage() {
         <div>
           <h2 className="text-lg font-extrabold text-green-900">Đăng ký trở thành Nhà bán hàng</h2>
           <p className="text-sm text-green-700 mt-0.5">
-            Hoàn thành 4 bước đơn giản để mở shop và kinh doanh sản phẩm OCOP.
+            Hoàn thành 5 bước đơn giản để mở shop và kinh doanh sản phẩm OCOP.
           </p>
         </div>
       </div>

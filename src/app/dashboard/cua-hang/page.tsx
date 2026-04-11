@@ -229,6 +229,9 @@ export default function SellerShopPage() {
                 {shop.planName}
               </span>
             </div>
+            <p className="text-sm text-stone-500 mt-1 flex items-center gap-1.5 italic">
+              URL cửa hàng: <span className="text-green-600">ocop.vn/cua-hang/{shop.slug}</span>
+            </p>
           </div>
           <button
             onClick={() => setIsEditing((prev) => !prev)}

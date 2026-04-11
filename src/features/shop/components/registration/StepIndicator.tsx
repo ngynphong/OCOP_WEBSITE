@@ -2,7 +2,7 @@
 
 import React, { memo } from 'react';
 import { motion } from 'framer-motion';
-import { FiBox, FiMapPin, FiFileText, FiPackage, FiCheck } from 'react-icons/fi';
+import { FiBox, FiMapPin, FiFileText, FiPackage, FiCheck, FiUploadCloud } from 'react-icons/fi';
 import { cn } from '@/lib/utils';
 
 export const STEPS_CONFIG = [
@@ -10,6 +10,7 @@ export const STEPS_CONFIG = [
   { id: 2, label: 'Địa chỉ shop', icon: FiMapPin },
   { id: 3, label: 'Pháp lý', icon: FiFileText },
   { id: 4, label: 'Chọn gói dịch vụ', icon: FiPackage },
+  { id: 5, label: 'Thành công!', icon: FiUploadCloud },
 ];
 
 interface StepIndicatorProps {

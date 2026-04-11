@@ -13,6 +13,7 @@ export function CategoryShowcase() {
       ocopStar: 4,
       rating: 5,
       reviewCount: 0,
+      slug: 'cai-chip-organic',
     },
     {
       name: 'Cải Kale T.Canh',
@@ -23,6 +24,7 @@ export function CategoryShowcase() {
       ocopStar: 5,
       rating: 5,
       reviewCount: 0,
+      slug: 'cai-kale-tuyet-canh',
     },
     {
       name: 'Bó Xôi Organic',
@@ -33,6 +35,7 @@ export function CategoryShowcase() {
       ocopStar: 4,
       rating: 5,
       reviewCount: 0,
+      slug: 'bo-xoi-organic',
     },
     {
       name: 'Xà Lách Lolo Tím',
@@ -43,6 +46,7 @@ export function CategoryShowcase() {
       ocopStar: 3,
       rating: 5,
       reviewCount: 0,
+      slug: 'xa-lach-lolo-tim',
     },
   ];
 
@@ -75,6 +79,7 @@ export function CategoryShowcase() {
               ocopStar={item.ocopStar}
               rating={item.rating}
               reviewCount={item.reviewCount}
+              slug={item.slug}
             />
           ))}
         </div>
