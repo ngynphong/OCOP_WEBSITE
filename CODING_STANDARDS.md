@@ -17,10 +17,10 @@ Dự án này tuân thủ Kiến trúc Feature-Driven Development kết hợp v�
 
 ## 🚀 2. State Management & Data Fetching (Quy tắc sinh tử)
 
-1. **Server State (Dữ liệu từ API):** BAO HIỂM 100% bằng **TanStack React Query** (`@tanstack/react-query`). KHÔNG dùng `useEffect` + `useState` để gọi API.
+1. **Server State (Dữ liệu từ API):** TUYỆT ĐỐI 100% bằng **TanStack React Query** (`@tanstack/react-query`). KHÔNG dùng `useEffect` + `useState` và KHÔNG dùng **RTK Query** để gọi API để đảm bảo tính nhất quán của dự án.
 2. **Client State (Trạng thái cục bộ/toàn cục UI):**
    - State dùng 1 chỗ: Dùng `useState` / `useReducer`.
-   - State chia sẻ toàn hệ thống: Dùng **Redux Toolkit** (Slices).
+   - State chia sẻ toàn hệ thống: Dùng **Redux Toolkit** (Slices) để lưu trữ trạng thái UI, Auth Session, Modals.
 3. Luôn định nghĩa `staleTime` và `retry` logic cẩn thận, đặc biệt với React Query (như đã cấu hình tại `AppProvider`).
 
 ## 🛡️ 3. Type-Safety & Validation

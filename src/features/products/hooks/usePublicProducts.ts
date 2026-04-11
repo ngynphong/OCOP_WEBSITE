@@ -6,26 +6,55 @@ export const usePublicCategoriesQuery = () => {
   return useQuery({
     queryKey: ['public-categories'],
     queryFn: () => publicProductApi.getCategories(),
-    staleTime: 10 * 60 * 1000, // categories ít thay đổi, cache 10 phút
+    staleTime: 10 * 60 * 1000,
+  });
+};
+
+export const usePublicProvincesQuery = () => {
+  return useQuery({
+    queryKey: ['public-provinces'],
+    queryFn: () => publicProductApi.getProvinces(),
+    staleTime: 30 * 60 * 1000,
   });
 };
 
 // ─── Standalone Query Hooks ───────────────────────────────────────────────────
 
-export const usePublicProductsQuery = (params?: PublicProductListParams) => {
+export const usePublicProductsQuery = (
+  params?: PublicProductListParams,
+  options?: Record<string, unknown>,
+) => {
   return useQuery({
     queryKey: ['public-products', params],
     queryFn: () => publicProductApi.getProducts(params),
     staleTime: 60 * 1000,
+    ...options,
   });
 };
 
-export const usePublicProductDetailQuery = (id: number | null | undefined) => {
+export const usePublicProductDetailQuery = (slugOrId: string | number | null | undefined) => {
   return useQuery({
-    queryKey: ['public-product', id],
-    queryFn: () => publicProductApi.getProduct(id!),
-    enabled: !!id,
+    queryKey: ['public-product', slugOrId],
+    queryFn: () => publicProductApi.getProduct(slugOrId!),
+    enabled: !!slugOrId,
     staleTime: 60 * 1000,
+  });
+};
+
+export const useRelatedProductsQuery = (slug: string | null | undefined, limit = 6) => {
+  return useQuery({
+    queryKey: ['public-products-related', slug, limit],
+    queryFn: () => publicProductApi.getRelatedProducts(slug!, limit),
+    enabled: !!slug,
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useFeaturedProductsQuery = (limit = 12) => {
+  return useQuery({
+    queryKey: ['public-products-featured', limit],
+    queryFn: () => publicProductApi.getFeaturedProducts(limit),
+    staleTime: 5 * 60 * 1000,
   });
 };
 

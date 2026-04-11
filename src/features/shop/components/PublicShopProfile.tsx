@@ -9,6 +9,7 @@ import { ShopInfoTab } from './ShopInfoTab';
 import { FiAlertCircle, FiLoader } from 'react-icons/fi';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/AppButton';
+import { Breadcrumb } from '@/components/ui/Breadcrumb';
 
 type TabType = 'PRODUCTS' | 'POLICY' | 'INFO';
 
@@ -54,6 +55,12 @@ export const PublicShopProfile = ({ shopSlug }: PublicShopProfileProps) => {
 
   const shop = data.data;
 
+  const breadcrumbItems = [
+    { label: 'Trang chủ', href: '/' },
+    { label: 'Sản phẩm', href: '/san-pham' },
+    { label: shop.name },
+  ];
+
   const tabClasses = (tab: TabType) =>
     cn(
       'px-6 py-4 text-sm sm:text-base font-bold transition-all border-b-2 whitespace-nowrap',
@@ -64,6 +71,13 @@ export const PublicShopProfile = ({ shopSlug }: PublicShopProfileProps) => {
 
   return (
     <div className="min-h-screen bg-stone-50 pb-24">
+      {/* Breadcrumb Container */}
+      <div className="bg-white border-b border-stone-100">
+        <div className="container mx-auto px-4 sm:px-6 py-4">
+          <Breadcrumb items={breadcrumbItems} />
+        </div>
+      </div>
+
       <ShopProfileHeader shop={shop} />
 
       <div className="container mx-auto px-4 sm:px-6 mt-8">

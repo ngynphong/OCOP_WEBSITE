@@ -288,11 +288,11 @@ export interface AdminProductListParams extends ProductListParams {
 }
 
 export interface PublicProductListParams {
-  page?: number;
-  size?: number;
+  pageNo?: number;
+  pageSize?: number;
   shopSlug?: string;
-  categoryId?: number;
-  provinceId?: number;
+  categoryIds?: number[];
+  provinceIds?: number[];
   ocopStar?: number;
   minPrice?: number;
   maxPrice?: number;

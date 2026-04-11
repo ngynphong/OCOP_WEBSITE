@@ -76,7 +76,13 @@ export function Header() {
               suppressHydrationWarning
               className="inline-flex flex-row justify-start items-center"
             >
-              <Image src="/images/logo-ocop-rm.jpg" alt="Logo" width={50} height={50} />
+              <Image
+                src="/images/logo-ocop-rm.jpg"
+                alt="Logo"
+                width={50}
+                height={50}
+                className="w-auto h-auto"
+              />
             </Link>
             <nav className="hidden lg:flex justify-start items-center gap-6">
               <Link

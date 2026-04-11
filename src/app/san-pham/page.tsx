@@ -1,34 +1,52 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDown, X } from 'lucide-react';
+import { ChevronDown, X, Search } from 'lucide-react';
 import { ProductSidebar } from '@/features/products/components/ProductSidebar';
 import { ProductPagination } from '@/features/products/components/ProductPagination';
 import { ProductCard } from '@/components/ui/ProductCard';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
-import { usePublicProductsQuery } from '@/features/products/hooks/usePublicProducts';
+import {
+  usePublicProductsQuery,
+  usePublicCategoriesQuery,
+  usePublicProvincesQuery,
+} from '@/features/products/hooks/usePublicProducts';
 import { PublicProductListParams } from '@/features/products/types/productTypes';
+import { useDebounce } from '@/hooks/useDebounce';
 
 const PAGE_SIZE = 12;
 
 export default function ProductsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRatings, setSelectedRatings] = useState<number[]>([]);
-  const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [maxPrice, setMaxPrice] = useState<number>(2000000);
+  const [selectedProvinceIds, setSelectedProvinceIds] = useState<number[]>([]);
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<number[]>([]);
+  const [minPrice, setMinPrice] = useState<number>(0);
+  const [maxPrice, setMaxPrice] = useState<number>(5000000);
   const [sortBy, setSortBy] = useState('newest');
   const [page, setPage] = useState(0);
 
+  // Debounce inputs to prevent excessive API calls
+  const debouncedSearch = useDebounce(searchQuery, 500);
+  const debouncedMinPrice = useDebounce(minPrice, 500);
+  const debouncedMaxPrice = useDebounce(maxPrice, 500);
+
+  // Fetch meta-data for displaying tags
+  const { data: categoriesData } = usePublicCategoriesQuery();
+  const { data: provincesData } = usePublicProvincesQuery();
+
   const params: PublicProductListParams = {
-    page,
-    size: PAGE_SIZE,
-    search: searchQuery || undefined,
+    pageNo: page + 1,
+    pageSize: PAGE_SIZE,
+    search: debouncedSearch || undefined,
     ocopStar: selectedRatings.length === 1 ? selectedRatings[0] : undefined,
-    maxPrice: maxPrice < 2000000 ? maxPrice : undefined,
+    minPrice: debouncedMinPrice > 0 ? debouncedMinPrice : undefined,
+    maxPrice: debouncedMaxPrice < 5000000 ? debouncedMaxPrice : undefined,
     sortBy: sortBy !== 'newest' ? sortBy : undefined,
+    categoryIds: selectedCategoryIds.length > 0 ? selectedCategoryIds : undefined,
+    provinceIds: selectedProvinceIds.length > 0 ? selectedProvinceIds : undefined,
   };
 
   const { data, isPending, isError } = usePublicProductsQuery(params);
@@ -40,20 +58,28 @@ export default function ProductsPage() {
   const handleClearFilters = () => {
     setSearchQuery('');
     setSelectedRatings([]);
-    setSelectedRegions([]);
-    setSelectedCategories([]);
-    setMaxPrice(2000000);
+    setSelectedProvinceIds([]);
+    setSelectedCategoryIds([]);
+    setMinPrice(0);
+    setMaxPrice(5000000);
     setPage(0);
   };
 
   const hasActiveFilters =
-    selectedCategories.length > 0 ||
-    selectedRegions.length > 0 ||
+    selectedCategoryIds.length > 0 ||
+    selectedProvinceIds.length > 0 ||
     selectedRatings.length > 0 ||
-    maxPrice < 2000000;
+    minPrice > 0 ||
+    maxPrice < 5000000;
+
+  // Helper to get name from ID for tags
+  const getCategoryName = (id: number) =>
+    categoriesData?.data?.find((c) => c.id === id)?.name || id;
+  const getProvinceName = (id: number) =>
+    provincesData?.data?.find((p: { id: number; name: string }) => p.id === id)?.name || id;
 
   return (
-    <div className="min-h-screen flex flex-col font-sans">
+    <div className="min-h-screen flex flex-col font-sans bg-stone-50/30">
       <Header />
       <main className="flex-1 pt-8 md:pt-12 pb-16 max-w-7xl mx-auto px-6 md:px-8 w-full">
         {/* Breadcrumb */}
@@ -66,12 +92,12 @@ export default function ProductsPage() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div>
             <h1 className="text-4xl md:text-[3.5rem] font-bold font-sans leading-tight tracking-tight text-stone-900">
-              {searchQuery ? `Kết quả cho '${searchQuery}'` : 'Tất cả sản phẩm'}
+              {searchQuery ? `Kết quả cho '${searchQuery}'` : 'Khám phá sản phẩm'}
             </h1>
             <p className="text-base md:text-lg text-neutral-500 font-medium font-sans mt-2">
               {isPending
-                ? 'Đang tải...'
-                : `Tìm thấy ${totalElement} sản phẩm trực tiếp từ các nghệ nhân vùng miền`}
+                ? 'Đang tìm kiếm tinh hoa vùng miền...'
+                : `Chúng tôi tìm thấy ${totalElement} sản phẩm OCOP được chứng nhận`}
             </p>
           </div>
 
@@ -92,7 +118,7 @@ export default function ProductsPage() {
                 <option value="newest">Mới nhất</option>
                 <option value="price-asc">Giá từ thấp đến cao</option>
                 <option value="price-desc">Giá từ cao đến thấp</option>
-                <option value="rating-desc">Đánh giá cao nhất</option>
+                <option value="rating-desc">Đánh giá OCOP cao nhất</option>
               </select>
               <ChevronDown className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-stone-500" />
             </div>
@@ -112,19 +138,20 @@ export default function ProductsPage() {
               setSelectedRatings(v);
               setPage(0);
             }}
-            selectedRegions={selectedRegions}
-            setSelectedRegions={(v) => {
-              setSelectedRegions(v);
+            selectedProvinceIds={selectedProvinceIds}
+            setSelectedProvinceIds={(v) => {
+              setSelectedProvinceIds(v);
               setPage(0);
             }}
+            minPrice={minPrice}
             maxPrice={maxPrice}
             setMaxPrice={(v) => {
               setMaxPrice(v);
               setPage(0);
             }}
-            selectedCategories={selectedCategories}
-            setSelectedCategories={(v) => {
-              setSelectedCategories(v);
+            selectedCategoryIds={selectedCategoryIds}
+            setSelectedCategoryIds={(v) => {
+              setSelectedCategoryIds(v);
               setPage(0);
             }}
           />
@@ -133,22 +160,28 @@ export default function ProductsPage() {
           <div className="grow flex flex-col">
             {/* Active Filter Tags */}
             <div className="flex flex-wrap gap-2 mb-6">
-              {selectedCategories.map((cat) => (
+              {selectedCategoryIds.map((id) => (
                 <span
-                  key={cat}
-                  onClick={() => setSelectedCategories(selectedCategories.filter((c) => c !== cat))}
+                  key={id}
+                  onClick={() =>
+                    setSelectedCategoryIds(selectedCategoryIds.filter((cid) => cid !== id))
+                  }
                   className="inline-flex items-center gap-1 px-3 py-1.5 bg-white border border-stone-200 shadow-sm text-stone-700 text-xs font-semibold rounded-full cursor-pointer hover:border-red-300 hover:text-red-600 transition group"
                 >
-                  {cat} <X className="w-3 h-3 text-stone-400 group-hover:text-red-500" />
+                  {getCategoryName(id)}{' '}
+                  <X className="w-3 h-3 text-stone-400 group-hover:text-red-500" />
                 </span>
               ))}
-              {selectedRegions.map((reg) => (
+              {selectedProvinceIds.map((id) => (
                 <span
-                  key={reg}
-                  onClick={() => setSelectedRegions(selectedRegions.filter((r) => r !== reg))}
+                  key={id}
+                  onClick={() =>
+                    setSelectedProvinceIds(selectedProvinceIds.filter((pid) => pid !== id))
+                  }
                   className="inline-flex items-center gap-1 px-3 py-1.5 bg-white border border-stone-200 shadow-sm text-stone-700 text-xs font-semibold rounded-full cursor-pointer hover:border-red-300 hover:text-red-600 transition group"
                 >
-                  {reg} <X className="w-3 h-3 text-stone-400 group-hover:text-red-500" />
+                  {getProvinceName(id)}{' '}
+                  <X className="w-3 h-3 text-stone-400 group-hover:text-red-500" />
                 </span>
               ))}
               {selectedRatings.map((rating) => (
@@ -157,15 +190,18 @@ export default function ProductsPage() {
                   onClick={() => setSelectedRatings(selectedRatings.filter((r) => r !== rating))}
                   className="inline-flex items-center gap-1 px-3 py-1.5 bg-white border border-stone-200 shadow-sm text-stone-700 text-xs font-semibold rounded-full cursor-pointer hover:border-red-300 hover:text-red-600 transition group"
                 >
-                  {rating}★ <X className="w-3 h-3 text-stone-400 group-hover:text-red-500" />
+                  {rating} OCOP★ <X className="w-3 h-3 text-stone-400 group-hover:text-red-500" />
                 </span>
               ))}
-              {maxPrice < 2000000 && (
+              {(minPrice > 0 || maxPrice < 5000000) && (
                 <span
-                  onClick={() => setMaxPrice(2000000)}
+                  onClick={() => {
+                    setMinPrice(0);
+                    setMaxPrice(5000000);
+                  }}
                   className="inline-flex items-center gap-1 px-3 py-1.5 bg-white border border-stone-200 shadow-sm text-stone-700 text-xs font-semibold rounded-full cursor-pointer hover:border-red-300 hover:text-red-600 transition group"
                 >
-                  Dưới {maxPrice.toLocaleString('vi-VN')}đ{' '}
+                  Giá: {minPrice.toLocaleString()}đ - {maxPrice.toLocaleString()}đ{' '}
                   <X className="w-3 h-3 text-stone-400 group-hover:text-red-500" />
                 </span>
               )}
@@ -182,18 +218,24 @@ export default function ProductsPage() {
             {/* Loading skeleton */}
             {isPending && (
               <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-                {Array.from({ length: PAGE_SIZE }).map((_, i) => (
-                  <div key={i} className="h-72 bg-stone-100 rounded-2xl animate-pulse" />
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="flex flex-col gap-4">
+                    <div className="w-full aspect-4/5 bg-stone-100 rounded-[20px] animate-pulse" />
+                    <div className="h-6 bg-stone-100 rounded-lg w-3/4 animate-pulse" />
+                    <div className="h-4 bg-stone-100 rounded-lg w-1/2 animate-pulse" />
+                  </div>
                 ))}
               </div>
             )}
 
             {/* Error state */}
             {isError && (
-              <div className="w-full h-64 flex flex-col items-center justify-center bg-red-50 rounded-2xl border border-red-100">
-                <p className="text-red-500 text-lg font-medium">Không tải được sản phẩm.</p>
+              <div className="w-full h-64 flex flex-col items-center justify-center bg-red-50 rounded-2xl border border-red-100 border-dashed">
+                <p className="text-red-500 text-lg font-medium">
+                  Không thể tải danh sách sản phẩm.
+                </p>
                 <button
-                  onClick={handleClearFilters}
+                  onClick={() => window.location.reload()}
                   className="mt-4 px-6 py-2 bg-green-700 text-white rounded-full font-bold text-sm shadow-sm hover:bg-green-800 transition"
                 >
                   Thử lại
@@ -207,40 +249,49 @@ export default function ProductsPage() {
                 {products.length > 0 ? (
                   <>
                     <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-                      {products.map((product) => {
-                        const primaryImage = product.images?.find((img) => img.isPrimary);
-                        const defaultVariant =
-                          product.variants?.find((v) => v.isDefault) ?? product.variants?.[0];
-                        return (
-                          <ProductCard
-                            key={product.id}
-                            name={product.name}
-                            price={defaultVariant?.price ?? product.minPrice}
-                            oldPrice={defaultVariant?.comparePrice ?? undefined}
-                            rating={product.ratingAvg}
-                            reviewCount={product.totalReviews}
-                            image={primaryImage?.url ?? primaryImage?.thumbnailUrl ?? ''}
-                            ocopStar={product.ocopStar}
-                            location={product.province?.name}
-                            unit={product.unit}
-                          />
-                        );
-                      })}
+                      {products.map((product) => (
+                        <ProductCard
+                          key={product.id}
+                          name={product.name}
+                          slug={product.slug}
+                          price={product.minPrice}
+                          oldPrice={
+                            product.minPrice < product.maxPrice ? product.maxPrice : undefined
+                          }
+                          rating={product.ratingAvg}
+                          reviewCount={product.totalReviews}
+                          image={product.thumbnailUrl || ''}
+                          ocopStar={product.ocopStar}
+                          location={product.provinceName || product.province?.name}
+                          unit={product.unit}
+                          shopName={product.shopName}
+                          categoryName={product.categoryName}
+                          soldCount={product.soldCount}
+                        />
+                      ))}
                     </div>
-                    {totalPage > 1 && (
-                      <div className="mt-8">
-                        <ProductPagination />
-                      </div>
-                    )}
+                    <div className="mt-12">
+                      <ProductPagination
+                        currentPage={page + 1}
+                        totalPages={totalPage}
+                        onPageChange={(p) => setPage(p - 1)}
+                      />
+                    </div>
                   </>
                 ) : (
-                  <div className="w-full h-64 flex flex-col items-center justify-center bg-white rounded-2xl border border-stone-200 shadow-sm">
+                  <div className="w-full h-96 flex flex-col items-center justify-center bg-white rounded-3xl border border-stone-100 shadow-sm">
+                    <div className="w-20 h-20 bg-stone-50 rounded-full flex items-center justify-center mb-6">
+                      <Search className="w-8 h-8 text-stone-300" />
+                    </div>
                     <p className="text-stone-500 text-lg font-medium">
-                      Không tìm thấy sản phẩm nào phù hợp với bộ lọc.
+                      Chúng tôi không tìm thấy sản phẩm nào phù hợp.
+                    </p>
+                    <p className="text-stone-400 text-sm mt-1">
+                      Hãy thử điều chỉnh bộ lọc của bạn.
                     </p>
                     <button
                       onClick={handleClearFilters}
-                      className="mt-4 px-6 py-2 bg-green-700 text-white rounded-full font-bold text-sm shadow-sm hover:bg-green-800 transition"
+                      className="mt-8 px-8 py-3 bg-green-700 text-white rounded-2xl font-bold text-sm shadow-lg hover:bg-green-800 transition-all active:scale-95"
                     >
                       Xóa tất cả bộ lọc
                     </button>

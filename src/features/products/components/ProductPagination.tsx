@@ -1,15 +1,21 @@
 'use client';
 
-import { useState } from 'react';
 import { Pagination } from '@/components/ui/Pagination';
 
-export function ProductPagination() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 10;
+interface ProductPaginationProps {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}
 
+export function ProductPagination({
+  currentPage,
+  totalPages,
+  onPageChange,
+}: ProductPaginationProps) {
   return (
     <div className="mt-20">
-      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} />
     </div>
   );
 }
