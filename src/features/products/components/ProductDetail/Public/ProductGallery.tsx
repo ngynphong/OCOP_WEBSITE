@@ -40,9 +40,9 @@ export function ProductGallery({
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-4">
       {/* Main Display */}
-      <div className="w-full relative aspect-square rounded-[2.5rem] overflow-hidden bg-stone-50 border border-stone-100 shadow-sm group">
+      <div className="w-full relative aspect-square rounded-3xl overflow-hidden bg-stone-50 border border-stone-100 shadow-sm group">
         {activeMedia.type === 'VIDEO' ? (
           <video
             src={activeMedia.url}
@@ -59,15 +59,15 @@ export function ProductGallery({
             fill
             priority
             sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-contain p-8 group-hover:scale-105 transition-transform duration-1000 ease-out"
+            className="object-contain p-4 group-hover:scale-105 transition-transform duration-1000 ease-out"
           />
         )}
 
         {/* Badge Overlay */}
-        <div className="absolute top-6 left-6">
-          <div className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-2xl shadow-sm border border-stone-100 flex items-center gap-2">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            <span className="text-[10px] font-black uppercase tracking-widest text-stone-900">
+        <div className="absolute top-4 left-4">
+          <div className="bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-xl shadow-sm border border-stone-100 flex items-center gap-1.5">
+            <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+            <span className="text-[9px] font-black uppercase tracking-widest text-stone-900">
               Premium OCOP
             </span>
           </div>
@@ -81,9 +81,9 @@ export function ProductGallery({
           <button
             onClick={() => setActiveMedia({ type: 'VIDEO', url: videoUrl })}
             className={cn(
-              'relative w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all duration-300 group',
+              'relative w-14 h-14 rounded-xl overflow-hidden border-2 transition-all duration-300 group',
               activeMedia.type === 'VIDEO'
-                ? 'border-green-600 ring-4 ring-green-50 shadow-lg'
+                ? 'border-green-600 ring-4 ring-green-50 shadow-md'
                 : 'border-transparent bg-stone-100 hover:border-stone-200',
             )}
           >
@@ -102,9 +102,9 @@ export function ProductGallery({
             key={image.id}
             onClick={() => setActiveMedia({ type: 'IMAGE', url: image.url, id: image.id })}
             className={cn(
-              'relative w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all duration-300',
+              'relative w-14 h-14 rounded-xl overflow-hidden border-2 transition-all duration-300',
               activeMedia.type === 'IMAGE' && activeMedia.id === image.id
-                ? 'border-green-600 ring-4 ring-green-50 shadow-lg'
+                ? 'border-green-600 ring-4 ring-green-50 shadow-md'
                 : 'border-transparent bg-stone-50 hover:border-stone-200',
             )}
           >

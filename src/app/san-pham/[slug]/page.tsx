@@ -106,13 +106,13 @@ export default function ProductDetailPage() {
       {/* Sticky Bottom Bar for Mobile */}
       <StickyBottomCTA price={product.variants[0]?.price || product.minPrice} />
 
-      <main className="max-w-[1440px] mx-auto px-6 py-6 md:py-10">
+      <main className="max-w-7xl mx-auto px-6 py-6 md:py-8">
         <div className="mb-8">
           <Breadcrumb items={breadcrumbItems} />
         </div>
 
         {/* Hero Section: Above the Fold */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 mb-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-12 items-start">
           <div className="lg:col-span-7">
             <ProductGallery images={product.images} name={product.name} />
           </div>
@@ -137,14 +137,14 @@ export default function ProductDetailPage() {
 
         {/* Related Products Section */}
         {relatedProducts.length > 0 && (
-          <div className="mt-16">
-            <section className="flex flex-col gap-8">
-              <div className="flex items-end justify-between border-b border-stone-100 pb-6">
-                <div className="flex flex-col gap-1.5">
+          <div className="mt-12">
+            <section className="flex flex-col gap-6">
+              <div className="flex items-end justify-between border-b border-stone-100 pb-5">
+                <div className="flex flex-col gap-1">
                   <span className="text-green-700 font-black uppercase tracking-[0.2em] text-[10px]">
                     Đề xuất cho bạn
                   </span>
-                  <h2 className="text-2xl font-black text-stone-900 tracking-tight">
+                  <h2 className="text-xl font-black text-stone-900 tracking-tight">
                     Sản phẩm liên quan
                   </h2>
                 </div>
@@ -179,16 +179,16 @@ export default function ProductDetailPage() {
         )}
 
         {/* Cross-selling Sections */}
-        <div className="mt-16 flex flex-col gap-16 pb-16">
+        <div className="mt-12 flex flex-col gap-12 pb-12">
           {/* Same Shop Products */}
           {sameShopResp?.data?.items && sameShopResp.data.items.length > 1 && (
-            <section className="flex flex-col gap-8">
-              <div className="flex items-end justify-between border-b border-stone-100 pb-6">
-                <div className="flex flex-col gap-2">
+            <section className="flex flex-col gap-6">
+              <div className="flex items-end justify-between border-b border-stone-100 pb-5">
+                <div className="flex flex-col gap-1">
                   <span className="text-green-700 font-black uppercase tracking-[0.2em] text-[10px]">
                     Sản phẩm liên quan
                   </span>
-                  <h2 className="text-2xl font-black text-stone-900 tracking-tighter">
+                  <h2 className="text-xl font-black text-stone-900 tracking-tighter">
                     Từ cơ sở {product.shop.name}
                   </h2>
                 </div>
@@ -226,13 +226,13 @@ export default function ProductDetailPage() {
 
           {/* Same Province Products */}
           {sameProvinceResp?.data?.items && sameProvinceResp.data.items.length > 1 && (
-            <section className="flex flex-col gap-8">
-              <div className="flex items-end justify-between border-b border-stone-100 pb-6">
-                <div className="flex flex-col gap-2">
+            <section className="flex flex-col gap-6">
+              <div className="flex items-end justify-between border-b border-stone-100 pb-5">
+                <div className="flex flex-col gap-1">
                   <span className="text-amber-600 font-black uppercase tracking-[0.2em] text-[10px]">
                     Đặc sản tỉnh nhà
                   </span>
-                  <h2 className="text-2xl font-black text-stone-900 tracking-tighter">
+                  <h2 className="text-xl font-black text-stone-900 tracking-tighter">
                     Sản phẩm từ {product.province?.name}
                   </h2>
                 </div>
