@@ -11,6 +11,10 @@ import {
 import { Product, ProductStatus, ProductListParams } from '@/features/products/types/productTypes';
 import { Button } from '@/components/ui/AppButton';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
+import { FlashSaleManagementTab } from '@/features/flash-sale/components/FlashSaleManagementTab';
+import { FlashSaleFormDrawer } from '@/features/flash-sale/components/FlashSaleFormDrawer';
+import { FiZap } from 'react-icons/fi';
+import { cn } from '@/lib/utils';
 
 // ─── Status config ────────────────────────────────────────────────────────────
 
@@ -36,6 +40,9 @@ export default function SellerProductsPage() {
   const router = useRouter();
   const [params, setParams] = useState<ProductListParams>({ page: 0, size: 20 });
   const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
+  const [activeTab, setActiveTab] = useState<'PRODUCTS' | 'FLASH_SALE'>('PRODUCTS');
+  const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
+  const [isFlashSaleDrawerOpen, setIsFlashSaleDrawerOpen] = useState(false);
 
   const { data, isPending, isError } = useSellerProductsQuery(params);
   const {
@@ -59,6 +66,16 @@ export default function SellerProductsPage() {
     setConfirmDelete(null);
   };
 
+  const toggleProductSelection = (product: Product) => {
+    setSelectedProducts((prev) =>
+      prev.find((p) => p.id === product.id)
+        ? prev.filter((p) => p.id !== product.id)
+        : [...prev, product],
+    );
+  };
+
+  const isSelected = (id: number) => selectedProducts.some((p) => p.id === id);
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -77,25 +94,64 @@ export default function SellerProductsPage() {
       </div>
 
       {/* Filter tabs */}
-      <div className="flex flex-wrap gap-2">
-        {(
-          [undefined, 'DRAFT', 'PENDING_REVIEW', 'APPROVED', 'REJECTED'] as (
-            | ProductStatus
-            | undefined
-          )[]
-        ).map((s) => (
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-wrap gap-2">
           <button
-            key={s ?? 'all'}
-            onClick={() => setParams((p) => ({ ...p, status: s, page: 0 }))}
-            className={`px-4 py-1.5 rounded-full text-xs font-bold border transition-all ${
-              params.status === s
-                ? 'bg-linear-to-r from-green-600 to-emerald-600 text-white'
-                : 'bg-white text-stone-500 border-stone-200 hover:border-emerald-300'
+            onClick={() => setActiveTab('PRODUCTS')}
+            className={`px-6 py-2 rounded-2xl text-xs font-black uppercase tracking-widest border transition-all ${
+              activeTab === 'PRODUCTS'
+                ? 'bg-green-600 text-white border-green-600 shadow-lg shadow-green-600/20'
+                : 'bg-white text-stone-500 border-stone-200 hover:border-stone-400'
             }`}
           >
-            {s ? STATUS_LABELS[s] : 'Tất cả'}
+            Sản phẩm của tôi
           </button>
-        ))}
+          <button
+            onClick={() => setActiveTab('FLASH_SALE')}
+            className={`px-6 py-2 rounded-2xl text-xs font-black uppercase tracking-widest border transition-all flex items-center gap-2 ${
+              activeTab === 'FLASH_SALE'
+                ? 'bg-red-600 text-white border-red-600 shadow-lg shadow-red-600/20'
+                : 'bg-white text-stone-500 border-stone-200 hover:border-red-400 hover:text-red-500'
+            }`}
+          >
+            <FiZap className={activeTab === 'FLASH_SALE' ? 'fill-current' : ''} />
+            Flash Sale
+          </button>
+        </div>
+
+        {activeTab === 'PRODUCTS' && (
+          <div className="flex items-center gap-3">
+            {selectedProducts.length > 0 && (
+              <button
+                onClick={() => setIsFlashSaleDrawerOpen(true)}
+                className="flex items-center gap-2 px-6 py-2 bg-red-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-red-600/20 hover:bg-red-700 transition-all animate-in slide-in-from-right-4"
+              >
+                <FiZap className="fill-current" />
+                Flash Sale ({selectedProducts.length})
+              </button>
+            )}
+            <div className="flex flex-wrap gap-2">
+              {(
+                [undefined, 'DRAFT', 'PENDING_REVIEW', 'APPROVED', 'REJECTED'] as (
+                  | ProductStatus
+                  | undefined
+                )[]
+              ).map((s) => (
+                <button
+                  key={s ?? 'all'}
+                  onClick={() => setParams((p) => ({ ...p, status: s, page: 0 }))}
+                  className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider border transition-all ${
+                    params.status === s
+                      ? 'bg-emerald-100 text-emerald-700 border-emerald-200 shadow-sm'
+                      : 'bg-white text-stone-400 border-stone-100 hover:border-emerald-300'
+                  }`}
+                >
+                  {s ? STATUS_LABELS[s] : 'Tất cả trạng thái'}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Loading */}
@@ -114,8 +170,10 @@ export default function SellerProductsPage() {
         </div>
       )}
 
-      {/* Product list */}
-      {!isPending && !isError && (
+      {/* Tab Content */}
+      {activeTab === 'FLASH_SALE' ? (
+        <FlashSaleManagementTab role="SELLER" />
+      ) : (
         <div className="space-y-3">
           {products.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-48 bg-stone-50 rounded-2xl border border-dashed border-stone-200">
@@ -139,8 +197,23 @@ export default function SellerProductsPage() {
               return (
                 <div
                   key={product.id}
-                  className="flex flex-col sm:flex-row sm:items-start gap-4 p-5 bg-white rounded-2xl border border-stone-100 hover:border-emerald-100 hover:shadow-md transition duration-300"
+                  className={cn(
+                    'flex flex-col sm:flex-row sm:items-start gap-4 p-5 bg-white rounded-2xl border transition duration-300 relative',
+                    isSelected(product.id)
+                      ? 'border-emerald-500 shadow-md ring-1 ring-emerald-500/20'
+                      : 'border-stone-100 hover:border-emerald-200',
+                  )}
                 >
+                  {/* Selection Checkbox */}
+                  <div className="absolute left-3 top-3 z-10">
+                    <input
+                      type="checkbox"
+                      checked={isSelected(product.id)}
+                      onChange={() => toggleProductSelection(product)}
+                      className="w-4 h-4 rounded border-stone-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                    />
+                  </div>
+
                   {/* Thumbnail */}
                   <div className="relative w-full sm:w-24 sm:h-24 aspect-square sm:aspect-auto rounded-xl bg-stone-50 overflow-hidden shrink-0 border border-stone-100">
                     {product?.thumbnailUrl ? (
@@ -229,6 +302,20 @@ export default function SellerProductsPage() {
 
                       {/* Actions */}
                       <div className="flex items-center gap-1.5 shrink-0 bg-stone-50 p-1.5 rounded-xl border border-stone-100">
+                        {/* Flash Sale Action */}
+                        {product.status === 'APPROVED' && (
+                          <button
+                            onClick={() => {
+                              setSelectedProducts([product]);
+                              setIsFlashSaleDrawerOpen(true);
+                            }}
+                            title="Tham gia Flash Sale"
+                            className="p-2 rounded-lg text-red-500 hover:bg-red-50 hover:shadow-sm transition"
+                          >
+                            <FiZap size={16} className="fill-current" />
+                          </button>
+                        )}
+
                         <button
                           onClick={() => router.push(`/dashboard/san-pham/${product.id}`)}
                           title="Chỉnh sửa"
@@ -301,6 +388,16 @@ export default function SellerProductsPage() {
           )}
         </div>
       )}
+
+      {/* Flash Sale Registration Drawer */}
+      <FlashSaleFormDrawer
+        isOpen={isFlashSaleDrawerOpen}
+        onClose={() => {
+          setIsFlashSaleDrawerOpen(false);
+          setSelectedProducts([]);
+        }}
+        products={selectedProducts}
+      />
 
       {/* Delete confirmation modal */}
       <ConfirmModal
