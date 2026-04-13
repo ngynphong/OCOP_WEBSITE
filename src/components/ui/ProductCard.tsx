@@ -1,6 +1,16 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { CiShop } from 'react-icons/ci';
+import { Heart } from 'lucide-react';
+import { useAppSelector } from '@/store/hooks';
+import {
+  useWishlistStatus,
+  useAddToWishlist,
+  useRemoveFromWishlist,
+} from '@/features/wishlist/hooks/useWishlist';
+import toast from 'react-hot-toast';
 
 interface ProductCardProps {
   name: string;
@@ -16,6 +26,7 @@ interface ProductCardProps {
   shopName?: string;
   categoryName?: string;
   soldCount?: number;
+  id: number;
 }
 
 export function ProductCard({
@@ -26,13 +37,37 @@ export function ProductCard({
   rating,
   // reviewCount,
   image,
-  ocopStar,
+  // ocopStar,
   // unit,
   location,
   shopName,
   categoryName,
   soldCount,
+  id,
 }: ProductCardProps) {
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { data: statusData } = useWishlistStatus([id]);
+  const addToWishlist = useAddToWishlist();
+  const removeFromWishlist = useRemoveFromWishlist();
+
+  const isWishlisted = !!statusData?.data?.[id];
+  const isLoading = addToWishlist.isPending || removeFromWishlist.isPending;
+
+  const handleWishlistClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!isAuthenticated) {
+      toast.error('Vui lòng đăng nhập để sử dụng tính năng này');
+      return;
+    }
+
+    if (isWishlisted) {
+      removeFromWishlist.mutate(id);
+    } else {
+      addToWishlist.mutate(id);
+    }
+  };
   return (
     <Link href={`/san-pham/${slug}`} className="block group">
       <div className="w-full flex flex-col justify-start items-start gap-4 cursor-pointer">
@@ -55,13 +90,19 @@ export function ProductCard({
                 </span>
               </div>
             )}
-            {ocopStar && (
-              <div className="px-3 py-1.5 bg-lime-500/80 backdrop-blur-md rounded-full shadow-sm border border-lime-400/50">
-                <span className="text-white text-[11px] font-bold tracking-widest uppercase">
-                  OCOP {ocopStar}★
-                </span>
-              </div>
-            )}
+          </div>
+
+          {/* Top-right Heart Button */}
+          <div className="absolute top-4 right-4 z-10">
+            <button
+              disabled={isLoading}
+              onClick={handleWishlistClick}
+              className={`p-2 rounded-full backdrop-blur-md transition-all duration-300 ${
+                isWishlisted ? 'bg-red-50 text-red-500' : 'bg-black/10 text-white hover:bg-black/20'
+              } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-current' : ''}`} />
+            </button>
           </div>
         </div>
 

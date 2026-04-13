@@ -14,6 +14,7 @@ export function CategoryShowcase() {
       rating: 5,
       reviewCount: 0,
       slug: 'cai-chip-organic',
+      id: 201,
     },
     {
       name: 'Cải Kale T.Canh',
@@ -25,6 +26,7 @@ export function CategoryShowcase() {
       rating: 5,
       reviewCount: 0,
       slug: 'cai-kale-tuyet-canh',
+      id: 202,
     },
     {
       name: 'Bó Xôi Organic',
@@ -36,6 +38,7 @@ export function CategoryShowcase() {
       rating: 5,
       reviewCount: 0,
       slug: 'bo-xoi-organic',
+      id: 203,
     },
     {
       name: 'Xà Lách Lolo Tím',
@@ -47,6 +50,7 @@ export function CategoryShowcase() {
       rating: 5,
       reviewCount: 0,
       slug: 'xa-lach-lolo-tim',
+      id: 204,
     },
   ];
 
@@ -80,6 +84,7 @@ export function CategoryShowcase() {
               rating={item.rating}
               reviewCount={item.reviewCount}
               slug={item.slug}
+              id={item.id}
             />
           ))}
         </div>

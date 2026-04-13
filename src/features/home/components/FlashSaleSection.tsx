@@ -80,6 +80,7 @@ export function FlashSaleSection() {
                     soldPercent={Math.round((item.qtySold / item.qtyLimit) * 100)}
                     image={item.thumbnailUrl}
                     slug={item.productSlug || item.variantId.toString()}
+                    productId={item.productId}
                     className="w-64 min-w-[16rem]"
                   />
                 </div>

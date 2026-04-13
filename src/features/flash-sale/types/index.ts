@@ -60,6 +60,7 @@ export interface FlashSaleItem {
   remainingQty: number;
   soldOut: boolean;
   productSlug?: string;
+  productId: number;
 }
 
 export interface FlashSale {

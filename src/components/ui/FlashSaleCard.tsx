@@ -1,7 +1,13 @@
 'use client';
 import Image from 'next/image';
 import { Heart, Star } from 'lucide-react';
-import { useState } from 'react';
+import { useAppSelector } from '@/store/hooks';
+import {
+  useWishlistStatus,
+  useAddToWishlist,
+  useRemoveFromWishlist,
+} from '@/features/wishlist/hooks/useWishlist';
+import toast from 'react-hot-toast';
 import Link from 'next/link';
 
 interface FlashSaleCardProps {
@@ -12,6 +18,7 @@ interface FlashSaleCardProps {
   soldPercent: number;
   image: string;
   slug: string;
+  productId: number;
   ocopRating?: number;
   className?: string;
 }
@@ -24,10 +31,33 @@ export function FlashSaleCard({
   soldPercent,
   image,
   slug,
+  productId,
   ocopRating = 4,
   className = '',
 }: FlashSaleCardProps) {
-  const [isWishlist, setIsWishlist] = useState(false);
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { data: statusData } = useWishlistStatus([productId]);
+  const addToWishlist = useAddToWishlist();
+  const removeFromWishlist = useRemoveFromWishlist();
+
+  const isWishlisted = !!statusData?.data?.[productId];
+  const isLoading = addToWishlist.isPending || removeFromWishlist.isPending;
+
+  const handleWishlistClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!isAuthenticated) {
+      toast.error('Vui lòng đăng nhập để sử dụng tính năng này');
+      return;
+    }
+
+    if (isWishlisted) {
+      removeFromWishlist.mutate(productId);
+    } else {
+      addToWishlist.mutate(productId);
+    }
+  };
 
   // Determine bar text and color based on sold percent
   const isAlmostSoldOut = soldPercent >= 80;
@@ -62,15 +92,13 @@ export function FlashSaleCard({
 
           <button
             suppressHydrationWarning
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsWishlist(!isWishlist);
-            }}
+            disabled={isLoading}
+            onClick={handleWishlistClick}
             className={`p-1.5 rounded-full backdrop-blur-md transition-all duration-300 ${
-              isWishlist ? 'bg-red-50 text-red-500' : 'bg-black/10 text-white hover:bg-black/20'
-            }`}
+              isWishlisted ? 'bg-red-50 text-red-500' : 'bg-black/10 text-white hover:bg-black/20'
+            } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            <Heart className={`w-4 h-4 ${isWishlist ? 'fill-current' : ''}`} />
+            <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-current' : ''}`} />
           </button>
         </div>
       </div>

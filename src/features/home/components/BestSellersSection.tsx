@@ -13,6 +13,7 @@ export function BestSellersSection() {
       ocopStar: 5,
       location: 'Đắk Lắk',
       slug: 'tieu-den-huu-co-dak-lak',
+      id: 101,
     },
     {
       name: 'Mật ong hoa bạc hà Mèo Vạc',
@@ -24,6 +25,7 @@ export function BestSellersSection() {
       ocopStar: 4,
       location: 'Hà Giang',
       slug: 'mat-ong-hoa-bac-ha-meo-vac',
+      id: 102,
     },
     {
       name: 'Hạt điều rang muối Bình Phước',
@@ -35,6 +37,7 @@ export function BestSellersSection() {
       ocopStar: 5,
       location: 'Bình Phước',
       slug: 'hat-dieu-rang-muoi-binh-phuoc',
+      id: 103,
     },
     {
       name: 'Cà phê Robusta Buôn Ma Thuột',
@@ -46,6 +49,7 @@ export function BestSellersSection() {
       ocopStar: 4,
       location: 'Đắk Lắk',
       slug: 'ca-phe-robusta-buon-ma-thuot',
+      id: 104,
     },
     {
       name: 'Dầu dừa tinh khiết Bến Tre',
@@ -57,6 +61,7 @@ export function BestSellersSection() {
       ocopStar: 3,
       location: 'Bến Tre',
       slug: 'dau-dua-tinh-khiet-ben-tre',
+      id: 105,
     },
   ];
 
@@ -93,6 +98,7 @@ export function BestSellersSection() {
             ocopStar={product.ocopStar}
             location={product.location}
             slug={product.slug}
+            id={product.id}
           />
         ))}
       </div>

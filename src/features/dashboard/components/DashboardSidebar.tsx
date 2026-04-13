@@ -11,6 +11,7 @@ import {
   FiChevronRight,
   FiTag,
   FiPackage,
+  FiHeart,
 } from 'react-icons/fi';
 import { FaWarehouse } from 'react-icons/fa';
 import { useAuth } from '@/features/auth/hooks/useAuth';
@@ -71,6 +72,13 @@ const DashboardSidebar = () => {
       label: 'Địa chỉ nhận hàng',
       icon: FiMapPin,
       href: '/dashboard/dia-chi',
+      roles: ['USER'],
+    },
+    {
+      id: 'wishlist',
+      label: 'Sản phẩm yêu thích',
+      icon: FiHeart,
+      href: '/dashboard/san-pham-yeu-thich',
       roles: ['USER'],
     },
 

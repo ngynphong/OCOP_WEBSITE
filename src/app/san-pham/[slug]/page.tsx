@@ -160,6 +160,7 @@ export default function ProductDetailPage() {
                 {relatedProducts.slice(0, 4).map((p) => (
                   <ProductCard
                     key={p.id}
+                    id={p.id}
                     name={p.name}
                     slug={p.slug}
                     price={p.minPrice}
@@ -207,6 +208,7 @@ export default function ProductDetailPage() {
                   .map((p) => (
                     <ProductCard
                       key={p.id}
+                      id={p.id}
                       name={p.name}
                       slug={p.slug}
                       price={p.minPrice}
@@ -251,6 +253,7 @@ export default function ProductDetailPage() {
                   .map((p) => (
                     <ProductCard
                       key={p.id}
+                      id={p.id}
                       name={p.name}
                       slug={p.slug}
                       price={p.minPrice}

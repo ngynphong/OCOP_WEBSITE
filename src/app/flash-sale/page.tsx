@@ -167,6 +167,7 @@ export default function FlashSalePage() {
                           soldPercent={Math.round((item.qtySold / item.qtyLimit) * 100)}
                           image={item.thumbnailUrl}
                           slug={item.productSlug || item.variantId.toString()}
+                          productId={item.productId}
                           className="w-full"
                         />
                       ))}
@@ -232,6 +233,7 @@ export default function FlashSalePage() {
                           soldPercent={0}
                           image={item.thumbnailUrl}
                           slug={item.productSlug || item.variantId.toString()}
+                          productId={item.productId}
                           className="w-full"
                         />
                       ))}
