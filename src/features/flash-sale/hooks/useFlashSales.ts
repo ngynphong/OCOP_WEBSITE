@@ -1,18 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
 import { flashSaleApi } from '../api/flashSaleApi';
 
-export const useActiveFlashSales = () => {
+export const useActiveFlashSales = (categoryId?: number) => {
   return useQuery({
-    queryKey: ['flash-sales', 'active'],
-    queryFn: () => flashSaleApi.getActiveFlashSales(),
+    queryKey: ['flash-sales', 'active', categoryId],
+    queryFn: () => flashSaleApi.getActiveFlashSales(categoryId),
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 };
 
-export const useUpcomingFlashSales = () => {
+export const useUpcomingFlashSales = (categoryId?: number) => {
   return useQuery({
-    queryKey: ['flash-sales', 'upcoming'],
-    queryFn: () => flashSaleApi.getUpcomingFlashSales(),
+    queryKey: ['flash-sales', 'upcoming', categoryId],
+    queryFn: () => flashSaleApi.getUpcomingFlashSales(categoryId),
     staleTime: 1000 * 60 * 5,
   });
 };

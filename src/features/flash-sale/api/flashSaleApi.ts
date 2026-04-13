@@ -9,11 +9,11 @@ import {
 
 export const flashSaleApi = {
   // ─── Public API ────────────────────────────────────────────────────────────
-  getActiveFlashSales: (): Promise<FlashSaleListResponse> =>
-    publicAxiosClient.get('/flash-sales/active'),
+  getActiveFlashSales: (categoryId?: number): Promise<FlashSaleListResponse> =>
+    publicAxiosClient.get('/flash-sales/active', { params: { categoryId } }),
 
-  getUpcomingFlashSales: (): Promise<FlashSaleListResponse> =>
-    publicAxiosClient.get('/flash-sales/upcoming'),
+  getUpcomingFlashSales: (categoryId?: number): Promise<FlashSaleListResponse> =>
+    publicAxiosClient.get('/flash-sales/upcoming', { params: { categoryId } }),
 
   getFlashSaleDetail: (id: number): Promise<FlashSaleDetailResponse> =>
     publicAxiosClient.get(`/flash-sales/${id}`),

@@ -31,8 +31,8 @@ export function FlashSaleSection() {
         {/* Premium Banner Background Overlay */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/flash-sale-banner.png"
-            alt="Flash Sale Banner"
+            src={activeFlashSale?.bannerUrl || '/images/flash-sale-banner-v2.png'}
+            alt={activeFlashSale?.name || 'Flash Sale Banner'}
             fill
             className="object-cover opacity-20"
           />
@@ -79,6 +79,8 @@ export function FlashSaleSection() {
                     discountPercent={item.discountPercent}
                     soldPercent={Math.round((item.qtySold / item.qtyLimit) * 100)}
                     image={item.thumbnailUrl}
+                    slug={item.productSlug || item.variantId.toString()}
+                    className="w-64 min-w-[16rem]"
                   />
                 </div>
               ))}

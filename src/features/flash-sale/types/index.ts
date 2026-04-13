@@ -59,6 +59,7 @@ export interface FlashSaleItem {
   qtySold: number;
   remainingQty: number;
   soldOut: boolean;
+  productSlug?: string;
 }
 
 export interface FlashSale {

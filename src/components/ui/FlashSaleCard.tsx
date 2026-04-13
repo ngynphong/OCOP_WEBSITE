@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import { Heart, Star } from 'lucide-react';
 import { useState } from 'react';
+import Link from 'next/link';
 
 interface FlashSaleCardProps {
   name: string;
@@ -10,7 +11,9 @@ interface FlashSaleCardProps {
   discountPercent: number;
   soldPercent: number;
   image: string;
+  slug: string;
   ocopRating?: number;
+  className?: string;
 }
 
 export function FlashSaleCard({
@@ -20,7 +23,9 @@ export function FlashSaleCard({
   discountPercent,
   soldPercent,
   image,
+  slug,
   ocopRating = 4,
+  className = '',
 }: FlashSaleCardProps) {
   const [isWishlist, setIsWishlist] = useState(false);
 
@@ -29,7 +34,10 @@ export function FlashSaleCard({
   const barText = isAlmostSoldOut ? 'Sắp hết hàng' : `Đã bán ${soldPercent}%`;
 
   return (
-    <div className="group w-64 min-w-[16rem] h-84 relative bg-white rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col p-4 shrink-0 cursor-pointer border border-stone-100/50">
+    <Link
+      href={`/san-pham/${slug}`}
+      className={`group relative bg-white rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col p-4 cursor-pointer border border-stone-100/50 ${className}`}
+    >
       <div className="w-full relative rounded-xl overflow-hidden aspect-4/3 mb-3">
         <Image
           src={image || 'https://placehold.co/230x192'}
@@ -103,6 +111,6 @@ export function FlashSaleCard({
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
