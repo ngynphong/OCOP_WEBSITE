@@ -2,26 +2,36 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { wishlistApi } from '../api/wishlistApi';
 import { MoveToCartRequest } from '../types/wishlistTypes';
 import toast from 'react-hot-toast';
+import { useAppSelector } from '@/store/hooks';
 
-export const useWishlist = (pageNo = 0, pageSize = 10) => {
+export const useWishlist = (pageNo = 1, pageSize = 12) => {
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+
   return useQuery({
     queryKey: ['wishlist', pageNo, pageSize],
     queryFn: () => wishlistApi.getWishlist(pageNo, pageSize),
+    enabled: isAuthenticated,
   });
 };
 
 export const useWishlistCount = () => {
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+
   return useQuery({
     queryKey: ['wishlist-count'],
     queryFn: () => wishlistApi.getCount(),
+    enabled: isAuthenticated,
   });
 };
 
 export const useWishlistStatus = (productIds: number[]) => {
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+
   return useQuery({
-    queryKey: ['wishlist-status', productIds],
+    queryKey: ['wishlist-status', productIds.sort().join(',')],
     queryFn: () => wishlistApi.checkStatus(productIds),
-    enabled: productIds.length > 0,
+    enabled: isAuthenticated && productIds.length > 0,
+    staleTime: 60 * 1000,
   });
 };
 
@@ -61,7 +71,6 @@ export const useMoveToCart = () => {
     onSuccess: () => {
       toast.success('Đã chuyển vào giỏ hàng');
       queryClient.invalidateQueries({ queryKey: ['wishlist'] });
-      // Cần invalidate thêm query của giỏ hàng nếu có
       queryClient.invalidateQueries({ queryKey: ['cart'] });
     },
   });

@@ -16,7 +16,10 @@ import {
 } from '@/features/products/hooks/usePublicProducts';
 import { PublicProductListParams } from '@/features/products/types/productTypes';
 import { useDebounce } from '@/hooks/useDebounce';
+import { useWishlistStatus } from '@/features/wishlist/hooks/useWishlist';
+import { useAppSelector } from '@/store/hooks';
 
+const MAX_PRICE_LIMIT = 5000000;
 const PAGE_SIZE = 12;
 
 export default function ProductsPage() {
@@ -29,6 +32,7 @@ export default function ProductsPage() {
   const [maxPrice, setMaxPrice] = useState<number>(MAX_PRICE_LIMIT);
   const [sortBy, setSortBy] = useState('newest');
   const [page, setPage] = useState(0);
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
 
   // Debounce inputs to prevent excessive API calls
   const debouncedSearch = useDebounce(searchQuery, 500);
@@ -58,6 +62,11 @@ export default function ProductsPage() {
   const products = data?.data?.items ?? [];
   const totalElement = data?.data?.totalElement ?? 0;
   const totalPage = data?.data?.totalPage ?? 1;
+
+  // Batching Wishlist Status
+  const productIds = products.map((p) => p.id);
+  const { data: wishlistStatusData } = useWishlistStatus(isAuthenticated ? productIds : []);
+  const wishlistStatusMap = wishlistStatusData?.data || {};
 
   const handleClearFilters = () => {
     setSearchQuery('');
@@ -287,6 +296,7 @@ export default function ProductsPage() {
                           shopName={product.shopName}
                           categoryName={product.categoryName}
                           soldCount={product.soldCount}
+                          isWishlisted={!!wishlistStatusMap[product.id]}
                         />
                       ))}
                     </div>
@@ -326,4 +336,3 @@ export default function ProductsPage() {
     </div>
   );
 }
-const MAX_PRICE_LIMIT = 5000000;

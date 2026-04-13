@@ -5,6 +5,8 @@ import { usePublicProductsQuery } from '@/features/products/hooks/usePublicProdu
 import { ProductCard } from '@/components/ui/ProductCard';
 import { FiAlertCircle, FiBox } from 'react-icons/fi';
 import { Product } from '@/features/products/types/productTypes';
+import { useWishlistStatus } from '@/features/wishlist/hooks/useWishlist';
+import { useAppSelector } from '@/store/hooks';
 
 interface ShopProductsTabProps {
   shopSlug: string;
@@ -20,15 +22,22 @@ export const ShopProductsTab = ({ shopSlug }: ShopProductsTabProps) => {
     { enabled: !!shopSlug },
   );
 
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+
   // Safe data extraction based on PaginatedResponse interface (using 'items')
   const products: Product[] = data?.data?.items || [];
+
+  // Batching Wishlist Status
+  const productIds = products.map((p) => p.id);
+  const { data: wishlistStatusData } = useWishlistStatus(isAuthenticated ? productIds : []);
+  const wishlistStatusMap = wishlistStatusData?.data || {};
 
   if (isLoading) {
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 mt-8">
         {Array.from({ length: 8 }).map((_, i) => (
           <div key={i} className="animate-pulse flex flex-col gap-3">
-            <div className="w-full aspect-[4/5] bg-stone-100 rounded-[20px]" />
+            <div className="w-full aspect-4/5 bg-stone-100 rounded-[20px]" />
             <div className="h-4 bg-stone-100 rounded w-3/4" />
             <div className="h-4 bg-stone-100 rounded w-1/2" />
           </div>
@@ -77,6 +86,7 @@ export const ShopProductsTab = ({ shopSlug }: ShopProductsTabProps) => {
           shopName={product.shopName}
           categoryName={product.categoryName}
           soldCount={product.soldCount}
+          isWishlisted={!!wishlistStatusMap[product.id]}
         />
       ))}
     </div>

@@ -1,19 +1,23 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Star, MapPin, Package, ShieldCheck, ShoppingCart, Zap } from 'lucide-react';
+import { Star, MapPin, Package, ShieldCheck, ShoppingCart, Zap, Heart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Product, ProductVariant } from '@/features/products/types/productTypes';
 import { Button } from '@/components/ui/AppButton';
 import { OcopBadge } from './OcopBadge';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useAddToWishlist, useRemoveFromWishlist } from '@/features/wishlist/hooks/useWishlist';
+import { useAppSelector } from '@/store/hooks';
+import toast from 'react-hot-toast';
 
 interface ProductInfoProps {
   product: Product;
+  isWishlisted?: boolean;
 }
 
-export function ProductInfo({ product }: ProductInfoProps) {
+export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps) {
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(
     product.variants.find((v) => v.isDefault) || product.variants[0] || null,
   );
@@ -22,18 +26,50 @@ export function ProductInfo({ product }: ProductInfoProps) {
   const oldPrice = selectedVariant?.comparePrice ?? null;
   const discount =
     oldPrice && price < oldPrice ? Math.round(((oldPrice - price) / oldPrice) * 100) : 0;
+
   const router = useRouter();
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const addToWishlist = useAddToWishlist();
+  const removeFromWishlist = useRemoveFromWishlist();
+  const isWishlistLoading = addToWishlist.isPending || removeFromWishlist.isPending;
+
+  const handleWishlistClick = () => {
+    if (!isAuthenticated) {
+      toast.error('Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích');
+      return;
+    }
+    if (isWishlisted) {
+      removeFromWishlist.mutate(product.id);
+    } else {
+      addToWishlist.mutate(product.id);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-5 lg:sticky lg:top-24">
       {/* Name & Badge Area */}
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-1">
-          <p className="text-stone-400 font-black uppercase tracking-[0.3em] text-[9px]">
+          <p className="text-stone-400 font-black uppercase tracking-[0.3em] text-[10px]">
             {product.category?.name || 'Sản phẩm OCOP'}
           </p>
-          <h1 className="text-2xl md:text-3xl font-black text-stone-900 leading-[1.1] tracking-tight">
-            {product.name}
-          </h1>
+          <div className="flex justify-between items-start gap-4">
+            <h1 className="text-2xl md:text-3xl font-black text-stone-900 leading-[1.1] tracking-tight">
+              {product.name}
+            </h1>
+            <button
+              onClick={handleWishlistClick}
+              disabled={isWishlistLoading}
+              className={cn(
+                'p-3 rounded-2xl border transition-all active:scale-95',
+                isWishlisted
+                  ? 'bg-red-50 border-red-100 text-red-500 shadow-sm'
+                  : 'bg-stone-50 border-stone-100 text-stone-400 hover:text-red-500 hover:bg-red-50/50',
+              )}
+            >
+              <Heart className={cn('w-6 h-6', isWishlisted && 'fill-current')} />
+            </button>
+          </div>
           <p className="text-base font-bold text-stone-500 mt-0.5">
             Từ {product.productionArea || product.province?.name || 'Vùng nguyên liệu sạch'}
           </p>

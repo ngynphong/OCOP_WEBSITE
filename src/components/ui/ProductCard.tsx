@@ -1,16 +1,13 @@
 'use client';
 
+import { memo, useMemo, useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { CiShop } from 'react-icons/ci';
 import { Heart } from 'lucide-react';
 import { useAppSelector } from '@/store/hooks';
-import {
-  useWishlistStatus,
-  useAddToWishlist,
-  useRemoveFromWishlist,
-} from '@/features/wishlist/hooks/useWishlist';
+import { useAddToWishlist, useRemoveFromWishlist } from '@/features/wishlist/hooks/useWishlist';
 import toast from 'react-hot-toast';
+import { cn } from '@/lib/utils';
 
 interface ProductCardProps {
   name: string;
@@ -18,8 +15,8 @@ interface ProductCardProps {
   price: number;
   oldPrice?: number;
   rating: number;
-  reviewCount: number;
-  image: string | null; // Allow null for safety
+  reviewCount?: number;
+  image: string | null;
   ocopStar?: number;
   unit?: string;
   location?: string;
@@ -27,38 +24,44 @@ interface ProductCardProps {
   categoryName?: string;
   soldCount?: number;
   id: number;
+  isWishlisted?: boolean;
 }
 
-export function ProductCard({
+export const ProductCard = memo(function ProductCard({
   name,
   slug,
   price,
   oldPrice,
   rating,
-  // reviewCount,
   image,
-  // ocopStar,
-  // unit,
   location,
   shopName,
-  categoryName,
-  soldCount,
   id,
+  isWishlisted = false,
 }: ProductCardProps) {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
-  const { data: statusData } = useWishlistStatus([id]);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Hook mutations cho wishlist
   const addToWishlist = useAddToWishlist();
   const removeFromWishlist = useRemoveFromWishlist();
 
-  const isWishlisted = !!statusData?.data?.[id];
   const isLoading = addToWishlist.isPending || removeFromWishlist.isPending;
+
+  // Xử lý Hydration cho các hàm liên quan đến định dạng dữ liệu local
+  useEffect(() => {
+    const handle = requestAnimationFrame(() => {
+      setIsMounted(true);
+    });
+    return () => cancelAnimationFrame(handle);
+  }, []);
 
   const handleWishlistClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
     if (!isAuthenticated) {
-      toast.error('Vui lòng đăng nhập để sử dụng tính năng này');
+      toast.error('Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích');
       return;
     }
 
@@ -68,103 +71,119 @@ export function ProductCard({
       addToWishlist.mutate(id);
     }
   };
+
+  // Tính toán % giảm giá và format tiền tệ
+  const discountPercent = useMemo(() => {
+    if (oldPrice && price < oldPrice) {
+      return Math.round(((oldPrice - price) / oldPrice) * 100);
+    }
+    return null;
+  }, [price, oldPrice]);
+
+  const formattedPrice = useMemo(() => {
+    if (!isMounted) return '';
+    return price.toLocaleString('vi-VN');
+  }, [price, isMounted]);
+
+  const formattedOldPrice = useMemo(() => {
+    if (!isMounted || !oldPrice) return '';
+    return oldPrice.toLocaleString('vi-VN');
+  }, [oldPrice, isMounted]);
+
   return (
     <Link href={`/san-pham/${slug}`} className="block group">
       <div className="w-full flex flex-col justify-start items-start gap-4 cursor-pointer">
-        <div className="w-full relative rounded-[20px] overflow-hidden aspect-4/5 bg-stone-100">
+        {/* Product Image Wrapper */}
+        <div className="w-full aspect-4/5 md:aspect-5/6 relative bg-stone-100 rounded-[24px] md:rounded-[40px] overflow-hidden shadow-sm group-hover:shadow-xl transition-all duration-500 border border-stone-100">
           <Image
             src={image || '/images/fresh-green-produce.jpg'}
             alt={name}
             fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+            className="object-cover transition-transform duration-700 group-hover:scale-110"
           />
 
           {/* Top-left Badges */}
           <div className="absolute top-4 left-4 flex flex-col gap-2">
-            {oldPrice && price < oldPrice && (
+            {discountPercent && (
               <div className="px-3 py-1.5 bg-white/20 backdrop-blur-md rounded-full border border-white/10 shadow-sm overflow-hidden relative">
                 <div className="absolute inset-0 bg-black/10 mix-blend-overlay"></div>
                 <span className="relative z-10 text-white text-[11px] font-bold tracking-widest uppercase">
-                  {Math.round(((oldPrice - price) / oldPrice) * 100)}% OFF
+                  {discountPercent}% OFF
                 </span>
               </div>
             )}
           </div>
 
-          {/* Top-right Heart Button */}
-          <div className="absolute top-4 right-4 z-10">
+          {/* Overlay Actions */}
+          <div className="absolute top-4 right-4 z-20">
             <button
               disabled={isLoading}
               onClick={handleWishlistClick}
-              className={`p-2 rounded-full backdrop-blur-md transition-all duration-300 ${
-                isWishlisted ? 'bg-red-50 text-red-500' : 'bg-black/10 text-white hover:bg-black/20'
-              } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+              className={cn(
+                'p-2 rounded-full backdrop-blur-md transition-all duration-300 active:scale-90',
+                isWishlisted
+                  ? 'bg-red-50 text-red-500'
+                  : 'bg-black/10 text-white hover:bg-black/20',
+                isLoading && 'opacity-50 cursor-not-allowed',
+              )}
             >
-              <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-current' : ''}`} />
+              <Heart className={cn('w-4 h-4', isWishlisted && 'fill-current')} />
             </button>
           </div>
         </div>
 
         {/* Content Below Image */}
-        <div className="w-full flex flex-col gap-1.5 px-1">
+        <div className="w-full flex flex-col gap-1.5 px-1 text-left">
           <div className="w-full flex justify-between items-start gap-3">
             <h3 className="text-stone-900 text-sm md:text-base font-bold font-sans uppercase tracking-wide leading-tight line-clamp-1">
               {name}
             </h3>
             <div className="flex items-center gap-1.5 shrink-0 mt-1">
-              <svg
-                className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                stroke="none"
-              >
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
+              <StarIcon />
               <span className="text-stone-600 text-xs font-bold leading-none">
                 {rating?.toFixed(1) || '0.0'}
               </span>
             </div>
           </div>
-          <div className="flex flex-col gap-0.5">
-            <p className="text-stone-500 italic text-[10px] font-bold font-sans uppercase tracking-wider line-clamp-1">
-              {categoryName} • {location}
-            </p>
-            {shopName && (
-              <div className="flex items-center justify-start text-green-700 text-[10px] font-bold font-sans uppercase tracking-tight line-clamp-1">
-                <span className="mr-1">
-                  <CiShop size={12} />
-                </span>{' '}
-                {shopName}
-              </div>
-            )}
+
+          <div className="flex items-center gap-2">
+            <span className="text-stone-400 text-[10px] font-black uppercase tracking-widest">
+              {shopName || 'Nhà Cung Cấp'}
+            </span>
+            <div className="w-1 h-1 rounded-full bg-stone-300"></div>
+            <span className="text-stone-400 text-[10px] font-black uppercase tracking-widest">
+              {location || 'Việt Nam'}
+            </span>
           </div>
 
           <div className="w-full flex items-center justify-between mt-1">
             <div className="flex items-baseline gap-2">
-              <span
-                suppressHydrationWarning
-                className="text-stone-900 text-sm font-bold font-sans uppercase tracking-wider"
-              >
-                {price.toLocaleString('vi-VN')}₫
+              <span className="text-stone-900 text-sm font-bold font-sans uppercase tracking-wider">
+                {isMounted ? `${formattedPrice}₫` : '...'}
               </span>
               {oldPrice && oldPrice > price && (
-                <span
-                  suppressHydrationWarning
-                  className="text-stone-400 text-[10px] font-medium font-sans uppercase tracking-wider line-through"
-                >
-                  {oldPrice.toLocaleString('vi-VN')}₫
+                <span className="text-stone-400 text-[10px] font-medium font-sans uppercase tracking-wider line-through">
+                  {isMounted ? `${formattedOldPrice}₫` : ''}
                 </span>
               )}
             </div>
-            {soldCount !== undefined && (
-              <span className="text-[10px] text-stone-400 font-bold uppercase tracking-tighter">
-                Đã bán {soldCount}
-              </span>
-            )}
           </div>
         </div>
       </div>
     </Link>
+  );
+});
+
+// Hoisted SVG to avoid re-creation
+function StarIcon() {
+  return (
+    <svg
+      className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      stroke="none"
+    >
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+    </svg>
   );
 }

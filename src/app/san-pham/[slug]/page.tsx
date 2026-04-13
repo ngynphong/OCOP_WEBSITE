@@ -19,9 +19,12 @@ import { Footer } from '@/components/layout/Footer';
 import { Loader2, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { Product } from '@/features/products/types/productTypes';
+import { useWishlistStatus } from '@/features/wishlist/hooks/useWishlist';
+import { useAppSelector } from '@/store/hooks';
 
 export default function ProductDetailPage() {
   const { slug } = useParams() as { slug: string };
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
 
   const { data: productResp, isLoading } = usePublicProductDetailQuery(slug);
   const product = productResp?.data;
@@ -47,6 +50,19 @@ export default function ProductDetailPage() {
     },
     { enabled: !!product?.province?.id },
   );
+
+  // Batching Wishlist Status for all visible products
+  const allVisibleProductIds = [
+    ...(product?.id ? [product.id] : []),
+    ...relatedProducts.map((p) => p.id),
+    ...(sameShopResp?.data?.items?.map((p) => p.id) || []),
+    ...(sameProvinceResp?.data?.items?.map((p) => p.id) || []),
+  ];
+
+  const { data: wishlistStatusData } = useWishlistStatus(
+    isAuthenticated ? [...new Set(allVisibleProductIds)] : [],
+  );
+  const wishlistStatusMap = wishlistStatusData?.data || {};
 
   if (isLoading) {
     return (
@@ -117,7 +133,7 @@ export default function ProductDetailPage() {
             <ProductGallery images={product.images} name={product.name} />
           </div>
           <div className="lg:col-span-5">
-            <ProductInfo product={product} />
+            <ProductInfo product={product} isWishlisted={!!wishlistStatusMap[product.id]} />
           </div>
         </div>
 
@@ -172,6 +188,7 @@ export default function ProductDetailPage() {
                     shopName={p.shopName}
                     categoryName={p.categoryName}
                     soldCount={p.soldCount}
+                    isWishlisted={!!wishlistStatusMap[p.id]}
                   />
                 ))}
               </div>
@@ -220,6 +237,7 @@ export default function ProductDetailPage() {
                       shopName={p.shopName}
                       categoryName={p.categoryName}
                       soldCount={p.soldCount}
+                      isWishlisted={!!wishlistStatusMap[p.id]}
                     />
                   ))}
               </div>
@@ -265,6 +283,7 @@ export default function ProductDetailPage() {
                       shopName={p.shopName}
                       categoryName={p.categoryName}
                       soldCount={p.soldCount}
+                      isWishlisted={!!wishlistStatusMap[p.id]}
                     />
                   ))}
               </div>

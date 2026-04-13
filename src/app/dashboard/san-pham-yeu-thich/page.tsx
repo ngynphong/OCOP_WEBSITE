@@ -1,7 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useWishlist, useMoveToCart } from '@/features/wishlist/hooks/useWishlist';
+import {
+  useWishlist,
+  useMoveToCart,
+  useWishlistStatus,
+} from '@/features/wishlist/hooks/useWishlist';
 import { ProductCard } from '@/components/ui/ProductCard';
 import { FiHeart, FiShoppingBag, FiArrowRight, FiLoader } from 'react-icons/fi';
 import Link from 'next/link';
@@ -16,10 +20,15 @@ export default function WishlistPage() {
   const totalElements = wishlistData?.data?.totalElements || 0;
   const totalPages = wishlistData?.data?.totalPages || 0;
 
+  // Batching Wishlist Status for red heart display
+  const productIds = items.map((item) => item.productId);
+  const { data: statusData } = useWishlistStatus(productIds);
+  const wishlistStatusMap = statusData?.data || {};
+
   const handleMoveAllToCart = () => {
     if (items.length === 0) return;
-    const productIds = items.map((item) => item.productId);
-    moveToCartMutation.mutate({ productIds, qty: 1 });
+    const ids = items.map((item) => item.productId);
+    moveToCartMutation.mutate({ productIds: ids, qty: 1 });
   };
 
   if (isLoading) {
@@ -102,6 +111,7 @@ export default function WishlistPage() {
                 rating={item.ratingAvg}
                 reviewCount={0}
                 shopName={item.shopName}
+                isWishlisted={wishlistStatusMap[item.productId] ?? true} // Ưu tiên từ Map, mặc định là true vì đang ở trang Wishlist
                 ocopStar={
                   typeof item.ocopStar === 'number'
                     ? item.ocopStar

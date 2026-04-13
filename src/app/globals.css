@@ -39,3 +39,37 @@ body {
   font-family: var(--font-roboto), Arial, Helvetica, sans-serif;
   background-color: #fafaf2;
 }
+
+/* Performance Optimized Animations */
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translateY(-25px);
+    opacity: 0.5;
+  }
+}
+
+@keyframes slow-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(15deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.animate-float-y {
+  animation: float-y var(--float-duration, 5s) ease-in-out infinite;
+  animation-delay: var(--float-delay, 0s);
+}
+
+.animate-slow-rotate {
+  animation: slow-rotate var(--float-duration, 6s) ease-in-out infinite;
+}
