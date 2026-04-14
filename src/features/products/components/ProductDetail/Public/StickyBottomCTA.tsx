@@ -29,11 +29,7 @@ export function StickyBottomCTA({ onAddToCart, onBuyNow, price }: StickyBottomCT
           >
             <ShoppingCart className="w-5 h-5" />
           </Button>
-          <Button
-            variant="primary"
-            className="flex-2 h-14 rounded-2xl bg-stone-900 from-stone-900 to-stone-800"
-            onClick={onBuyNow}
-          >
+          <Button variant="primary" className="flex-2 h-14 rounded-2xl" onClick={onBuyNow}>
             Mua ngay
           </Button>
         </div>
