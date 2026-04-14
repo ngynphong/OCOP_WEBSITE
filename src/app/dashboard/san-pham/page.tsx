@@ -81,7 +81,6 @@ export default function SellerProductsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-black text-stone-900">Sản phẩm của tôi</h2>
           <p className="text-xs text-stone-400 mt-1">{total} sản phẩm</p>
         </div>
         <Button
