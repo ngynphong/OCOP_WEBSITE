@@ -32,20 +32,20 @@ export function ProductTraceability({ journals = [], qrCode }: ProductTraceabili
   const scanCount = traceData?.data?.scanCount ?? qrCode?.scanCount ?? 0;
 
   return (
-    <div className="flex flex-col gap-10 py-8 border-t border-stone-100">
+    <div className="flex flex-col gap-8 py-6 border-t border-stone-100">
       {/* Header & QR Verification Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 bg-green-100 rounded-lg flex items-center justify-center text-green-700 shadow-sm">
-                <ShieldCheck className="w-5 h-5" />
+              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center text-green-700 shadow-sm">
+                <ShieldCheck className="w-4.5 h-4.5" />
               </div>
-              <h2 className="text-2xl font-black text-stone-900 tracking-tight">
+              <h2 className="text-xl font-black text-stone-900 tracking-tight">
                 Niềm tin từ nguồn gốc
               </h2>
             </div>
-            <p className="text-stone-500 font-medium text-base leading-relaxed">
+            <p className="text-stone-500 font-medium text-sm leading-relaxed">
               Minh bạch hành trình trang trại đến bàn ăn thông qua công nghệ Blockchain.
             </p>
           </div>
@@ -76,22 +76,20 @@ export function ProductTraceability({ journals = [], qrCode }: ProductTraceabili
         {/* QR Scanner Mock UI */}
         <div className="relative group">
           <div className="absolute -inset-4 bg-linear-to-r from-green-600 to-emerald-600 rounded-4xl opacity-5 blur-2xl group-hover:opacity-10 transition-opacity" />
-          <div className="relative bg-white p-5 rounded-3xl shadow-xl border border-stone-100 flex flex-col gap-4 overflow-hidden">
+          <div className="relative bg-white p-4 rounded-2xl shadow-xl border border-stone-100 flex flex-col gap-3 overflow-hidden">
             <div className="flex items-center justify-between">
               <div className="flex flex-col">
                 <span className="text-[9px] font-black text-stone-400 uppercase tracking-widest">
                   Kiểm chứng trực tiếp
                 </span>
-                <h4 className="text-base font-bold text-stone-900 leading-tight">
-                  Mã QR Blockchain
-                </h4>
+                <h4 className="text-sm font-bold text-stone-900 leading-tight">Mã QR Blockchain</h4>
               </div>
               <QrCode className="w-5 h-5 text-green-700" />
             </div>
 
-            <div className="aspect-square w-full max-w-[150px] mx-auto relative p-3 bg-stone-50 rounded-2xl border-2 border-dashed border-stone-200 flex items-center justify-center">
+            <div className="aspect-square w-full max-w-[130px] mx-auto relative p-3 bg-stone-50 rounded-2xl border-2 border-dashed border-stone-200 flex items-center justify-center">
               <div className="absolute inset-x-0 top-0 h-1/2 bg-linear-to-b from-green-500/10 to-transparent animate-scan" />
-              <QrCode className="w-20 h-20 text-stone-300" />
+              <QrCode className="w-16 h-16 text-stone-300" />
             </div>
 
             <div className="flex flex-col gap-2">
@@ -122,10 +120,10 @@ export function ProductTraceability({ journals = [], qrCode }: ProductTraceabili
       {/* Timeline Section */}
       <div className="flex flex-col gap-8">
         <div className="text-center">
-          <h3 className="text-xl font-black text-stone-900 tracking-tight mb-1">
+          <h3 className="text-lg font-black text-stone-900 tracking-tight mb-0.5">
             Nhật ký sản xuất
           </h3>
-          <p className="text-stone-500 text-xs font-medium">
+          <p className="text-stone-500 text-[11px] font-medium">
             Ghi chép chi tiết từng công đoạn tại nhà xưởng
           </p>
         </div>
@@ -134,7 +132,7 @@ export function ProductTraceability({ journals = [], qrCode }: ProductTraceabili
           {/* Timeline vertical bar */}
           <div className="absolute left-[23px] top-4 bottom-4 w-1 bg-stone-100 md:left-1/2 md:-ml-0.5" />
 
-          <div className="flex flex-col gap-12 relative">
+          <div className="flex flex-col gap-8 relative">
             {sortedJournals.map((journal, index) => {
               const isEven = index % 2 === 0;
 
@@ -169,7 +167,7 @@ export function ProductTraceability({ journals = [], qrCode }: ProductTraceabili
                         )}
                       </div>
 
-                      <h3 className="text-lg font-black text-stone-900 group-hover:text-green-700 transition-colors leading-tight">
+                      <h3 className="text-base font-black text-stone-900 group-hover:text-green-700 transition-colors leading-tight">
                         {journal.title}
                       </h3>
 
@@ -203,7 +201,7 @@ export function ProductTraceability({ journals = [], qrCode }: ProductTraceabili
                           {journal.images.filter(Boolean).map((img, idx) => (
                             <div
                               key={idx}
-                              className="relative w-16 h-16 rounded-lg overflow-hidden shadow-md border border-stone-100 hover:scale-110 transition-all cursor-pointer"
+                              className="relative w-14 h-14 rounded-lg overflow-hidden shadow-md border border-stone-100 hover:scale-110 transition-all cursor-pointer"
                             >
                               <Image
                                 src={img}

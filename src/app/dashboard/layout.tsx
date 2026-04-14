@@ -49,7 +49,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {/* Main Content Area */}
           <main className="lg:col-span-3">
             <div className="bg-white rounded-3xl border border-stone-100 shadow-xl shadow-stone-200/50 overflow-hidden min-h-[600px]">
-              <div className="p-8 border-b border-stone-50 bg-linear-to-r from-stone-50/50 to-white">
+              <div className="p-4 border-b border-stone-50 bg-linear-to-r from-stone-50/50 to-white">
                 <h1 className="text-2xl font-bold text-stone-900">{getPageTitle()}</h1>
                 <p className="text-stone-500 text-sm mt-1">
                   {dashboardMode === 'SELLER'

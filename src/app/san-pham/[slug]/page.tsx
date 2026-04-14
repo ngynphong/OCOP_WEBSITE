@@ -16,12 +16,15 @@ import { ProductCard } from '@/components/ui/ProductCard';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
-import { Loader2, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { Product } from '@/features/products/types/productTypes';
+import { useWishlistStatus } from '@/features/wishlist/hooks/useWishlist';
+import { useAppSelector } from '@/store/hooks';
 
 export default function ProductDetailPage() {
   const { slug } = useParams() as { slug: string };
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
 
   const { data: productResp, isLoading } = usePublicProductDetailQuery(slug);
   const product = productResp?.data;
@@ -48,21 +51,21 @@ export default function ProductDetailPage() {
     { enabled: !!product?.province?.id },
   );
 
+  // Batching Wishlist Status for all visible products
+  const allVisibleProductIds = [
+    ...(product?.id ? [product.id] : []),
+    ...relatedProducts.map((p) => p.id),
+    ...(sameShopResp?.data?.items?.map((p) => p.id) || []),
+    ...(sameProvinceResp?.data?.items?.map((p) => p.id) || []),
+  ];
+
+  const { data: wishlistStatusData } = useWishlistStatus(
+    isAuthenticated ? [...new Set(allVisibleProductIds)] : [],
+  );
+  const wishlistStatusMap = wishlistStatusData?.data || {};
+
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex flex-col bg-white">
-        <Header />
-        <div className="flex-1 flex items-center justify-center">
-          <div className="flex flex-col items-center gap-4">
-            <Loader2 className="w-12 h-12 animate-spin text-green-700" />
-            <p className="text-stone-400 font-black uppercase tracking-widest text-xs">
-              Đang tải tinh hoa OCOP...
-            </p>
-          </div>
-        </div>
-        <Footer />
-      </div>
-    );
+    return null;
   }
 
   if (!product) {
@@ -104,20 +107,27 @@ export default function ProductDetailPage() {
       <Header />
 
       {/* Sticky Bottom Bar for Mobile */}
-      <StickyBottomCTA price={product.variants[0]?.price || product.minPrice} />
+      <StickyBottomCTA
+        variantId={product.variants.find((v) => v.isDefault)?.id || product.variants[0]?.id || 0}
+        price={
+          product.variants.find((v) => v.isDefault)?.price ||
+          product.variants[0]?.price ||
+          product.minPrice
+        }
+      />
 
-      <main className="max-w-[1440px] mx-auto px-6 py-6 md:py-10">
+      <main className="max-w-7xl mx-auto px-6 py-6 md:py-8">
         <div className="mb-8">
           <Breadcrumb items={breadcrumbItems} />
         </div>
 
         {/* Hero Section: Above the Fold */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 mb-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-12 items-start">
           <div className="lg:col-span-7">
             <ProductGallery images={product.images} name={product.name} />
           </div>
           <div className="lg:col-span-5">
-            <ProductInfo product={product} />
+            <ProductInfo product={product} isWishlisted={!!wishlistStatusMap[product.id]} />
           </div>
         </div>
 
@@ -137,14 +147,14 @@ export default function ProductDetailPage() {
 
         {/* Related Products Section */}
         {relatedProducts.length > 0 && (
-          <div className="mt-16">
-            <section className="flex flex-col gap-8">
-              <div className="flex items-end justify-between border-b border-stone-100 pb-6">
-                <div className="flex flex-col gap-1.5">
+          <div className="mt-12">
+            <section className="flex flex-col gap-6">
+              <div className="flex items-end justify-between border-b border-stone-100 pb-5">
+                <div className="flex flex-col gap-1">
                   <span className="text-green-700 font-black uppercase tracking-[0.2em] text-[10px]">
                     Đề xuất cho bạn
                   </span>
-                  <h2 className="text-2xl font-black text-stone-900 tracking-tight">
+                  <h2 className="text-xl font-black text-stone-900 tracking-tight">
                     Sản phẩm liên quan
                   </h2>
                 </div>
@@ -160,6 +170,7 @@ export default function ProductDetailPage() {
                 {relatedProducts.slice(0, 4).map((p) => (
                   <ProductCard
                     key={p.id}
+                    id={p.id}
                     name={p.name}
                     slug={p.slug}
                     price={p.minPrice}
@@ -171,6 +182,7 @@ export default function ProductDetailPage() {
                     shopName={p.shopName}
                     categoryName={p.categoryName}
                     soldCount={p.soldCount}
+                    isWishlisted={!!wishlistStatusMap[p.id]}
                   />
                 ))}
               </div>
@@ -179,16 +191,16 @@ export default function ProductDetailPage() {
         )}
 
         {/* Cross-selling Sections */}
-        <div className="mt-16 flex flex-col gap-16 pb-16">
+        <div className="mt-12 flex flex-col gap-12 pb-12">
           {/* Same Shop Products */}
           {sameShopResp?.data?.items && sameShopResp.data.items.length > 1 && (
-            <section className="flex flex-col gap-8">
-              <div className="flex items-end justify-between border-b border-stone-100 pb-6">
-                <div className="flex flex-col gap-2">
+            <section className="flex flex-col gap-6">
+              <div className="flex items-end justify-between border-b border-stone-100 pb-5">
+                <div className="flex flex-col gap-1">
                   <span className="text-green-700 font-black uppercase tracking-[0.2em] text-[10px]">
                     Sản phẩm liên quan
                   </span>
-                  <h2 className="text-2xl font-black text-stone-900 tracking-tighter">
+                  <h2 className="text-xl font-black text-stone-900 tracking-tighter">
                     Từ cơ sở {product.shop.name}
                   </h2>
                 </div>
@@ -207,6 +219,7 @@ export default function ProductDetailPage() {
                   .map((p) => (
                     <ProductCard
                       key={p.id}
+                      id={p.id}
                       name={p.name}
                       slug={p.slug}
                       price={p.minPrice}
@@ -218,6 +231,7 @@ export default function ProductDetailPage() {
                       shopName={p.shopName}
                       categoryName={p.categoryName}
                       soldCount={p.soldCount}
+                      isWishlisted={!!wishlistStatusMap[p.id]}
                     />
                   ))}
               </div>
@@ -226,13 +240,13 @@ export default function ProductDetailPage() {
 
           {/* Same Province Products */}
           {sameProvinceResp?.data?.items && sameProvinceResp.data.items.length > 1 && (
-            <section className="flex flex-col gap-8">
-              <div className="flex items-end justify-between border-b border-stone-100 pb-6">
-                <div className="flex flex-col gap-2">
+            <section className="flex flex-col gap-6">
+              <div className="flex items-end justify-between border-b border-stone-100 pb-5">
+                <div className="flex flex-col gap-1">
                   <span className="text-amber-600 font-black uppercase tracking-[0.2em] text-[10px]">
                     Đặc sản tỉnh nhà
                   </span>
-                  <h2 className="text-2xl font-black text-stone-900 tracking-tighter">
+                  <h2 className="text-xl font-black text-stone-900 tracking-tighter">
                     Sản phẩm từ {product.province?.name}
                   </h2>
                 </div>
@@ -251,6 +265,7 @@ export default function ProductDetailPage() {
                   .map((p) => (
                     <ProductCard
                       key={p.id}
+                      id={p.id}
                       name={p.name}
                       slug={p.slug}
                       price={p.minPrice}
@@ -262,6 +277,7 @@ export default function ProductDetailPage() {
                       shopName={p.shopName}
                       categoryName={p.categoryName}
                       soldCount={p.soldCount}
+                      isWishlisted={!!wishlistStatusMap[p.id]}
                     />
                   ))}
               </div>
