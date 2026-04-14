@@ -1,7 +1,17 @@
 'use client';
 
 import React, { useState } from 'react';
-import { FiAlertTriangle, FiBox, FiMinus, FiPackage, FiPlus, FiSettings } from 'react-icons/fi';
+import {
+  FiAlertTriangle,
+  FiBox,
+  FiMinus,
+  FiPackage,
+  FiPlus,
+  FiSettings,
+  FiRefreshCw,
+  FiArrowRight,
+} from 'react-icons/fi';
+import Link from 'next/link';
 import {
   useInventoryListQuery,
   useLowStockAlertsQuery,
@@ -228,7 +238,7 @@ export default function InventoryListClient() {
   const [action, setAction] = useState<ActionState | null>(null);
 
   const params: InventoryListParams = { pageNo: pageNo, pageSize: PAGE_SIZE };
-  const { data, isPending, isError } = useInventoryListQuery(params);
+  const { data, isPending, isError, refetch } = useInventoryListQuery(params);
   const { data: lowStockData } = useLowStockAlertsQuery();
 
   const items: InventoryItem[] = data?.data?.items ?? [];
@@ -250,12 +260,22 @@ export default function InventoryListClient() {
             Theo dõi và cập nhật tồn kho các biến thể sản phẩm
           </p>
         </div>
-        {lowStockCount > 0 && (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1.5 text-sm font-medium text-amber-700 border border-amber-200">
-            <FiAlertTriangle className="size-4" />
-            {lowStockCount} biến thể sắp hết hàng
-          </span>
-        )}
+        <div className="flex items-center gap-3">
+          {lowStockCount > 0 && (
+            <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1.5 text-sm font-medium text-amber-700 border border-amber-200">
+              <FiAlertTriangle className="size-4" />
+              {lowStockCount} biến thể sắp hết hàng
+            </span>
+          )}
+          <button
+            onClick={() => refetch()}
+            disabled={isPending}
+            className="flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-4 py-2 text-sm font-bold text-stone-600 hover:bg-stone-50 transition-all hover:shadow-sm"
+          >
+            <FiRefreshCw className={`size-4 ${isPending ? 'animate-spin' : ''}`} />
+            Làm mới
+          </button>
+        </div>
       </div>
 
       {/* Table */}
@@ -270,9 +290,21 @@ export default function InventoryListClient() {
             <p className="text-sm">Không thể tải dữ liệu tồn kho</p>
           </div>
         ) : items.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-stone-400">
-            <FiPackage className="mb-2 size-8" />
-            <p className="text-sm">Chưa có dữ liệu tồn kho</p>
+          <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
+            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-stone-50 text-stone-300">
+              <FiPackage className="size-10" />
+            </div>
+            <h3 className="mb-2 text-lg font-bold text-stone-800">Chưa có dữ liệu tồn kho</h3>
+            <p className="mb-8 max-w-sm text-sm text-stone-500 leading-relaxed">
+              Dữ liệu kho hàng sẽ tự động xuất hiện khi bạn tạo sản phẩm và các biến thể tương ứng.
+            </p>
+            <Link
+              href="/dashboard/san-pham"
+              className="flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 text-sm font-bold text-white hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/20 active:scale-95"
+            >
+              Đến trang Quản lý Sản phẩm
+              <FiArrowRight />
+            </Link>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -359,12 +391,12 @@ export default function InventoryListClient() {
             >
               Trước
             </button>
-            <span className="rounded-lg border border-stone-200 px-3 py-1.5 bg-stone-50">
-              {pageNo + 1} / {totalPages}
+            <span className="rounded-lg border border-stone-200 px-3 py-1.5 bg-stone-50 font-medium">
+              Trang {pageNo} / {totalPages}
             </span>
             <button
-              onClick={() => setPageNo((p) => Math.min(totalPages - 1, p + 1))}
-              disabled={pageNo >= totalPages - 1}
+              onClick={() => setPageNo((p) => Math.min(totalPages, p + 1))}
+              disabled={pageNo >= totalPages}
               className="rounded-lg border border-stone-200 px-3 py-1.5 hover:bg-stone-50 disabled:opacity-40"
             >
               Sau

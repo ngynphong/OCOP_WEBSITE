@@ -40,16 +40,13 @@ export const HeroSection = memo(function HeroSection() {
   const router = useRouter();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
 
-  // 1. Fetch Featured Products
   const { data: featuredResp, isLoading: isProductsLoading } = useFeaturedProductsQuery(12);
   const products = featuredResp?.data?.items || [];
 
-  // 2. Fetch Wishlist Status for internal carousel tracking
   const productIds = products.map((p) => p.id);
   const { data: wishlistStatusData } = useWishlistStatus(isAuthenticated ? productIds : []);
   const wishlistStatusMap = wishlistStatusData?.data || {};
 
-  // 3. Wishlist Actions
   const addToWishlist = useAddToWishlist();
   const removeFromWishlist = useRemoveFromWishlist();
   const isWishlistLoading = addToWishlist.isPending || removeFromWishlist.isPending;
@@ -82,8 +79,6 @@ export const HeroSection = memo(function HeroSection() {
   const handleBuyNow = (slug: string) => {
     router.push(`/san-pham/${slug}`);
   };
-
-  const currentProduct = products[currentIndex];
 
   return (
     <section className="relative w-full bg-[#113B28] overflow-hidden">

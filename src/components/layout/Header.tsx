@@ -18,6 +18,7 @@ import { useAppSelector } from '@/store/hooks';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
+import { useCart } from '@/features/cart/hooks/useCart';
 
 export function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -31,8 +32,12 @@ export function Header() {
   const router = useRouter();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const { logout, isLoggingOut, handleClientLogout, profile } = useAuth();
-
   const role = useAppSelector((state) => state.auth.roles);
+
+  // Cart count badge — lấy từ useCart (cùng cache key với CartPage)
+  // Sau khi addToCart/removeItem invalidate CART_QUERY_KEYS.cart, badge tự cập nhật
+  const { data: cartResp } = useCart();
+  const cartCount = cartResp?.data?.totalItems ?? 0;
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -261,15 +266,19 @@ export function Header() {
                 Đăng nhập
               </Link>
             )}
-            <button
+            <Link
+              href="/gio-hang"
               suppressHydrationWarning
+              aria-label={`Giỏ hàng${cartCount > 0 ? ` (${cartCount} sản phẩm)` : ''}`}
               className="h-10 py-px inline-flex flex-col justify-center items-start text-white hover:bg-white/10 rounded-full transition-colors p-2 relative cursor-pointer group"
             >
               <ShoppingCart className="w-5 h-5 group-hover:scale-110 transition-transform" />
-              <span className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-green-700 shadow-sm animate-in fade-in zoom-in duration-300">
-                3
-              </span>
-            </button>
+              {cartCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 min-w-[20px] h-5 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-green-700 shadow-sm px-1 animate-in fade-in zoom-in duration-300">
+                  {cartCount > 99 ? '99+' : cartCount}
+                </span>
+              )}
+            </Link>
           </div>
         </div>
 

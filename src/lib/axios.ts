@@ -3,6 +3,7 @@ import toast from 'react-hot-toast';
 import { AppError } from '../utils/error';
 import { store } from '../store/store';
 import { setLoading } from '../store/features/uiSlice';
+import { getOrCreateSessionId } from '@/features/cart/utils/cartSession';
 
 export interface ApiErrorResponse {
   message?: string;
@@ -72,6 +73,9 @@ const onRequest = (config: InternalAxiosRequestConfig) => {
 
   if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`;
+  } else if (config.headers) {
+    // Nếu không có token, đính kèm X-Session-Id để hỗ trợ Guest Cart
+    config.headers['X-Session-Id'] = getOrCreateSessionId();
   }
 
   return config;

@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Star, MapPin, Package, ShieldCheck, ShoppingCart, Zap, Heart } from 'lucide-react';
+import React, { useState, useCallback } from 'react';
+import { Star, MapPin, Package, ShoppingCart, Zap, Heart, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Product, ProductVariant } from '@/features/products/types/productTypes';
 import { Button } from '@/components/ui/AppButton';
@@ -9,9 +9,10 @@ import { OcopBadge } from './OcopBadge';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useAddToWishlist, useRemoveFromWishlist } from '@/features/wishlist/hooks/useWishlist';
+import { useAddToCart } from '@/features/cart/hooks/useCart';
 import { useAppSelector } from '@/store/hooks';
 import toast from 'react-hot-toast';
-
+import { CiShop } from 'react-icons/ci';
 interface ProductInfoProps {
   product: Product;
   isWishlisted?: boolean;
@@ -29,9 +30,14 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
 
   const router = useRouter();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
+
+  // Wishlist
   const addToWishlist = useAddToWishlist();
   const removeFromWishlist = useRemoveFromWishlist();
   const isWishlistLoading = addToWishlist.isPending || removeFromWishlist.isPending;
+
+  // Cart
+  const { mutate: addToCart, isPending: isAddingToCart } = useAddToCart();
 
   const handleWishlistClick = () => {
     if (!isAuthenticated) {
@@ -44,6 +50,19 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
       addToWishlist.mutate(product.id);
     }
   };
+
+  const handleAddToCart = useCallback(() => {
+    const variantId = selectedVariant?.id;
+    if (!variantId) return;
+    addToCart({ variantId, qty: 1 });
+  }, [selectedVariant, addToCart]);
+
+  const handleBuyNow = useCallback(() => {
+    const variantId = selectedVariant?.id;
+    if (!variantId) return;
+    // Thêm vào giỏ rồi navigate sang /gio-hang (Guest cũng OK)
+    addToCart({ variantId, qty: 1 }, { onSuccess: () => router.push('/gio-hang') });
+  }, [selectedVariant, addToCart, router]);
 
   return (
     <div className="flex flex-col gap-5 lg:sticky lg:top-24">
@@ -152,19 +171,38 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
         {/* Purchase Actions (Desktop) */}
         <div className="hidden md:flex flex-col gap-3">
           <div className="flex gap-2">
+            {/* Thêm vào giỏ */}
             <Button
               variant="outline"
               size="lg"
               className="flex-1 h-12 rounded-xl text-sm"
-              leftIcon={<ShoppingCart className="w-4 h-4" />}
+              leftIcon={
+                isAddingToCart ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <ShoppingCart className="w-4 h-4" />
+                )
+              }
+              onClick={handleAddToCart}
+              disabled={isAddingToCart || !selectedVariant}
             >
-              Thêm vào giỏ
+              {isAddingToCart ? 'Đang thêm...' : 'Thêm vào giỏ'}
             </Button>
+
+            {/* Mua ngay: thêm vào giỏ rồi navigate */}
             <Button
               variant="primary"
               size="lg"
               className="flex-1 h-12 rounded-xl text-sm"
-              leftIcon={<Zap className="w-4 h-4" />}
+              leftIcon={
+                isAddingToCart ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Zap className="w-4 h-4" />
+                )
+              }
+              onClick={handleBuyNow}
+              disabled={isAddingToCart || !selectedVariant}
             >
               Mua ngay
             </Button>
@@ -231,7 +269,7 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
             </h4>
           </div>
         </div>
-        <ShieldCheck className="w-8 h-8 text-lime-400 relative z-10" />
+        <CiShop className="w-8 h-8 text-lime-600 relative z-10" />
       </div>
     </div>
   );

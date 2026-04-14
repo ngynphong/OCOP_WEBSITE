@@ -16,7 +16,7 @@ import { ProductCard } from '@/components/ui/ProductCard';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
-import { Loader2, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { Product } from '@/features/products/types/productTypes';
 import { useWishlistStatus } from '@/features/wishlist/hooks/useWishlist';
@@ -65,20 +65,7 @@ export default function ProductDetailPage() {
   const wishlistStatusMap = wishlistStatusData?.data || {};
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex flex-col bg-white">
-        <Header />
-        <div className="flex-1 flex items-center justify-center">
-          <div className="flex flex-col items-center gap-4">
-            <Loader2 className="w-12 h-12 animate-spin text-green-700" />
-            <p className="text-stone-400 font-black uppercase tracking-widest text-xs">
-              Đang tải tinh hoa OCOP...
-            </p>
-          </div>
-        </div>
-        <Footer />
-      </div>
-    );
+    return null;
   }
 
   if (!product) {
@@ -120,7 +107,14 @@ export default function ProductDetailPage() {
       <Header />
 
       {/* Sticky Bottom Bar for Mobile */}
-      <StickyBottomCTA price={product.variants[0]?.price || product.minPrice} />
+      <StickyBottomCTA
+        variantId={product.variants.find((v) => v.isDefault)?.id || product.variants[0]?.id || 0}
+        price={
+          product.variants.find((v) => v.isDefault)?.price ||
+          product.variants[0]?.price ||
+          product.minPrice
+        }
+      />
 
       <main className="max-w-7xl mx-auto px-6 py-6 md:py-8">
         <div className="mb-8">

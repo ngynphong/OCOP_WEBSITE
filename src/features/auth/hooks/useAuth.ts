@@ -15,6 +15,8 @@ import {
   VerifyOtpRequest,
   ChangePasswordRequest,
 } from '../types';
+import { cartApi } from '@/features/cart/api/cartApi';
+import { getSessionId, clearSessionId } from '@/features/cart/utils/cartSession';
 
 /**
  * Hook chuyên biệt chỉ dùng để lấy thông tin profile người dùng.
@@ -49,7 +51,7 @@ export const useAuth = () => {
 
   const loginMutation = useMutation({
     mutationFn: (data: LoginRequest) => authApi.login(data),
-    onSuccess: (res) => {
+    onSuccess: async (res) => {
       const { accessToken, refreshToken, roles } = res.data;
 
       if (accessToken) {
@@ -58,6 +60,21 @@ export const useAuth = () => {
         if (roles) localStorage.setItem('user_roles', JSON.stringify(roles));
 
         dispatch(setCredentials({ token: accessToken, roles: roles || [] }));
+
+        // 🚀 Thực hiện Merge giỏ hàng khách vào user sau khi login
+        const sessionId = getSessionId();
+        if (sessionId) {
+          try {
+            await cartApi.mergeCart({ sessionId });
+            clearSessionId();
+            // Invalidate giỏ hàng để fetch lại dữ liệu mới đã merge
+            queryClient.invalidateQueries({ queryKey: ['cart'] });
+            queryClient.invalidateQueries({ queryKey: ['cart-count'] });
+          } catch (error) {
+            console.error('Lỗi khi merge giỏ hàng:', error);
+          }
+        }
+
         toast.success('Đăng nhập thành công');
 
         const isAdmin = roles?.some((role: string) => role === 'ADMIN' || role === 'SUPER_ADMIN');
@@ -76,7 +93,7 @@ export const useAuth = () => {
 
   const verifyEmailMutation = useMutation({
     mutationFn: (data: { email: string; code: string }) => authApi.verifyEmail(data),
-    onSuccess: (res) => {
+    onSuccess: async (res) => {
       const { accessToken, refreshToken, roles } = res.data;
       if (accessToken) {
         localStorage.setItem('access_token', accessToken);
@@ -84,6 +101,20 @@ export const useAuth = () => {
         if (roles) localStorage.setItem('user_roles', JSON.stringify(roles));
 
         dispatch(setCredentials({ token: accessToken, roles: roles || [] }));
+
+        // 🚀 Thực hiện Merge giỏ hàng khách vào user sau khi auto-login từ xác thực email
+        const sessionId = getSessionId();
+        if (sessionId) {
+          try {
+            await cartApi.mergeCart({ sessionId });
+            clearSessionId();
+            queryClient.invalidateQueries({ queryKey: ['cart'] });
+            queryClient.invalidateQueries({ queryKey: ['cart-count'] });
+          } catch (error) {
+            console.error('Lỗi khi merge giỏ hàng:', error);
+          }
+        }
+
         toast.success('Xác thực thành công! Hệ thống đã tự động đăng nhập.');
 
         const isAdmin = roles?.some((role: string) => role === 'ADMIN' || role === 'SUPER_ADMIN');
