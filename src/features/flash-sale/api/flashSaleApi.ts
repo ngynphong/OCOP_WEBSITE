@@ -3,9 +3,11 @@ import {
   FlashSaleListResponse,
   FlashSaleAdminListResponse,
   FlashSaleDetailResponse,
+  BuyFlashSaleResponse,
   CreateFlashSaleRequest,
   UpdateFlashSaleRequest,
 } from '../types';
+import { FlashSaleBuyRequest } from '@/features/checkout/types/checkoutTypes';
 
 export const flashSaleApi = {
   // ─── Public API ────────────────────────────────────────────────────────────
@@ -17,6 +19,11 @@ export const flashSaleApi = {
 
   getFlashSaleDetail: (id: number): Promise<FlashSaleDetailResponse> =>
     publicAxiosClient.get(`/flash-sales/${id}`),
+
+  buyFlashSaleItem: (
+    flashSaleItemId: number,
+    data: FlashSaleBuyRequest,
+  ): Promise<BuyFlashSaleResponse> => axiosClient.post(`/flash-sales/${flashSaleItemId}/buy`, data),
 
   // ─── Seller API ────────────────────────────────────────────────────────────
   getSellerFlashSales: (): Promise<FlashSaleListResponse> => axiosClient.get('/seller/flash-sales'),

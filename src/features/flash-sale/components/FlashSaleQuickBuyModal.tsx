@@ -7,6 +7,7 @@ import { ShippingSelector } from '@/features/checkout/components/ShippingSelecto
 import { PaymentMethodSelector } from '@/features/checkout/components/PaymentMethodSelector';
 import { Address, ShippingProvider, PaymentMethod } from '@/features/checkout/types/checkoutTypes';
 import { FlashSaleItem } from '../types';
+import { useBuyFlashSaleItem } from '../hooks/useFlashSales';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -22,7 +23,7 @@ export function FlashSaleQuickBuyModal({ isOpen, onClose, item }: FlashSaleQuick
   const [selectedShipping, setSelectedShipping] = useState<ShippingProvider | undefined>(undefined);
   const [selectedPayment, setSelectedPayment] = useState<PaymentMethod | undefined>('COD');
   const [qty, setQty] = useState(1);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { mutate: buyFlashSaleItem, isPending: isSubmitting } = useBuyFlashSaleItem();
 
   const subtotal = item.salePrice * qty;
   const shippingFee = selectedShipping?.baseFee || 0;
@@ -38,13 +39,26 @@ export function FlashSaleQuickBuyModal({ isOpen, onClose, item }: FlashSaleQuick
       return;
     }
 
-    setIsSubmitting(true);
-    // Giả lập API Buy Now
-    setTimeout(() => {
-      setIsSubmitting(false);
-      toast.success('Đặt hàng Flash Sale thành công!');
-      onClose();
-    }, 1500);
+    buyFlashSaleItem(
+      {
+        flashSaleItemId: item.id,
+        data: {
+          addressId: selectedAddress.id,
+          shippingProviderId: selectedShipping.id,
+          paymentMethod: selectedPayment!,
+          qty,
+        },
+      },
+      {
+        onSuccess: () => {
+          toast.success('Đặt hàng Flash Sale thành công!');
+          onClose();
+        },
+        onError: () => {
+          toast.error('Đặt hàng thất bại, vui lòng thử lại');
+        },
+      },
+    );
   };
 
   if (!isOpen) return null;

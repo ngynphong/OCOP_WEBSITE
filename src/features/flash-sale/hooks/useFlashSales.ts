@@ -1,5 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { flashSaleApi } from '../api/flashSaleApi';
+import { FlashSaleBuyRequest } from '@/features/checkout/types/checkoutTypes';
 
 export const useActiveFlashSales = (categoryId?: number) => {
   return useQuery({
@@ -22,5 +23,17 @@ export const useFlashSaleDetail = (id: number) => {
     queryKey: ['flash-sales', 'detail', id],
     queryFn: () => flashSaleApi.getFlashSaleDetail(id),
     enabled: !!id,
+  });
+};
+
+export const useBuyFlashSaleItem = () => {
+  return useMutation({
+    mutationFn: ({
+      flashSaleItemId,
+      data,
+    }: {
+      flashSaleItemId: number;
+      data: FlashSaleBuyRequest;
+    }) => flashSaleApi.buyFlashSaleItem(flashSaleItemId, data),
   });
 };
