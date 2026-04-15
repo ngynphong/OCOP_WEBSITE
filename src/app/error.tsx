@@ -32,7 +32,7 @@ export default function Error({
 
         {/* Text Content */}
         <div className="space-y-4">
-          <h1 className="text-4xl font-black text-stone-900 tracking-tight">Ối! Có lỗi xảy ra</h1>
+          <h1 className="text-4xl font-black text-stone-900 tracking-tight">Opps! Có lỗi xảy ra</h1>
           <p className="text-lg text-stone-600 max-w-xs mx-auto leading-relaxed">
             Hệ thống đang gặp sự cố nhỏ khi tải trang. Đừng lo lắng, các sản phẩm OCOP vẫn đang chờ
             bạn!

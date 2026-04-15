@@ -15,6 +15,7 @@ import {
   FiChevronLeft,
   FiChevronRight,
   FiCreditCard,
+  FiTruck,
 } from 'react-icons/fi';
 import { FaWarehouse } from 'react-icons/fa';
 import { motion } from 'framer-motion';
@@ -34,6 +35,7 @@ const MENU_ITEMS = [
   // { label: 'Phê duyệt', icon: FiCheckSquare, href: '/admin/phe-duyet', id: 'approval' },
   // { label: 'Tài chính', icon: FiDollarSign, href: '/admin/tai-chinh', id: 'financials' },
   { label: 'Thanh toán', icon: FiCreditCard, href: '/admin/payment-gateways', id: 'payments' },
+  { label: 'Vận chuyển', icon: FiTruck, href: '/admin/shipping-providers', id: 'shipping' },
   { label: 'Người dùng', icon: FiUsers, href: '/admin/users', id: 'users' },
   { label: 'Mã giảm giá', icon: IoTicket, href: '/admin/vouchers', id: 'vouchers' },
   { label: 'Gói đăng ký', icon: FiCreditCard, href: '/admin/subscriptions', id: 'subscriptions' },

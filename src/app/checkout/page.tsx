@@ -15,19 +15,27 @@ import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { useUserAddresses } from '@/features/address/hooks/useAddress';
 import { useCart } from '@/features/cart/hooks/useCart';
+import { CartItem } from '@/features/cart/types/cartTypes';
+import { useEstimateShippingFee } from '@/features/shipping/hooks/useShipping';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
+
+interface CheckoutCartItem extends CartItem {
+  weightGram?: number;
+}
 
 export default function CheckoutPage() {
   const router = useRouter();
   const { data: addresses, isLoading: isAddressLoading } = useUserAddresses();
   const { data: cartResponse, isLoading: isCartLoading } = useCart();
+  const { mutateAsync: estimateFee } = useEstimateShippingFee();
 
   const [userSelectedAddress, setUserSelectedAddress] = useState<Address | undefined>(undefined);
   const [selectedShipping, setSelectedShipping] = useState<ShippingProvider | undefined>(undefined);
   const [selectedPayment, setSelectedPayment] = useState<PaymentMethod | undefined>('COD');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isCalculating, setIsCalculating] = useState(false);
+  const [providerFees, setProviderFees] = useState<Record<string, number>>({});
 
-  // Derived state for the effective address to use (Default or User Selected)
   const effectiveAddress = useMemo(() => {
     if (userSelectedAddress) return userSelectedAddress;
     if (addresses && addresses.length > 0) {
@@ -38,6 +46,56 @@ export default function CheckoutPage() {
 
   const cartData = cartResponse?.data;
   const checkoutItems = useMemo(() => cartData?.items || [], [cartData?.items]);
+
+  const shopsInCart = useMemo(() => {
+    const shops: Record<number, { weight: number }> = {};
+    checkoutItems.forEach((item) => {
+      if (!shops[item.shopId]) {
+        shops[item.shopId] = { weight: 0 };
+      }
+      shops[item.shopId].weight += (item as CheckoutCartItem).weightGram || 500 * item.qty;
+    });
+    return shops;
+  }, [checkoutItems]);
+
+  React.useEffect(() => {
+    const calculateFees = async () => {
+      if (!effectiveAddress || Object.keys(shopsInCart).length === 0) return;
+
+      setIsCalculating(true);
+      try {
+        if (selectedShipping) {
+          let totalFee = 0;
+          for (const shopId of Object.keys(shopsInCart)) {
+            const res = await estimateFee({
+              providerId: selectedShipping.id,
+              shopId: parseInt(shopId),
+              toDistrictId: effectiveAddress.districtId,
+              toWardCode: effectiveAddress.wardId.toString(),
+              weightGram: shopsInCart[parseInt(shopId)].weight,
+              insuranceValue: 0,
+              height: 0,
+              length: 0,
+              width: 0,
+            });
+
+            if (res.data.services && res.data.services.length > 0) {
+              totalFee += res.data.services[0].fee;
+            }
+          }
+          setProviderFees((prev) => ({ ...prev, [selectedShipping.id]: totalFee }));
+
+          setSelectedShipping((prev) => (prev ? { ...prev, baseFee: totalFee } : undefined));
+        }
+      } catch (error) {
+        console.error('Failed to estimate shipping fee:', error);
+      } finally {
+        setIsCalculating(false);
+      }
+    };
+
+    calculateFees();
+  }, [effectiveAddress, selectedShipping?.id, shopsInCart, estimateFee, selectedShipping]);
 
   const subtotal = useMemo(() => cartData?.totalAmount || 0, [cartData?.totalAmount]);
   const shippingFee = useMemo(() => selectedShipping?.baseFee || 0, [selectedShipping?.baseFee]);
@@ -54,11 +112,10 @@ export default function CheckoutPage() {
     }
 
     setIsSubmitting(true);
-    // Giả lập gọi API tạo đơn
     setTimeout(() => {
       setIsSubmitting(false);
       toast.success('Đặt hàng thành công!');
-      router.push('/dashboard/don-hang'); // Chuyển về trang quản lý đơn hàng
+      router.push('/dashboard/don-hang');
     }, 2000);
   }, [effectiveAddress, selectedShipping, router]);
 
@@ -115,6 +172,8 @@ export default function CheckoutPage() {
                 <ShippingSelector
                   selectedId={selectedShipping?.id}
                   onSelect={handleSelectShipping}
+                  providerFees={providerFees}
+                  isCalculating={isCalculating}
                 />
 
                 <PaymentMethodSelector

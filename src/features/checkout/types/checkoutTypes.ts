@@ -16,19 +16,19 @@ export interface Address {
 }
 
 export interface ShippingProvider {
-  id: number;
+  id: string;
   name: string;
   code: string;
-  logoUrl: string;
-  estimatedDelivery: string;
-  baseFee: number;
+  logoUrl: string | null;
+  estimatedDelivery?: string;
+  baseFee?: number;
 }
 
 export interface CheckoutOrderRequest {
   shopId: number;
   itemIds: number[];
   addressId: number;
-  shippingProviderId: number;
+  shippingProviderId: string;
   paymentMethod: PaymentMethod;
   voucherCode?: string;
   usePoints?: number;
@@ -38,7 +38,7 @@ export interface CheckoutOrderRequest {
 
 export interface FlashSaleBuyRequest {
   addressId: number;
-  shippingProviderId: number;
+  shippingProviderId: string;
   paymentMethod: PaymentMethod;
   qty: number;
   voucherCode?: string;
