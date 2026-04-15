@@ -73,3 +73,69 @@ body {
 .animate-slow-rotate {
   animation: slow-rotate var(--float-duration, 6s) ease-in-out infinite;
 }
+
+@keyframes hover-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-hover-spin {
+  transition: transform 0.3s ease;
+}
+
+button:hover .animate-hover-spin {
+  animation: hover-spin 0.6s ease-in-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes zoom-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(2rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-in {
+  animation-duration: 500ms;
+  animation-fill-mode: forwards;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fade-in {
+  animation-name: fade-in;
+}
+
+.zoom-in {
+  animation-name: zoom-in;
+}
+
+.slide-up {
+  animation-name: slide-up;
+}

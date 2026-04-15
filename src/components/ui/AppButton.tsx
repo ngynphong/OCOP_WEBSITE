@@ -1,3 +1,5 @@
+'use client';
+
 import React, { ButtonHTMLAttributes, forwardRef } from 'react';
 import { cn } from '@/utils/cn';
 import { FiLoader } from 'react-icons/fi';
