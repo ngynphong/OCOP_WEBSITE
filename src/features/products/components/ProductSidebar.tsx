@@ -92,6 +92,7 @@ export function ProductSidebar({
             placeholder="Tên sản phẩm..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            suppressHydrationWarning
             className="w-full pl-10 pr-4 py-3 rounded-xl border text-black border-stone-200 focus:border-green-700 focus:ring-1 focus:ring-green-700 outline-none text-sm transition-all shadow-sm"
           />
           <Search className="w-4 h-4 text-stone-400 absolute left-4 top-1/2 -translate-y-1/2" />
@@ -119,6 +120,7 @@ export function ProductSidebar({
                     <button
                       key={cat.id}
                       onClick={() => toggleCategory(cat.id)}
+                      suppressHydrationWarning
                       className={`px-4 py-2 rounded-full border text-xs font-semibold cursor-pointer transition-all shadow-sm ${
                         isSelected
                           ? 'bg-green-700 border-green-700 text-white'
@@ -149,6 +151,7 @@ export function ProductSidebar({
                         <button
                           key={child.id}
                           onClick={() => toggleCategory(child.id)}
+                          suppressHydrationWarning
                           className={`px-3 py-1.5 rounded-full border text-[11px] font-medium cursor-pointer transition-all ${
                             isChildSelected
                               ? 'bg-green-100 border-green-600 text-green-700'
@@ -184,6 +187,7 @@ export function ProductSidebar({
                   type="checkbox"
                   checked={selectedBrandIds.includes(brand.id)}
                   onChange={() => toggleBrand(brand.id)}
+                  suppressHydrationWarning
                   className="rounded-sm border-stone-300 text-green-700 focus:ring-green-700 w-5 h-5 bg-white transition-all cursor-pointer"
                 />
                 <span className="ml-4 text-sm font-medium text-stone-700 group-hover:text-green-700 transition-colors">
@@ -207,6 +211,7 @@ export function ProductSidebar({
               <button
                 key={star}
                 onClick={() => toggleRating(star)}
+                suppressHydrationWarning
                 className={`flex flex-col items-center justify-center p-3 rounded-xl transition-all border ${
                   isSelected
                     ? 'bg-green-50 border-green-600 text-green-700 shadow-sm'
@@ -240,6 +245,7 @@ export function ProductSidebar({
                   name="provinceId"
                   checked={selectedProvinceId === province.id}
                   onChange={() => toggleProvince(province.id)}
+                  suppressHydrationWarning
                   className="rounded-sm border-stone-300 text-green-700 focus:ring-green-700 w-5 h-5 bg-white transition-all cursor-pointer"
                 />
                 <span className="ml-4 text-sm font-medium text-stone-700 group-hover:text-green-700 transition-colors">
@@ -267,6 +273,7 @@ export function ProductSidebar({
             step={PRICE_STEP}
             value={maxPrice}
             onChange={(e) => setMaxPrice(Number(e.target.value))}
+            suppressHydrationWarning
             className="w-full h-1.5 bg-stone-200 rounded-full appearance-none cursor-pointer accent-green-700"
           />
           <div className="flex justify-between mt-4 text-[10px] font-bold text-stone-500 uppercase tracking-widest">

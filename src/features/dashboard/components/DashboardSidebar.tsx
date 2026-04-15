@@ -21,6 +21,7 @@ import { setDashboardMode } from '@/store/features/authSlice';
 import Image from 'next/image';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { cn } from '@/lib/utils';
+import { IoTicket } from 'react-icons/io5';
 
 const DashboardSidebar = () => {
   const pathname = usePathname();
@@ -96,6 +97,14 @@ const DashboardSidebar = () => {
       label: 'Kho hàng',
       icon: FaWarehouse,
       href: '/dashboard/kho-hang',
+      roles: ['SELLER'],
+      permission: 'seller.shop.manage',
+    },
+    {
+      id: 'vouchers',
+      label: 'Mã giảm giá',
+      icon: IoTicket,
+      href: '/dashboard/vouchers',
       roles: ['SELLER'],
       permission: 'seller.shop.manage',
     },

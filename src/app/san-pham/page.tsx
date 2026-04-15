@@ -129,6 +129,7 @@ export default function ProductsPage() {
                   setSortBy(e.target.value);
                   setPage(0);
                 }}
+                suppressHydrationWarning
                 className="appearance-none bg-white px-6 py-3 pr-10 rounded-xl border border-stone-200 font-bold font-sans text-sm text-stone-700 hover:bg-stone-50 transition-colors shadow-sm outline-none cursor-pointer focus:border-green-700 focus:ring-1 focus:ring-green-700"
               >
                 <option value="newest">Mới nhất</option>

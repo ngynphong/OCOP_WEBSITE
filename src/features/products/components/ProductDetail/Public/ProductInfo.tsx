@@ -256,6 +256,7 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
                 src={product.shop.logoUrl}
                 alt={product.shop.name}
                 fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover"
               />
             )}

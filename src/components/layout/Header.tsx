@@ -165,6 +165,7 @@ export function Header() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyDown={handleSearch}
+                    suppressHydrationWarning
                     placeholder="Tìm kiếm tinh hoa đất Việt..."
                     className="flex-1 bg-transparent text-white text-sm font-normal font-sans focus:outline-none placeholder:text-emerald-100/70"
                   />
@@ -293,6 +294,7 @@ export function Header() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={handleSearch}
+              suppressHydrationWarning
               placeholder="Tìm kiếm sản phẩm OCOP..."
               className="flex-1 bg-transparent text-white text-sm focus:outline-none placeholder:text-emerald-100/50"
               autoFocus={isSearchOpen}

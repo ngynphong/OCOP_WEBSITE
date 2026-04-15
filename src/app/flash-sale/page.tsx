@@ -8,6 +8,8 @@ import {
   useUpcomingFlashSales,
 } from '@/features/flash-sale/hooks/useFlashSales';
 import { usePublicCategoriesQuery } from '@/features/products/hooks/usePublicProducts';
+import { FlashSaleQuickBuyModal } from '@/features/flash-sale/components/FlashSaleQuickBuyModal';
+import { FlashSaleItem } from '@/features/flash-sale/types';
 import { FlashSaleCard } from '@/components/ui/FlashSaleCard';
 import { CountdownTimer } from '@/features/home/components/CountdownTimer';
 import { Zap, Timer, Flame, LayoutGrid, Calendar } from 'lucide-react';
@@ -16,6 +18,8 @@ import { motion } from 'framer-motion';
 
 export default function FlashSalePage() {
   const [selectedCategory, setSelectedCategory] = useState<number | undefined>(undefined);
+  const [isQuickBuyModalOpen, setIsQuickBuyModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<FlashSaleItem | null>(null);
 
   const { data: activeData, isPending: activePending } = useActiveFlashSales(selectedCategory);
   const { data: upcomingData, isPending: upcomingPending } =
@@ -26,9 +30,13 @@ export default function FlashSalePage() {
   const upcomingFlashSales = upcomingData?.data || [];
   const categories = categoriesData?.data || [];
 
-  // Get the main active sale for the hero
   const mainSale = activeFlashSales.length > 0 ? activeFlashSales[0] : null;
   const targetDate = mainSale ? new Date(mainSale.endTime) : null;
+
+  const handleQuickBuy = (item: FlashSaleItem) => {
+    setSelectedItem(item);
+    setIsQuickBuyModalOpen(true);
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-stone-50">
@@ -169,6 +177,7 @@ export default function FlashSalePage() {
                           slug={item.productSlug || item.variantId.toString()}
                           productId={item.productId}
                           className="w-full"
+                          onBuyClick={() => handleQuickBuy(item)}
                         />
                       ))}
                     </div>
@@ -293,6 +302,13 @@ export default function FlashSalePage() {
           }
         }
       `}</style>
+      {selectedItem && (
+        <FlashSaleQuickBuyModal
+          isOpen={isQuickBuyModalOpen}
+          onClose={() => setIsQuickBuyModalOpen(false)}
+          item={selectedItem}
+        />
+      )}
     </div>
   );
 }

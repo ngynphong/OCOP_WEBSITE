@@ -1,0 +1,106 @@
+'use client';
+
+import React from 'react';
+import { ShieldCheck, Loader2, ArrowRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+interface CheckoutSummaryProps {
+  subtotal: number;
+  shippingFee: number;
+  discount: number;
+  isPending?: boolean;
+  onConfirm: () => void;
+  canConfirm: boolean;
+}
+
+export function CheckoutSummary({
+  subtotal,
+  shippingFee,
+  discount,
+  isPending,
+  onConfirm,
+  canConfirm,
+}: CheckoutSummaryProps) {
+  const total = subtotal + shippingFee - discount;
+
+  return (
+    <div className="bg-white rounded-[32px] p-8 border border-stone-100 shadow-xl shadow-stone-200/50 sticky top-28">
+      <h2 className="text-xl font-black text-stone-900 mb-6 tracking-tight">Tóm tắt thanh toán</h2>
+
+      <div className="space-y-4 mb-8">
+        <div className="flex justify-between items-center text-stone-500">
+          <span className="text-sm font-medium">Tạm tính</span>
+          <span className="text-sm font-bold text-stone-700">
+            {subtotal.toLocaleString('vi-VN')}₫
+          </span>
+        </div>
+        <div className="flex justify-between items-center text-stone-500">
+          <span className="text-sm font-medium">Phí vận chuyển</span>
+          <span className="text-sm font-bold text-stone-700">
+            {shippingFee > 0 ? `+${shippingFee.toLocaleString('vi-VN')}₫` : 'Miễn phí'}
+          </span>
+        </div>
+        {discount > 0 && (
+          <div className="flex justify-between items-center text-emerald-600">
+            <span className="text-sm font-medium">Giảm giá</span>
+            <span className="text-sm font-black">-{discount.toLocaleString('vi-VN')}₫</span>
+          </div>
+        )}
+      </div>
+
+      <div className="pt-6 border-t border-dashed border-stone-200 mb-8">
+        <div className="flex justify-between items-end">
+          <span className="text-sm font-bold text-stone-400 uppercase tracking-widest">
+            Tổng cộng
+          </span>
+          <div className="text-right">
+            <p className="text-3xl font-black text-green-700 leading-none">
+              {total.toLocaleString('vi-VN')}₫
+            </p>
+            <p className="text-[10px] text-stone-400 font-bold mt-2 uppercase tracking-tight">
+              Đã bao gồm VAT (nếu có)
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <button
+        onClick={onConfirm}
+        disabled={!canConfirm || isPending}
+        className={cn(
+          'w-full py-5 rounded-2xl flex items-center justify-center gap-2 text-white font-black text-lg transition-all duration-300 shadow-lg active:scale-95',
+          canConfirm && !isPending
+            ? 'bg-green-700 hover:bg-green-800 shadow-green-900/20'
+            : 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none',
+        )}
+      >
+        {isPending ? (
+          <>
+            <Loader2 className="w-5 h-5 animate-spin" />
+            ĐANG XỬ LÝ...
+          </>
+        ) : (
+          <>
+            XÁC NHẬN THANH TOÁN
+            <ArrowRight size={20} />
+          </>
+        )}
+      </button>
+
+      <div className="mt-8 pt-8 border-t border-stone-100 flex flex-col gap-4">
+        <div className="flex items-start gap-3 bg-stone-50/50 p-4 rounded-2xl border border-stone-100/50">
+          <ShieldCheck className="w-5 h-5 text-green-600 shrink-0" />
+          <div className="space-y-1">
+            <h4 className="text-[10px] font-black text-stone-800 uppercase tracking-widest">
+              Đảm bảo OCOP
+            </h4>
+            <p className="text-[11px] text-stone-500 leading-relaxed font-medium">
+              Hoàn tiền 100% nếu sản phẩm không đúng chất lượng chứng nhận. Bảo mật thông tin giao
+              dịch tuyệt đối.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

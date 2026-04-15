@@ -175,7 +175,7 @@ export const ProductCard = memo(function ProductCard({
           <div
             className={cn(
               'absolute bottom-0 left-0 right-0 px-4 py-3',
-              'bg-gradient-to-t from-black/60 to-transparent',
+              'bg-linear-to-t from-black/60 to-transparent',
               'translate-y-full group-hover:translate-y-0 transition-transform duration-300',
               'hidden md:flex items-center justify-center gap-2',
             )}

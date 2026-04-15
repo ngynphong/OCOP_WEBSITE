@@ -18,6 +18,7 @@ import {
 } from 'react-icons/fi';
 import { FaWarehouse } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { IoTicket } from 'react-icons/io5';
 
 interface AdminSidebarProps {
   isCollapsed: boolean;
@@ -33,6 +34,7 @@ const MENU_ITEMS = [
   { label: 'Phê duyệt', icon: FiCheckSquare, href: '/admin/phe-duyet', id: 'approval' },
   { label: 'Tài chính', icon: FiDollarSign, href: '/admin/tai-chinh', id: 'financials' },
   { label: 'Người dùng', icon: FiUsers, href: '/admin/users', id: 'users' },
+  { label: 'Mã giảm giá', icon: IoTicket, href: '/admin/vouchers', id: 'vouchers' },
   { label: 'Gói đăng ký', icon: FiCreditCard, href: '/admin/subscriptions', id: 'subscriptions' },
   { label: 'Vận hành', icon: FiSettings, href: '/admin/van-hanh', id: 'operations' },
   { label: 'Dữ liệu gốc', icon: FiDatabase, href: '/admin/du-lieu', id: 'master-data' },

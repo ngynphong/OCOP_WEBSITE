@@ -37,6 +37,7 @@ export function ProductStory({ description, name, images }: ProductStoryProps) {
                 src={images[0] || '/images/placeholder-product.jpg'}
                 alt="Product Origin"
                 fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover"
               />
             </div>
@@ -93,6 +94,7 @@ export function ProductStory({ description, name, images }: ProductStoryProps) {
                 src={images[2] || images[1] || images[0] || '/images/placeholder-product.jpg'}
                 alt="Craftsmanship"
                 fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover"
               />
             </div>
