@@ -1,48 +1,35 @@
 'use client';
 
-import React from 'react';
-import { MapPin, Plus, CheckCircle2 } from 'lucide-react';
+import React, { memo } from 'react';
+import { MapPin, CheckCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Address } from '../types/checkoutTypes';
-
-// Mock Data
-const MOCK_ADDRESSES: Address[] = [
-  {
-    id: 1,
-    receiverName: 'Nguyễn Văn A',
-    phone: '0987654321',
-    provinceId: 1,
-    provinceName: 'Hà Nội',
-    districtId: 1,
-    districtName: 'Cầu Giấy',
-    wardCode: '1',
-    wardName: 'Dịch Vọng',
-    addressLine: 'Số 10, Ngõ 123 Cầu Giấy',
-    isDefault: true,
-    label: 'HOME',
-  },
-  {
-    id: 2,
-    receiverName: 'Trần Thị B',
-    phone: '0123456789',
-    provinceId: 2,
-    provinceName: 'Hồ Chí Minh',
-    districtId: 2,
-    districtName: 'Quận 1',
-    wardCode: '2',
-    wardName: 'Bến Nghé',
-    addressLine: '99 Lê Lợi',
-    isDefault: false,
-    label: 'OFFICE',
-  },
-];
+import { useUserAddresses } from '@/features/address/hooks/useAddress';
 
 interface AddressSelectorProps {
   selectedId?: number;
   onSelect: (address: Address) => void;
 }
 
-export function AddressSelector({ selectedId, onSelect }: AddressSelectorProps) {
+export const AddressSelector = memo(function AddressSelector({
+  selectedId,
+  onSelect,
+}: AddressSelectorProps) {
+  const { data: addresses, isLoading } = useUserAddresses();
+
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        <div className="h-4 w-32 bg-stone-100 animate-pulse rounded" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {[1, 2].map((i) => (
+            <div key={i} className="h-28 bg-stone-50 animate-pulse rounded-2xl" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -50,14 +37,10 @@ export function AddressSelector({ selectedId, onSelect }: AddressSelectorProps) 
           <MapPin className="w-4 h-4 text-green-600" />
           Địa chỉ nhận hàng
         </h3>
-        <button className="text-xs font-bold text-green-700 hover:text-green-800 flex items-center gap-1 transition-colors">
-          <Plus size={14} />
-          Thêm địa chỉ mới
-        </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {MOCK_ADDRESSES.map((addr) => (
+        {addresses?.map((addr) => (
           <div
             key={addr.id}
             onClick={() => onSelect(addr)}
@@ -77,12 +60,16 @@ export function AddressSelector({ selectedId, onSelect }: AddressSelectorProps) 
                     : 'bg-amber-100 text-amber-700',
                 )}
               >
-                {addr.label === 'HOME' ? 'Nhà riêng' : 'Văn phòng'}
+                {addr.label === 'HOME'
+                  ? 'Nhà riêng'
+                  : addr.label === 'OFFICE'
+                    ? 'Văn phòng'
+                    : 'Khác'}
               </span>
               {selectedId === addr.id && <CheckCircle2 className="w-4 h-4 text-green-600" />}
             </div>
 
-            <p className="text-sm font-bold text-stone-900 mb-1">{addr.receiverName}</p>
+            <p className="text-sm font-bold text-stone-900 mb-1">{addr.recipient}</p>
             <p className="text-xs text-stone-500 mb-2">{addr.phone}</p>
             <p className="text-xs text-stone-600 leading-relaxed">
               {addr.addressLine}, {addr.wardName}, {addr.districtName}, {addr.provinceName}
@@ -95,7 +82,16 @@ export function AddressSelector({ selectedId, onSelect }: AddressSelectorProps) 
             )}
           </div>
         ))}
+
+        {!isLoading && (!addresses || addresses.length === 0) && (
+          <div className="col-span-full py-10 text-center border-2 border-dashed border-stone-100 rounded-[32px] bg-stone-50/50">
+            <p className="text-sm text-stone-400 font-medium">Bạn chưa có địa chỉ nhận hàng nào</p>
+            <button className="mt-2 text-xs font-bold text-green-600 hover:text-green-700">
+              Thêm ngay
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
-}
+});

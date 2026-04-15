@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { memo } from 'react';
 import { Truck, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ShippingProvider } from '../types/checkoutTypes';
@@ -38,7 +38,10 @@ interface ShippingSelectorProps {
   onSelect: (provider: ShippingProvider) => void;
 }
 
-export function ShippingSelector({ selectedId, onSelect }: ShippingSelectorProps) {
+export const ShippingSelector = memo(function ShippingSelector({
+  selectedId,
+  onSelect,
+}: ShippingSelectorProps) {
   return (
     <div className="space-y-4 pt-6 mt-6 border-t border-stone-100">
       <h3 className="text-sm font-bold text-stone-800 flex items-center gap-2">
@@ -60,7 +63,6 @@ export function ShippingSelector({ selectedId, onSelect }: ShippingSelectorProps
           >
             <div className="flex items-center gap-4">
               <div className="w-10 h-10 rounded-xl bg-stone-50 flex items-center justify-center overflow-hidden border border-stone-100">
-                {/* Fallback text if image not found */}
                 <span className="text-[10px] font-black text-stone-300">{provider.code}</span>
               </div>
               <div>
@@ -95,4 +97,4 @@ export function ShippingSelector({ selectedId, onSelect }: ShippingSelectorProps
       </div>
     </div>
   );
-}
+});

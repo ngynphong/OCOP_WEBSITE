@@ -84,7 +84,7 @@ export function CartSummary({ selectedItems, hasIssues }: CartSummaryProps) {
 
     validateCart(undefined, {
       onSuccess: (res) => {
-        if (res.data.isValid) {
+        if (res.data.valid) {
           router.push('/checkout');
         } else {
           // Có issue — thông báo để user xử lý trước

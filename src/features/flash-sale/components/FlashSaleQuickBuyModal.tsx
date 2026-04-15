@@ -8,6 +8,8 @@ import { PaymentMethodSelector } from '@/features/checkout/components/PaymentMet
 import { Address, ShippingProvider, PaymentMethod } from '@/features/checkout/types/checkoutTypes';
 import { FlashSaleItem } from '../types';
 import { useBuyFlashSaleItem } from '../hooks/useFlashSales';
+import { usePaymentMethods } from '@/features/payment/hooks/usePaymentMethods';
+import { useUserAddresses } from '@/features/address/hooks/useAddress';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -19,11 +21,28 @@ interface FlashSaleQuickBuyModalProps {
 }
 
 export function FlashSaleQuickBuyModal({ isOpen, onClose, item }: FlashSaleQuickBuyModalProps) {
+  const { data: addresses } = useUserAddresses();
   const [selectedAddress, setSelectedAddress] = useState<Address | undefined>(undefined);
   const [selectedShipping, setSelectedShipping] = useState<ShippingProvider | undefined>(undefined);
-  const [selectedPayment, setSelectedPayment] = useState<PaymentMethod | undefined>('COD');
+  const [selectedPayment, setSelectedPayment] = useState<PaymentMethod | undefined>(undefined);
   const [qty, setQty] = useState(1);
   const { mutate: buyFlashSaleItem, isPending: isSubmitting } = useBuyFlashSaleItem();
+  const { data: paymentMethods } = usePaymentMethods();
+
+  // Set default address when addresses are loaded
+  React.useEffect(() => {
+    if (addresses && addresses.length > 0 && !selectedAddress) {
+      const defaultAddr = addresses.find((a) => a.isDefault) || addresses[0];
+      setSelectedAddress(defaultAddr);
+    }
+  }, [addresses, selectedAddress]);
+
+  // Set default payment method when methods are loaded
+  React.useEffect(() => {
+    if (paymentMethods && paymentMethods.length > 0 && !selectedPayment) {
+      setSelectedPayment(paymentMethods[0].code);
+    }
+  }, [paymentMethods, selectedPayment]);
 
   const subtotal = item.salePrice * qty;
   const shippingFee = selectedShipping?.baseFee || 0;

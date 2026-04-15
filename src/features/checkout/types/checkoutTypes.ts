@@ -1,18 +1,18 @@
-export type PaymentMethod = 'COD' | 'MOMO' | 'VNPAY' | 'ZALOPAY';
+export type PaymentMethod = string;
 
 export interface Address {
   id: number;
-  receiverName: string;
+  label: string;
+  recipient: string;
   phone: string;
   provinceId: number;
   provinceName: string;
   districtId: number;
   districtName: string;
-  wardCode: string;
+  wardId: number;
   wardName: string;
   addressLine: string;
   isDefault: boolean;
-  label: 'HOME' | 'OFFICE' | 'OTHER';
 }
 
 export interface ShippingProvider {

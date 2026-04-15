@@ -81,7 +81,7 @@ export interface CartValidateIssue {
 }
 
 export interface CartValidateData {
-  isValid: boolean;
+  valid: boolean;
   validItems: number;
   invalidItems: number;
   issues: CartValidateIssue[];

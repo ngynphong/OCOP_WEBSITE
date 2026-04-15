@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo, memo } from 'react';
 import { ShieldCheck, Loader2, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/AppButton';
 
 interface CheckoutSummaryProps {
   subtotal: number;
@@ -13,7 +14,7 @@ interface CheckoutSummaryProps {
   canConfirm: boolean;
 }
 
-export function CheckoutSummary({
+export const CheckoutSummary = memo(function CheckoutSummary({
   subtotal,
   shippingFee,
   discount,
@@ -21,7 +22,7 @@ export function CheckoutSummary({
   onConfirm,
   canConfirm,
 }: CheckoutSummaryProps) {
-  const total = subtotal + shippingFee - discount;
+  const total = useMemo(() => subtotal + shippingFee - discount, [subtotal, shippingFee, discount]);
 
   return (
     <div className="bg-white rounded-[32px] p-8 border border-stone-100 shadow-xl shadow-stone-200/50 sticky top-28">
@@ -64,15 +65,16 @@ export function CheckoutSummary({
         </div>
       </div>
 
-      <button
+      <Button
         onClick={onConfirm}
         disabled={!canConfirm || isPending}
         className={cn(
-          'w-full py-5 rounded-2xl flex items-center justify-center gap-2 text-white font-black text-lg transition-all duration-300 shadow-lg active:scale-95',
+          'w-full py-4 rounded-2xl flex items-center justify-center gap-2',
           canConfirm && !isPending
             ? 'bg-green-700 hover:bg-green-800 shadow-green-900/20'
             : 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none',
         )}
+        variant="primary"
       >
         {isPending ? (
           <>
@@ -85,7 +87,7 @@ export function CheckoutSummary({
             <ArrowRight size={20} />
           </>
         )}
-      </button>
+      </Button>
 
       <div className="mt-8 pt-8 border-t border-stone-100 flex flex-col gap-4">
         <div className="flex items-start gap-3 bg-stone-50/50 p-4 rounded-2xl border border-stone-100/50">
@@ -103,4 +105,4 @@ export function CheckoutSummary({
       </div>
     </div>
   );
-}
+});
