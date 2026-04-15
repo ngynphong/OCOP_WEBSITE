@@ -378,7 +378,7 @@ export interface TraceQrInfo {
   qrCode: string;
   blockchainStatus: string;
   blockchainRootHash: string | null;
-  isVerified: boolean;
+  isCertified: boolean;
 }
 
 export interface TraceDetail {

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import QRCode from 'react-qr-code';
 import { CheckCircle2, ShieldCheck, Calendar, MapPin, QrCode, Award, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ProductJournal, ProductQrCode } from '@/features/products/types/productTypes';
@@ -87,9 +88,16 @@ export function ProductTraceability({ journals = [], qrCode }: ProductTraceabili
               <QrCode className="w-5 h-5 text-green-700" />
             </div>
 
-            <div className="aspect-square w-full max-w-[130px] mx-auto relative p-3 bg-stone-50 rounded-2xl border-2 border-dashed border-stone-200 flex items-center justify-center">
-              <div className="absolute inset-x-0 top-0 h-1/2 bg-linear-to-b from-green-500/10 to-transparent animate-scan" />
-              <QrCode className="w-16 h-16 text-stone-300" />
+            <div className="aspect-square w-full max-w-[130px] mx-auto p-3 bg-white rounded-2xl border border-stone-200 flex items-center justify-center">
+              {qrCode?.qrUrl ? (
+                <QRCode
+                  value={`${typeof window !== 'undefined' ? window.location.origin : ''}${qrCode.qrUrl}`}
+                  size={104}
+                  level="M"
+                />
+              ) : (
+                <QrCode className="w-16 h-16 text-stone-300" />
+              )}
             </div>
 
             <div className="flex flex-col gap-2">
@@ -224,19 +232,6 @@ export function ProductTraceability({ journals = [], qrCode }: ProductTraceabili
           </div>
         </div>
       </div>
-      <style jsx>{`
-        @keyframes scan {
-          0% {
-            transform: translateY(-100%);
-          }
-          100% {
-            transform: translateY(100%);
-          }
-        }
-        .animate-scan {
-          animation: scan 2s linear infinite;
-        }
-      `}</style>
     </div>
   );
 }
