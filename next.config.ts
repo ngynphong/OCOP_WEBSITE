@@ -6,6 +6,19 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 's3.ap-learning.site',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'ap-learning.site',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.ghn.vn',
+        port: '',
         pathname: '/**',
       },
     ],

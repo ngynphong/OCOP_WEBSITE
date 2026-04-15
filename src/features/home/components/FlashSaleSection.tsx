@@ -1,14 +1,24 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { ChevronRight, Zap } from 'lucide-react';
+import Image from 'next/image';
 import { FlashSaleCard } from '@/components/ui/FlashSaleCard';
 import { useActiveFlashSales } from '@/features/flash-sale/hooks/useFlashSales';
 import { CountdownTimer } from './CountdownTimer';
-import Image from 'next/image';
+import { FlashSaleQuickBuyModal } from '@/features/flash-sale/components/FlashSaleQuickBuyModal';
+import { FlashSaleItem } from '@/features/flash-sale/types';
 
 export function FlashSaleSection() {
   const { data, isPending, isError } = useActiveFlashSales();
+  const [isQuickBuyModalOpen, setIsQuickBuyModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<FlashSaleItem | null>(null);
+
+  const handleQuickBuy = (item: FlashSaleItem) => {
+    setSelectedItem(item);
+    setIsQuickBuyModalOpen(true);
+  };
 
   // Lấy Flash Sale đầu tiên đang diễn ra (nếu có)
   const activeFlashSale = data?.data && data.data.length > 0 ? data.data[0] : null;
@@ -82,6 +92,7 @@ export function FlashSaleSection() {
                     slug={item.productSlug || item.variantId.toString()}
                     productId={item.productId}
                     className="w-64 min-w-[16rem]"
+                    onBuyClick={() => handleQuickBuy(item)}
                   />
                 </div>
               ))}
@@ -89,6 +100,13 @@ export function FlashSaleSection() {
           </div>
         </div>
       </div>
+      {selectedItem && (
+        <FlashSaleQuickBuyModal
+          isOpen={isQuickBuyModalOpen}
+          onClose={() => setIsQuickBuyModalOpen(false)}
+          item={selectedItem}
+        />
+      )}
     </section>
   );
 }

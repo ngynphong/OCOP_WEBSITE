@@ -25,7 +25,7 @@ export function ProductGallery({
     url:
       images.find((img) => img.isPrimary)?.url ||
       images[0]?.url ||
-      '/images/placeholder-product.jpg',
+      '/images/fresh-green-produce.jpg',
     id: images.find((img) => img.isPrimary)?.id || images[0]?.id,
   });
 
@@ -112,6 +112,7 @@ export function ProductGallery({
               src={image.thumbnailUrl || image.url || '/images/placeholder-product.jpg'}
               alt={image.altText || name}
               fill
+              sizes="(max-width: 768px) 100vw, 50vw"
               className="object-cover"
             />
           </button>

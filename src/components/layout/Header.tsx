@@ -11,6 +11,7 @@ import {
   LayoutDashboard,
   LogOut,
   ChevronDown,
+  QrCode,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
@@ -19,12 +20,14 @@ import { useAuth } from '@/features/auth/hooks/useAuth';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { useCart } from '@/features/cart/hooks/useCart';
+import { QRScannerModal } from '@/components/ui/QRScannerModal';
 
 export function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isQRModalOpen, setIsQRModalOpen] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -70,18 +73,18 @@ export function Header() {
   };
 
   return (
-    <header className="w-full flex flex-col justify-start items-center sticky top-0 z-50">
-      <div className="w-full py-2 bg-yellow-100 flex flex-col justify-start items-center">
+    <header className="w-full flex flex-col justify-start items-center sticky top-0 z-[100]">
+      <div className="w-full py-2 bg-yellow-100 flex flex-col justify-start items-center relative z-[101]">
         <div className="text-center justify-center text-stone-900 text-xs font-medium font-sans leading-4 tracking-tight">
           Freeship toàn quốc đơn từ 200k • Đồng hành cùng nông sản Việt
         </div>
       </div>
-      <div className="w-full relative bg-green-700 flex flex-col justify-start items-center shadow-md">
+      <div className="w-full relative z-[102] bg-green-700 flex flex-col justify-start items-center shadow-md">
         <div className="w-full max-w-7xl px-4 lg:px-6 py-3 md:py-4 flex justify-between items-center">
-          <div className="flex justify-start items-center gap-4 lg:gap-8 lg:pl-4">
+          <div className="flex justify-start items-center gap-4 lg:gap-8 lg:pl-4 relative z-[103]">
             <button
               suppressHydrationWarning
-              className="lg:hidden text-white p-1"
+              className="lg:hidden text-white p-1 cursor-pointer"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -165,6 +168,7 @@ export function Header() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyDown={handleSearch}
+                    suppressHydrationWarning
                     placeholder="Tìm kiếm tinh hoa đất Việt..."
                     className="flex-1 bg-transparent text-white text-sm font-normal font-sans focus:outline-none placeholder:text-emerald-100/70"
                   />
@@ -172,10 +176,10 @@ export function Header() {
               </div>
             </div>
           </div>
-          <div className="px-px flex justify-start items-center gap-1 md:gap-2.5">
+          <div className="px-2 flex justify-start items-center gap-1 md:gap-2.5 relative z-[103]">
             <button
               suppressHydrationWarning
-              className="lg:hidden text-white p-2 hover:bg-white/10 rounded-full transition-colors"
+              className="lg:hidden text-white p-2 hover:bg-white/10 rounded-full transition-colors cursor-pointer"
               onClick={() => setIsSearchOpen(!isSearchOpen)}
             >
               <Search className="w-5 h-5" />
@@ -266,6 +270,14 @@ export function Header() {
                 Đăng nhập
               </Link>
             )}
+            <button
+              onClick={() => setIsQRModalOpen(true)}
+              suppressHydrationWarning
+              aria-label="Quét mã QR"
+              className="h-10 w-10 inline-flex flex-col justify-center items-center text-white hover:bg-white/10 rounded-full transition-colors cursor-pointer group"
+            >
+              <QrCode className="w-5 h-5 group-hover:scale-110 transition-transform" />
+            </button>
             <Link
               href="/gio-hang"
               suppressHydrationWarning
@@ -293,6 +305,7 @@ export function Header() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={handleSearch}
+              suppressHydrationWarning
               placeholder="Tìm kiếm sản phẩm OCOP..."
               className="flex-1 bg-transparent text-white text-sm focus:outline-none placeholder:text-emerald-100/50"
               autoFocus={isSearchOpen}
@@ -336,17 +349,22 @@ export function Header() {
         </div>
       </div>
 
-      {/* Logout Confirmation Modal */}
-      <ConfirmModal
-        isOpen={isLogoutModalOpen}
-        title="Đăng xuất tài khoản"
-        message="Bạn có chắc chắn muốn đăng xuất khỏi hệ thống OCOP không?"
-        confirmText="Đăng xuất ngay"
-        cancelText="Để sau"
-        type="danger"
-        onConfirm={handleConfirmLogout}
-        onCancel={() => setIsLogoutModalOpen(false)}
-      />
+      {isLogoutModalOpen && (
+        <ConfirmModal
+          isOpen={isLogoutModalOpen}
+          title="Đăng xuất tài khoản"
+          message="Bạn có chắc chắn muốn đăng xuất khỏi hệ thống OCOP không?"
+          confirmText="Đăng xuất ngay"
+          cancelText="Để sau"
+          type="danger"
+          onConfirm={handleConfirmLogout}
+          onCancel={() => setIsLogoutModalOpen(false)}
+        />
+      )}
+
+      {isQRModalOpen && (
+        <QRScannerModal isOpen={isQRModalOpen} onClose={() => setIsQRModalOpen(false)} />
+      )}
     </header>
   );
 }

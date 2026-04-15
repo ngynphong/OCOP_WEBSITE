@@ -80,8 +80,31 @@ export interface FlashSale {
 export type CreateFlashSaleRequest = z.infer<typeof FlashSaleRequestSchema>;
 export type UpdateFlashSaleRequest = CreateFlashSaleRequest;
 
+export interface BuyFlashSaleOrderData {
+  orderId: number;
+  orderCode: string;
+  status: string;
+  unitPrice: number;
+  qty: number;
+  subtotal: number;
+  shippingFee: number;
+  voucherDiscount: number;
+  pointDiscount: number;
+  totalAmount: number;
+  paymentMethod: string;
+  paymentUrl: string;
+  expiredAt: string;
+  flashSaleItemId: number;
+  productName: string;
+  variantName: string;
+  thumbnailUrl: string;
+  originalPrice: number;
+  discountPercent: number;
+}
+
 export type FlashSaleDetailResponse = AuthResponseBase<FlashSale>;
 export type FlashSaleListResponse = AuthResponseBase<FlashSale[]>;
+export type BuyFlashSaleResponse = AuthResponseBase<BuyFlashSaleOrderData>;
 export type FlashSaleAdminListResponse = AuthResponseBase<{
   content: FlashSale[];
   totalElements: number;

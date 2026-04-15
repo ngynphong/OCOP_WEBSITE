@@ -45,7 +45,7 @@ export function StickyBottomCTA({ variantId, price, onBuyNow }: StickyBottomCTAP
           </Button>
 
           {/* Mua ngay */}
-          <Button variant="primary" className="flex-[2] h-14 rounded-2xl" onClick={onBuyNow}>
+          <Button variant="primary" className="flex-2 h-14 rounded-2xl" onClick={onBuyNow}>
             Mua ngay
           </Button>
         </div>

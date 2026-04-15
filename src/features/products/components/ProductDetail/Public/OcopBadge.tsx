@@ -24,6 +24,7 @@ export function OcopBadge({ stars, className }: OcopBadgeProps) {
           src="/images/logo-ocop-rm.jpg"
           alt="OCOP Certification"
           fill
+          sizes="(max-width: 768px) 100vw, 50vw"
           className="object-contain"
         />
       </div>

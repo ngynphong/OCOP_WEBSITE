@@ -9,6 +9,7 @@ import {
 } from '@/features/wishlist/hooks/useWishlist';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 interface FlashSaleCardProps {
   name: string;
@@ -21,6 +22,7 @@ interface FlashSaleCardProps {
   productId: number;
   ocopRating?: number;
   className?: string;
+  onBuyClick?: () => void;
 }
 
 export function FlashSaleCard({
@@ -34,6 +36,7 @@ export function FlashSaleCard({
   productId,
   ocopRating = 4,
   className = '',
+  onBuyClick,
 }: FlashSaleCardProps) {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const { data: statusData } = useWishlistStatus([productId]);
@@ -59,6 +62,13 @@ export function FlashSaleCard({
     }
   };
 
+  const handleCardClick = (e: React.MouseEvent) => {
+    if (onBuyClick) {
+      e.preventDefault();
+      onBuyClick();
+    }
+  };
+
   // Determine bar text and color based on sold percent
   const isAlmostSoldOut = soldPercent >= 80;
   const barText = isAlmostSoldOut ? 'Sắp hết hàng' : `Đã bán ${soldPercent}%`;
@@ -66,11 +76,15 @@ export function FlashSaleCard({
   return (
     <Link
       href={`/san-pham/${slug}`}
-      className={`group relative bg-white rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col p-4 cursor-pointer border border-stone-100/50 ${className}`}
+      onClick={handleCardClick}
+      className={cn(
+        'group relative bg-white rounded-[32px] shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col p-5 cursor-pointer border border-stone-100/50',
+        className,
+      )}
     >
       <div className="w-full relative rounded-xl overflow-hidden aspect-4/3 mb-3">
         <Image
-          src={image || 'https://placehold.co/230x192'}
+          src={image || '/images/fresh-green-produce.jpg'}
           alt={name}
           fill
           className="object-cover group-hover:scale-110 transition-transform duration-500"
