@@ -137,6 +137,7 @@ export const ProductCard = memo(function ProductCard({
           <div className="absolute top-4 right-4 z-20 flex flex-col gap-2">
             {/* Wishlist */}
             <button
+              suppressHydrationWarning
               disabled={isWishlistLoading}
               onClick={handleWishlistClick}
               className={cn(
@@ -181,6 +182,7 @@ export const ProductCard = memo(function ProductCard({
             )}
           >
             <button
+              suppressHydrationWarning
               disabled={isAddingToCart}
               onClick={handleAddToCart}
               className="w-full flex items-center justify-center gap-1.5 bg-white/90 hover:bg-white text-stone-800 text-xs font-bold py-2 rounded-xl backdrop-blur-sm transition-all duration-200 disabled:opacity-60"

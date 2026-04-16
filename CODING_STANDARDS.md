@@ -66,6 +66,24 @@ Dự án này tuân thủ Kiến trúc Feature-Driven Development kết hợp v�
   - Component/File export component: `PascalCase.tsx`.
   - Hàm, hooks, service, utils: `camelCase.ts`. (VD: `useAuth.ts`, `authApi.ts`).
   - Interface/Types: Bắt đầu bằng chữ in hoa (Ví dụ: `IUser`, `UserDTO`) hoặc hậu tố (Ví dụ: `AuthResponse`).
+    69:
+    70: ## ⚡ 8. Xử lý lỗi Hydration (Next.js Hydration Error)
+    71:
+    72: Lỗi Hydration xảy ra khi HTML server-rendered không khớp với DOM ban đầu của Client. Điều này thường do các thành phần động (Carousel, Animation, Date, Browser APIs).
+    73:
+    74: ### Quy tắc xử lý:
+    75: 1. **Sử dụng `isMounted` pattern:** Đối với các Client Components có logic động hoặc sử dụng Browser APIs (`window`, `localStorage`, `matchMedia`...), bắt buộc bọc phần render nhạy cảm bằng trạng thái mount.
+    76: `tsx
+77:    const [isMounted, setIsMounted] = useState(false);
+78:    useEffect(() => setIsMounted(true), []);
+79:    
+80:    if (!isMounted) return <Skeleton />; // Hoặc null/placeholder cố định
+81:    return <DynamicContent />;
+82:    `
+    83: 2. **Hạn chế `suppressHydrationWarning`:** Chỉ dùng như lựa chọn cuối cùng cho các trường hợp không thể kiểm soát (ví dụ: timestamp từ thư viện bên thứ 3, browser extensions) và chỉ áp dụng ở mức độ thẻ HTML thấp nhất có thể.
+    84: 3. **Tuyệt đối không sử dụng `typeof window !== 'undefined'` trực tiếp trong block render**: Điều này gây ra mismatch HTML giữa server và client. Hãy chuyển logic đó vào `useEffect`.
+    85: 4. **HTML Nesting:** Tuân thủ đúng quy tắc lồng thẻ HTML (không lồng `<div>` trong `<p>`, `<a>` trong `<a>`...) để tránh việc trình duyệt tự ý sửa cấu trúc DOM gây lỗi Hydration.
+    86:
 
 **🛑 CHECKLIST TRƯỚC KHI COMMIT LÊN PRODUCTION:**
 
@@ -74,4 +92,5 @@ Dự án này tuân thủ Kiến trúc Feature-Driven Development kết hợp v�
 - [ ] Các mảng dữ liệu tĩnh đã được hoist ra ngoài component chưa?
 - [ ] Loading state có bị flicker hay gây re-render toàn app không?
 - [ ] Forms và tham số đầu vào đã có Zod validation chưa?
+- [ ] Thành phần Client Component đã xử lý Hydration (isMounted) chưa?
 - [ ] Không có Warning `any` và không thừa `console.log`?

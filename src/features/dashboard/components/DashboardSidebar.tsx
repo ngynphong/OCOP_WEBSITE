@@ -20,7 +20,6 @@ import { useDispatch } from 'react-redux';
 import { setDashboardMode } from '@/store/features/authSlice';
 import Image from 'next/image';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
-import { cn } from '@/lib/utils';
 import { IoTicket } from 'react-icons/io5';
 
 const DashboardSidebar = () => {
@@ -40,8 +39,6 @@ const DashboardSidebar = () => {
       dispatch(setDashboardMode(savedMode));
     }
   }, [dispatch]);
-
-  const isSeller = profile?.roles?.includes('SELLER');
 
   const menuItems = [
     // Chung
@@ -91,6 +88,14 @@ const DashboardSidebar = () => {
       href: '/dashboard/san-pham',
       roles: ['SELLER'],
       permission: 'seller.product.manage',
+    },
+    {
+      id: 'seller-orders',
+      label: 'Quản lý Đơn hàng',
+      icon: FiShoppingBag, // Using the same icon or FiInbox
+      href: '/dashboard/cua-hang/don-hang',
+      roles: ['SELLER'],
+      permission: 'seller.shop.manage',
     },
     {
       id: 'inventory',
@@ -184,62 +189,45 @@ const DashboardSidebar = () => {
 
       {/* Navigation Menu */}
       <nav className="bg-white rounded-3xl p-3 border border-stone-100 shadow-xl shadow-stone-200/50 flex flex-col gap-1">
-        {/* Role Switcher */}
-        {isMounted && isSeller && (
-          <div className="flex bg-stone-100 p-1 rounded-2xl mb-2">
-            <button
-              onClick={() => dispatch(setDashboardMode('USER'))}
-              className={cn(
-                'flex-1 py-2 text-xs font-black rounded-xl transition-all cursor-pointer',
-                dashboardMode === 'USER'
-                  ? 'bg-white text-green-700 shadow-sm'
-                  : 'text-stone-400 hover:text-stone-600',
-              )}
-            >
-              Consumer
-            </button>
-            <button
-              onClick={() => dispatch(setDashboardMode('SELLER'))}
-              className={cn(
-                'flex-1 py-2 text-xs font-black rounded-xl transition-all cursor-pointer',
-                dashboardMode === 'SELLER'
-                  ? 'bg-white text-green-700 shadow-sm'
-                  : 'text-stone-400 hover:text-stone-600',
-              )}
-            >
-              Seller Center
-            </button>
-          </div>
-        )}
-
         {isMounted &&
-          filteredMenu.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.id}
-                href={item.href}
-                className={`flex items-center justify-between px-4 py-3.5 rounded-2xl transition-all duration-300 group ${
-                  isActive
-                    ? 'bg-green-600 text-white shadow-lg shadow-green-500/25'
-                    : 'text-stone-600 hover:bg-stone-50'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <item.icon
-                    size={18}
-                    className={
-                      isActive ? 'text-white' : 'text-stone-400 group-hover:text-green-600'
-                    }
+          (() => {
+            // Find the most specific (longest) matching href for the current pathname
+            const activeHref = filteredMenu
+              .map((item) => item.href)
+              .filter(
+                (href) =>
+                  pathname === href || (href !== '/dashboard' && pathname.startsWith(`${href}/`)),
+              )
+              .sort((a, b) => b.length - a.length)[0];
+
+            return filteredMenu.map((item) => {
+              const isActive = item.href === activeHref;
+              return (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  className={`flex items-center justify-between px-4 py-3.5 rounded-2xl transition-all duration-300 group ${
+                    isActive
+                      ? 'bg-green-600 text-white shadow-lg shadow-green-500/25'
+                      : 'text-stone-600 hover:bg-stone-50'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <item.icon
+                      size={18}
+                      className={
+                        isActive ? 'text-white' : 'text-stone-400 group-hover:text-green-600'
+                      }
+                    />
+                    <span className="font-semibold text-sm">{item.label}</span>
+                  </div>
+                  <FiChevronRight
+                    className={`transition-transform duration-300 ${isActive ? 'rotate-90' : 'opacity-0 group-hover:opacity-100'}`}
                   />
-                  <span className="font-semibold text-sm">{item.label}</span>
-                </div>
-                <FiChevronRight
-                  className={`transition-transform duration-300 ${isActive ? 'rotate-90' : 'opacity-0 group-hover:opacity-100'}`}
-                />
-              </Link>
-            );
-          })}
+                </Link>
+              );
+            });
+          })()}
 
         <div className="my-2 border-t border-stone-50" />
 
