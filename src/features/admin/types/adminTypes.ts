@@ -250,3 +250,109 @@ export type CategoryUpdateRequest = CategoryCreateRequest;
 export type AdminCategoryListResponse = AuthResponseBase<Category[]>;
 export type AdminCategoryDetailResponse = AuthResponseBase<Category>;
 export type CategoryCheckSlugResponse = AuthResponseBase<boolean>;
+
+// ─── Admin Order Management Types ──────────────────────────────────────────
+
+export interface IAdminOrderParams {
+  status?: string;
+  startDate?: string;
+  endDate?: string;
+  keyword?: string;
+  pageNo?: number;
+  pageSize?: number;
+}
+
+export interface IAdminRefundParams {
+  status?: string;
+  pageNo?: number;
+  pageSize?: number;
+}
+
+export interface IAdminOrderListItem {
+  id: number;
+  orderCode: string;
+  status: string;
+  paymentStatus: string;
+  shopName: string;
+  shopSlug: string;
+  shopLogoUrl: string;
+  thumbnail: string;
+  firstItemName: string;
+  firstItemVariantName: string;
+  itemCount: number;
+  totalAmount: number;
+  paymentMethod: string;
+  canCancel: boolean;
+  createdAt: string;
+}
+
+export interface IAdminOrderListRes {
+  content: IAdminOrderListItem[];
+  totalElements: number;
+  totalPages: number;
+  page: number;
+  size: number;
+}
+
+export interface IAdminDashboardStats {
+  totalOrders: number;
+  gmv: number;
+  avgOrderValue: number;
+  commissionRevenue: number;
+  pendingPayout: number;
+}
+
+export interface IAdminDashboardRes {
+  today: IAdminDashboardStats;
+  month: IAdminDashboardStats;
+  ordersByStatus: Record<string, number>;
+}
+
+export interface IAdminRefundListItem {
+  refundId: number;
+  status: string;
+  amount: number;
+  estimatedProcessDays: number;
+  message: string;
+}
+
+export interface IAdminRefundListRes {
+  content: IAdminRefundListItem[];
+  totalElements: number;
+  totalPages: number;
+  page: number;
+  size: number;
+}
+
+export interface IPayoutProcessReq {
+  paymentRef: string;
+  note: string;
+}
+
+export interface IRefundApproveReq {
+  action: 'APPROVE' | 'REJECT';
+  note: string;
+  refundAmount?: number;
+  rejectReason?: string;
+}
+
+export interface IAdminPayoutRes {
+  id: number;
+  periodStart: string;
+  periodEnd: string;
+  grossRevenue: number;
+  commissionFee: number;
+  cashbackAmount: number;
+  refundDeducted: number;
+  netPayout: number;
+  status: string;
+  scheduledPayoutDate: string;
+  paidAt: string;
+  paymentRef: string;
+}
+
+export type AdminOrderListResponse = AuthResponseBase<IAdminOrderListRes>;
+export type AdminDashboardResponse = AuthResponseBase<IAdminDashboardRes>;
+export type AdminRefundListResponse = AuthResponseBase<IAdminRefundListRes>;
+export type AdminPayoutResponse = AuthResponseBase<IAdminPayoutRes>;
+export type AdminRefundActionResponse = AuthResponseBase<IAdminRefundListItem>;

@@ -30,6 +30,7 @@ interface AdminSidebarProps {
 const MENU_ITEMS = [
   { label: 'Tổng quan', icon: FiGrid, href: '/admin', id: 'overview' },
   { label: 'Cửa hàng', icon: FiShoppingBag, href: '/admin/shops', id: 'shops' },
+  { label: 'Đơn hàng', icon: FiShoppingBag, href: '/admin/orders', id: 'orders' },
   { label: 'Sản phẩm', icon: FiBox, href: '/admin/products', id: 'products' },
   { label: 'Kho hàng', icon: FaWarehouse, href: '/admin/inventory', id: 'inventory' },
   // { label: 'Phê duyệt', icon: FiCheckSquare, href: '/admin/phe-duyet', id: 'approval' },

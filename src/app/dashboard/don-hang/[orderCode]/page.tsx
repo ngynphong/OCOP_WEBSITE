@@ -92,6 +92,7 @@ export default function OrderDetailsPage({ params }: PageProps) {
             orderCode={order.orderCode}
             orderStatus={order.status}
             canCancel={order.canCancel}
+            canRefund={order.canRefund}
             canReorder={order.canReorder}
             canReview={order.canReview}
           />
@@ -330,6 +331,7 @@ export default function OrderDetailsPage({ params }: PageProps) {
             orderCode={order.orderCode}
             orderStatus={order.status}
             canCancel={order.canCancel}
+            canRefund={order.canRefund}
             canReorder={order.canReorder}
             canReview={order.canReview}
           />

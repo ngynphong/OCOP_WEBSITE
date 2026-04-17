@@ -13,8 +13,12 @@ export const orderKeys = {
 };
 
 export const useCreateBatchOrders = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: IBatchOrderReq) => orderApi.createBatchOrders(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: orderKeys.lists() });
+    },
   });
 };
 

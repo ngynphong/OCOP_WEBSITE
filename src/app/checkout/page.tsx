@@ -20,6 +20,7 @@ import { useEstimateShippingFee } from '@/features/shipping/hooks/useShipping';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 import { useCreateBatchOrders } from '@/features/orders/hooks/useOrders';
 import { useQueryClient } from '@tanstack/react-query';
+import { VoucherValidateResponse } from '@/features/vouchers/types';
 interface CheckoutCartItem extends CartItem {
   weightGram?: number;
 }
@@ -38,6 +39,7 @@ export default function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCalculating, setIsCalculating] = useState(false);
   const [providerFees, setProviderFees] = useState<Record<string, number>>({});
+  const [appliedVoucher, setAppliedVoucher] = useState<VoucherValidateResponse | null>(null);
 
   const effectiveAddress = useMemo(() => {
     if (userSelectedAddress) return userSelectedAddress;
@@ -103,7 +105,6 @@ export default function CheckoutPage() {
     () => (selectedShipping?.id ? providerFees[selectedShipping.id] || 0 : 0),
     [selectedShipping?.id, providerFees],
   );
-  const discount = 0;
 
   const handlePlaceOrder = useCallback(async () => {
     if (!effectiveAddress) {
@@ -123,7 +124,7 @@ export default function CheckoutPage() {
         return {
           shopId,
           itemIds,
-          // voucherCode có thể thêm ở đây nếu có form voucher
+          voucherCode: appliedVoucher && !appliedVoucher.valid ? appliedVoucher.code : undefined,
         };
       });
 
@@ -156,9 +157,10 @@ export default function CheckoutPage() {
     selectedPayment,
     shopsInCart,
     checkoutItems,
+    router,
+    appliedVoucher,
     createBatchOrders,
     queryClient,
-    router,
   ]);
 
   const handleSelectAddress = useCallback((address: Address) => {
@@ -286,7 +288,8 @@ export default function CheckoutPage() {
               <CheckoutSummary
                 subtotal={subtotal}
                 shippingFee={shippingFee}
-                discount={discount}
+                appliedVoucher={appliedVoucher}
+                onApplyVoucher={setAppliedVoucher}
                 isPending={isSubmitting}
                 onConfirm={handlePlaceOrder}
                 canConfirm={canConfirm}
