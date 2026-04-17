@@ -24,6 +24,9 @@ jobs:
             # Kéo code mới nhất về
             git pull origin main
             
+            # Tạo file .env từ GitHub Secrets
+            echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" > .env
+            
             # Cài đặt thư viện mới (nếu có)
             npm install
             

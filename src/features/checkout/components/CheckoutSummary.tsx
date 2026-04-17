@@ -5,10 +5,15 @@ import { ShieldCheck, Loader2, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/AppButton';
 
+import { VoucherCheckoutInput } from '@/features/vouchers/components/VoucherCheckoutInput';
+import type { VoucherValidateResponse } from '@/features/vouchers/types';
+
 interface CheckoutSummaryProps {
   subtotal: number;
   shippingFee: number;
-  discount: number;
+  appliedVoucher: VoucherValidateResponse | null;
+  onApplyVoucher: (voucher: VoucherValidateResponse | null) => void;
+  redeemDiscount?: number;
   isPending?: boolean;
   onConfirm: () => void;
   canConfirm: boolean;
@@ -17,16 +22,41 @@ interface CheckoutSummaryProps {
 export const CheckoutSummary = memo(function CheckoutSummary({
   subtotal,
   shippingFee,
-  discount,
+  appliedVoucher,
+  onApplyVoucher,
+  redeemDiscount = 0,
   isPending,
   onConfirm,
   canConfirm,
 }: CheckoutSummaryProps) {
-  const total = useMemo(() => subtotal + shippingFee - discount, [subtotal, shippingFee, discount]);
+  const discount = useMemo(() => {
+    if (!appliedVoucher || !appliedVoucher.valid) return 0;
+
+    let disc = 0;
+    if (appliedVoucher.type === 'PERCENT') {
+      disc = (subtotal * appliedVoucher.discountValue) / 100;
+      if (appliedVoucher.maxDiscount > 0) {
+        disc = Math.min(disc, appliedVoucher.maxDiscount);
+      }
+    } else {
+      disc = appliedVoucher.discountValue;
+    }
+    return Math.min(disc, subtotal);
+  }, [appliedVoucher, subtotal]);
+
+  const total = useMemo(
+    () => subtotal + shippingFee - discount - redeemDiscount,
+    [subtotal, shippingFee, discount, redeemDiscount],
+  );
 
   return (
     <div className="bg-white rounded-[32px] p-8 border border-stone-100 shadow-xl shadow-stone-200/50 sticky top-28">
-      <h2 className="text-xl font-black text-stone-900 mb-6 tracking-tight">Tóm tắt thanh toán</h2>
+      <h2 className="text-xl font-black text-stone-900 mb-6 tracking-tight">Tóm tắt thanh toàn</h2>
+
+      {/* Voucher Input */}
+      <div className="mb-8 border-b border-stone-100 pb-8">
+        <VoucherCheckoutInput appliedVoucher={appliedVoucher} onApply={onApplyVoucher} />
+      </div>
 
       <div className="space-y-4 mb-8">
         <div className="flex justify-between items-center text-stone-500">
@@ -42,9 +72,15 @@ export const CheckoutSummary = memo(function CheckoutSummary({
           </span>
         </div>
         {discount > 0 && (
-          <div className="flex justify-between items-center text-emerald-600">
-            <span className="text-sm font-medium">Giảm giá</span>
+          <div className="flex justify-between items-center text-emerald-600 animate-in fade-in slide-in-from-right-2">
+            <span className="text-sm font-medium">Giảm giá voucher</span>
             <span className="text-sm font-black">-{discount.toLocaleString('vi-VN')}₫</span>
+          </div>
+        )}
+        {redeemDiscount > 0 && (
+          <div className="flex justify-between items-center text-green-600 animate-in fade-in slide-in-from-right-2">
+            <span className="text-sm font-medium">Giảm giá điểm thưởng</span>
+            <span className="text-sm font-black">-{redeemDiscount.toLocaleString('vi-VN')}₫</span>
           </div>
         )}
       </div>

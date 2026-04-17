@@ -21,6 +21,7 @@ import Link from 'next/link';
 import { Product } from '@/features/products/types/productTypes';
 import { useWishlistStatus } from '@/features/wishlist/hooks/useWishlist';
 import { useAppSelector } from '@/store/hooks';
+import { ReviewList } from '@/features/reviews/components/ReviewList';
 
 export default function ProductDetailPage() {
   const { slug } = useParams() as { slug: string };
@@ -140,9 +141,13 @@ export default function ProductDetailPage() {
           />
         </div>
 
-        {/* Traceability: The OCOP Soul */}
         <div className="mt-16">
           <ProductTraceability journals={product.journals} qrCode={product.qrCode} />
+        </div>
+
+        {/* Reviews Section */}
+        <div id="reviews" className="mt-16 pt-16 border-t border-stone-100">
+          <ReviewList productSlug={slug} />
         </div>
 
         {/* Related Products Section */}

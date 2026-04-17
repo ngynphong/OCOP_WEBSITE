@@ -1,12 +1,11 @@
 'use client';
 
-import { memo, useMemo, useState, useEffect, useCallback } from 'react';
+import { memo, useMemo, useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Heart, ShoppingCart, Loader2 } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { useAppSelector } from '@/store/hooks';
 import { useAddToWishlist, useRemoveFromWishlist } from '@/features/wishlist/hooks/useWishlist';
-import { useAddToCart } from '@/features/cart/hooks/useCart';
 import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
 
@@ -27,7 +26,6 @@ interface ProductCardProps {
   id: number;
   isWishlisted?: boolean;
   /** ID của variant mặc định — dùng để "Thêm vào giỏ" nhanh từ card */
-  defaultVariantId?: number;
 }
 
 export const ProductCard = memo(function ProductCard({
@@ -41,7 +39,6 @@ export const ProductCard = memo(function ProductCard({
   shopName,
   id,
   isWishlisted = false,
-  defaultVariantId,
 }: ProductCardProps) {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const [isMounted, setIsMounted] = useState(false);
@@ -50,9 +47,6 @@ export const ProductCard = memo(function ProductCard({
   const addToWishlist = useAddToWishlist();
   const removeFromWishlist = useRemoveFromWishlist();
   const isWishlistLoading = addToWishlist.isPending || removeFromWishlist.isPending;
-
-  // Cart mutation
-  const { mutate: addToCart, isPending: isAddingToCart } = useAddToCart();
 
   // Hydration
   useEffect(() => {
@@ -75,21 +69,6 @@ export const ProductCard = memo(function ProductCard({
       addToWishlist.mutate(id);
     }
   };
-
-  const handleAddToCart = useCallback(
-    (e: React.MouseEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-
-      if (!defaultVariantId) {
-        // Không có variantId → navigate sang trang chi tiết để chọn
-        window.location.href = `/san-pham/${slug}`;
-        return;
-      }
-      addToCart({ variantId: defaultVariantId, qty: 1 });
-    },
-    [defaultVariantId, slug, addToCart],
-  );
 
   // Tính toán % giảm giá và format tiền tệ
   const discountPercent = useMemo(() => {
@@ -133,10 +112,11 @@ export const ProductCard = memo(function ProductCard({
             )}
           </div>
 
-          {/* Overlay Actions: wishlist + add-to-cart */}
+          {/* Overlay Actions: wishlist only */}
           <div className="absolute top-4 right-4 z-20 flex flex-col gap-2">
             {/* Wishlist */}
             <button
+              suppressHydrationWarning
               disabled={isWishlistLoading}
               onClick={handleWishlistClick}
               className={cn(
@@ -149,48 +129,6 @@ export const ProductCard = memo(function ProductCard({
               aria-label="Thêm vào yêu thích"
             >
               <Heart className={cn('w-4 h-4', isWishlisted && 'fill-current')} />
-            </button>
-
-            {/* Add to Cart — chỉ hiện khi hover */}
-            <button
-              disabled={isAddingToCart}
-              onClick={handleAddToCart}
-              className={cn(
-                'p-2 rounded-full backdrop-blur-md transition-all duration-300 active:scale-90',
-                'bg-black/10 text-white hover:bg-green-600 hover:text-white',
-                'opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0',
-                isAddingToCart && 'opacity-100 bg-green-600 cursor-not-allowed',
-              )}
-              aria-label="Thêm vào giỏ hàng"
-            >
-              {isAddingToCart ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <ShoppingCart className="w-4 h-4" />
-              )}
-            </button>
-          </div>
-
-          {/* Bottom "Thêm giỏ" bar — xuất hiện khi hover trên desktop */}
-          <div
-            className={cn(
-              'absolute bottom-0 left-0 right-0 px-4 py-3',
-              'bg-linear-to-t from-black/60 to-transparent',
-              'translate-y-full group-hover:translate-y-0 transition-transform duration-300',
-              'hidden md:flex items-center justify-center gap-2',
-            )}
-          >
-            <button
-              disabled={isAddingToCart}
-              onClick={handleAddToCart}
-              className="w-full flex items-center justify-center gap-1.5 bg-white/90 hover:bg-white text-stone-800 text-xs font-bold py-2 rounded-xl backdrop-blur-sm transition-all duration-200 disabled:opacity-60"
-            >
-              {isAddingToCart ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-              ) : (
-                <ShoppingCart className="w-3.5 h-3.5 text-green-700" />
-              )}
-              {isAddingToCart ? 'Đang thêm...' : 'Thêm vào giỏ'}
             </button>
           </div>
         </div>

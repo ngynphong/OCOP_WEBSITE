@@ -37,8 +37,14 @@ const floatingIcons = [
 
 export const HeroSection = memo(function HeroSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsMounted(true);
+  }, []);
 
   const { data: featuredResp, isLoading: isProductsLoading } = useFeaturedProductsQuery(12);
   const products = featuredResp?.data?.items || [];
@@ -89,35 +95,36 @@ export const HeroSection = memo(function HeroSection() {
 
       {/* Floating Icons */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        {floatingIcons.map(({ Icon, top, left, right, bottom, size, delay, duration }, index) => (
-          <div
-            key={index}
-            className="absolute text-emerald-50/30 animate-float-y"
-            style={
-              {
-                top,
-                left,
-                right,
-                bottom,
-                width: size,
-                height: size,
-                '--float-delay': delay,
-                '--float-duration': duration,
-              } as React.CSSProperties
-            }
-          >
+        {isMounted &&
+          floatingIcons.map(({ Icon, top, left, right, bottom, size, delay, duration }, index) => (
             <div
-              className="animate-slow-rotate"
+              key={index}
+              className="absolute text-emerald-50/30 animate-float-y"
               style={
                 {
+                  top,
+                  left,
+                  right,
+                  bottom,
+                  width: size,
+                  height: size,
+                  '--float-delay': delay,
                   '--float-duration': duration,
                 } as React.CSSProperties
               }
             >
-              <Icon size={size} strokeWidth={2} />
+              <div
+                className="animate-slow-rotate"
+                style={
+                  {
+                    '--float-duration': duration,
+                  } as React.CSSProperties
+                }
+              >
+                <Icon size={size} strokeWidth={2} />
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
 
       <div className="relative w-full max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20 flex flex-col lg:flex-row items-center gap-16 z-10">
@@ -139,7 +146,7 @@ export const HeroSection = memo(function HeroSection() {
           <p className="text-emerald-50/80 text-base md:text-lg max-w-lg mb-12 font-sans leading-relaxed">
             Kết nối nông dân • Nghệ nhân • Người tiêu dùng
             <br />
-            Truy xuất nguồn gốc 100% qua QR & Blockchain
+            Truy xuất nguồn gốc 100% qua QR
           </p>
 
           <form
@@ -177,7 +184,7 @@ export const HeroSection = memo(function HeroSection() {
 
         {/* Right Carousel Column */}
         <div className="w-full lg:w-5/12 flex justify-center lg:justify-end items-center mt-12 lg:mt-0 relative h-[520px]">
-          {isProductsLoading ? (
+          {!isMounted || isProductsLoading ? (
             <div className="w-full max-w-[400px] h-[480px] bg-white/5 backdrop-blur-xl border border-white/10 rounded-[32px] flex items-center justify-center">
               <Loader2 className="w-10 h-10 text-[#D4AF37] animate-spin" />
             </div>

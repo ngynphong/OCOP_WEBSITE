@@ -18,7 +18,10 @@ import { useCart } from '@/features/cart/hooks/useCart';
 import { CartItem } from '@/features/cart/types/cartTypes';
 import { useEstimateShippingFee } from '@/features/shipping/hooks/useShipping';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
-
+import { useCreateBatchOrders } from '@/features/orders/hooks/useOrders';
+import { useQueryClient } from '@tanstack/react-query';
+import { VoucherValidateResponse } from '@/features/vouchers/types';
+import { LoyaltyCheckoutRedeem } from '@/features/loyalty/components/LoyaltyCheckoutRedeem';
 interface CheckoutCartItem extends CartItem {
   weightGram?: number;
 }
@@ -28,6 +31,8 @@ export default function CheckoutPage() {
   const { data: addresses, isLoading: isAddressLoading } = useUserAddresses();
   const { data: cartResponse, isLoading: isCartLoading } = useCart();
   const { mutateAsync: estimateFee } = useEstimateShippingFee();
+  const { mutateAsync: createBatchOrders } = useCreateBatchOrders();
+  const queryClient = useQueryClient();
 
   const [userSelectedAddress, setUserSelectedAddress] = useState<Address | undefined>(undefined);
   const [selectedShipping, setSelectedShipping] = useState<ShippingProvider | undefined>(undefined);
@@ -35,6 +40,9 @@ export default function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCalculating, setIsCalculating] = useState(false);
   const [providerFees, setProviderFees] = useState<Record<string, number>>({});
+  const [appliedVoucher, setAppliedVoucher] = useState<VoucherValidateResponse | null>(null);
+  const [isUsePoints, setIsUsePoints] = useState(false);
+  const [redeemInfo, setRedeemInfo] = useState({ points: 0, discount: 0 });
 
   const effectiveAddress = useMemo(() => {
     if (userSelectedAddress) return userSelectedAddress;
@@ -84,8 +92,6 @@ export default function CheckoutPage() {
             }
           }
           setProviderFees((prev) => ({ ...prev, [selectedShipping.id]: totalFee }));
-
-          setSelectedShipping((prev) => (prev ? { ...prev, baseFee: totalFee } : undefined));
         }
       } catch (error) {
         console.error('Failed to estimate shipping fee:', error);
@@ -95,13 +101,15 @@ export default function CheckoutPage() {
     };
 
     calculateFees();
-  }, [effectiveAddress, selectedShipping?.id, shopsInCart, estimateFee, selectedShipping]);
+  }, [effectiveAddress, selectedShipping, shopsInCart, estimateFee]);
 
   const subtotal = useMemo(() => cartData?.totalAmount || 0, [cartData?.totalAmount]);
-  const shippingFee = useMemo(() => selectedShipping?.baseFee || 0, [selectedShipping?.baseFee]);
-  const discount = 0; // Giả sử chưa có voucher
+  const shippingFee = useMemo(
+    () => (selectedShipping?.id ? providerFees[selectedShipping.id] || 0 : 0),
+    [selectedShipping?.id, providerFees],
+  );
 
-  const handlePlaceOrder = useCallback(() => {
+  const handlePlaceOrder = useCallback(async () => {
     if (!effectiveAddress) {
       toast.error('Vui lòng chọn địa chỉ nhận hàng');
       return;
@@ -112,12 +120,56 @@ export default function CheckoutPage() {
     }
 
     setIsSubmitting(true);
-    setTimeout(() => {
+    try {
+      const shopsPayload = Object.keys(shopsInCart).map((shopIdStr) => {
+        const shopId = parseInt(shopIdStr);
+        const itemIds = checkoutItems.filter((i) => i.shopId === shopId).map((i) => i.id);
+        return {
+          shopId,
+          itemIds,
+          voucherCode: appliedVoucher && !appliedVoucher.valid ? appliedVoucher.code : undefined,
+        };
+      });
+
+      const res = await createBatchOrders({
+        shops: shopsPayload,
+        addressId: effectiveAddress.id,
+        shippingProviderId: selectedShipping.id,
+        paymentMethod: selectedPayment || 'COD',
+        shippingFee: shippingFee,
+        usePoints: isUsePoints ? redeemInfo.points : undefined,
+      });
+
+      queryClient.invalidateQueries({ queryKey: ['cart'] });
+
+      const { paymentUrl } = res.data;
+      if (paymentUrl) {
+        window.location.href = paymentUrl;
+      } else {
+        toast.success('Đặt hàng thành công!');
+        router.push('/dashboard/don-hang');
+      }
+    } catch (error: unknown) {
+      console.error('Lỗi khi đặt hàng:', error);
+      const resData = (error as { response?: { data?: { message?: string } } })?.response?.data;
+      toast.error(resData?.message || 'Có lỗi xảy ra khi tạo đơn hàng');
+    } finally {
       setIsSubmitting(false);
-      toast.success('Đặt hàng thành công!');
-      router.push('/dashboard/don-hang');
-    }, 2000);
-  }, [effectiveAddress, selectedShipping, router]);
+    }
+  }, [
+    effectiveAddress,
+    selectedShipping,
+    selectedPayment,
+    shopsInCart,
+    checkoutItems,
+    router,
+    appliedVoucher,
+    isUsePoints,
+    redeemInfo.points,
+    shippingFee,
+    createBatchOrders,
+    queryClient,
+  ]);
 
   const handleSelectAddress = useCallback((address: Address) => {
     setUserSelectedAddress(address);
@@ -129,6 +181,10 @@ export default function CheckoutPage() {
 
   const handleSelectPayment = useCallback((method: PaymentMethod) => {
     setSelectedPayment(method);
+  }, []);
+
+  const handleUpdateRedeemInfo = useCallback((points: number, discount: number) => {
+    setRedeemInfo({ points, discount });
   }, []);
 
   const canConfirm = useMemo(
@@ -180,6 +236,15 @@ export default function CheckoutPage() {
                   selectedId={selectedPayment}
                   onSelect={handleSelectPayment}
                 />
+
+                <div className="mt-8 pt-8 border-t border-stone-100">
+                  <LoyaltyCheckoutRedeem
+                    orderAmount={subtotal}
+                    isUsed={isUsePoints}
+                    onToggle={setIsUsePoints}
+                    onUpdateRedeemInfo={handleUpdateRedeemInfo}
+                  />
+                </div>
               </section>
 
               {/* Order Items Review */}
@@ -191,7 +256,7 @@ export default function CheckoutPage() {
 
                 <div className="space-y-4">
                   {checkoutItems.length > 0 ? (
-                    checkoutItems.map((item) => (
+                    checkoutItems.map((item: CartItem) => (
                       <div
                         key={item.id}
                         className="flex gap-4 p-4 rounded-2xl bg-stone-50/50 border border-stone-100"
@@ -244,7 +309,9 @@ export default function CheckoutPage() {
               <CheckoutSummary
                 subtotal={subtotal}
                 shippingFee={shippingFee}
-                discount={discount}
+                appliedVoucher={appliedVoucher}
+                onApplyVoucher={setAppliedVoucher}
+                redeemDiscount={redeemInfo.discount}
                 isPending={isSubmitting}
                 onConfirm={handlePlaceOrder}
                 canConfirm={canConfirm}

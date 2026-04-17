@@ -13,14 +13,39 @@ import { cn } from '@/utils/cn';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const GATEWAY_FIELDS_CONFIG: Record<string, string[]> = {
+  BANK_TRANSFER: ['bankName', 'branch', 'accountHolder', 'accountNumber', 'qrCodeUrl'],
+  VNPAY: ['tmnCode', 'hashSecret', 'environment'],
+  MOMO: ['partnerCode', 'accessKey', 'secretKey', 'environment'],
+  ZALOPAY: ['appId', 'key1', 'key2', 'environment'],
+  PAYPAL: ['clientId', 'clientSecret', 'environment'],
+};
+
+const FIELD_LABELS: Record<string, string> = {
+  bankName: 'Tên ngân hàng',
+  branch: 'Chi nhánh',
+  accountHolder: 'Chủ tài khoản',
+  accountNumber: 'Số tài khoản',
+  qrCodeUrl: 'Link QR Code (URL)',
+  tmnCode: 'Terminal Code (TMN Code)',
+  hashSecret: 'Hash Secret (Secret Key)',
+  partnerCode: 'Partner Code',
+  accessKey: 'Access Key',
+  secretKey: 'Secret Key',
+  appId: 'App ID',
+  key1: 'Key 1',
+  key2: 'Key 2',
+  clientId: 'Client ID',
+  clientSecret: 'Client Secret',
+  environment: 'Môi trường vận hành',
+};
+
 const AdminPaymentGatewaysManager = () => {
   const { data: gateways, isLoading } = useAdminGateways();
   const { mutate: toggleGateway } = useToggleGateway();
 
-  // Use a piece of state that can be null initially
   const [activeId, setActiveId] = useState<string | null>(null);
 
-  // Derive the effective active ID: either the one in state, or the first one from gateways
   const effectiveActiveId = activeId || (gateways && gateways.length > 0 ? gateways[0].id : null);
 
   const selectedGateway = useMemo(() => {
@@ -197,26 +222,42 @@ const AdminPaymentGatewaysManager = () => {
 };
 
 const GatewayConfigForm = ({ gateway }: { gateway: IPaymentGatewayAdmin }) => {
-  // Initialize state directly from props.
-  // Because the parent uses 'key={gateway.id}', this component remounts and re-initializes
-  // when the gateway changes, so we don't need useEffect to sync state.
-
-  // EXTRA SAFETY: ensure config is always an object
-  const initialConfig = useMemo(() => {
-    if (!gateway.config) return {};
-    if (typeof gateway.config !== 'object') return {};
-    return gateway.config;
-  }, [gateway.config]);
-
-  const [config, setConfig] = useState<Record<string, string>>(initialConfig);
   const { mutate: updateConfig, isPending } = useUpdateGatewayConfig();
   const [isChanged, setIsChanged] = useState(false);
 
+  // Các trường được phép chỉnh sửa cho từng loại gateway
+  const allowedFields = useMemo(() => GATEWAY_FIELDS_CONFIG[gateway.code] || [], [gateway.code]);
+
+  // Lấy tất cả các field đang có từ server + các field bắt buộc phải có cho gateway này
+  const allFields = useMemo(() => {
+    const serverFields = Object.keys(gateway.config || {});
+    // Gộp server fields và allowed fields (các field cấu hình chuẩn)
+    const uniqueFields = Array.from(new Set([...allowedFields, ...serverFields]));
+    return uniqueFields;
+  }, [allowedFields, gateway.config]);
+
+  const [config, setConfig] = useState<Record<string, string>>(() => {
+    const initialConfig: Record<string, string> = {};
+    allFields.forEach((field) => {
+      initialConfig[field] = gateway.config?.[field] || '';
+    });
+    return initialConfig;
+  });
+
   const handleUpdate = () => {
+    // Chỉ gửi các field được phép sửa lên server (hoặc gửi tất cả nếu backend cho phép,
+    // nhưng ở đây ta bám sát yêu cầu lọc của User)
+    const payload: Record<string, string> = {};
+    allowedFields.forEach((field) => {
+      if (config[field] !== undefined) {
+        payload[field] = config[field];
+      }
+    });
+
     updateConfig(
       {
         id: gateway.id,
-        data: { config },
+        data: { config: payload },
       },
       {
         onSuccess: () => setIsChanged(false),
@@ -225,72 +266,113 @@ const GatewayConfigForm = ({ gateway }: { gateway: IPaymentGatewayAdmin }) => {
   };
 
   const handleFieldChange = (key: string, value: string) => {
+    if (!allowedFields.includes(key)) return; // Bảo vệ nếu cố tình sửa field bị disable
     setConfig((prev) => ({ ...prev, [key]: value }));
     setIsChanged(true);
   };
 
-  // Safe entries access
-  const configEntries = useMemo(() => Object.entries(config || {}), [config]);
-
   return (
     <div className="space-y-5">
-      {configEntries.length > 0 ? (
-        configEntries.map(([key, value]) => (
-          <div key={key} className="space-y-2">
-            <label className="text-xs font-black uppercase tracking-widest text-stone-400">
-              {key.replace(/([A-Z])/g, ' $1').trim()}
-            </label>
-            <input
-              type="text"
-              value={value || ''}
-              onChange={(e) => handleFieldChange(key, e.target.value)}
-              className="w-full px-5 py-3 rounded-2xl border border-slate-100 bg-stone-50/30 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-bold text-sm text-slate-700"
-            />
-          </div>
-        ))
+      {allFields.length > 0 ? (
+        allFields.map((field) => {
+          const isEditable = allowedFields.includes(field);
+
+          return (
+            <div key={field} className="space-y-2 group">
+              <div className="flex items-center justify-between">
+                <label
+                  className={cn(
+                    'text-xs font-black uppercase tracking-widest',
+                    isEditable ? 'text-stone-400' : 'text-stone-300',
+                  )}
+                >
+                  {FIELD_LABELS[field] || field.replace(/([A-Z])/g, ' $1').trim()}
+                  {!isEditable && (
+                    <span className="ml-2 text-[8px] bg-stone-100 text-stone-400 px-1.5 py-0.5 rounded italic">
+                      Chỉ đọc
+                    </span>
+                  )}
+                </label>
+              </div>
+
+              {field === 'environment' && isEditable ? (
+                <select
+                  value={config[field] || 'SANDBOX'}
+                  onChange={(e) => handleFieldChange(field, e.target.value)}
+                  className="w-full px-5 py-3 rounded-2xl border border-slate-100 bg-stone-50/30 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-bold text-sm text-slate-700 appearance-none cursor-pointer"
+                >
+                  <option value="SANDBOX">SANDBOX</option>
+                  <option value="PRODUCTION">PRODUCTION</option>
+                </select>
+              ) : (
+                <input
+                  type="text"
+                  value={config[field] || ''}
+                  readOnly={!isEditable}
+                  disabled={!isEditable}
+                  onChange={(e) => handleFieldChange(field, e.target.value)}
+                  className={cn(
+                    'w-full px-5 py-3 rounded-2xl border transition-all font-bold text-sm',
+                    isEditable
+                      ? 'border-slate-100 bg-stone-50/30 text-slate-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500'
+                      : 'border-slate-50 bg-stone-50/10 text-stone-300 cursor-not-allowed select-none',
+                  )}
+                />
+              )}
+            </div>
+          );
+        })
       ) : (
         <div className="p-8 rounded-3xl bg-slate-50 border border-slate-100 text-center">
           <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">
-            Không có thông số cấu hình
+            {gateway.code === 'COD'
+              ? 'Thanh toán khi nhận hàng không có cấu hình đặc biệt'
+              : 'Không có thông số cấu hình cho phương thức này'}
           </p>
         </div>
       )}
 
-      <div className="pt-6 flex items-center justify-between border-t border-slate-50 mt-10">
-        <div className="flex items-center gap-2">
-          {isChanged ? (
-            <span className="flex items-center gap-1.5 text-amber-600 text-[10px] font-black uppercase tracking-widest bg-amber-50 px-3 py-1 rounded-full">
-              <FiRefreshCw className="animate-spin-slow" /> Có thay đổi chưa lưu
-            </span>
-          ) : (
-            <span className="flex items-center gap-1.5 text-emerald-600 text-[10px] font-black uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-full">
-              <FiCheckCircle /> Đã đồng bộ
-            </span>
-          )}
-        </div>
+      {allowedFields.length > 0 && (
+        <div className="pt-6 flex items-center justify-between border-t border-slate-50 mt-10">
+          <div className="flex items-center gap-2">
+            {isChanged ? (
+              <span className="flex items-center gap-1.5 text-amber-600 text-[10px] font-black uppercase tracking-widest bg-amber-50 px-3 py-1 rounded-full">
+                <FiRefreshCw className="animate-spin-slow" /> Có thay đổi chưa lưu
+              </span>
+            ) : (
+              <span className="flex items-center gap-1.5 text-emerald-600 text-[10px] font-black uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-full">
+                <FiCheckCircle /> Đã đồng bộ
+              </span>
+            )}
+          </div>
 
-        <div className="flex gap-3">
-          <Button
-            variant="outline"
-            onClick={() => {
-              setConfig(initialConfig);
-              setIsChanged(false);
-            }}
-            disabled={!isChanged || isPending}
-            className="rounded-2xl px-6 h-12"
-          >
-            Hủy thay đổi
-          </Button>
-          <Button
-            isLoading={isPending}
-            onClick={handleUpdate}
-            disabled={!isChanged}
-            className="rounded-2xl px-8 h-12 flex items-center gap-2 shadow-sm shadow-emerald-500/20"
-          >
-            <FiSave /> Lưu cấu hình
-          </Button>
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
+              onClick={() => {
+                const resetConfig: Record<string, string> = {};
+                allowedFields.forEach((field) => {
+                  resetConfig[field] = gateway.config?.[field] || '';
+                });
+                setConfig(resetConfig);
+                setIsChanged(false);
+              }}
+              disabled={!isChanged || isPending}
+              className="rounded-2xl px-6 h-12"
+            >
+              Hủy thay đổi
+            </Button>
+            <Button
+              isLoading={isPending}
+              onClick={handleUpdate}
+              disabled={!isChanged}
+              className="rounded-2xl px-8 h-12 flex items-center gap-2 shadow-sm shadow-emerald-500/20"
+            >
+              <FiSave /> Lưu cấu hình
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
