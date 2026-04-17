@@ -94,13 +94,16 @@ export function Header() {
               suppressHydrationWarning
               className="inline-flex flex-row justify-start items-center"
             >
-              <Image
-                src="/images/logo-diep.jpg"
-                alt="Logo"
-                width={50}
-                height={50}
-                className="w-auto h-auto"
-              />
+              <div className="bg-white/90 backdrop-blur-md rounded-2xl px-3 py-2 shadow-md border border-gray-100">
+                <Image
+                  src="/images/dNUEl-removebg-preview.png"
+                  alt="OCOP IES CONNECT"
+                  width={230}
+                  height={60}
+                  className="h-12 lg:h-14 w-auto object-contain"
+                  priority
+                />
+              </div>
             </Link>
             <nav className="hidden lg:flex justify-start items-center gap-6">
               <Link
