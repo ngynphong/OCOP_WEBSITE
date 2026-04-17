@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
+  FiAward,
   FiUser,
   FiShoppingBag,
   FiShield,
@@ -64,6 +65,13 @@ const DashboardSidebar = () => {
       label: 'Đơn hàng của tôi',
       icon: FiShoppingBag,
       href: '/dashboard/don-hang',
+      roles: ['USER'],
+    },
+    {
+      id: 'loyalty',
+      label: 'Điểm thưởng',
+      icon: FiAward,
+      href: '/dashboard/diem-thuong',
       roles: ['USER'],
     },
     {

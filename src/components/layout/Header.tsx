@@ -95,7 +95,7 @@ export function Header() {
               className="inline-flex flex-row justify-start items-center"
             >
               <Image
-                src="/images/logo-ocop-rm.jpg"
+                src="/images/logo-diep.jpg"
                 alt="Logo"
                 width={50}
                 height={50}

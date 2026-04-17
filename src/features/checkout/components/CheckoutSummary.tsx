@@ -13,6 +13,7 @@ interface CheckoutSummaryProps {
   shippingFee: number;
   appliedVoucher: VoucherValidateResponse | null;
   onApplyVoucher: (voucher: VoucherValidateResponse | null) => void;
+  redeemDiscount?: number;
   isPending?: boolean;
   onConfirm: () => void;
   canConfirm: boolean;
@@ -23,12 +24,13 @@ export const CheckoutSummary = memo(function CheckoutSummary({
   shippingFee,
   appliedVoucher,
   onApplyVoucher,
+  redeemDiscount = 0,
   isPending,
   onConfirm,
   canConfirm,
 }: CheckoutSummaryProps) {
   const discount = useMemo(() => {
-    if (!appliedVoucher || appliedVoucher.valid) return 0;
+    if (!appliedVoucher || !appliedVoucher.valid) return 0;
 
     let disc = 0;
     if (appliedVoucher.type === 'PERCENT') {
@@ -42,7 +44,10 @@ export const CheckoutSummary = memo(function CheckoutSummary({
     return Math.min(disc, subtotal);
   }, [appliedVoucher, subtotal]);
 
-  const total = useMemo(() => subtotal + shippingFee - discount, [subtotal, shippingFee, discount]);
+  const total = useMemo(
+    () => subtotal + shippingFee - discount - redeemDiscount,
+    [subtotal, shippingFee, discount, redeemDiscount],
+  );
 
   return (
     <div className="bg-white rounded-[32px] p-8 border border-stone-100 shadow-xl shadow-stone-200/50 sticky top-28">
@@ -70,6 +75,12 @@ export const CheckoutSummary = memo(function CheckoutSummary({
           <div className="flex justify-between items-center text-emerald-600 animate-in fade-in slide-in-from-right-2">
             <span className="text-sm font-medium">Giảm giá voucher</span>
             <span className="text-sm font-black">-{discount.toLocaleString('vi-VN')}₫</span>
+          </div>
+        )}
+        {redeemDiscount > 0 && (
+          <div className="flex justify-between items-center text-green-600 animate-in fade-in slide-in-from-right-2">
+            <span className="text-sm font-medium">Giảm giá điểm thưởng</span>
+            <span className="text-sm font-black">-{redeemDiscount.toLocaleString('vi-VN')}₫</span>
           </div>
         )}
       </div>

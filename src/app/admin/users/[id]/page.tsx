@@ -8,6 +8,7 @@ import {
 } from '@/features/admin/hooks/useAdminUsers';
 import { UserPermission } from '@/features/admin/types/adminTypes';
 import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   FiArrowLeft,
@@ -22,6 +23,7 @@ import {
   FiCheckCircle,
   FiPlus,
   FiX,
+  FiAward,
 } from 'react-icons/fi';
 import Image from 'next/image';
 import { format } from 'date-fns';
@@ -64,14 +66,7 @@ const UserDetailPage = () => {
   );
 
   if (isLoadingUser) {
-    return (
-      <div className="h-96 flex flex-col items-center justify-center">
-        <div className="w-12 h-12 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin mb-4" />
-        <p className="text-emerald-800 font-bold animate-pulse text-sm uppercase tracking-widest">
-          Đang tải dữ liệu người dùng...
-        </p>
-      </div>
-    );
+    return null;
   }
 
   if (!user)
@@ -112,12 +107,12 @@ const UserDetailPage = () => {
     <div className="space-y-8 pb-20">
       {/* Header & Back */}
       <div className="flex items-center gap-4">
-        <button
-          onClick={() => router.back()}
+        <Link
+          href="/admin/users"
           className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-stone-200 text-stone-600 hover:bg-stone-50 transition-all shadow-sm"
         >
           <FiArrowLeft size={18} />
-        </button>
+        </Link>
         <div>
           <h2 className="text-2xl font-black text-emerald-900 tracking-tight">
             Chi tiết tài khoản
@@ -208,6 +203,12 @@ const UserDetailPage = () => {
                 {user.status === 'LOCKED' ? <FiUnlock /> : <FiLock />}
                 {user.status === 'LOCKED' ? 'Mở khóa tài khoản' : 'Khóa tài khoản'}
               </button>
+              <Link
+                href={`/admin/users/${user.id}/loyalty`}
+                className="flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-stone-200 text-stone-700 rounded-xl text-xs font-black hover:bg-stone-50 transition-all shadow-sm"
+              >
+                <FiAward /> Quản lý điểm thưởng
+              </Link>
               <button
                 onClick={() => setShowDeleteModal(true)}
                 className="flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-red-200 text-red-600 rounded-xl text-xs font-black hover:bg-red-600 hover:text-white transition-all"

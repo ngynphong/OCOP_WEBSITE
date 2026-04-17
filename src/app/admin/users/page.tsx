@@ -11,6 +11,7 @@ import {
   FiPhone,
   FiCalendar,
   FiShield,
+  FiAward,
 } from 'react-icons/fi';
 import { useUsersQuery, useAdminUserMutations } from '@/features/admin/hooks/useAdminUsers';
 import { GetUsersParams, AdminUserListItem } from '@/features/admin/types/adminTypes';
@@ -74,6 +75,10 @@ const UserListPage = () => {
           <p className="text-stone-500 text-sm font-medium">
             Danh sách toàn bộ thành viên, đối tác và nhân viên trong hệ thống.
           </p>
+          <div className="mt-2 flex items-center gap-2 text-[10px] font-bold text-emerald-600 uppercase tracking-widest bg-emerald-50 w-fit px-3 py-1 rounded-full border border-emerald-100 animate-pulse">
+            <FiAward size={12} />
+            <span>Đã hỗ trợ Quản lý Điểm thưởng trong Chi tiết người dùng</span>
+          </div>
         </div>
         <Link
           href="/admin/roles"

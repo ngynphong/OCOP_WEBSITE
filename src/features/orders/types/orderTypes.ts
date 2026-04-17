@@ -43,6 +43,7 @@ export interface IBatchOrderReq {
   addressId: number;
   shippingProviderId: string;
   paymentMethod: string; // COD, VNPAY, MOMO, ZALOPAY
+  shippingFee?: number;
   usePoints?: number;
   affiliateCode?: string;
 }

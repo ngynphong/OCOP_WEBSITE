@@ -21,6 +21,7 @@ import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 import { useCreateBatchOrders } from '@/features/orders/hooks/useOrders';
 import { useQueryClient } from '@tanstack/react-query';
 import { VoucherValidateResponse } from '@/features/vouchers/types';
+import { LoyaltyCheckoutRedeem } from '@/features/loyalty/components/LoyaltyCheckoutRedeem';
 interface CheckoutCartItem extends CartItem {
   weightGram?: number;
 }
@@ -40,6 +41,8 @@ export default function CheckoutPage() {
   const [isCalculating, setIsCalculating] = useState(false);
   const [providerFees, setProviderFees] = useState<Record<string, number>>({});
   const [appliedVoucher, setAppliedVoucher] = useState<VoucherValidateResponse | null>(null);
+  const [isUsePoints, setIsUsePoints] = useState(false);
+  const [redeemInfo, setRedeemInfo] = useState({ points: 0, discount: 0 });
 
   const effectiveAddress = useMemo(() => {
     if (userSelectedAddress) return userSelectedAddress;
@@ -133,6 +136,8 @@ export default function CheckoutPage() {
         addressId: effectiveAddress.id,
         shippingProviderId: selectedShipping.id,
         paymentMethod: selectedPayment || 'COD',
+        shippingFee: shippingFee,
+        usePoints: isUsePoints ? redeemInfo.points : undefined,
       });
 
       queryClient.invalidateQueries({ queryKey: ['cart'] });
@@ -159,6 +164,9 @@ export default function CheckoutPage() {
     checkoutItems,
     router,
     appliedVoucher,
+    isUsePoints,
+    redeemInfo.points,
+    shippingFee,
     createBatchOrders,
     queryClient,
   ]);
@@ -173,6 +181,10 @@ export default function CheckoutPage() {
 
   const handleSelectPayment = useCallback((method: PaymentMethod) => {
     setSelectedPayment(method);
+  }, []);
+
+  const handleUpdateRedeemInfo = useCallback((points: number, discount: number) => {
+    setRedeemInfo({ points, discount });
   }, []);
 
   const canConfirm = useMemo(
@@ -224,6 +236,15 @@ export default function CheckoutPage() {
                   selectedId={selectedPayment}
                   onSelect={handleSelectPayment}
                 />
+
+                <div className="mt-8 pt-8 border-t border-stone-100">
+                  <LoyaltyCheckoutRedeem
+                    orderAmount={subtotal}
+                    isUsed={isUsePoints}
+                    onToggle={setIsUsePoints}
+                    onUpdateRedeemInfo={handleUpdateRedeemInfo}
+                  />
+                </div>
               </section>
 
               {/* Order Items Review */}
@@ -290,6 +311,7 @@ export default function CheckoutPage() {
                 shippingFee={shippingFee}
                 appliedVoucher={appliedVoucher}
                 onApplyVoucher={setAppliedVoucher}
+                redeemDiscount={redeemInfo.discount}
                 isPending={isSubmitting}
                 onConfirm={handlePlaceOrder}
                 canConfirm={canConfirm}
