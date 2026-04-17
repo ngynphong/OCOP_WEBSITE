@@ -11,12 +11,15 @@ export interface IOrderItemList {
   paymentStatus: string;
   shopName: string;
   shopSlug: string;
+  shopLogoUrl?: string;
   thumbnail: string;
   firstItemName: string;
+  firstItemVariantName?: string;
   itemCount: number;
   totalAmount: number;
   createdAt: string;
   paymentMethod: string;
+  canCancel?: boolean;
 }
 
 export interface IOrderListRes {

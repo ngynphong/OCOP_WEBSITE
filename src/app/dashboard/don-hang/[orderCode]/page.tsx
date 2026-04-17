@@ -8,6 +8,9 @@ import { ChevronLeft, Store, Package, Truck, MapPin, CheckCircle } from 'lucide-
 import Link from 'next/link';
 import Image from 'next/image';
 import { formatCurrencyVND } from '@/utils/format';
+import { ReviewFormModal } from '@/features/reviews/components/ReviewFormModal';
+import { MessageSquare } from 'lucide-react';
+import { IOrderDetailsItem } from '@/features/orders/types/orderTypes';
 
 const translateStatus = (status: string) => {
   const map: Record<string, string> = {
@@ -45,12 +48,22 @@ interface PageProps {
 export default function OrderDetailsPage({ params }: PageProps) {
   const { orderCode } = use(params);
   const { data, isLoading, isError } = useOrderDetails(orderCode);
-  const { data: shipmentData, isLoading: isShipmentLoading } = useOrderShipment(orderCode);
-
   const order = data?.data;
+
+  const shouldSkipShipment =
+    !order || order.status === 'PENDING_CONFIRM' || order.status === 'PENDING_PAYMENT';
+  const { data: shipmentData, isLoading: isShipmentLoading } = useOrderShipment(
+    orderCode,
+    shouldSkipShipment,
+  );
+
   const shipment = shipmentData?.data;
 
-  if (isLoading || isShipmentLoading) {
+  const [reviewingItem, setReviewingItem] = React.useState<IOrderDetailsItem | null>(null);
+
+  const isPageLoading = isLoading || (isShipmentLoading && !shouldSkipShipment);
+
+  if (isPageLoading) {
     return <div className="p-10 text-center text-stone-500">Đang tải thông tin đơn hàng...</div>;
   }
 
@@ -100,7 +113,7 @@ export default function OrderDetailsPage({ params }: PageProps) {
       </div>
 
       <div className="space-y-6">
-        {/* ROW 1: Tiến độ vận chuyển (Full width) */}
+        {/* ROW 1: Tiến độ vận chuyển (Full width - Vị trí cũ) */}
         {shipment && shipment.timeline && shipment.timeline.length > 0 && (
           <div className="bg-white rounded-4xl p-8 border border-stone-100 shadow-sm overflow-hidden">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
@@ -172,155 +185,177 @@ export default function OrderDetailsPage({ params }: PageProps) {
           </div>
         )}
 
-        {/* ROW 2: Thông tin đơn | Chi tiết thanh toán */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Thông tin đơn (Cửa hàng & Sản phẩm) */}
-          <div className="bg-white rounded-4xl border border-stone-100 shadow-sm overflow-hidden flex flex-col">
-            <div className="p-6 border-b border-stone-50 flex items-center justify-between bg-stone-50/50">
-              <div className="flex items-center gap-3">
-                <Store size={18} className="text-stone-400" />
-                <h3 className="font-bold text-stone-800">{order.shop.name}</h3>
-              </div>
-              <Link
-                href={`/cua-hang/${order.shop.slug}`}
-                className="text-xs font-bold text-green-600 hover:text-green-700"
-              >
-                Xem shop
-              </Link>
-            </div>
-            <div className="p-6 space-y-4 flex-1">
-              {order.items.map((item) => (
-                <div key={item.id} className="flex gap-4 group">
-                  <div className="relative w-24 h-24 rounded-2xl overflow-hidden shrink-0 border border-stone-100">
-                    <Image
-                      src={item.productImage}
-                      alt={item.productName}
-                      fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                  </div>
-                  <div className="flex-1 flex flex-col justify-center py-1">
-                    <h4 className="font-bold text-stone-900 group-hover:text-green-700 transition-colors line-clamp-1">
-                      {item.productName}
-                    </h4>
-                    <p className="text-xs font-medium text-stone-400 mt-1">{item.variantName}</p>
-                    <div className="flex justify-between items-end mt-3">
-                      <div className="bg-stone-100 px-2 py-1 rounded-lg">
-                        <span className="text-[10px] font-bold text-stone-400 uppercase mr-1">
-                          SL:
-                        </span>
-                        <span className="text-xs font-bold text-stone-900">x{item.qty}</span>
-                      </div>
-                      <p className="font-black text-stone-900 text-lg">
-                        {formatCurrencyVND(item.unitPrice)}
+        {/* Layout Grid mới */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+          {/* CỘT TRÁI (md:col-span-4): Trạng thái đơn hàng */}
+          <div className="md:col-span-5 space-y-6">
+            <div className="bg-white rounded-4xl p-8 border border-stone-100 shadow-sm">
+              <h3 className="font-bold text-stone-900 flex items-center gap-2 mb-8">
+                <Package size={20} className="text-stone-400" /> Trạng thái đơn hàng
+              </h3>
+              <div className="space-y-4">
+                {order.statusTimeline?.map((timeline, idx: number) => (
+                  <div
+                    key={idx}
+                    className="flex gap-4 items-start bg-stone-50/50 p-4 rounded-2xl border border-stone-100/50"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-sm border border-stone-100">
+                      <CheckCircle size={18} className="text-green-500" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold text-stone-900">
+                        {translateStatus(timeline.status)}
                       </p>
+                      <p className="text-[10px] text-stone-400 font-bold mt-1">
+                        {new Date(timeline.at).toLocaleTimeString('vi-VN')} •{' '}
+                        {new Date(timeline.at).toLocaleDateString('vi-VN')}
+                      </p>
+                      {timeline.note && (
+                        <div className="mt-3 bg-white px-3 py-2 rounded-xl border border-stone-100/50">
+                          <p className="text-[11px] text-stone-500 italic leading-relaxed">
+                            &quot;{timeline.note}&quot;
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Chi tiết thanh toán */}
-          <div className="bg-green-700 rounded-4xl p-8 text-white shadow-xl shadow-stone-200">
-            <h3 className="font-bold text-white flex items-center gap-2 mb-8 uppercase text-[10px] tracking-widest">
-              Chi tiết thanh toán
-            </h3>
-            <div className="space-y-6">
-              <div className="space-y-4">
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-white font-medium">Tạm tính ({order.items.length} SP)</span>
-                  <span className="font-bold">{formatCurrencyVND(order.subtotal)}</span>
-                </div>
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-white font-medium">Phí vận chuyển</span>
-                  <span className="font-bold">{formatCurrencyVND(order.shippingFee)}</span>
-                </div>
-                {(order.shipDiscount > 0 || order.voucherDiscount > 0) && (
-                  <div className="flex justify-between items-center text-sm text-green-400">
-                    <span className="font-medium">Giảm giá</span>
-                    <span className="font-bold">
-                      -{formatCurrencyVND(order.shipDiscount + order.voucherDiscount)}
-                    </span>
-                  </div>
-                )}
-              </div>
-              <div className="h-px bg-white" />
-              <div className="flex justify-between items-end">
-                <span className="text-white font-bold text-xs uppercase mb-1">
-                  Thành tiền khách trả
-                </span>
-                <span className="text-4xl font-black text-white tracking-tighter">
-                  {formatCurrencyVND(order.totalAmount)}
-                </span>
-              </div>
-              <div className="pt-2">
-                <div className="bg-stone-800/50 rounded-2xl p-4 flex items-center justify-between">
-                  <span className="text-xs text-white font-bold uppercase">
-                    Phương thức thanh toán
-                  </span>
-                  <span className="text-xs font-black">{order.paymentMethod || 'COD'}</span>
-                </div>
+                ))}
               </div>
             </div>
           </div>
-        </div>
 
-        {/* ROW 3: Trạng thái đơn hàng | Thông tin nhận hàng */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Trạng thái đơn hàng */}
-          <div className="bg-white rounded-4xl p-8 border border-stone-100 shadow-sm">
-            <h3 className="font-bold text-stone-900 flex items-center gap-2 mb-8">
-              <Package size={20} className="text-stone-400" /> Trạng thái đơn hàng
-            </h3>
-            <div className="space-y-4">
-              {order.statusTimeline?.map((timeline, idx: number) => (
-                <div
-                  key={idx}
-                  className="flex gap-4 items-start bg-stone-50/50 p-4 rounded-2xl border border-stone-100/50"
+          {/* CỘT PHẢI (md:col-span-8): Chi tiết SP | Thông tin nhận hàng | Thanh toán */}
+          <div className="md:col-span-7 space-y-6">
+            {/* Chi tiết sản phẩm (Thông tin shop & Sản phẩm) */}
+            <div className="bg-white rounded-4xl border border-stone-100 shadow-sm overflow-hidden flex flex-col">
+              <div className="p-6 border-b border-stone-50 flex items-center justify-between bg-stone-50/50">
+                <div className="flex items-center gap-3">
+                  <Store size={18} className="text-stone-400" />
+                  <h3 className="font-bold text-stone-800">{order.shop.name}</h3>
+                </div>
+                <Link
+                  href={`/cua-hang/${order.shop.slug}`}
+                  className="text-xs font-bold text-green-600 hover:text-green-700"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-sm border border-stone-100">
-                    <CheckCircle size={18} className="text-green-500" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold text-stone-900">
-                      {translateStatus(timeline.status)}
-                    </p>
-                    <p className="text-[10px] text-stone-400 font-bold mt-1">
-                      {new Date(timeline.at).toLocaleTimeString('vi-VN')} •{' '}
-                      {new Date(timeline.at).toLocaleDateString('vi-VN')}
-                    </p>
-                    {timeline.note && (
-                      <div className="mt-3 bg-white px-3 py-2 rounded-xl border border-stone-100/50">
-                        <p className="text-[11px] text-stone-500 italic leading-relaxed">
-                          &quot;{timeline.note}&quot;
+                  Xem shop
+                </Link>
+              </div>
+              <div className="p-6 space-y-4">
+                {order.items.map((item) => (
+                  <div key={item.id} className="flex gap-4 group">
+                    <div className="relative w-24 h-24 rounded-2xl overflow-hidden shrink-0 border border-stone-100">
+                      <Image
+                        src={item.productImage}
+                        alt={item.productName}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                    </div>
+                    <div className="flex-1 flex flex-col justify-center py-1">
+                      <div className="flex justify-between items-start gap-2">
+                        <h4 className="font-bold text-stone-900 group-hover:text-green-700 transition-colors line-clamp-1">
+                          {item.productName}
+                        </h4>
+                        {order.canReview && !item.isReviewed && (
+                          <button
+                            onClick={() => setReviewingItem(item)}
+                            className="flex items-center gap-1.5 text-[10px] font-black text-green-600 uppercase tracking-tighter hover:text-green-700 whitespace-nowrap cursor-pointer"
+                          >
+                            <MessageSquare size={12} />
+                            Đánh giá ngay
+                          </button>
+                        )}
+                        {item.isReviewed && (
+                          <span className="text-[10px] font-black text-stone-400 uppercase tracking-tighter">
+                            Đã đánh giá
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs font-medium text-stone-400 mt-1">{item.variantName}</p>
+                      <div className="flex justify-between items-end mt-3">
+                        <div className="bg-stone-100 px-2 py-1 rounded-lg">
+                          <span className="text-[10px] font-bold text-stone-400 uppercase mr-1">
+                            SL:
+                          </span>
+                          <span className="text-xs font-bold text-stone-900">x{item.qty}</span>
+                        </div>
+                        <p className="font-black text-stone-900 text-lg">
+                          {formatCurrencyVND(item.unitPrice)}
                         </p>
                       </div>
-                    )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Thông tin nhận hàng */}
+            <div className="bg-white rounded-4xl p-8 border border-stone-100 shadow-sm relative overflow-hidden group">
+              <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform">
+                <MapPin size={80} className="text-stone-900" />
+              </div>
+              <h3 className="font-bold text-stone-900 flex items-center gap-2 mb-6">
+                <MapPin size={18} className="text-green-600" /> Thông tin nhận hàng
+              </h3>
+              <div className="relative z-10">
+                <p className="font-black text-stone-900 mb-1 flex items-center gap-2">
+                  {order.shippingAddress.recipient}
+                  <span className="w-1 h-1 bg-stone-300 rounded-full" />
+                  <span className="text-stone-500 font-bold">{order.shippingAddress.phone}</span>
+                </p>
+                <p className="text-stone-400 text-sm font-medium leading-relaxed mt-3">
+                  {order.shippingAddress.address}, {order.shippingAddress.ward},{' '}
+                  {order.shippingAddress.district}, {order.shippingAddress.province}
+                </p>
+              </div>
+            </div>
+
+            {/* Chi tiết thanh toán */}
+            <div className="bg-green-700 rounded-4xl p-8 text-white shadow-xl shadow-stone-200">
+              <h3 className="font-bold text-white flex items-center gap-2 mb-8 uppercase text-[10px] tracking-widest">
+                Thông tin thanh toán
+              </h3>
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-white font-medium">
+                      Tạm tính ({order.items.length} SP)
+                    </span>
+                    <span className="font-bold">{formatCurrencyVND(order.subtotal)}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-white font-medium">Phí vận chuyển</span>
+                    <span className="font-bold">{formatCurrencyVND(order.shippingFee)}</span>
+                  </div>
+                  {(order.shipDiscount > 0 || order.voucherDiscount > 0) && (
+                    <div className="flex justify-between items-center text-sm text-green-400">
+                      <span className="font-medium">Giảm giá</span>
+                      <span className="font-bold">
+                        -{formatCurrencyVND(order.shipDiscount + order.voucherDiscount)}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                <div className="h-px bg-white" />
+                <div className="flex justify-between items-end">
+                  <span className="text-white font-bold text-xs uppercase mb-1">
+                    Tổng thanh toán
+                  </span>
+                  <span className="text-4xl font-black text-white tracking-tighter">
+                    {formatCurrencyVND(order.totalAmount)}
+                  </span>
+                </div>
+                <div className="pt-2">
+                  <div className="bg-stone-800/50 rounded-2xl p-4 flex items-center justify-between">
+                    <span className="text-xs text-white font-bold uppercase">
+                      Phương thức thanh toán
+                    </span>
+                    <span className="text-xs font-black">
+                      {order.paymentMethod || 'Tiền mặt (COD)'}
+                    </span>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Thông tin nhận hàng */}
-          <div className="bg-white rounded-4xl p-8 border border-stone-100 shadow-sm relative overflow-hidden group">
-            <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform">
-              <MapPin size={80} className="text-stone-900" />
-            </div>
-            <h3 className="font-bold text-stone-900 flex items-center gap-2 mb-6">
-              <MapPin size={18} className="text-green-600" /> Thông tin nhận hàng
-            </h3>
-            <div className="relative z-10">
-              <p className="font-black text-stone-900 mb-1 flex items-center gap-2">
-                {order.shippingAddress.recipient}
-                <span className="w-1 h-1 bg-stone-300 rounded-full" />
-                <span className="text-stone-500 font-bold">{order.shippingAddress.phone}</span>
-              </p>
-              <p className="text-stone-400 text-sm font-medium leading-relaxed mt-3">
-                {order.shippingAddress.address}, {order.shippingAddress.ward},{' '}
-                {order.shippingAddress.district}, {order.shippingAddress.province}
-              </p>
+              </div>
             </div>
           </div>
         </div>
@@ -337,6 +372,17 @@ export default function OrderDetailsPage({ params }: PageProps) {
           />
         </div>
       </div>
+
+      {reviewingItem && (
+        <ReviewFormModal
+          isOpen={!!reviewingItem}
+          onClose={() => setReviewingItem(null)}
+          orderItemId={reviewingItem.id}
+          productName={reviewingItem.productName}
+          productImage={reviewingItem.productImage}
+          // productSlug={reviewingItem.productSlug} // We might need to add productSlug to IOrderDetailsItem if available
+        />
+      )}
     </div>
   );
 }

@@ -8,15 +8,40 @@ import { LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 
+import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
+
 interface AdminHeaderProps {
   isSidebarCollapsed: boolean;
 }
 
+const BREADCRUMB_MAP: Record<string, string> = {
+  admin: 'Admin',
+  reviews: 'Kiểm duyệt',
+  products: 'Sản phẩm',
+  orders: 'Đơn hàng',
+  shops: 'Cửa hàng',
+  users: 'Người dùng',
+  vouchers: 'Mã giảm giá',
+  'payment-gateways': 'Thanh toán',
+  'shipping-providers': 'Vận chuyển',
+  subscriptions: 'Gói đăng ký',
+  inventory: 'Kho hàng',
+};
+
 const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
+  const pathname = usePathname();
   const { profile } = useAuthProfile();
   const { logout, isLoggingOut, handleClientLogout } = useAuth();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+
+  // Generate dynamic breadcrumbs
+  const pathSegments = pathname.split('/').filter(Boolean);
+  const breadcrumbs = pathSegments.map((segment) => ({
+    label: BREADCRUMB_MAP[segment] || segment,
+    href: `/${segment}`,
+  }));
 
   const handleLogoutClick = () => {
     setIsLogoutModalOpen(true);
@@ -49,11 +74,22 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
           />
         </div>
 
-        {/* Breadcrumb - Simple */}
+        {/* Dynamic Breadcrumbs */}
         <nav className="hidden lg:flex items-center gap-2 text-xs font-bold text-stone-400 uppercase tracking-widest">
           <span>OCOP Market</span>
           <FiChevronRight className="text-stone-300" />
-          <span className="text-emerald-800">Admin Dashboard</span>
+          {breadcrumbs.map((crumb, idx) => (
+            <React.Fragment key={idx}>
+              <span
+                className={cn(
+                  idx === breadcrumbs.length - 1 ? 'text-emerald-800' : 'text-stone-400',
+                )}
+              >
+                {crumb.label}
+              </span>
+              {idx < breadcrumbs.length - 1 && <FiChevronRight className="text-stone-300" />}
+            </React.Fragment>
+          ))}
         </nav>
       </div>
 

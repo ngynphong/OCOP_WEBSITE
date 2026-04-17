@@ -39,11 +39,11 @@ export const useOrderDetails = (orderCode: string) => {
   });
 };
 
-export const useOrderShipment = (orderCode: string) => {
+export const useOrderShipment = (orderCode: string, skip = false) => {
   return useQuery({
     queryKey: orderKeys.shipment(orderCode),
     queryFn: () => orderApi.getShipmentTracking(orderCode),
-    enabled: !!orderCode,
+    enabled: !!orderCode && !skip,
   });
 };
 

@@ -12,6 +12,7 @@ import {
   FiTag,
   FiPackage,
   FiHeart,
+  FiMessageSquare,
 } from 'react-icons/fi';
 import { FaWarehouse } from 'react-icons/fa';
 import { useAuth } from '@/features/auth/hooks/useAuth';
@@ -110,6 +111,14 @@ const DashboardSidebar = () => {
       label: 'Mã giảm giá',
       icon: IoTicket,
       href: '/dashboard/vouchers',
+      roles: ['SELLER'],
+      permission: 'seller.shop.manage',
+    },
+    {
+      id: 'reviews',
+      label: 'Quản lý Đánh giá',
+      icon: FiMessageSquare,
+      href: '/dashboard/reviews',
       roles: ['SELLER'],
       permission: 'seller.shop.manage',
     },
