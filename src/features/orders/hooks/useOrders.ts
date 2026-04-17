@@ -22,6 +22,16 @@ export const useCreateBatchOrders = () => {
   });
 };
 
+export const useBuyNow = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: import('../types/orderTypes').IBuyNowReq) => orderApi.buyNow(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: orderKeys.lists() });
+    },
+  });
+};
+
 export const useOrders = (params: IOrderListReq) => {
   return useQuery({
     queryKey: orderKeys.list(params),

@@ -31,7 +31,7 @@ function RevenueSummary() {
   const { data, isLoading } = useSellerRevenueQuery({ period: 'month' });
   const rev = data?.data;
 
-  if (isLoading) return <div className="h-24 animate-pulse bg-stone-100 rounded-3xl" />;
+  if (isLoading) return null;
   if (!rev) return null;
 
   return (

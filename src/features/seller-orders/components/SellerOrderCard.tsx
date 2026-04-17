@@ -5,6 +5,7 @@ import { Store, ChevronRight } from 'lucide-react';
 import { formatCurrencyVND } from '@/utils/format';
 import { OrderStatusBadge } from '@/features/orders/components/OrderStatusBadge';
 import { ISellerOrderItem } from '../types/sellerOrderTypes';
+import { Button } from '@/components/ui/AppButton';
 
 interface SellerOrderCardProps {
   order: ISellerOrderItem;
@@ -59,9 +60,12 @@ export const SellerOrderCard: React.FC<SellerOrderCardProps> = ({ order }) => {
                 </p>
               </div>
               <Link href={`/dashboard/cua-hang/don-hang/${order.orderCode}`}>
-                <button className="hidden sm:flex items-center justify-center px-4 py-2 border-2 border-stone-200 rounded-xl font-bold text-stone-700 hover:border-green-600 hover:text-green-700 transition-colors">
+                <Button
+                  variant="outline"
+                  className="hidden sm:flex items-center justify-center px-4 py-2 border-2 border-stone-200 rounded-xl font-bold text-stone-700 hover:border-green-600 hover:text-green-700 transition-colors"
+                >
                   Chi tiết <ChevronRight size={16} className="ml-1" />
-                </button>
+                </Button>
               </Link>
             </div>
           </div>

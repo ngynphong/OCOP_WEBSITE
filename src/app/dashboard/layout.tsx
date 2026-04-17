@@ -3,23 +3,29 @@
 import React from 'react';
 import DashboardSidebar from '@/features/dashboard/components/DashboardSidebar';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAppSelector } from '@/store/hooks';
 import { useDispatch } from 'react-redux';
 import { setDashboardMode } from '@/store/features/authSlice';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { cn } from '@/lib/utils';
+import { setLoading } from '@/store/features/uiSlice';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const dispatch = useDispatch();
   const { profile } = useAuth();
-  const { dashboardMode } = useAppSelector((state) => state.auth);
+  const { dashboardMode, isInitialized } = useAppSelector((state) => state.auth);
   const [isMounted, setIsMounted] = React.useState(false);
 
   React.useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  if (!isMounted || !isInitialized) {
+    return null;
+  }
 
   const isSeller = profile?.roles?.includes('SELLER');
 
@@ -71,8 +77,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 role="switch"
                 aria-checked={dashboardMode === 'SELLER'}
                 onClick={() => {
-                  dispatch(setDashboardMode(dashboardMode === 'SELLER' ? 'USER' : 'SELLER'));
-                  window.location.href = '/dashboard';
+                  dispatch(setLoading({ isLoading: true, message: 'Đang chuyển đổi quyền...' }));
+                  setTimeout(() => {
+                    dispatch(setDashboardMode(dashboardMode === 'SELLER' ? 'USER' : 'SELLER'));
+                    if (pathname === '/dashboard') {
+                      setTimeout(() => dispatch(setLoading({ isLoading: false })), 200);
+                    } else {
+                      router.push('/dashboard');
+                    }
+                  }, 300);
                 }}
               >
                 <span className="sr-only">Chuyển chế độ Dashboard</span>
@@ -108,15 +121,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {/* Main Content Area */}
           <main className="lg:col-span-3">
             <div className="bg-white rounded-3xl border border-stone-100 shadow-xl shadow-stone-200/50 overflow-hidden min-h-[600px]">
-              {/* <div className="p-4 border-b border-stone-50 bg-linear-to-r from-stone-50/50 to-white">
-                <h1 className="text-2xl font-bold text-stone-900">{getPageTitle()}</h1>
-                <p className="text-stone-500 text-sm mt-1">
-                  {dashboardMode === 'SELLER'
-                    ? 'Quản lý cửa hàng, sản phẩm và theo dõi doanh thu của bạn.'
-                    : 'Quản lý tài khoản và theo dõi hoạt động mua sắm của bạn trên OCOP.'}
-                </p>
-              </div> */}
-
               <div className="p-8">{children}</div>
             </div>
           </main>

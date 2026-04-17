@@ -36,7 +36,17 @@ export const PaymentCallbackManager = ({ provider, searchParams }: PaymentCallba
 
         const response = await paymentApi.handlePaymentWebhook(gateway, params, params);
 
-        if (response.code === 1000 || response.code === 0 || response.code === 200) {
+        const isSuccess =
+          response.code === 1000 ||
+          response.code === 0 ||
+          response.code === 200 ||
+          String(response.code) === '1000' ||
+          String(response.code) === '0' ||
+          response.message?.toLowerCase() === 'success' ||
+          response.message?.toLowerCase() === 'thành công' ||
+          response.message?.toLowerCase() === 'successfully';
+
+        if (isSuccess) {
           setStatus('SUCCESS');
           setMessage('Thanh toán thành công! Đơn hàng của bạn đang được xử lý.');
           toast.success('Thanh toán thành công');

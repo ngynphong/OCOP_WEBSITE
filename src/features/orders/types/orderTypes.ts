@@ -63,6 +63,29 @@ export interface IBatchOrderResponseData {
   paymentMethod: string;
 }
 
+export interface IBuyNowReq {
+  variantId: number;
+  qty: number;
+  addressId: number;
+  shippingProviderId: string;
+  paymentMethod: string;
+  shippingFee: number;
+  voucherCode?: string;
+  affiliateCode?: string;
+  usePoints?: number;
+  note?: string;
+}
+
+export interface IBuyNowRes {
+  orderId: number;
+  orderCode: string;
+  totalAmount: number;
+  paymentMethod: string;
+  paymentUrl: string | null;
+  expiredAt: string;
+  status: string;
+}
+
 // OTHER ORDER ENDPOINTS
 export interface IRefundReq {
   refundType: string; // FULL, PARTIAL
