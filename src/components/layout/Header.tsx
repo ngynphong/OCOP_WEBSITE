@@ -100,7 +100,7 @@ export function Header() {
                   alt="OCOP IES CONNECT"
                   width={230}
                   height={60}
-                  className="h-12 lg:h-14 w-auto object-contain"
+                  className="h-12 lg:h-14 w-auto object-contain scale-125"
                   priority
                 />
               </div>
