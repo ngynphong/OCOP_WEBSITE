@@ -26,4 +26,11 @@ export const paymentApi = {
   // User APIs
   getUserGateways: (): Promise<ApiResponse<IPaymentGateway[]>> =>
     publicAxiosClient.get('/payment-gateways'),
+
+  handlePaymentWebhook: (
+    gateway: string,
+    params: Record<string, string | string[] | undefined>,
+    body: Record<string, unknown> = {},
+  ): Promise<ApiResponse<unknown>> =>
+    publicAxiosClient.post(`/webhooks/payment/${gateway}`, body, { params }),
 };
