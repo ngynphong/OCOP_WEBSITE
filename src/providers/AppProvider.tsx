@@ -7,6 +7,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { store } from '@/store/store';
 import { Toaster } from 'react-hot-toast';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
+import { WebSocketProvider } from '@/features/notifications/providers/WebSocketProvider';
 
 export default function AppProvider({ children }: { children: React.ReactNode }) {
   // Use the singleton store
@@ -52,7 +53,7 @@ export default function AppProvider({ children }: { children: React.ReactNode })
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
-        {children}
+        <WebSocketProvider>{children}</WebSocketProvider>
         {/* Cấu hình mặc định cho Toast toàn hệ thống */}
         <Toaster
           position="top-right"

@@ -21,6 +21,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { useCart } from '@/features/cart/hooks/useCart';
 import { QRScannerModal } from '@/components/ui/QRScannerModal';
+import { NotificationBell } from '@/features/notifications/components/NotificationBell';
 
 export function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -281,6 +282,7 @@ export function Header() {
             >
               <QrCode className="w-5 h-5 group-hover:scale-110 transition-transform" />
             </button>
+            {isAuthenticated && <NotificationBell />}
             <Link
               href="/gio-hang"
               suppressHydrationWarning
