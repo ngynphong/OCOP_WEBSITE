@@ -22,22 +22,33 @@ import { useCreateBatchOrders } from '@/features/orders/hooks/useOrders';
 import { useQueryClient } from '@tanstack/react-query';
 import { VoucherValidateResponse } from '@/features/vouchers/types';
 import { LoyaltyCheckoutRedeem } from '@/features/loyalty/components/LoyaltyCheckoutRedeem';
-import { useAppSelector } from '@/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { clearSelection } from '@/store/features/cartSlice';
+
 interface CheckoutCartItem extends CartItem {
   weightGram?: number;
 }
 
 function CheckoutContent() {
   const { isAuthenticated, isInitialized } = useAppSelector((state) => state.auth);
+  const { selectedItemIds } = useAppSelector((state) => state.cart);
+  const dispatch = useAppDispatch();
   const router = useRouter();
 
-  // Protect route: Redirect if not authenticated
+  // Protect route & check selection
   React.useEffect(() => {
-    if (isInitialized && !isAuthenticated) {
-      toast.error('Vui lòng đăng nhập để tiếp tục thanh toán');
-      router.push(`/dang-nhap?redirect=/checkout`);
+    if (isInitialized) {
+      if (!isAuthenticated) {
+        toast.error('Vui lòng đăng nhập để tiếp tục thanh toán');
+        router.push(`/dang-nhap?redirect=/checkout`);
+        return;
+      }
+      if (selectedItemIds.length === 0) {
+        toast.error('Vui lòng chọn sản phẩm trong giỏ hàng trước khi thanh toán');
+        router.push('/gio-hang');
+      }
     }
-  }, [isInitialized, isAuthenticated, router]);
+  }, [isInitialized, isAuthenticated, selectedItemIds, router]);
 
   const { data: addresses, isLoading: isAddressLoading } = useUserAddresses();
   const { data: cartResponse, isLoading: isCartLoading } = useCart();
@@ -64,8 +75,6 @@ function CheckoutContent() {
     const ref = searchParams.get('ref') || searchParams.get('affiliateCode');
     if (ref) {
       setAffiliateCode(ref);
-      // Optional: Store in localStorage if needed for persistence across sessions
-      // localStorage.setItem('affiliateCode', ref);
     }
   }, [searchParams]);
 
@@ -78,7 +87,17 @@ function CheckoutContent() {
   }, [userSelectedAddress, addresses]);
 
   const cartData = cartResponse?.data;
-  const checkoutItems = useMemo(() => cartData?.items || [], [cartData?.items]);
+
+  // Filter items based on Redux selection
+  const checkoutItems = useMemo(() => {
+    const allItems = cartData?.items || [];
+    return allItems.filter((item) => selectedItemIds.includes(item.id));
+  }, [cartData?.items, selectedItemIds]);
+
+  // Recalculate subtotal for selected items only
+  const subtotal = useMemo(() => {
+    return checkoutItems.reduce((acc, item) => acc + item.currentPrice * item.qty, 0);
+  }, [checkoutItems]);
 
   const shopsInCart = useMemo(() => {
     const shops: Record<number, { weight: number }> = {};
@@ -128,7 +147,6 @@ function CheckoutContent() {
     calculateFees();
   }, [effectiveAddress, selectedShipping, shopsInCart, estimateFee]);
 
-  const subtotal = useMemo(() => cartData?.totalAmount || 0, [cartData?.totalAmount]);
   const shippingFee = useMemo(
     () => (selectedShipping?.id ? providerFees[selectedShipping.id] || 0 : 0),
     [selectedShipping?.id, providerFees],
@@ -169,6 +187,9 @@ function CheckoutContent() {
 
       queryClient.invalidateQueries({ queryKey: ['cart'] });
 
+      // Clear Redux selection after success
+      dispatch(clearSelection());
+
       const { paymentUrl } = res.data;
       if (paymentUrl) {
         window.location.href = paymentUrl;
@@ -198,6 +219,7 @@ function CheckoutContent() {
     queryClient,
     note,
     affiliateCode,
+    dispatch,
   ]);
 
   const handleSelectAddress = useCallback((address: Address) => {
@@ -230,8 +252,8 @@ function CheckoutContent() {
     return <LoadingOverlay />;
   }
 
-  // Double check auth to prevent flash of content
-  if (!isAuthenticated) {
+  // Double check auth & selection to prevent flash of content
+  if (!isAuthenticated || selectedItemIds.length === 0) {
     return null;
   }
 

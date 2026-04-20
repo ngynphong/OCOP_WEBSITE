@@ -1,10 +1,19 @@
 'use client';
 
-import { useAppSelector } from '@/store/hooks';
-import { memo } from 'react';
+import { useState, useEffect, memo } from 'react';
+import { globalLoading } from '@/utils/eventEmitter';
 
 export const LoadingOverlay = memo(function LoadingOverlay() {
-  const { isLoading, loadingMessage } = useAppSelector((state) => state.ui);
+  const [{ isLoading, message }, setLoadingState] = useState({
+    isLoading: false,
+    message: 'Đang xử lý...',
+  });
+
+  useEffect(() => {
+    return globalLoading.subscribe((isLoading, message) => {
+      setLoadingState({ isLoading, message });
+    });
+  }, []);
 
   if (!isLoading) return null;
 
@@ -17,9 +26,9 @@ export const LoadingOverlay = memo(function LoadingOverlay() {
         </div>
 
         {/* Loading Text */}
-        {loadingMessage && (
+        {message && (
           <p className="mt-4 text-emerald-900 font-bold text-sm tracking-wide animate-pulse">
-            {loadingMessage}
+            {message}
           </p>
         )}
       </div>

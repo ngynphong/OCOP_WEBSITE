@@ -25,7 +25,6 @@ interface ProductCardProps {
   soldCount?: number;
   id: number;
   isWishlisted?: boolean;
-  /** ID của variant mặc định — dùng để "Thêm vào giỏ" nhanh từ card */
 }
 
 export const ProductCard = memo(function ProductCard({
@@ -40,13 +39,7 @@ export const ProductCard = memo(function ProductCard({
   id,
   isWishlisted = false,
 }: ProductCardProps) {
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
   const [isMounted, setIsMounted] = useState(false);
-
-  // Wishlist mutations
-  const addToWishlist = useAddToWishlist();
-  const removeFromWishlist = useRemoveFromWishlist();
-  const isWishlistLoading = addToWishlist.isPending || removeFromWishlist.isPending;
 
   // Hydration
   useEffect(() => {
@@ -55,20 +48,6 @@ export const ProductCard = memo(function ProductCard({
     });
     return () => cancelAnimationFrame(handle);
   }, []);
-
-  const handleWishlistClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!isAuthenticated) {
-      toast.error('Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích');
-      return;
-    }
-    if (isWishlisted) {
-      removeFromWishlist.mutate(id);
-    } else {
-      addToWishlist.mutate(id);
-    }
-  };
 
   // Tính toán % giảm giá và format tiền tệ
   const discountPercent = useMemo(() => {
@@ -97,6 +76,7 @@ export const ProductCard = memo(function ProductCard({
             src={image || '/images/fresh-green-produce.jpg'}
             alt={name}
             fill
+            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
             className="object-cover transition-transform duration-700 group-hover:scale-110"
           />
 
@@ -112,24 +92,9 @@ export const ProductCard = memo(function ProductCard({
             )}
           </div>
 
-          {/* Overlay Actions: wishlist only */}
+          {/* Overlay Actions: wishlist only (Isolated in sub-component) */}
           <div className="absolute top-4 right-4 z-20 flex flex-col gap-2">
-            {/* Wishlist */}
-            <button
-              suppressHydrationWarning
-              disabled={isWishlistLoading}
-              onClick={handleWishlistClick}
-              className={cn(
-                'p-2 rounded-full backdrop-blur-md transition-all duration-300 active:scale-90',
-                isWishlisted
-                  ? 'bg-red-50 text-red-500'
-                  : 'bg-black/10 text-white hover:bg-black/20',
-                isWishlistLoading && 'opacity-50 cursor-not-allowed',
-              )}
-              aria-label="Thêm vào yêu thích"
-            >
-              <Heart className={cn('w-4 h-4', isWishlisted && 'fill-current')} />
-            </button>
+            <WishlistButton id={id} isWishlisted={isWishlisted} />
           </div>
         </div>
 
@@ -174,6 +139,47 @@ export const ProductCard = memo(function ProductCard({
     </Link>
   );
 });
+
+ProductCard.displayName = 'ProductCard';
+
+const WishlistButton = memo(({ id, isWishlisted }: { id: number; isWishlisted: boolean }) => {
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const addToWishlist = useAddToWishlist();
+  const removeFromWishlist = useRemoveFromWishlist();
+  const isLoading = addToWishlist.isPending || removeFromWishlist.isPending;
+
+  const handleWishlistClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isAuthenticated) {
+      toast.error('Vui lòng đăng nhập để thêm vào yêu thích');
+      return;
+    }
+    if (isWishlisted) {
+      removeFromWishlist.mutate(id);
+    } else {
+      addToWishlist.mutate(id);
+    }
+  };
+
+  return (
+    <button
+      suppressHydrationWarning
+      disabled={isLoading}
+      onClick={handleWishlistClick}
+      className={cn(
+        'p-2 rounded-full backdrop-blur-md transition-all duration-300 active:scale-90',
+        isWishlisted ? 'bg-red-50 text-red-500' : 'bg-black/10 text-white hover:bg-black/20',
+        isLoading && 'opacity-50 cursor-not-allowed',
+      )}
+      aria-label="Thêm vào yêu thích"
+    >
+      <Heart className={cn('w-4 h-4', isWishlisted && 'fill-current')} />
+    </button>
+  );
+});
+
+WishlistButton.displayName = 'WishlistButton';
 
 // Hoisted SVG to avoid re-creation
 function StarIcon() {

@@ -2,58 +2,58 @@ import { ProductCard } from '@/components/ui/ProductCard';
 import Image from 'next/image';
 import Link from 'next/link';
 
-export function CategoryShowcase() {
-  const leafyGreens = [
-    {
-      name: 'Cải Chíp Organic',
-      price: 45000,
-      unit: 'kg',
-      location: 'Đà Lạt, Lâm Đồng',
-      image: '/images/fresh-green-produce.jpg',
-      ocopStar: 4,
-      rating: 5,
-      reviewCount: 0,
-      slug: 'cai-chip-organic',
-      id: 201,
-    },
-    {
-      name: 'Cải Kale T.Canh',
-      price: 75000,
-      unit: 'kg',
-      location: 'Đơn Dương, Lâm Đồng',
-      image: '/images/fresh-green-produce.jpg',
-      ocopStar: 5,
-      rating: 5,
-      reviewCount: 0,
-      slug: 'cai-kale-tuyet-canh',
-      id: 202,
-    },
-    {
-      name: 'Bó Xôi Organic',
-      price: 55000,
-      unit: 'kg',
-      location: 'Mộc Châu, Sơn La',
-      image: '/images/fresh-green-produce.jpg',
-      ocopStar: 4,
-      rating: 5,
-      reviewCount: 0,
-      slug: 'bo-xoi-organic',
-      id: 203,
-    },
-    {
-      name: 'Xà Lách Lolo Tím',
-      price: 42000,
-      unit: 'kg',
-      location: 'Lạc Dương, Lâm Đồng',
-      image: '/images/fresh-green-produce.jpg',
-      ocopStar: 3,
-      rating: 5,
-      reviewCount: 0,
-      slug: 'xa-lach-lolo-tim',
-      id: 204,
-    },
-  ];
+const LEAFY_GREENS_DATA = [
+  {
+    name: 'Cải Chíp Organic',
+    price: 45000,
+    unit: 'kg',
+    location: 'Đà Lạt, Lâm Đồng',
+    image: '/images/fresh-green-produce.jpg',
+    ocopStar: 4,
+    rating: 5,
+    reviewCount: 0,
+    slug: 'cai-chip-organic',
+    id: 201,
+  },
+  {
+    name: 'Cải Kale T.Canh',
+    price: 75000,
+    unit: 'kg',
+    location: 'Đơn Dương, Lâm Đồng',
+    image: '/images/fresh-green-produce.jpg',
+    ocopStar: 5,
+    rating: 5,
+    reviewCount: 0,
+    slug: 'cai-kale-tuyet-canh',
+    id: 202,
+  },
+  {
+    name: 'Bó Xôi Organic',
+    price: 55000,
+    unit: 'kg',
+    location: 'Mộc Châu, Sơn La',
+    image: '/images/fresh-green-produce.jpg',
+    ocopStar: 4,
+    rating: 5,
+    reviewCount: 0,
+    slug: 'bo-xoi-organic',
+    id: 203,
+  },
+  {
+    name: 'Xà Lách Lolo Tím',
+    price: 42000,
+    unit: 'kg',
+    location: 'Lạc Dương, Lâm Đồng',
+    image: '/images/fresh-green-produce.jpg',
+    ocopStar: 3,
+    rating: 5,
+    reviewCount: 0,
+    slug: 'xa-lach-lolo-tim',
+    id: 204,
+  },
+];
 
+export function CategoryShowcase() {
   return (
     <div className="w-full max-w-7xl mx-auto flex flex-col justify-start items-start gap-16 md:gap-32 py-10 md:py-20 px-6">
       {/* --- RAU LÁ XANH SECTION --- */}
@@ -72,7 +72,7 @@ export function CategoryShowcase() {
         </div>
 
         <div className="w-full grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          {leafyGreens.map((item, index) => (
+          {LEAFY_GREENS_DATA.map((item, index) => (
             <ProductCard
               key={index}
               name={item.name}
@@ -112,6 +112,7 @@ export function CategoryShowcase() {
               src="/images/fresh-green-produce.jpg"
               alt="Khoai Tây Vàng Mộc Châu"
               fill
+              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
               className="object-cover group-hover:scale-105 transition-transform duration-500 opacity-80"
             />
             <div className="absolute inset-0 bg-linear-to-t md:bg-linear-to-l from-black/90 via-black/40 to-black/0" />
@@ -155,6 +156,7 @@ export function CategoryShowcase() {
                 src="/images/fresh-green-produce.jpg"
                 alt="Cà Rốt Đà Lạt"
                 fill
+                sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
               />
               <div className="p-2 absolute right-4 top-4 bg-green-900 rounded-full shadow-md">

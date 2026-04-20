@@ -3,13 +3,31 @@
 import { useState, useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { store } from '@/store/store';
-import { Toaster } from 'react-hot-toast';
-import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
+import dynamic from 'next/dynamic';
+import { makeStore } from '@/store/store';
+import { WebSocketProvider } from '@/features/notifications/providers/WebSocketProvider';
+
+// Lazy load non-critical components
+const Toaster = dynamic(() => import('react-hot-toast').then((mod) => mod.Toaster), {
+  ssr: false,
+});
+
+const LoadingOverlay = dynamic(
+  () => import('@/components/ui/LoadingOverlay').then((mod) => mod.LoadingOverlay),
+  {
+    ssr: false,
+  },
+);
+
+const ReactQueryDevtools = dynamic(
+  () => import('@tanstack/react-query-devtools').then((mod) => mod.ReactQueryDevtools),
+  {
+    ssr: false,
+  },
+);
 
 export default function AppProvider({ children }: { children: React.ReactNode }) {
-  // Use the singleton store
+  const [store] = useState(() => makeStore());
 
   useEffect(() => {
     // 1. Initialize Auth from LocalStorage
@@ -33,7 +51,7 @@ export default function AppProvider({ children }: { children: React.ReactNode })
         type: 'auth/completeInitialization',
       });
     }
-  }, []);
+  }, [store]);
 
   // 2. Setup React Query Client an toàn cho SSR
   const [queryClient] = useState(
@@ -52,7 +70,7 @@ export default function AppProvider({ children }: { children: React.ReactNode })
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
-        {children}
+        <WebSocketProvider>{children}</WebSocketProvider>
         {/* Cấu hình mặc định cho Toast toàn hệ thống */}
         <Toaster
           position="top-right"
