@@ -1,7 +1,7 @@
 'use client';
 
 import React, { use, useState } from 'react';
-import { ChevronLeft, MapPin, Package, Truck, DollarSign } from 'lucide-react';
+import { ChevronLeft, MapPin, Package, Truck, DollarSign, StickyNote } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { formatCurrencyVND } from '@/utils/format';
@@ -12,6 +12,7 @@ import {
 } from '@/features/seller-orders/hooks/useSellerOrders';
 import { OrderStatusBadge } from '@/features/orders/components/OrderStatusBadge';
 import { Button } from '@/components/ui/AppButton';
+
 import {
   RejectOrderModal,
   ConfirmOrderModal,
@@ -182,6 +183,18 @@ export default function SellerOrderDetailsPage({ params }: PageProps) {
               ))}
             </div>
           </div>
+
+          {/* Customer Note Section */}
+          {order.note && (
+            <div className="bg-amber-50 rounded-3xl p-6 border border-amber-100 shadow-sm animate-in fade-in slide-in-from-bottom-2">
+              <h3 className="font-bold text-amber-900 flex items-center gap-2 mb-3">
+                <StickyNote size={18} className="text-amber-600" /> Ghi chú từ khách hàng
+              </h3>
+              <div className="bg-white/80 rounded-2xl p-4 text-amber-900 font-medium text-sm leading-relaxed border border-amber-200/50">
+                {order.note}
+              </div>
+            </div>
+          )}
 
           <div className="bg-white rounded-3xl p-6 border border-stone-100 shadow-sm">
             <h3 className="font-bold text-stone-900 flex items-center gap-2 mb-4">

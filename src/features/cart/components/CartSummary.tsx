@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { useValidateCart } from '../hooks/useCart';
 import toast from 'react-hot-toast';
 import type { CartItem } from '../types/cartTypes';
+import { useAppSelector } from '@/store/hooks';
 
 function formatVND(amount: number): string {
   return amount.toLocaleString('vi-VN') + '₫';
@@ -27,8 +28,15 @@ export function CartSummary({ selectedItems, hasIssues }: CartSummaryProps) {
   const total = subtotal;
   const canCheckout = selectedItems.length > 0 && !hasIssues;
 
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+
   const handleCheckout = () => {
     if (!canCheckout) return;
+
+    if (!isAuthenticated) {
+      toast.error('Vui lòng đăng nhập để tiến hành thanh toán');
+      return;
+    }
 
     validateCart(undefined, {
       onSuccess: (res) => {
@@ -73,7 +81,7 @@ export function CartSummary({ selectedItems, hasIssues }: CartSummaryProps) {
           onClick={handleCheckout}
           disabled={!canCheckout || isValidating}
           className={cn(
-            'w-full mt-5 flex items-center justify-center gap-2 py-4 rounded-2xl font-bold text-base transition-all duration-200',
+            'w-full mt-5 flex items-center justify-center gap-2 py-4 rounded-2xl font-bold text-base transition-all duration-200 cursor-pointer',
             canCheckout && !isValidating
               ? 'bg-green-700 hover:bg-green-800 text-white shadow-[0_8px_24px_rgba(22,101,52,0.25)] hover:shadow-[0_12px_32px_rgba(22,101,52,0.35)] hover:scale-[1.01] active:scale-[0.99]'
               : 'bg-stone-100 text-stone-400 cursor-not-allowed',

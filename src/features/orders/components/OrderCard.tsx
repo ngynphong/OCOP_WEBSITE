@@ -6,8 +6,9 @@ import Image from 'next/image';
 import { Store, ChevronRight } from 'lucide-react';
 import { formatCurrencyVND } from '@/utils/format';
 import { Button } from '@/components/ui/AppButton';
-import { useCancelOrder } from '../hooks/useOrders';
+import { useCancelOrder, useConfirmReceived } from '../hooks/useOrders';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
+import toast from 'react-hot-toast';
 
 interface OrderCardProps {
   order: IOrderItemList;
@@ -16,6 +17,15 @@ interface OrderCardProps {
 export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
   const [isCancelModalOpen, setIsCancelModalOpen] = React.useState(false);
   const { mutate: cancelOrder, isPending: isCancelling } = useCancelOrder();
+  const { mutate: confirmReceived, isPending: isConfirming } = useConfirmReceived();
+
+  const handleConfirmReceived = () => {
+    confirmReceived(order.orderCode, {
+      onSuccess: () => {
+        toast.success('Xác nhận đã nhận hàng thành công');
+      },
+    });
+  };
 
   const handleCancelConfirm = () => {
     cancelOrder(
@@ -143,7 +153,19 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
             </Button>
           </Link>
 
-          {(order.status === 'COMPLETED' || order.status === 'DELIVERED') && (
+          {(order.status === 'SHIPPED' || order.status === 'DELIVERED') && (
+            <Button
+              variant="primary"
+              size="sm"
+              isLoading={isConfirming}
+              onClick={handleConfirmReceived}
+              className="flex-1 sm:flex-none text-xs font-black uppercase tracking-widest bg-emerald-600 hover:bg-emerald-700 border-none shadow-lg shadow-emerald-100 h-11 px-6 rounded-xl transition-all"
+            >
+              Đã nhận được hàng
+            </Button>
+          )}
+
+          {order.status === 'COMPLETED' && (
             <Link href={`/dashboard/don-hang/${order.orderCode}`} className="flex-1 sm:flex-none">
               <Button
                 variant="primary"

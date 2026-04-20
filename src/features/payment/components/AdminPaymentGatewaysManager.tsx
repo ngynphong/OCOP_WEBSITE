@@ -7,7 +7,7 @@ import {
 } from '../hooks/usePaymentGateways';
 import { IPaymentGatewayAdmin } from '../types';
 import { useState, useMemo } from 'react';
-import { FiSettings, FiCheckCircle, FiSave, FiRefreshCw } from 'react-icons/fi';
+import { FiSettings, FiCheckCircle, FiSave, FiRefreshCw, FiEye, FiEyeOff } from 'react-icons/fi';
 import { Button } from '@/components/ui/AppButton';
 import { cn } from '@/utils/cn';
 import Image from 'next/image';
@@ -224,14 +224,21 @@ const AdminPaymentGatewaysManager = () => {
 const GatewayConfigForm = ({ gateway }: { gateway: IPaymentGatewayAdmin }) => {
   const { mutate: updateConfig, isPending } = useUpdateGatewayConfig();
   const [isChanged, setIsChanged] = useState(false);
+  const [visibleFields, setVisibleFields] = useState<Record<string, boolean>>({});
 
-  // Các trường được phép chỉnh sửa cho từng loại gateway
+  const toggleVisibility = (field: string) => {
+    setVisibleFields((prev) => ({ ...prev, [field]: !prev[field] }));
+  };
+
+  const isSecretField = (field: string) => {
+    const secretKeywords = ['secret', 'key', 'password', 'token', 'hash'];
+    return secretKeywords.some((keyword) => field.toLowerCase().includes(keyword));
+  };
+
   const allowedFields = useMemo(() => GATEWAY_FIELDS_CONFIG[gateway.code] || [], [gateway.code]);
 
-  // Lấy tất cả các field đang có từ server + các field bắt buộc phải có cho gateway này
   const allFields = useMemo(() => {
     const serverFields = Object.keys(gateway.config || {});
-    // Gộp server fields và allowed fields (các field cấu hình chuẩn)
     const uniqueFields = Array.from(new Set([...allowedFields, ...serverFields]));
     return uniqueFields;
   }, [allowedFields, gateway.config]);
@@ -245,8 +252,6 @@ const GatewayConfigForm = ({ gateway }: { gateway: IPaymentGatewayAdmin }) => {
   });
 
   const handleUpdate = () => {
-    // Chỉ gửi các field được phép sửa lên server (hoặc gửi tất cả nếu backend cho phép,
-    // nhưng ở đây ta bám sát yêu cầu lọc của User)
     const payload: Record<string, string> = {};
     allowedFields.forEach((field) => {
       if (config[field] !== undefined) {
@@ -305,19 +310,31 @@ const GatewayConfigForm = ({ gateway }: { gateway: IPaymentGatewayAdmin }) => {
                   <option value="PRODUCTION">PRODUCTION</option>
                 </select>
               ) : (
-                <input
-                  type="text"
-                  value={config[field] || ''}
-                  readOnly={!isEditable}
-                  disabled={!isEditable}
-                  onChange={(e) => handleFieldChange(field, e.target.value)}
-                  className={cn(
-                    'w-full px-5 py-3 rounded-2xl border transition-all font-bold text-sm',
-                    isEditable
-                      ? 'border-slate-100 bg-stone-50/30 text-slate-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500'
-                      : 'border-slate-50 bg-stone-50/10 text-stone-300 cursor-not-allowed select-none',
+                <div className="relative">
+                  <input
+                    type={isSecretField(field) && !visibleFields[field] ? 'password' : 'text'}
+                    value={config[field] || ''}
+                    readOnly={!isEditable}
+                    disabled={!isEditable}
+                    onChange={(e) => handleFieldChange(field, e.target.value)}
+                    className={cn(
+                      'w-full px-5 py-3 rounded-2xl border transition-all font-bold text-sm',
+                      isEditable
+                        ? 'border-slate-100 bg-stone-50/30 text-slate-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500'
+                        : 'border-slate-50 bg-stone-50/10 text-stone-300 cursor-not-allowed select-none',
+                      isSecretField(field) && 'pr-12',
+                    )}
+                  />
+                  {isSecretField(field) && (
+                    <button
+                      type="button"
+                      onClick={() => toggleVisibility(field)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-emerald-600 transition-colors"
+                    >
+                      {visibleFields[field] ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+                    </button>
                   )}
-                />
+                </div>
               )}
             </div>
           );

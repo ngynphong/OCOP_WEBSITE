@@ -156,6 +156,7 @@ export interface Product {
   variants: ProductVariant[];
   images?: ProductImage[]; // Added back based on API response
   thumbnailUrl?: string;
+  url?: string;
   journals: ProductJournal[];
   qrCode: ProductQrCode | null;
 }

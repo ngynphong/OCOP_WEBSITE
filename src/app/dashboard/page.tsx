@@ -19,15 +19,28 @@ import {
   FiBarChart2,
   FiDollarSign,
 } from 'react-icons/fi';
+import { useDispatch } from 'react-redux';
+import { setLoading } from '@/store/features/uiSlice';
 
 const DashboardPage = () => {
   const { profile } = useAuth();
   const { dashboardMode } = useAppSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const [isMounted, setIsMounted] = React.useState(false);
 
   React.useEffect(() => {
-    setIsMounted(true);
-  }, []);
+    dispatch(setLoading({ isLoading: true, message: 'Đang khởi tạo Dashboard...' }));
+    // A small timeout to ensure the role and profile are fully synced from store
+    const timer = setTimeout(() => {
+      setIsMounted(true);
+      dispatch(setLoading({ isLoading: false }));
+    }, 400);
+
+    return () => {
+      clearTimeout(timer);
+      dispatch(setLoading({ isLoading: false }));
+    };
+  }, [dispatch]);
 
   const consumerStats = [
     { label: 'Đơn hàng', value: '0', icon: FiShoppingBag, color: 'bg-blue-500' },
@@ -45,12 +58,7 @@ const DashboardPage = () => {
 
   const stats = dashboardMode === 'SELLER' ? sellerStats : consumerStats;
 
-  if (!isMounted)
-    return (
-      <div className="min-h-[400px] flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
+  if (!isMounted) return null;
 
   return (
     <div className="space-y-8">

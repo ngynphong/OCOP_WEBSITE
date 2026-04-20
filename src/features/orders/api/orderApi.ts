@@ -9,9 +9,15 @@ import {
   IReorderRes,
   IOrderListReq,
   IShipmentTrackingRes,
+  IBuyNowReq,
+  IBuyNowRes,
 } from '../types/orderTypes';
 
 export const orderApi = {
+  buyNow: async (data: IBuyNowReq) => {
+    return axiosClient.post<unknown, { data: IBuyNowRes }>('/orders/buy-now', data);
+  },
+
   createBatchOrders: async (data: IBatchOrderReq) => {
     return axiosClient.post<unknown, { data: IBatchOrderResponseData }>('/orders/batch', data);
   },

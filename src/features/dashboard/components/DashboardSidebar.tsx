@@ -14,6 +14,7 @@ import {
   FiPackage,
   FiHeart,
   FiMessageSquare,
+  FiTrendingUp,
 } from 'react-icons/fi';
 import { FaWarehouse } from 'react-icons/fa';
 import { useAuth } from '@/features/auth/hooks/useAuth';
@@ -72,6 +73,13 @@ const DashboardSidebar = () => {
       label: 'Điểm thưởng',
       icon: FiAward,
       href: '/dashboard/diem-thuong',
+      roles: ['USER'],
+    },
+    {
+      id: 'affiliate',
+      label: 'Tiếp thị liên kết',
+      icon: FiTrendingUp,
+      href: '/dashboard/affiliate',
       roles: ['USER'],
     },
     {

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, Suspense } from 'react';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { AddressSelector } from '@/features/checkout/components/AddressSelector';
@@ -12,7 +12,7 @@ import { ChevronLeft, ShoppingBag, Store } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useUserAddresses } from '@/features/address/hooks/useAddress';
 import { useCart } from '@/features/cart/hooks/useCart';
 import { CartItem } from '@/features/cart/types/cartTypes';
@@ -22,12 +22,23 @@ import { useCreateBatchOrders } from '@/features/orders/hooks/useOrders';
 import { useQueryClient } from '@tanstack/react-query';
 import { VoucherValidateResponse } from '@/features/vouchers/types';
 import { LoyaltyCheckoutRedeem } from '@/features/loyalty/components/LoyaltyCheckoutRedeem';
+import { useAppSelector } from '@/store/hooks';
 interface CheckoutCartItem extends CartItem {
   weightGram?: number;
 }
 
-export default function CheckoutPage() {
+function CheckoutContent() {
+  const { isAuthenticated, isInitialized } = useAppSelector((state) => state.auth);
   const router = useRouter();
+
+  // Protect route: Redirect if not authenticated
+  React.useEffect(() => {
+    if (isInitialized && !isAuthenticated) {
+      toast.error('Vui lòng đăng nhập để tiếp tục thanh toán');
+      router.push(`/dang-nhap?redirect=/checkout`);
+    }
+  }, [isInitialized, isAuthenticated, router]);
+
   const { data: addresses, isLoading: isAddressLoading } = useUserAddresses();
   const { data: cartResponse, isLoading: isCartLoading } = useCart();
   const { mutateAsync: estimateFee } = useEstimateShippingFee();
@@ -43,6 +54,20 @@ export default function CheckoutPage() {
   const [appliedVoucher, setAppliedVoucher] = useState<VoucherValidateResponse | null>(null);
   const [isUsePoints, setIsUsePoints] = useState(false);
   const [redeemInfo, setRedeemInfo] = useState({ points: 0, discount: 0 });
+  const [note, setNote] = useState('');
+  const [affiliateCode, setAffiliateCode] = useState('');
+
+  const searchParams = useSearchParams();
+
+  // Capture affiliate code from URL
+  React.useEffect(() => {
+    const ref = searchParams.get('ref') || searchParams.get('affiliateCode');
+    if (ref) {
+      setAffiliateCode(ref);
+      // Optional: Store in localStorage if needed for persistence across sessions
+      // localStorage.setItem('affiliateCode', ref);
+    }
+  }, [searchParams]);
 
   const effectiveAddress = useMemo(() => {
     if (userSelectedAddress) return userSelectedAddress;
@@ -127,7 +152,8 @@ export default function CheckoutPage() {
         return {
           shopId,
           itemIds,
-          voucherCode: appliedVoucher && !appliedVoucher.valid ? appliedVoucher.code : undefined,
+          voucherCode: appliedVoucher && appliedVoucher.valid ? appliedVoucher.code : undefined,
+          note: note.trim() || undefined,
         };
       });
 
@@ -138,6 +164,7 @@ export default function CheckoutPage() {
         paymentMethod: selectedPayment || 'COD',
         shippingFee: shippingFee,
         usePoints: isUsePoints ? redeemInfo.points : undefined,
+        affiliateCode: affiliateCode.trim() || undefined,
       });
 
       queryClient.invalidateQueries({ queryKey: ['cart'] });
@@ -169,6 +196,8 @@ export default function CheckoutPage() {
     shippingFee,
     createBatchOrders,
     queryClient,
+    note,
+    affiliateCode,
   ]);
 
   const handleSelectAddress = useCallback((address: Address) => {
@@ -188,12 +217,22 @@ export default function CheckoutPage() {
   }, []);
 
   const canConfirm = useMemo(
-    () => !!effectiveAddress && !!selectedShipping && !!selectedPayment && checkoutItems.length > 0,
-    [effectiveAddress, selectedShipping, selectedPayment, checkoutItems.length],
+    () =>
+      isAuthenticated &&
+      !!effectiveAddress &&
+      !!selectedShipping &&
+      !!selectedPayment &&
+      checkoutItems.length > 0,
+    [isAuthenticated, effectiveAddress, selectedShipping, selectedPayment, checkoutItems.length],
   );
 
-  if (isCartLoading || isAddressLoading) {
+  if (!isInitialized || isCartLoading || isAddressLoading) {
     return <LoadingOverlay />;
+  }
+
+  // Double check auth to prevent flash of content
+  if (!isAuthenticated) {
+    return null;
   }
 
   return (
@@ -243,6 +282,20 @@ export default function CheckoutPage() {
                     isUsed={isUsePoints}
                     onToggle={setIsUsePoints}
                     onUpdateRedeemInfo={handleUpdateRedeemInfo}
+                  />
+                </div>
+
+                <div className="mt-6 pt-6 border-t border-stone-100">
+                  <label className="block text-sm font-bold text-stone-800 mb-2">
+                    Ghi chú đơn hàng (tuỳ chọn)
+                  </label>
+                  <textarea
+                    placeholder="Nhập thông tin ghi chú đặt hàng..."
+                    value={note}
+                    onChange={(e) => setNote(e.target.value)}
+                    disabled={isSubmitting}
+                    className="w-full bg-stone-50 border text-gray-700 border-stone-200 rounded-2xl p-4 text-sm focus:outline-hidden focus:ring-2 focus:ring-green-600/20 focus:border-green-600 transition-all font-medium placeholder:text-stone-400 placeholder:font-normal resize-none"
+                    rows={2}
                   />
                 </div>
               </section>
@@ -315,6 +368,8 @@ export default function CheckoutPage() {
                 isPending={isSubmitting}
                 onConfirm={handlePlaceOrder}
                 canConfirm={canConfirm}
+                affiliateCode={affiliateCode}
+                onAffiliateCodeChange={setAffiliateCode}
               />
             </div>
           </div>
@@ -324,5 +379,13 @@ export default function CheckoutPage() {
       <Footer />
       {isSubmitting && <LoadingOverlay />}
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<LoadingOverlay />}>
+      <CheckoutContent />
+    </Suspense>
   );
 }
