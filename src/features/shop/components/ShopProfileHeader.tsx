@@ -1,14 +1,39 @@
 import React from 'react';
 import Image from 'next/image';
-import { FiMapPin, FiStar, FiCalendar, FiCheckCircle } from 'react-icons/fi';
+import { FiMapPin, FiStar, FiCalendar, FiCheckCircle, FiMessageCircle } from 'react-icons/fi';
 import { ShopInfo } from '@/features/shop/types/shopTypes';
 import { Button } from '@/components/ui/AppButton';
+import { useChatMutations } from '@/features/chat/hooks/useChatRooms';
+import { useRouter } from 'next/navigation';
+import { useAppSelector } from '@/store/hooks';
+import toast from 'react-hot-toast';
 
 interface ShopProfileHeaderProps {
   shop: ShopInfo;
 }
 
 export const ShopProfileHeader = ({ shop }: ShopProfileHeaderProps) => {
+  const router = useRouter();
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { createRoom, isCreatingRoom } = useChatMutations();
+
+  const handleStartChat = async () => {
+    if (!isAuthenticated) {
+      toast.error('Vui lòng đăng nhập để nhắn tin cho cửa hàng');
+      router.push('/dang-nhap');
+      return;
+    }
+
+    try {
+      const resp = await createRoom(shop.id);
+      if (resp.data?.id) {
+        router.push(`/dashboard/chat?roomId=${resp.data.id}`);
+      }
+    } catch (error) {
+      console.error('Failed to create chat room:', error);
+    }
+  };
+
   const joinedDate = new Date(shop.createdAt).toLocaleDateString('vi-VN', {
     month: 'long',
     year: 'numeric',
@@ -88,7 +113,13 @@ export const ShopProfileHeader = ({ shop }: ShopProfileHeaderProps) => {
 
               {/* Action Buttons */}
               <div className="flex items-center gap-3 shrink-0">
-                <Button variant="outline" className="flex-1 md:flex-auto">
+                <Button
+                  variant="outline"
+                  className="flex-1 md:flex-auto gap-2"
+                  onClick={handleStartChat}
+                  isLoading={isCreatingRoom}
+                >
+                  <FiMessageCircle size={18} />
                   Nhắn tin
                 </Button>
                 <Button variant="primary" className="flex-1 md:flex-auto">

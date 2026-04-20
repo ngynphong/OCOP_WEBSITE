@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbo",
+    "clean": "rm -rf .next node_modules/.cache",
+    "reset": "npm run clean && npm i && npm run dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -17,6 +19,7 @@
     "axios": "^1.14.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "emoji-picker-react": "^4.18.0",
     "framer-motion": "^12.38.0",
     "html5-qrcode": "^2.3.8",
     "js-cookie": "^3.0.5",
