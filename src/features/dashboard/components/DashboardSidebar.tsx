@@ -7,7 +7,6 @@ import {
   FiShoppingBag,
   FiShield,
   FiMapPin,
-  FiLogOut,
   FiGrid,
   FiChevronRight,
   FiTag,
@@ -22,15 +21,13 @@ import { useAppSelector } from '@/store/hooks';
 import { useDispatch } from 'react-redux';
 import { setDashboardMode } from '@/store/features/authSlice';
 import Image from 'next/image';
-import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { IoTicket } from 'react-icons/io5';
 
 const DashboardSidebar = () => {
   const pathname = usePathname();
   const dispatch = useDispatch();
-  const { logout, profile, isLoggingOut, handleClientLogout } = useAuth();
+  const { profile } = useAuth();
   const { dashboardMode } = useAppSelector((state) => state.auth);
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
   // Persistence and hydration fix
@@ -156,6 +153,20 @@ const DashboardSidebar = () => {
       roles: ['USER', 'SELLER'],
     },
 
+    {
+      id: 'chat',
+      label: 'Tin nhắn',
+      icon: FiMessageSquare,
+      href: '/dashboard/chat',
+      roles: ['USER'],
+    },
+    {
+      id: 'seller-chat',
+      label: 'Tin nhắn',
+      icon: FiMessageSquare,
+      href: '/dashboard/cua-hang/chat',
+      roles: ['SELLER'],
+    },
     // Security (Chung)
     {
       id: 'security',
@@ -175,20 +186,6 @@ const DashboardSidebar = () => {
 
     return true;
   });
-
-  const handleConfirmLogout = () => {
-    const refreshToken = localStorage.getItem('refresh_token');
-    if (refreshToken) {
-      logout({ refreshToken });
-    } else {
-      handleClientLogout();
-    }
-    setIsLogoutModalOpen(false);
-  };
-
-  const handleLogoutClick = () => {
-    setIsLogoutModalOpen(true);
-  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -253,29 +250,7 @@ const DashboardSidebar = () => {
               );
             });
           })()}
-
-        <div className="my-2 border-t border-stone-50" />
-
-        <button
-          onClick={handleLogoutClick}
-          disabled={isLoggingOut}
-          suppressHydrationWarning
-          className="flex items-center gap-3 px-4 py-3.5 rounded-2xl text-red-500 hover:bg-red-50 transition-all duration-300 group cursor-pointer"
-        >
-          <FiLogOut size={18} className="text-red-400 group-hover:text-red-600" />
-          <span className="font-semibold text-sm">Đăng xuất</span>
-        </button>
       </nav>
-      <ConfirmModal
-        isOpen={isLogoutModalOpen}
-        title="Đăng xuất tài khoản"
-        message="Bạn có chắc chắn muốn đăng xuất khỏi hệ thống OCOP không?"
-        confirmText="Đăng xuất ngay"
-        cancelText="Để sau"
-        type="danger"
-        onConfirm={handleConfirmLogout}
-        onCancel={() => setIsLogoutModalOpen(false)}
-      />
     </div>
   );
 };

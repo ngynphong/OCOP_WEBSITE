@@ -10,7 +10,7 @@ const ChangePasswordPage = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="space-y-6"
+      className="space-y-6 p-6"
     >
       <div className="flex items-center gap-3">
         <div className="w-1 h-6 bg-green-600 rounded-full" />

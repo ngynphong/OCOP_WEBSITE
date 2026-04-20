@@ -61,7 +61,7 @@ const DashboardPage = () => {
   if (!isMounted) return null;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 p-6 md:p-10">
       {/* Welcome Section */}
       <div
         className={cn(

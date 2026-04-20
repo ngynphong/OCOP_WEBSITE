@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 export default function ShopRegisterPage() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 p-6">
       {/* Back link */}
       <Link
         href="/dashboard/cua-hang"
