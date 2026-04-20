@@ -2,7 +2,7 @@
 
 import React, { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Loader2, PackageX, TrendingUp, DollarSign, RotateCcw } from 'lucide-react';
+import { PackageX, TrendingUp, DollarSign, RotateCcw } from 'lucide-react';
 import {
   useSellerOrdersQuery,
   useSellerRevenueQuery,
@@ -16,6 +16,7 @@ import {
   PayoutsTable,
 } from '@/features/seller-orders/components/SellerFinanceTables';
 import { ISellerOrderItem } from '@/features/seller-orders/types/sellerOrderTypes';
+import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 
 const STATUS_TABS = [
   { value: 'ALL', label: 'Tất cả' },
@@ -156,8 +157,8 @@ function OrdersManagementContent() {
               </div>
 
               {isOrdersLoading ? (
-                <div className="flex justify-center items-center py-20">
-                  <Loader2 className="w-10 h-10 text-green-600 animate-spin" />
+                <div className="flex justify-center items-center py-20 text-gray-700">
+                  Đang tải...
                 </div>
               ) : isOrdersError ? (
                 <div className="text-center py-20 text-red-500">
@@ -195,13 +196,7 @@ function OrdersManagementContent() {
 
 export default function SellerOrdersPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="p-10 flex justify-center">
-          <Loader2 className="animate-spin text-green-600" />
-        </div>
-      }
-    >
+    <Suspense fallback={<LoadingOverlay />}>
       <div>
         <h1 className="text-2xl font-bold text-stone-900 mb-6">Quản trị Đơn Hàng & Doanh Thu</h1>
         <OrdersManagementContent />

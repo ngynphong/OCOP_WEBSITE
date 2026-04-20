@@ -17,6 +17,8 @@ interface CheckoutSummaryProps {
   isPending?: boolean;
   onConfirm: () => void;
   canConfirm: boolean;
+  affiliateCode: string;
+  onAffiliateCodeChange: (code: string) => void;
 }
 
 export const CheckoutSummary = memo(function CheckoutSummary({
@@ -28,6 +30,8 @@ export const CheckoutSummary = memo(function CheckoutSummary({
   isPending,
   onConfirm,
   canConfirm,
+  affiliateCode,
+  onAffiliateCodeChange,
 }: CheckoutSummaryProps) {
   const discount = useMemo(() => {
     if (!appliedVoucher || !appliedVoucher.valid) return 0;
@@ -54,8 +58,25 @@ export const CheckoutSummary = memo(function CheckoutSummary({
       <h2 className="text-xl font-black text-stone-900 mb-6 tracking-tight">Tóm tắt thanh toàn</h2>
 
       {/* Voucher Input */}
-      <div className="mb-8 border-b border-stone-100 pb-8">
+      <div className="mb-6">
         <VoucherCheckoutInput appliedVoucher={appliedVoucher} onApply={onApplyVoucher} />
+      </div>
+
+      {/* Affiliate Code Input */}
+      <div className="mb-8 border-b border-stone-100 pb-8">
+        <div className="space-y-1.5">
+          <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">
+            Mã giới thiệu (Affiliate - tùy chọn)
+          </label>
+          <input
+            type="text"
+            placeholder="Nhập mã giới thiệu..."
+            value={affiliateCode}
+            onChange={(e) => onAffiliateCodeChange(e.target.value)}
+            disabled={isPending}
+            className="w-full bg-stone-50 border text-gray-700 border-stone-200 rounded-xl px-4 py-2.5 text-xs focus:outline-hidden focus:ring-2 focus:ring-green-600/20 focus:border-green-600 transition-all font-bold placeholder:font-normal placeholder:text-stone-300"
+          />
+        </div>
       </div>
 
       <div className="space-y-4 mb-8">

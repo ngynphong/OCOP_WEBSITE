@@ -30,7 +30,7 @@ const updateLoadingState = (delta: number) => {
 };
 
 const axiosClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://ap-learning.site/ocop/api/v1',
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -38,7 +38,7 @@ const axiosClient = axios.create({
 });
 
 const publicAxiosClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://ap-learning.site/ocop/api/v1',
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',

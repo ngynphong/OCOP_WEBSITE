@@ -1,10 +1,12 @@
 'use client';
 
 import React, { memo } from 'react';
-import { MapPin, CheckCircle2 } from 'lucide-react';
+import { MapPin, CheckCircle2, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Address } from '../types/checkoutTypes';
 import { useUserAddresses } from '@/features/address/hooks/useAddress';
+import AddressFormModal from '@/features/address/components/AddressFormModal';
+import { Button } from '@/components/ui/AppButton';
 
 interface AddressSelectorProps {
   selectedId?: number;
@@ -16,6 +18,7 @@ export const AddressSelector = memo(function AddressSelector({
   onSelect,
 }: AddressSelectorProps) {
   const { data: addresses, isLoading } = useUserAddresses();
+  const [isAddModalOpen, setIsAddModalOpen] = React.useState(false);
 
   if (isLoading) {
     return (
@@ -37,6 +40,14 @@ export const AddressSelector = memo(function AddressSelector({
           <MapPin className="w-4 h-4 text-green-600" />
           Địa chỉ nhận hàng
         </h3>
+        <Button
+          variant="outline"
+          onClick={() => setIsAddModalOpen(true)}
+          className="rounded-xl h-9 px-3 gap-1.5 text-xs font-bold border-stone-200 hover:border-green-200 hover:text-green-700 bg-white"
+          leftIcon={<Plus size={14} />}
+        >
+          Thêm địa chỉ
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -86,12 +97,17 @@ export const AddressSelector = memo(function AddressSelector({
         {!isLoading && (!addresses || addresses.length === 0) && (
           <div className="col-span-full py-10 text-center border-2 border-dashed border-stone-100 rounded-[32px] bg-stone-50/50">
             <p className="text-sm text-stone-400 font-medium">Bạn chưa có địa chỉ nhận hàng nào</p>
-            <button className="mt-2 text-xs font-bold text-green-600 hover:text-green-700">
+            <button
+              onClick={() => setIsAddModalOpen(true)}
+              className="mt-2 text-xs font-bold text-green-600 hover:text-green-700"
+            >
               Thêm ngay
             </button>
           </div>
         )}
       </div>
+
+      <AddressFormModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} />
     </div>
   );
 });

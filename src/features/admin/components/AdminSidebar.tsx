@@ -17,6 +17,7 @@ import {
   FiCreditCard,
   FiTruck,
   FiMessageSquare,
+  FiTrendingUp,
 } from 'react-icons/fi';
 import { FaWarehouse } from 'react-icons/fa';
 import { motion } from 'framer-motion';
@@ -41,6 +42,7 @@ const MENU_ITEMS = [
   { label: 'Người dùng', icon: FiUsers, href: '/admin/users', id: 'users' },
   { label: 'Mã giảm giá', icon: IoTicket, href: '/admin/vouchers', id: 'vouchers' },
   { label: 'Gói đăng ký', icon: FiCreditCard, href: '/admin/subscriptions', id: 'subscriptions' },
+  { label: 'Affiliate', icon: FiTrendingUp, href: '/admin/affiliate', id: 'affiliate' },
   {
     label: 'Kiểm duyệt & Báo cáo',
     icon: FiMessageSquare,

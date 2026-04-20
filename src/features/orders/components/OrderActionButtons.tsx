@@ -71,13 +71,13 @@ export const OrderActionButtons: React.FC<OrderActionButtonsProps> = ({
   const showConfirmReceive = orderStatus === 'SHIPPED' || orderStatus === 'DELIVERED';
 
   return (
-    <div className="flex gap-3">
+    <div className="flex flex-wrap items-center justify-end gap-3">
       {canCancel && (
         <Button
           variant="outline"
           disabled={isCanceling}
           onClick={() => setIsCancelModalOpen(true)}
-          className="text-red-700 border-red-200 hover:bg-red-50 font-bold px-6 py-2.5"
+          className="text-red-700 border-red-200 hover:bg-red-50 font-bold px-5 py-2.5 whitespace-nowrap h-auto"
         >
           {isCanceling ? 'Đang hủy...' : 'Hủy đơn hàng'}
         </Button>
@@ -88,9 +88,9 @@ export const OrderActionButtons: React.FC<OrderActionButtonsProps> = ({
           variant="outline"
           disabled={isRefunding}
           onClick={() => setIsRefundModalOpen(true)}
-          className="text-amber-700 border-amber-200 hover:bg-amber-50 font-bold px-6 py-2.5"
+          className="text-amber-700 border-amber-200 hover:bg-amber-50 font-bold px-5 py-2.5 whitespace-nowrap h-auto"
         >
-          {isRefunding ? 'Đang gửi yêu cầu...' : 'Hoàn tiền/Trả hàng'}
+          {isRefunding ? 'Đang gửi...' : 'Hoàn tiền / Trả hàng'}
         </Button>
       )}
 
@@ -99,7 +99,7 @@ export const OrderActionButtons: React.FC<OrderActionButtonsProps> = ({
           variant="primary"
           disabled={isConfirming}
           onClick={() => confirmReceived(orderCode)}
-          className="bg-green-600 hover:bg-green-700 text-white border-transparent font-bold px-6 py-2.5"
+          className="bg-emerald-600 hover:bg-emerald-700 text-white border-transparent font-bold px-5 py-2.5 whitespace-nowrap h-auto shadow-lg shadow-emerald-600/20"
         >
           {isConfirming ? 'Đang xác nhận...' : 'Đã nhận được hàng'}
         </Button>
@@ -110,7 +110,7 @@ export const OrderActionButtons: React.FC<OrderActionButtonsProps> = ({
           variant="primary"
           disabled={isReordering}
           onClick={() => handleReorder()}
-          className="bg-stone-900 hover:bg-stone-800 text-white font-bold px-6 py-2.5"
+          className="bg-stone-900 hover:bg-stone-800 text-white font-bold px-5 py-2.5 whitespace-nowrap h-auto shadow-lg shadow-stone-900/20"
         >
           Mua lại đơn này
         </Button>
