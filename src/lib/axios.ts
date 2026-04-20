@@ -1,8 +1,9 @@
+import 'client-only';
+
 import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 import toast from 'react-hot-toast';
 import { AppError } from '../utils/error';
-import { store } from '../store/store';
-import { setLoading } from '../store/features/uiSlice';
+import { globalLoading } from '../utils/eventEmitter';
 import { getOrCreateSessionId } from '@/features/cart/utils/cartSession';
 
 export interface ApiErrorResponse {
@@ -11,22 +12,8 @@ export interface ApiErrorResponse {
   [key: string]: unknown;
 }
 
-// Biến điều khiển loading toàn cục có bộ đếm để tránh flickering và race conditions
-let activeRequests = 0;
-
 const updateLoadingState = (delta: number) => {
-  activeRequests = Math.max(0, activeRequests + delta);
-  // Sử dụng setTimeout(0) để gom nhóm (batch) các thay đổi liên tục của loading state
-  // Tránh việc UI bị re-render liên tục khi có nhiều request đồng thời
-  if (activeRequests === 0) {
-    setTimeout(() => {
-      if (activeRequests === 0) {
-        store.dispatch(setLoading({ isLoading: false }));
-      }
-    }, 50);
-  } else {
-    store.dispatch(setLoading({ isLoading: true }));
-  }
+  globalLoading.update(delta);
 };
 
 const axiosClient = axios.create({

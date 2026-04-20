@@ -4,13 +4,15 @@ import { useEffect } from 'react';
 import { useWebSocket } from '@/hooks/useWebSocket';
 
 export function WebSocketProvider({ children }: { children: React.ReactNode }) {
-  const { connect } = useWebSocket();
+  const { connect, disconnect } = useWebSocket();
 
   useEffect(() => {
     connect();
 
-    return () => {};
-  }, [connect]);
+    return () => {
+      if (disconnect) disconnect();
+    };
+  }, [connect, disconnect]);
 
   return <>{children}</>;
 }

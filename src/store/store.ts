@@ -13,10 +13,6 @@ export const makeStore = () => {
   });
 };
 
-// Next.js App Router store usually should be created per request on server,
-// but for client side utilities like Axios, we need a singleton.
-export const store = makeStore();
-
-export type AppStore = typeof store;
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+export type AppStore = ReturnType<typeof makeStore>;
+export type RootState = ReturnType<AppStore['getState']>;
+export type AppDispatch = AppStore['dispatch'];
