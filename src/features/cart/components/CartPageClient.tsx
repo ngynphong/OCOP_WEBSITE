@@ -1,15 +1,20 @@
 'use client';
 
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Trash2, CheckSquare, Square } from 'lucide-react';
-import { useCart, useClearCart, useRemoveCartItems, useSyncCartPrices } from '../hooks/useCart';
-import { CartItemCard } from './CartItemCard';
-import { CartSummary } from './CartSummary';
-import { CartSkeleton } from './CartSkeleton';
-import { CartEmptyState } from './CartEmptyState';
-import { PriceChangedBanner } from './PriceChangedBanner';
-import type { CartItem, CartIssueType, CartShopGroup } from '../types/cartTypes';
+import {
+  useCart,
+  useClearCart,
+  useRemoveCartItems,
+  useSyncCartPrices,
+} from '@/features/cart/hooks/useCart';
+import { CartItemCard } from '@/features/cart/components/CartItemCard';
+import { CartSummary } from '@/features/cart/components/CartSummary';
+import { CartSkeleton } from '@/features/cart/components/CartSkeleton';
+import { CartEmptyState } from '@/features/cart/components/CartEmptyState';
+import { PriceChangedBanner } from '@/features/cart/components/PriceChangedBanner';
+import type { CartItem, CartIssueType, CartShopGroup } from '@/features/cart/types/cartTypes';
 import { CiShop } from 'react-icons/ci';
 
 function groupItemsByShop(items: CartItem[]): CartShopGroup[] {
@@ -34,16 +39,33 @@ function groupItemsByShop(items: CartItem[]): CartShopGroup[] {
   return Array.from(map.values());
 }
 
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import {
+  clearSelection,
+  setSelection,
+  syncWithActualCart,
+  toggleItemSelection,
+} from '@/store/features/cartSlice';
+
 export function CartPageClient() {
+  const dispatch = useAppDispatch();
+  const { selectedItemIds } = useAppSelector((state) => state.cart);
+
   const { data: cartResponse, isPending, isError } = useCart();
   const { mutate: clearCart, isPending: isClearing } = useClearCart();
   const { mutate: removeItems } = useRemoveCartItems();
   const { mutate: syncPrices, isPending: isSyncing } = useSyncCartPrices();
 
-  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
-
   const cartData = cartResponse?.data;
   const items = useMemo(() => cartData?.items ?? [], [cartData?.items]);
+
+  // Đồng bộ selection với các items thực tế trong giỏ hàng (phòng trường hợp bị xóa bên khác)
+  useEffect(() => {
+    if (items.length > 0) {
+      const actualIds = items.map((i) => i.id);
+      dispatch(syncWithActualCart(actualIds));
+    }
+  }, [items, dispatch]);
 
   const issueMap = useMemo(() => {
     const map = new Map<number, CartIssueType>();
@@ -76,49 +98,47 @@ export function CartPageClient() {
   );
 
   const isAllSelected =
-    selectableIds.length > 0 && selectableIds.every((id) => selectedIds.has(id));
+    selectableIds.length > 0 && selectableIds.every((id) => selectedItemIds.includes(id));
 
   const shopGroups = useMemo(() => groupItemsByShop(items), [items]);
 
   const selectedItems = useMemo(
-    () => items.filter((item) => selectedIds.has(item.id)),
-    [items, selectedIds],
+    () => items.filter((item) => selectedItemIds.includes(item.id)),
+    [items, selectedItemIds],
   );
 
   const hasIssues = items.some((item) => issueMap.has(item.id));
 
-  const handleToggleSelect = useCallback((itemId: number) => {
-    setSelectedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(itemId)) next.delete(itemId);
-      else next.add(itemId);
-      return next;
-    });
-  }, []);
+  const handleToggleSelect = useCallback(
+    (itemId: number) => {
+      dispatch(toggleItemSelection(itemId));
+    },
+    [dispatch],
+  );
 
   const handleToggleAll = useCallback(() => {
     if (isAllSelected) {
-      setSelectedIds(new Set());
+      dispatch(setSelection([]));
     } else {
-      setSelectedIds(new Set(selectableIds));
+      dispatch(setSelection(selectableIds));
     }
-  }, [isAllSelected, selectableIds]);
+  }, [isAllSelected, selectableIds, dispatch]);
 
   const handleDeleteSelected = useCallback(() => {
-    if (selectedIds.size === 0) return;
+    if (selectedItemIds.length === 0) return;
     removeItems(
-      { itemIds: Array.from(selectedIds) },
+      { itemIds: selectedItemIds },
       {
-        onSuccess: () => setSelectedIds(new Set()),
+        onSuccess: () => dispatch(setSelection([])),
       },
     );
-  }, [selectedIds, removeItems]);
+  }, [selectedItemIds, removeItems, dispatch]);
 
   const handleClearCart = useCallback(() => {
     clearCart(undefined, {
-      onSuccess: () => setSelectedIds(new Set()),
+      onSuccess: () => dispatch(clearSelection()),
     });
-  }, [clearCart]);
+  }, [clearCart, dispatch]);
 
   if (isPending) {
     return (
@@ -192,15 +212,14 @@ export function CartPageClient() {
               Chọn tất cả ({selectableIds.length})
             </button>
 
-            {/* Bulk delete actions */}
             <div className="flex items-center gap-3">
-              {selectedIds.size > 0 && (
+              {selectedItemIds.length > 0 && (
                 <button
                   onClick={handleDeleteSelected}
                   className="inline-flex items-center gap-1.5 text-xs font-bold text-red-600 hover:text-red-700 hover:bg-red-50 px-3 py-1.5 rounded-full transition-colors"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
-                  Xóa đã chọn ({selectedIds.size})
+                  Xóa đã chọn ({selectedItemIds.length})
                 </button>
               )}
               <button
@@ -240,7 +259,7 @@ export function CartPageClient() {
                       key={item.id}
                       item={item}
                       issueType={issueMap.get(item.id)}
-                      isSelected={selectedIds.has(item.id)}
+                      isSelected={selectedItemIds.includes(item.id)}
                       onToggleSelect={handleToggleSelect}
                     />
                   ))}

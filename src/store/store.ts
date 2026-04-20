@@ -1,12 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
 import uiReducer from './features/uiSlice';
 import authReducer from './features/authSlice';
+import cartReducer from './features/cartSlice';
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
       ui: uiReducer,
       auth: authReducer,
+      cart: cartReducer,
     },
   });
 };
