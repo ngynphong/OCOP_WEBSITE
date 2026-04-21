@@ -52,7 +52,14 @@ const processQueue = (error: Error | null, token: string | null = null) => {
 
 // =================== REQUEST INTERCEPTOR ===================
 const onRequest = (config: InternalAxiosRequestConfig) => {
-  updateLoadingState(1);
+  const isSilent = config.headers?.['X-Silent-Loading'] === 'true';
+
+  if (!isSilent) {
+    updateLoadingState(1);
+  } else {
+    delete config.headers?.['X-Silent-Loading'];
+  }
+
   let token = '';
   if (typeof window !== 'undefined') {
     token = localStorage.getItem('access_token') || '';
@@ -69,7 +76,12 @@ const onRequest = (config: InternalAxiosRequestConfig) => {
 };
 
 const onRequestError = (error: AxiosError) => {
-  updateLoadingState(-1);
+  // Note: onRequestError usually happens before config is fully set,
+  // but if we have the silent flag, we should avoid decrementing what wasn't incremented.
+  const isSilent = error.config?.headers?.['X-Silent-Loading'] === 'true';
+  if (!isSilent) {
+    updateLoadingState(-1);
+  }
   return Promise.reject(error);
 };
 

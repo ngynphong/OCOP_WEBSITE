@@ -22,6 +22,7 @@ import {
 import { FaWarehouse } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { IoTicket } from 'react-icons/io5';
+import { BiSupport } from 'react-icons/bi';
 
 interface AdminSidebarProps {
   isCollapsed: boolean;
@@ -48,6 +49,12 @@ const MENU_ITEMS = [
     icon: FiMessageSquare,
     href: '/admin/reviews',
     id: 'admin-reviews',
+  },
+  {
+    label: 'Hỗ trợ khách hàng',
+    icon: BiSupport,
+    href: '/admin/support-tickets',
+    id: 'admin-support-tickets',
   },
   // { label: 'Vận hành', icon: FiSettings, href: '/admin/van-hanh', id: 'operations' },
   // { label: 'Dữ liệu gốc', icon: FiDatabase, href: '/admin/du-lieu', id: 'master-data' },
@@ -91,8 +98,8 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
         )}
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 space-y-1.5">
+      {/* Navigation - Scrollable Area */}
+      <nav className="flex-1 overflow-y-auto px-1 space-y-1.5 custom-scrollbar pr-1">
         {MENU_ITEMS.map((item) => {
           const isActive = pathname === item.href;
           return (
@@ -100,7 +107,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
               key={item.id}
               href={item.href}
               title={isCollapsed ? item.label : ''}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group relative ${
+              className={`flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-300 group relative ${
                 isActive
                   ? 'bg-emerald-800/60 text-white font-bold shadow-lg shadow-black/10'
                   : 'text-emerald-100/70 hover:text-white hover:bg-emerald-800/30'
@@ -111,7 +118,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
                   isActive ? 'text-white' : 'text-emerald-300/50 group-hover:text-white'
                 }`}
               />
-              {!isCollapsed && <span className="text-sm truncate">{item.label}</span>}
+              {!isCollapsed && <span className="text-[13px] truncate">{item.label}</span>}
               {isActive && !isCollapsed && (
                 <motion.div
                   layoutId="active-pill"
@@ -126,16 +133,16 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
         })}
       </nav>
 
-      {/* Bottom Actions */}
+      {/* Bottom Actions - Fixed at bottom */}
       <div
-        className={`mt-auto pt-6 border-t border-emerald-800/30 space-y-2 ${isCollapsed ? 'items-center' : ''}`}
+        className={`mt-auto pt-6 border-t border-emerald-800/30 space-y-1 ${isCollapsed ? 'items-center px-0' : 'px-2'}`}
       >
         {!isCollapsed ? (
-          <button className="w-full mb-4 py-3 px-4 bg-white text-emerald-900 rounded-xl font-bold text-xs shadow-lg shadow-black/10 hover:bg-emerald-50 active:scale-95 transition-all">
-            Xuất báo cáo định kỳ
+          <button className="w-full mb-3 py-2.5 px-4 bg-white text-emerald-900 rounded-xl font-bold text-xs shadow-lg shadow-black/10 hover:bg-emerald-50 active:scale-95 transition-all">
+            Xuất báo cáo
           </button>
         ) : (
-          <div className="w-10 h-10 mx-auto rounded-xl bg-white flex items-center justify-center text-emerald-900 shadow-lg cursor-pointer hover:bg-emerald-50 mb-4 transition-all">
+          <div className="w-10 h-10 mx-auto rounded-xl bg-white flex items-center justify-center text-emerald-900 shadow-lg cursor-pointer hover:bg-emerald-50 mb-3 transition-all">
             <FiCheckSquare size={18} />
           </div>
         )}
@@ -143,20 +150,40 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
         <Link
           href="/admin/cai-dat"
           title={isCollapsed ? 'Cài đặt hệ thống' : ''}
-          className={`flex items-center gap-3 px-4 py-2 text-emerald-100/70 hover:text-white transition-colors text-sm font-medium ${isCollapsed ? 'justify-center' : ''}`}
+          className={`flex items-center gap-3 px-4 py-2 text-emerald-100/70 hover:text-white transition-colors text-[13px] font-medium ${isCollapsed ? 'justify-center font-bold' : ''}`}
         >
           <FiSettings className="text-lg opacity-50 shrink-0" />
-          {!isCollapsed && <span>Cài đặt hệ thống</span>}
+          {!isCollapsed && <span>Cài đặt</span>}
         </Link>
         <Link
           href="/ho-trơ"
           title={isCollapsed ? 'Hỗ trợ kỹ thuật' : ''}
-          className={`flex items-center gap-3 px-4 py-2 text-emerald-100/70 hover:text-white transition-colors text-sm font-medium ${isCollapsed ? 'justify-center' : ''}`}
+          className={`flex items-center gap-3 px-4 py-2 text-emerald-100/70 hover:text-white transition-colors text-[13px] font-medium ${isCollapsed ? 'justify-center font-bold' : ''}`}
         >
           <FiHelpCircle className="text-lg opacity-50 shrink-0" />
-          {!isCollapsed && <span>Hỗ trợ kỹ thuật</span>}
+          {!isCollapsed && <span>Hỗ trợ</span>}
         </Link>
       </div>
+
+      <style jsx global>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.2);
+        }
+        .custom-scrollbar {
+          scrollbar-width: thin;
+          scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+        }
+      `}</style>
     </aside>
   );
 };

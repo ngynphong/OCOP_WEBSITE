@@ -20,6 +20,9 @@ import {
   UserProfileResponse,
   ChangePasswordRequest,
   ChangePasswordResponse,
+  VerifyAccountResponse,
+  SimpleRegisterRequest,
+  ResendOtpRequest,
 } from '../types';
 
 export const authApi = {
@@ -31,12 +34,20 @@ export const authApi = {
     return publicAxiosClient.post('/auth/register', data);
   },
 
+  verifyAccount: (identity: string): Promise<VerifyAccountResponse> => {
+    return publicAxiosClient.get(`/auth/verify-account?identity=${encodeURIComponent(identity)}`);
+  },
+
+  simpleRegister: (data: SimpleRegisterRequest): Promise<RegisterResponse> => {
+    return publicAxiosClient.post('/auth/simple-register', data);
+  },
+
   logout: (data: LogoutRequest): Promise<LogoutResponse> => {
     return axiosClient.post('/auth/logout', data);
   },
 
   verifyEmail: (data: VerifyEmailRequest): Promise<VerifyEmailResponse> => {
-    return publicAxiosClient.post('/auth/verify-email', data);
+    return publicAxiosClient.post('/auth/simple-verify', data);
   },
 
   refreshToken: (data: RefreshTokenRequest): Promise<RefreshTokenResponse> => {
@@ -49,6 +60,10 @@ export const authApi = {
 
   verifyOtp: (data: VerifyOtpRequest): Promise<VerifyOtpResponse> => {
     return publicAxiosClient.post('/auth/verify-otp', data);
+  },
+
+  resendOtp: (data: ResendOtpRequest): Promise<VerifyOtpResponse> => {
+    return publicAxiosClient.post('/auth/resend-otp', data);
   },
 
   resetPassword: (data: ResetPasswordRequest): Promise<ResetPasswordResponse> => {

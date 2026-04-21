@@ -14,6 +14,8 @@ import {
   UpdateProfileRequest,
   VerifyOtpRequest,
   ChangePasswordRequest,
+  SimpleRegisterRequest,
+  ResendOtpRequest,
 } from '../types';
 import { cartApi } from '@/features/cart/api/cartApi';
 import { getSessionId, clearSessionId } from '@/features/cart/utils/cartSession';
@@ -91,8 +93,20 @@ export const useAuth = () => {
     },
   });
 
+  const verifyAccountMutation = useMutation({
+    mutationFn: (identity: string) => authApi.verifyAccount(identity),
+  });
+
+  const simpleRegisterMutation = useMutation({
+    mutationFn: (data: SimpleRegisterRequest) => authApi.simpleRegister(data),
+    onSuccess: (_, variables) => {
+      toast.success('Đăng ký thành công! Vui lòng kiểm tra email để lấy mã xác thực.');
+      router.push(`/xac-thuc-otp?email=${encodeURIComponent(variables.identity)}&purpose=REGISTER`);
+    },
+  });
+
   const verifyEmailMutation = useMutation({
-    mutationFn: (data: { email: string; code: string }) => authApi.verifyEmail(data),
+    mutationFn: (data: { identity: string; code: string }) => authApi.verifyEmail(data),
     onSuccess: async (res) => {
       const { accessToken, refreshToken, roles } = res.data;
       if (accessToken) {
@@ -201,6 +215,11 @@ export const useAuth = () => {
     onSuccess: () => toast.success('Đổi mật khẩu thành công'),
   });
 
+  const resendOtpMutation = useMutation({
+    mutationFn: (data: ResendOtpRequest) => authApi.resendOtp(data),
+    onSuccess: () => toast.success('Mã xác thực mới đã được gửi'),
+  });
+
   // Tương thích ngược với các components cũ đang dùng profile từ useAuth
   const { profile, isLoadingProfile, isErrorProfile, refetchProfile } = useAuthProfile();
 
@@ -214,6 +233,10 @@ export const useAuth = () => {
     isLoggingIn: loginMutation.isPending,
     register: registerMutation.mutateAsync,
     isRegistering: registerMutation.isPending,
+    verifyAccount: verifyAccountMutation.mutateAsync,
+    isVerifyingAccount: verifyAccountMutation.isPending,
+    simpleRegister: simpleRegisterMutation.mutateAsync,
+    isSimpleRegistering: simpleRegisterMutation.isPending,
     verifyEmail: verifyEmailMutation.mutateAsync,
     isVerifyingEmail: verifyEmailMutation.isPending,
     logout: logoutMutation.mutateAsync,
@@ -232,6 +255,8 @@ export const useAuth = () => {
     isDeletingAvatar: deleteAvatarMutation.isPending,
     changePassword: changePasswordMutation.mutateAsync,
     isChangingPassword: changePasswordMutation.isPending,
+    resendOtp: resendOtpMutation.mutateAsync,
+    isResendingOtp: resendOtpMutation.isPending,
     handleClientLogout,
   };
 };

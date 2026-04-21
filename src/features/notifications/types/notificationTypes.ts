@@ -28,6 +28,9 @@ export interface INotification {
   readAt?: string;
   createdAt: string;
   read: boolean;
+  actionable: boolean;
+  targetUrl: string | null;
+  receiverRole: 'CUSTOMER' | 'SELLER' | 'ADMIN';
 }
 
 export interface NotificationResponse {

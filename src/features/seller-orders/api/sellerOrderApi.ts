@@ -12,8 +12,11 @@ import {
 } from '../types/sellerOrderTypes';
 
 export const sellerOrderApi = {
-  getOrders: async (params: ISellerOrderListReq) => {
-    return axiosClient.get<unknown, { data: ISellerOrderListRes }>('/seller/orders', { params });
+  getOrders: async (params: ISellerOrderListReq, headers?: Record<string, string>) => {
+    return axiosClient.get<unknown, { data: ISellerOrderListRes }>('/seller/orders', {
+      params,
+      headers,
+    });
   },
 
   getOrderByCode: async (orderCode: string) => {

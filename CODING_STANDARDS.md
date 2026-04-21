@@ -85,6 +85,25 @@ Dự án này tuân thủ Kiến trúc Feature-Driven Development kết hợp v�
     85: 4. **HTML Nesting:** Tuân thủ đúng quy tắc lồng thẻ HTML (không lồng `<div>` trong `<p>`, `<a>` trong `<a>`...) để tránh việc trình duyệt tự ý sửa cấu trúc DOM gây lỗi Hydration.
     86:
 
+## ⚡ 9. Quy tắc triển khai Infinite Scroll (Cuộn vô hạn) - BẮT BUỘC
+
+Để tránh các lỗi phổ biến như trùng lặp Key, Flickering (nháy màn hình), hoặc Reference Error khi triển khai Infinite Scroll, dự án quy định quy trình chuẩn như sau:
+
+### A. Tầng Hook & API (`src/features/<domain>/hooks/&api/`)
+
+1. **Sử dụng `useInfiniteQuery`:** Luôn dùng `useInfiniteQuery` từ React Query.
+2. **Silent Loading Header:** Đối với các yêu cầu fetch trang tiếp theo (`fetchNextPage`), phải đính kèm header `X-Silent-Loading: true` để tránh kích hoạt `LoadingOverlay` toàn hệ thống (đã được cấu hình xử lý tại `lib/axios.ts`).
+3. **getNextPageParam:** Phải xử lý logic trang cuối dựa trên dữ liệu trả về từ backend (thường là `page < totalPages`).
+
+### B. Tầng Component (`src/app/` hoặc `features/components/`)
+
+1. **Unique Key Generation:** TUYỆT ĐỐI không chỉ dùng `order.id` hoặc `product.id` làm key. Vì dữ liệu các trang có thể bị trùng hoặc cache cũ, key phải kết hợp: `key={`${item.id}-${index}`} ` để đảm bảo định danh duy nhất.
+2. **Dữ liệu hiển thị:** Sử dụng `data.pages.flatMap(page => page.data.content)` để gộp dữ liệu từ tất cả các trang vào một mảng phẳng.
+3. **Trigger Điểm Cuộn:** Sử dụng `react-intersection-observer`. Đặt trigger (loading indicator) ở cuối danh sách.
+4. **Kiểm soát re-fetch:** Chỉ gọi `fetchNextPage` khi thỏa mãn: `inView && hasNextPage && !isFetchingNextPage`.
+
+---
+
 **🛑 CHECKLIST TRƯỚC KHI COMMIT LÊN PRODUCTION:**
 
 - [ ] Tính năng đã nằm đúng thư mục theo `Feature-Driven` chưa?

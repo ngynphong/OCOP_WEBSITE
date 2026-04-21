@@ -61,6 +61,26 @@ export interface LogoutRequest {
   refreshToken: string;
 }
 
+export interface VerifyAccountResponse {
+  code: number;
+  message: string;
+  data: {
+    identity: string;
+    exists: 'true' | 'false';
+    type: 'EMAIL' | 'PHONE';
+  };
+}
+
+export interface SimpleRegisterRequest {
+  identity: string;
+  password: string;
+}
+
+export interface ResendOtpRequest {
+  email: string;
+  status: string;
+}
+
 export interface ForgotPasswordResponse {
   code: number;
   message: string;
@@ -87,7 +107,7 @@ export interface LoginRequest {
 }
 
 export interface VerifyEmailRequest {
-  email: string;
+  identity: string;
   code: string;
 }
 
@@ -103,47 +123,18 @@ export const loginSchema = z.object({
 
 export type LoginFormData = z.infer<typeof loginSchema>;
 
-export const registerSchema = z
+export const simpleRegisterSchema = z
   .object({
-    firstName: z.string().min(1, 'Vui lòng nhập tên'),
-    lastName: z.string().min(1, 'Vui lòng nhập họ'),
-    email: z.string().min(1, 'Vui lòng nhập email').email('Email không hợp lệ'),
+    identity: z.string().min(1, 'Vui lòng nhập Email hoặc Số điện thoại'),
     password: z.string().min(6, 'Mật khẩu phải có ít nhất 6 ký tự'),
     confirmPassword: z.string().min(1, 'Vui lòng xác nhận mật khẩu'),
-    dob: z
-      .string()
-      .min(1, 'Vui lòng chọn ngày sinh')
-      .refine(
-        (val) => {
-          const birthDate = new Date(val);
-          const today = new Date();
-          return birthDate < today;
-        },
-        { message: 'Ngày sinh không thể ở tương lai' },
-      )
-      .refine(
-        (val) => {
-          const birthDate = new Date(val);
-          const today = new Date();
-          let age = today.getFullYear() - birthDate.getFullYear();
-          const monthDiff = today.getMonth() - birthDate.getMonth();
-          if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
-          }
-          return age >= 15;
-        },
-        { message: 'Bạn phải ít nhất 15 tuổi để đăng ký' },
-      ),
-    acceptTerms: z.boolean().refine((val) => val === true, {
-      message: 'Bạn phải đồng ý với điều khoản dịch vụ',
-    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Mật khẩu không khớp',
     path: ['confirmPassword'],
   });
 
-export type RegisterFormData = z.infer<typeof registerSchema>;
+export type SimpleRegisterFormData = z.infer<typeof simpleRegisterSchema>;
 
 export const verifyEmailSchema = z.object({
   code: z.string().length(6, 'Mã xác thực phải gồm 6 chữ số'),
