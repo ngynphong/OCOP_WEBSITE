@@ -10,10 +10,10 @@ export const metadata: Metadata = {
 export default function LoginPage() {
   return (
     <AuthLayout
-      subtitle="Chưa có tài khoản?"
-      linkText="Tạo tài khoản"
-      linkActionText="Tạo tài khoản"
-      linkHref="/dang-ky"
+      subtitle="Nhập email hoặc số điện thoại để tiếp tục"
+      linkText="Quên mật khẩu"
+      linkActionText="Quên mật khẩu"
+      linkHref="/quen-mat-khau"
       rightPanelLine1="TINH HOA ĐẤT VIỆT"
       rightPanelLine2="Sản phẩm chính hãng"
     >

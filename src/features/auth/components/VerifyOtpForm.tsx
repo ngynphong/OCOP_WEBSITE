@@ -8,14 +8,25 @@ import toast from 'react-hot-toast';
 import { ShieldCheck, RefreshCw, CheckCircle2, ArrowLeft } from 'lucide-react';
 import { verifyOtpSchema, VerifyOtpFormData } from '../types';
 import { useAuth } from '../hooks/useAuth';
+import { Button } from '@/components/ui/AppButton';
 
 export function VerifyOtpForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const email = searchParams.get('email') || '';
-  const { verifyOtp, isVerifyingOtp, forgotPassword } = useAuth();
+  const purpose =
+    (searchParams.get('purpose') as 'REGISTER' | 'RESET_PASSWORD' | null) || 'RESET_PASSWORD';
+  const {
+    verifyOtp,
+    isVerifyingOtp,
+    forgotPassword,
+    verifyEmail,
+    isVerifyingEmail,
+    resendOtp,
+    isResendingOtp,
+  } = useAuth();
 
-  const [countdown, setCountdown] = useState(60);
+  const [countdown, setCountdown] = useState(30);
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -74,8 +85,11 @@ export function VerifyOtpForm() {
   const onResendCode = async () => {
     if (!canResend) return;
     try {
-      await forgotPassword({ email });
-      toast.success('Mã xác thực mới đã được gửi đến email của bạn.');
+      if (purpose === 'REGISTER') {
+        await resendOtp({ email, status: 'REGISTER' });
+      } else {
+        await forgotPassword({ email });
+      }
       setCountdown(60);
     } catch (error) {
       console.error(error);
@@ -84,8 +98,15 @@ export function VerifyOtpForm() {
 
   const onSubmit = async (data: VerifyOtpFormData) => {
     if (!email) return;
-    await verifyOtp({ target: email, code: data.code, purpose: 'RESET_PASSWORD' });
+
+    if (purpose === 'REGISTER') {
+      await verifyEmail({ identity: email, code: data.code });
+    } else {
+      await verifyOtp({ target: email, code: data.code, purpose: 'RESET_PASSWORD' });
+    }
   };
+
+  const isPending = isVerifyingOtp || isVerifyingEmail;
 
   return (
     <div className="relative z-20 w-full max-w-sm bg-white rounded-3xl overflow-hidden shadow-2xl p-6 lg:p-8 transform hover:scale-[1.01] transition-transform duration-500">
@@ -93,9 +114,12 @@ export function VerifyOtpForm() {
         <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mb-4 text-green-600">
           <ShieldCheck className="w-8 h-8" />
         </div>
-        <h2 className="text-stone-900 text-xl font-bold font-sans">Xác thực OTP</h2>
+        <h2 className="text-stone-900 text-xl font-bold font-sans">
+          {purpose === 'REGISTER' ? 'Xác thực tài khoản' : 'Xác thực OTP'}
+        </h2>
         <p className="text-stone-500 text-xs mt-2 px-4 leading-relaxed font-medium">
-          Vui lòng nhập mã OTP gồm 6 chữ số đã được gửi đến: <br />
+          Vui lòng nhập mã {purpose === 'REGISTER' ? 'xác thực' : 'OTP'} gồm 6 chữ số đã được gửi
+          đến: <br />
           <strong className="text-stone-800">{email}</strong>
         </p>
       </div>
@@ -133,26 +157,30 @@ export function VerifyOtpForm() {
             type="button"
             onClick={onResendCode}
             disabled={!canResend}
-            className={`flex items-center gap-2 text-[11px] font-bold transition-all ${
+            className={`flex items-center gap-2 text-[11px] font-bold transition-all cursor-pointer ${
               canResend
                 ? 'text-green-700 hover:text-green-800'
                 : 'text-stone-400 cursor-not-allowed'
             }`}
           >
             <RefreshCw
-              className={`w-3 h-3 ${!canResend && countdown > 0 ? 'animate-spin opacity-50' : ''}`}
+              className={`w-3 h-3 ${(!canResend && countdown > 0) || isResendingOtp ? 'animate-spin opacity-50' : ''}`}
             />
-            {canResend ? 'Gửi lại mã OTP' : `Gửi lại mã trong ${countdown}s`}
+            {isResendingOtp
+              ? 'Đang gửi...'
+              : canResend
+                ? 'Gửi lại mã OTP'
+                : `Gửi lại mã trong ${countdown}s`}
           </button>
         </div>
 
-        <button
+        <Button
           suppressHydrationWarning
           type="submit"
-          disabled={isVerifyingOtp || otp.some((d) => d === '')}
+          disabled={isPending || otp.some((d) => d === '')}
           className="w-full bg-green-700 hover:bg-green-800 disabled:bg-stone-300 disabled:opacity-50 text-white font-bold py-3.5 rounded-2xl transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
         >
-          {isVerifyingOtp ? (
+          {isPending ? (
             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
           ) : (
             <>
@@ -160,13 +188,13 @@ export function VerifyOtpForm() {
               <span>Xác nhận mã</span>
             </>
           )}
-        </button>
+        </Button>
       </form>
 
       <div className="mt-8 text-center flex flex-col gap-3">
         <button
           onClick={() => router.push('/quen-mat-khau')}
-          className="text-stone-400 text-[11px] font-semibold hover:text-stone-900 transition-colors flex items-center justify-center gap-1"
+          className="text-stone-400 text-[11px] font-semibold hover:text-stone-900 transition-colors flex items-center justify-center gap-1 cursor-pointer"
         >
           <ArrowLeft className="w-3 h-3" />
           Thay đổi email

@@ -29,7 +29,7 @@ export function AuthLayout({
         <div className="hidden md:block h-8"></div>
         <button className="absolute top-6 left-6">
           <Link href="/">
-            <Image src="/images/logo-ocop-rm.jpg" alt="Logo" width={100} height={100} />
+            <Image src="/images/dNUEl-removebg-preview.png" alt="Logo" width={150} height={150} />
           </Link>
         </button>
         {/* Main Branding Text */}
