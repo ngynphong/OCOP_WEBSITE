@@ -6,20 +6,35 @@ import {
   useAdminReviewMutations,
   useAdminContentFlagsQuery,
 } from '@/features/reviews/hooks/useAdminReviews';
+import {
+  useAdminComplaints,
+  useAdminUpdateComplaint,
+} from '@/features/complaints/hooks/useComplaints';
+import { AdminComplaintTable } from '@/features/complaints/components/AdminComplaintTable';
+import { AdminComplaintDetailModal } from '@/features/complaints/components/AdminComplaintDetailModal';
 import { ReviewItem } from '@/features/reviews/components/ReviewItem';
 import {
   Review,
   AdminReviewQueryParams,
   ContentFlagStatus,
 } from '@/features/reviews/types/reviewTypes';
-import { Loader2, ShieldCheck, Search, AlertCircle, MessageSquare, Flag } from 'lucide-react';
+import { ComplaintStatus } from '@/features/complaints/types/complaintTypes';
+import {
+  Loader2,
+  ShieldCheck,
+  Search,
+  AlertCircle,
+  MessageSquare,
+  Flag,
+  LifeBuoy,
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/AppButton';
 import { AdminFlagTable } from '@/features/reviews/components/AdminFlagTable';
 import { useDebounce } from '@/hooks/useDebounce';
 
-type TabType = 'REVIEWS' | 'FLAGS';
+type TabType = 'REVIEWS' | 'FLAGS' | 'COMPLAINTS';
 
 export default function AdminReviewsPage() {
   const [activeTab, setActiveTab] = useState<TabType>('REVIEWS');
@@ -65,6 +80,29 @@ export default function AdminReviewsPage() {
 
   const flags = flagResp?.data?.content || [];
   const flagTotalPages = flagResp?.data?.totalPages || 0;
+
+  // States & Queries for Complaints Tab
+  const [complaintParams, setComplaintParams] = useState({
+    pageNo: 1,
+    pageSize: 10,
+    status: 'ALL',
+  });
+  const { data: complaintResp, isLoading: isComplaintLoading } = useAdminComplaints({
+    pageNo: complaintParams.pageNo,
+    pageSize: complaintParams.pageSize,
+    status: complaintParams.status === 'ALL' ? undefined : complaintParams.status,
+    search: debouncedSearch,
+  });
+  const { mutate: updateComplaint, isPending: isUpdatingComplaint } = useAdminUpdateComplaint();
+
+  const handleUpdateComplaintStatus = (id: number, status: ComplaintStatus) => {
+    updateComplaint({ id, data: { status } });
+  };
+
+  const [viewingComplaintId, setViewingComplaintId] = useState<number | null>(null);
+
+  const complaints = complaintResp?.data?.content || [];
+  const complaintTotalPages = complaintResp?.data?.totalPages || 0;
 
   const handleActionClick = (action: string, review: Review) => {
     setModeratingReview({ review, action: action as 'approve' | 'reject' | 'hide' });
@@ -114,7 +152,7 @@ export default function AdminReviewsPage() {
         <button
           onClick={() => setActiveTab('REVIEWS')}
           className={cn(
-            'pb-4 px-2 text-sm font-black uppercase tracking-widest transition-all relative flex items-center gap-2',
+            'pb-4 px-2 text-sm font-black uppercase tracking-widest transition-all relative flex items-center gap-2 cursor-pointer',
             activeTab === 'REVIEWS' ? 'text-emerald-800' : 'text-stone-400 hover:text-stone-600',
           )}
         >
@@ -127,13 +165,26 @@ export default function AdminReviewsPage() {
         <button
           onClick={() => setActiveTab('FLAGS')}
           className={cn(
-            'pb-4 px-2 text-sm font-black uppercase tracking-widest transition-all relative flex items-center gap-2',
+            'pb-4 px-2 text-sm font-black uppercase tracking-widest transition-all relative flex items-center gap-2 cursor-pointer',
             activeTab === 'FLAGS' ? 'text-emerald-800' : 'text-stone-400 hover:text-stone-600',
           )}
         >
           <Flag size={16} />
           Báo cáo vi phạm
           {activeTab === 'FLAGS' && (
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-emerald-800 rounded-t-full" />
+          )}
+        </button>
+        <button
+          onClick={() => setActiveTab('COMPLAINTS')}
+          className={cn(
+            'pb-4 px-2 text-sm font-black uppercase tracking-widest transition-all relative flex items-center gap-2 cursor-pointer',
+            activeTab === 'COMPLAINTS' ? 'text-emerald-800' : 'text-stone-400 hover:text-stone-600',
+          )}
+        >
+          <LifeBuoy size={16} />
+          Khiếu nại khách hàng
+          {activeTab === 'COMPLAINTS' && (
             <div className="absolute bottom-0 left-0 right-0 h-1 bg-emerald-800 rounded-t-full" />
           )}
         </button>
@@ -243,7 +294,7 @@ export default function AdminReviewsPage() {
             </div>
           )}
         </div>
-      ) : (
+      ) : activeTab === 'FLAGS' ? (
         <AdminFlagTable
           flags={flags}
           isLoading={isFlagLoading}
@@ -253,7 +304,71 @@ export default function AdminReviewsPage() {
           setParams={setFlagParams}
           totalPages={flagTotalPages}
         />
-      )}
+      ) : activeTab === 'COMPLAINTS' ? (
+        <div className="space-y-6">
+          {/* Complaints Filters */}
+          <div className="flex flex-wrap items-center gap-4 bg-white p-4 rounded-3xl border border-stone-100 shadow-sm">
+            <div className="flex gap-2">
+              {['ALL', 'OPEN', 'INVESTIGATING', 'RESOLVED', 'REJECTED'].map((s) => (
+                <button
+                  key={s}
+                  onClick={() =>
+                    setComplaintParams((prev) => ({
+                      ...prev,
+                      status: s,
+                      pageNo: 1,
+                    }))
+                  }
+                  className={cn(
+                    'px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border',
+                    complaintParams.status === s
+                      ? 'bg-emerald-800 text-white border-emerald-800 shadow-lg shadow-emerald-200'
+                      : 'bg-white text-stone-400 border-stone-100 hover:border-emerald-800',
+                  )}
+                >
+                  {s === 'ALL'
+                    ? 'Tất cả'
+                    : s === 'OPEN'
+                      ? 'Mở'
+                      : s === 'INVESTIGATING'
+                        ? 'Đang điều tra'
+                        : s === 'RESOLVED'
+                          ? 'Đã xử lý'
+                          : 'Từ chối'}
+                </button>
+              ))}
+            </div>
+            {/* Search shared with other tabs */}
+          </div>
+
+          <AdminComplaintTable
+            complaints={complaints}
+            isLoading={isComplaintLoading}
+            isUpdating={isUpdatingComplaint}
+            onUpdateStatus={handleUpdateComplaintStatus}
+            onViewDetail={(id) => setViewingComplaintId(id)}
+          />
+
+          {complaintTotalPages > 1 && (
+            <div className="p-6 flex justify-center gap-2">
+              {Array.from({ length: complaintTotalPages }).map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setComplaintParams((prev) => ({ ...prev, pageNo: idx + 1 }))}
+                  className={cn(
+                    'w-10 h-10 rounded-xl font-bold transition-all',
+                    complaintParams.pageNo === idx + 1
+                      ? 'bg-emerald-800 text-white'
+                      : 'bg-white text-stone-400 border border-stone-100 hover:border-emerald-800',
+                  )}
+                >
+                  {idx + 1}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      ) : null}
 
       {/* Reviews Moderation Modal */}
       <Modal
@@ -326,6 +441,12 @@ export default function AdminReviewsPage() {
           </div>
         )}
       </Modal>
+
+      <AdminComplaintDetailModal
+        complaintId={viewingComplaintId}
+        isOpen={viewingComplaintId !== null}
+        onClose={() => setViewingComplaintId(null)}
+      />
     </div>
   );
 }

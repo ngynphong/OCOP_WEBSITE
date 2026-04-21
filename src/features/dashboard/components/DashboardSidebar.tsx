@@ -14,6 +14,7 @@ import {
   FiHeart,
   FiMessageSquare,
   FiTrendingUp,
+  FiLifeBuoy,
 } from 'react-icons/fi';
 import { FaWarehouse } from 'react-icons/fa';
 import { useAuth } from '@/features/auth/hooks/useAuth';
@@ -91,6 +92,13 @@ const DashboardSidebar = () => {
       label: 'Sản phẩm yêu thích',
       icon: FiHeart,
       href: '/dashboard/san-pham-yeu-thich',
+      roles: ['USER'],
+    },
+    {
+      id: 'complaints',
+      label: 'Khiếu nại của tôi',
+      icon: FiLifeBuoy,
+      href: '/dashboard/khieu-nai',
       roles: ['USER'],
     },
 
