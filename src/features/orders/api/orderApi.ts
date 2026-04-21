@@ -22,8 +22,8 @@ export const orderApi = {
     return axiosClient.post<unknown, { data: IBatchOrderResponseData }>('/orders/batch', data);
   },
 
-  getOrders: async (params: IOrderListReq) => {
-    return axiosClient.get<unknown, { data: IOrderListRes }>('/orders', { params });
+  getOrders: async (params: IOrderListReq, headers?: Record<string, string>) => {
+    return axiosClient.get<unknown, { data: IOrderListRes }>('/orders', { params, headers });
   },
 
   getOrderByCode: async (orderCode: string) => {

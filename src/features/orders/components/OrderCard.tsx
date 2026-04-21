@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/AppButton';
 import { useCancelOrder, useConfirmReceived } from '../hooks/useOrders';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import toast from 'react-hot-toast';
+import { ComplaintFormModal } from '@/features/complaints/components/ComplaintFormModal';
+import { AlertCircle } from 'lucide-react';
 
 interface OrderCardProps {
   order: IOrderItemList;
@@ -16,6 +18,7 @@ interface OrderCardProps {
 
 export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
   const [isCancelModalOpen, setIsCancelModalOpen] = React.useState(false);
+  const [isComplaintModalOpen, setIsComplaintModalOpen] = React.useState(false);
   const { mutate: cancelOrder, isPending: isCancelling } = useCancelOrder();
   const { mutate: confirmReceived, isPending: isConfirming } = useConfirmReceived();
 
@@ -39,7 +42,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
   };
 
   return (
-    <div className="bg-white rounded-3xl p-6 border border-stone-100 shadow-sm mb-4 transition-all hover:shadow-md group">
+    <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-sm mb-4 transition-all hover:shadow-md group">
       {/* Header: Shop Info & Status */}
       <div className="flex justify-between items-center mb-5 pb-4 border-b border-stone-100">
         <div className="flex items-center gap-3">
@@ -177,6 +180,20 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
             </Link>
           )}
 
+          {(order.status === 'DELIVERED' ||
+            order.status === 'COMPLETED' ||
+            order.status === 'CANCELLED') && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsComplaintModalOpen(true)}
+              className="flex-1 sm:flex-none text-xs font-black uppercase tracking-widest border-amber-100 text-amber-600 hover:bg-amber-50 h-11 px-6 rounded-xl transition-all gap-2"
+              leftIcon={<AlertCircle size={14} />}
+            >
+              Khiếu nại
+            </Button>
+          )}
+
           {order.canCancel && order.status === 'PENDING_CONFIRM' && (
             <Button
               variant="outline"
@@ -189,6 +206,13 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
           )}
         </div>
       </div>
+
+      <ComplaintFormModal
+        isOpen={isComplaintModalOpen}
+        onClose={() => setIsComplaintModalOpen(false)}
+        initialType="PRODUCT_QUALITY"
+        orderId={order.id}
+      />
 
       <ConfirmModal
         isOpen={isCancelModalOpen}

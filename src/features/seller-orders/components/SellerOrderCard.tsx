@@ -13,7 +13,7 @@ interface SellerOrderCardProps {
 
 export const SellerOrderCard: React.FC<SellerOrderCardProps> = ({ order }) => {
   return (
-    <div className="bg-white rounded-3xl p-6 border border-stone-100 shadow-sm mb-4 transition-all hover:shadow-md">
+    <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-sm mb-4 transition-all hover:shadow-md">
       <div className="flex justify-between items-center mb-4 pb-4 border-b border-stone-100">
         <div className="flex items-center gap-2">
           <span className="font-bold text-stone-900">Mã đơn: #{order.orderCode}</span>

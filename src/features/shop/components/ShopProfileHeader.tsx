@@ -1,12 +1,20 @@
 import React from 'react';
 import Image from 'next/image';
-import { FiMapPin, FiStar, FiCalendar, FiCheckCircle, FiMessageCircle } from 'react-icons/fi';
+import {
+  FiMapPin,
+  FiStar,
+  FiCalendar,
+  FiCheckCircle,
+  FiMessageCircle,
+  FiAlertTriangle,
+} from 'react-icons/fi';
 import { ShopInfo } from '@/features/shop/types/shopTypes';
 import { Button } from '@/components/ui/AppButton';
 import { useChatMutations } from '@/features/chat/hooks/useChatRooms';
 import { useRouter } from 'next/navigation';
 import { useAppSelector } from '@/store/hooks';
 import toast from 'react-hot-toast';
+import { ComplaintFormModal } from '@/features/complaints/components/ComplaintFormModal';
 
 interface ShopProfileHeaderProps {
   shop: ShopInfo;
@@ -16,6 +24,7 @@ export const ShopProfileHeader = ({ shop }: ShopProfileHeaderProps) => {
   const router = useRouter();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const { createRoom, isCreatingRoom } = useChatMutations();
+  const [isComplaintModalOpen, setIsComplaintModalOpen] = React.useState(false);
 
   const handleStartChat = async () => {
     if (!isAuthenticated) {
@@ -122,6 +131,14 @@ export const ShopProfileHeader = ({ shop }: ShopProfileHeaderProps) => {
                   <FiMessageCircle size={18} />
                   Nhắn tin
                 </Button>
+                <Button
+                  variant="outline"
+                  className="flex-1 md:flex-auto gap-2 text-stone-600 border-stone-200 hover:bg-stone-50"
+                  onClick={() => setIsComplaintModalOpen(true)}
+                >
+                  <FiAlertTriangle size={18} />
+                  Khiếu nại
+                </Button>
                 <Button variant="primary" className="flex-1 md:flex-auto">
                   Theo dõi
                 </Button>
@@ -130,6 +147,13 @@ export const ShopProfileHeader = ({ shop }: ShopProfileHeaderProps) => {
           </div>
         </div>
       </div>
+
+      <ComplaintFormModal
+        isOpen={isComplaintModalOpen}
+        onClose={() => setIsComplaintModalOpen(false)}
+        initialType="SELLER_BEHAVIOR"
+        shopId={shop.id}
+      />
     </div>
   );
 };

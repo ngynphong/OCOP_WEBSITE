@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { sellerOrderApi } from '../api/sellerOrderApi';
 import {
@@ -26,6 +26,23 @@ export const useSellerOrdersQuery = (params: ISellerOrderListReq) => {
     queryKey: sellerOrderKeys.list(params),
     queryFn: () => sellerOrderApi.getOrders(params),
     staleTime: 1000 * 60, // 1 min
+  });
+};
+
+export const useInfiniteSellerOrders = (params: Omit<ISellerOrderListReq, 'pageNo'>) => {
+  return useInfiniteQuery({
+    queryKey: [...sellerOrderKeys.lists(), params],
+    queryFn: ({ pageParam = 1 }) =>
+      sellerOrderApi.getOrders(
+        { ...params, pageNo: pageParam as number },
+        { 'X-Silent-Loading': 'true' },
+      ),
+    getNextPageParam: (lastPage) => {
+      const { page, totalPages } = lastPage.data;
+      return page < totalPages ? page + 1 : undefined;
+    },
+    initialPageParam: 1,
+    staleTime: 1000 * 60,
   });
 };
 

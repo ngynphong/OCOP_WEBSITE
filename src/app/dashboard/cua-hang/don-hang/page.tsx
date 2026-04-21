@@ -4,7 +4,7 @@ import React, { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { PackageX, TrendingUp, DollarSign, RotateCcw } from 'lucide-react';
 import {
-  useSellerOrdersQuery,
+  useInfiniteSellerOrders,
   useSellerRevenueQuery,
   useSellerRefundsQuery,
   useSellerPayoutsQuery,
@@ -17,6 +17,8 @@ import {
 } from '@/features/seller-orders/components/SellerFinanceTables';
 import { ISellerOrderItem } from '@/features/seller-orders/types/sellerOrderTypes';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
+import { useInView } from 'react-intersection-observer';
+import { Loader2 } from 'lucide-react';
 
 const STATUS_TABS = [
   { value: 'ALL', label: 'Tất cả' },
@@ -74,16 +76,27 @@ function OrdersManagementContent() {
   // Quản lý status Orders
   const currentStatus = searchParams.get('status') || 'ALL';
   const pageNo = parseInt(searchParams.get('page') || '1');
+  const { ref, inView } = useInView();
 
   const {
     data: ordersData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
     isLoading: isOrdersLoading,
     isError: isOrdersError,
-  } = useSellerOrdersQuery({
+  } = useInfiniteSellerOrders({
     status: currentStatus === 'ALL' ? undefined : currentStatus,
-    pageNo,
     pageSize: 10,
   });
+
+  React.useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage && activeMainTab === 'orders') {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage, activeMainTab]);
+
+  const orders = ordersData?.pages.flatMap((page) => page.data.content) || [];
 
   const { data: refundsData, isLoading: isRefundsLoading } = useSellerRefundsQuery({
     pageNo,
@@ -94,7 +107,6 @@ function OrdersManagementContent() {
     pageSize: 10,
   });
 
-  const orders = ordersData?.data?.content || [];
   const refunds = refundsData?.data?.content || [];
   const payouts = payoutsData?.data?.content || [];
 
@@ -166,9 +178,25 @@ function OrdersManagementContent() {
                 </div>
               ) : orders.length > 0 ? (
                 <div className="space-y-6">
-                  {orders.map((order: ISellerOrderItem) => (
-                    <SellerOrderCard key={order.id} order={order} />
+                  {orders.map((order: ISellerOrderItem, idx: number) => (
+                    <SellerOrderCard key={`${order.id}-${idx}`} order={order} />
                   ))}
+
+                  {/* Load more trigger */}
+                  <div ref={ref} className="py-8 flex justify-center">
+                    {isFetchingNextPage ? (
+                      <div className="flex items-center gap-2 text-stone-400 font-bold text-xs uppercase tracking-widest">
+                        <Loader2 className="animate-spin" size={16} />
+                        Đang tải thêm đơn hàng...
+                      </div>
+                    ) : hasNextPage ? (
+                      <div className="h-4" />
+                    ) : (
+                      <div className="text-[10px] font-black text-stone-300 uppercase tracking-widest bg-stone-50 px-4 py-2 rounded-full border border-stone-100">
+                        Bạn đã xem hết danh sách đơn hàng
+                      </div>
+                    )}
+                  </div>
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center py-20 px-4 text-center bg-stone-50 rounded-2xl border border-stone-100">

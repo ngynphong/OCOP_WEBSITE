@@ -8,9 +8,10 @@ import { ChevronLeft, Store, Package, Truck, MapPin, CheckCircle } from 'lucide-
 import Link from 'next/link';
 import Image from 'next/image';
 import { formatCurrencyVND } from '@/utils/format';
-import { ReviewFormModal } from '@/features/reviews/components/ReviewFormModal';
-import { MessageSquare } from 'lucide-react';
+import { MessageSquare, AlertCircle } from 'lucide-react';
 import { IOrderDetailsItem } from '@/features/orders/types/orderTypes';
+import { ComplaintFormModal } from '@/features/complaints/components/ComplaintFormModal';
+import { ReviewFormModal } from '@/features/reviews/components/ReviewFormModal';
 
 const translateStatus = (status: string) => {
   const map: Record<string, string> = {
@@ -51,7 +52,10 @@ export default function OrderDetailsPage({ params }: PageProps) {
   const order = data?.data;
 
   const shouldSkipShipment =
-    !order || order.status === 'PENDING_CONFIRM' || order.status === 'PENDING_PAYMENT';
+    !order ||
+    order.status === 'PENDING_CONFIRM' ||
+    order.status === 'PENDING_PAYMENT' ||
+    order.status === 'CANCELLED';
   const { data: shipmentData, isLoading: isShipmentLoading } = useOrderShipment(
     orderCode,
     shouldSkipShipment,
@@ -60,6 +64,7 @@ export default function OrderDetailsPage({ params }: PageProps) {
   const shipment = shipmentData?.data;
 
   const [reviewingItem, setReviewingItem] = React.useState<IOrderDetailsItem | null>(null);
+  const [isComplaintModalOpen, setIsComplaintModalOpen] = React.useState(false);
 
   const isPageLoading = isLoading || (isShipmentLoading && !shouldSkipShipment);
 
@@ -101,6 +106,15 @@ export default function OrderDetailsPage({ params }: PageProps) {
         </div>
 
         <div className="hidden md:flex items-center gap-3">
+          {(order.status === 'DELIVERED' || order.status === 'COMPLETED') && (
+            <button
+              onClick={() => setIsComplaintModalOpen(true)}
+              className="flex items-center gap-2 px-6 py-2.5 bg-white border border-amber-100 text-amber-600 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-amber-50 transition-all shadow-sm cursor-pointer"
+            >
+              <AlertCircle size={16} />
+              Khiếu nại đơn hàng
+            </button>
+          )}
           <OrderActionButtons
             orderCode={order.orderCode}
             orderStatus={order.status}
@@ -383,6 +397,14 @@ export default function OrderDetailsPage({ params }: PageProps) {
           // productSlug={reviewingItem.productSlug} // We might need to add productSlug to IOrderDetailsItem if available
         />
       )}
+
+      <ComplaintFormModal
+        isOpen={isComplaintModalOpen}
+        onClose={() => setIsComplaintModalOpen(false)}
+        initialType="PRODUCT_QUALITY"
+        orderId={order.id}
+        shopId={order.shop.id}
+      />
     </div>
   );
 }

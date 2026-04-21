@@ -23,6 +23,7 @@ import { useAuthProfile } from '@/features/auth/hooks/useAuth';
 import { ShopEditForm } from '@/features/shop/components/ShopEditForm';
 import { ShopStatus } from '@/features/shop/types/shopTypes';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 const STATUS_CONFIG: Record<ShopStatus, { label: string; color: string; icon: React.ReactNode }> = {
   PENDING: {
@@ -157,8 +158,7 @@ export default function SellerShopPage() {
         {/* Banner */}
         <div className="relative h-36 bg-linear-to-r from-green-600 to-emerald-500 overflow-hidden group">
           {shop.bannerUrl && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={shop.bannerUrl} alt="Banner" className="w-full h-full object-cover" />
+            <Image src={shop.bannerUrl} alt="Banner" className="w-full h-full object-cover" />
           )}
           <label className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
             <div className="flex flex-col items-center gap-1 text-white">
@@ -184,8 +184,7 @@ export default function SellerShopPage() {
         {/* Logo */}
         <div className="absolute left-6 top-20 w-20 h-20 rounded-2xl border-4 border-white shadow-xl bg-white overflow-hidden group">
           {shop.logoUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={shop.logoUrl} alt="Logo" className="w-full h-full object-cover" />
+            <Image src={shop.logoUrl} alt="Logo" className="w-full h-full object-cover" />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-green-50">
               <FiImage size={24} className="text-green-300" />
