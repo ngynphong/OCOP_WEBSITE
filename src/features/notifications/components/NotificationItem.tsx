@@ -15,6 +15,7 @@ import {
   FiCircle,
 } from 'react-icons/fi';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 // interface NotificationItemProps {
 //   notification: INotification;
@@ -42,7 +43,18 @@ export const NotificationItem = React.memo<{
   onRead: (id: string) => void;
   onDelete: (id: string) => void;
 }>(({ notification, onRead, onDelete }) => {
-  const { actor, eventType, createdAt, read, id, payload } = notification;
+  const router = useRouter();
+  const { actor, eventType, createdAt, read, id, payload, actionable, targetUrl } = notification;
+
+  const handleNotifyClick = async () => {
+    if (!read) {
+      await onRead(id);
+    }
+
+    if (actionable && targetUrl) {
+      router.push(targetUrl);
+    }
+  };
 
   // Fallback if actor is null (System notifications)
   const actorName = actor?.name || 'Hệ thống';
@@ -50,10 +62,11 @@ export const NotificationItem = React.memo<{
 
   return (
     <div
-      onClick={() => !read && onRead(id)}
+      onClick={handleNotifyClick}
       className={cn(
         'group relative flex items-start gap-4 p-4 transition-all duration-300 border-b border-stone-100 cursor-pointer',
-        read ? 'bg-white opacity-80' : 'bg-emerald-50/30 hover:bg-emerald-50/50',
+        read ? 'bg-white' : 'bg-emerald-50/20 hover:bg-emerald-50/40',
+        actionable && 'hover:shadow-inner',
       )}
     >
       {/* Indicator for Unread */}
@@ -101,10 +114,29 @@ export const NotificationItem = React.memo<{
         <p className="text-[11px] text-stone-400 font-medium">
           {formatDistanceToNow(new Date(createdAt), { addSuffix: true, locale: vi })}
         </p>
+        {actionable && (
+          <div className="pt-2">
+            <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-100 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
+              Xem chi tiết
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Quick Actions */}
-      <div className="absolute right-3 top-1/2 -translate-y-1/2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="absolute right-3 top-1/2 -translate-y-1/2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0 duration-300">
+        {!read && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onRead(id);
+            }}
+            className="p-2 rounded-xl bg-white shadow-sm border border-stone-100 text-stone-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
+            title="Đánh dấu đã đọc"
+          >
+            <FiCheckCircle size={14} />
+          </button>
+        )}
         <button
           onClick={(e) => {
             e.stopPropagation();
