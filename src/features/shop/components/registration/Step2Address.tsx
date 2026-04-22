@@ -62,7 +62,7 @@ const Step2Address: React.FC<Step2AddressProps> = memo(
                   type="button"
                   onClick={() => handleRegionChange(r.value)}
                   className={cn(
-                    'flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border-2 text-sm font-semibold transition-all duration-200',
+                    'flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border-2 text-sm font-semibold transition-all duration-200 cursor-pointer',
                     isActive
                       ? 'border-green-500 bg-green-50 text-green-700 shadow-sm shadow-green-500/10'
                       : 'border-stone-200 bg-white text-stone-600 hover:border-green-300 hover:bg-green-50/50',

@@ -15,6 +15,7 @@ import { AdminRole } from '@/features/admin/types/adminTypes';
 import Link from 'next/link';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import RoleFormDrawer from '@/features/admin/components/RoleFormDrawer';
+import { Button } from '@/components/ui/AppButton';
 
 const RoleListPage = () => {
   const { data, isLoading } = useRolesQuery();
@@ -61,12 +62,9 @@ const RoleListPage = () => {
             Thiết lập các nhóm quyền hạn truy cập hệ thống cho từng loại tài khoản.
           </p>
         </div>
-        <button
-          onClick={handleCreate}
-          className="flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white text-sm font-black rounded-2xl hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-900/10 active:scale-95"
-        >
+        <Button onClick={handleCreate}>
           <FiPlus size={18} /> Thêm vai trò mới
-        </button>
+        </Button>
       </div>
 
       {/* Role Grid */}
@@ -98,14 +96,14 @@ const RoleListPage = () => {
                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button
                     onClick={() => handleEdit(role)}
-                    className="p-2 bg-stone-50 text-stone-400 hover:bg-emerald-50 hover:text-emerald-600 rounded-xl transition-all"
+                    className="p-2 bg-stone-50 text-stone-400 hover:bg-emerald-50 hover:text-emerald-600 rounded-xl transition-all cursor-pointer"
                     title="Chỉnh sửa"
                   >
                     <FiEdit2 size={16} />
                   </button>
                   <button
                     onClick={() => setDeleteTarget(role)}
-                    className="p-2 bg-stone-50 text-stone-400 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all"
+                    className="p-2 bg-stone-50 text-stone-400 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all cursor-pointer"
                     title="Xóa"
                   >
                     <FiTrash2 size={16} />

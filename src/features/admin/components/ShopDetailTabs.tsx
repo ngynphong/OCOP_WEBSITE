@@ -28,9 +28,9 @@ const ShopDetailTabs: React.FC<ShopDetailTabsProps> = React.memo(({ activeTab, s
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={cn(
-              'flex items-center gap-2 px-6 py-3 rounded-2xl text-xs font-black transition-all whitespace-nowrap',
+              'flex items-center gap-2 px-6 py-3 rounded-2xl text-xs font-black transition-all whitespace-nowrap cursor-pointer',
               isActive
-                ? 'bg-[#00490E] text-white shadow-lg shadow-emerald-900/20'
+                ? 'bg-green-600 text-white'
                 : 'text-stone-400 hover:text-stone-600 hover:bg-stone-50',
             )}
           >

@@ -8,7 +8,7 @@ import {
   useShopStatusLogsQuery,
   useAdminShopMutations,
 } from '@/features/admin/hooks/useAdminShops';
-import { ShopDocument, ShopDetailTabType } from '@/features/admin/types/adminTypes';
+import { ShopDetailTabType } from '@/features/admin/types/adminTypes';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 
@@ -26,7 +26,7 @@ const ShopDetailPage = () => {
   const shopId = params.id as string;
 
   const [activeTab, setActiveTab] = useState<ShopDetailTabType>('overview');
-  const [activeDoc, setActiveDoc] = useState<ShopDocument | null>(null);
+  const [activeDocId, setActiveDocId] = useState<number | null>(null);
   const [confirmAction, setConfirmAction] = useState<{
     type: 'APPROVE' | 'REJECT' | 'LOCK' | 'UNLOCK' | 'OVERRIDE';
     data?: Record<string, unknown>;
@@ -52,12 +52,17 @@ const ShopDetailPage = () => {
   const shop = detailData?.data;
   const logs = logsData?.data || [];
 
-  // Initialize active doc when data loads
+  const activeDoc = useMemo(() => {
+    if (!shop?.documents?.length) return null;
+    if (!activeDocId) return shop.documents[0];
+    return shop.documents.find((d) => d.id === activeDocId) || shop.documents[0];
+  }, [shop?.documents, activeDocId]);
+
   React.useEffect(() => {
-    if (shop?.documents?.length && !activeDoc) {
-      setActiveDoc(shop.documents[0]);
+    if (shop?.documents?.length && activeDocId === null) {
+      setActiveDocId(shop.documents[0].id);
     }
-  }, [shop, activeDoc]);
+  }, [shop, activeDocId]);
 
   const handleAction = useCallback(async () => {
     if (!confirmAction) return;
@@ -136,7 +141,7 @@ const ShopDetailPage = () => {
                   <ShopDetailLegality
                     shop={shop}
                     activeDoc={activeDoc}
-                    setActiveDoc={setActiveDoc}
+                    setActiveDoc={(doc) => setActiveDocId(doc.id)}
                     onVerifyDoc={handleVerifyDoc}
                     onRejectDoc={handleRejectDoc}
                     isVerifying={isVerifyingDocument}

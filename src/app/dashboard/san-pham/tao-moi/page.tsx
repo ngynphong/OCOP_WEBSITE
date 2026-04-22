@@ -72,7 +72,7 @@ export default function CreateProductPage() {
           <input
             {...register('name')}
             placeholder="Trà Shan Tuyết Hà Giang – Cổ Thụ Lũng Cú"
-            className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-800 outline-none focus:border-emerald-400 transition"
+            className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 transition"
           />
           {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
         </div>
@@ -85,7 +85,7 @@ export default function CreateProductPage() {
             </label>
             <select
               {...register('categoryId', { valueAsNumber: true })}
-              className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-800 outline-none focus:border-emerald-400 transition bg-white"
+              className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 transition bg-white"
             >
               <option value="">-- Chọn danh mục --</option>
               {flatCategories.map((cat) => (
@@ -104,7 +104,7 @@ export default function CreateProductPage() {
             </label>
             <select
               {...register('ocopStar', { valueAsNumber: true })}
-              className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-800 outline-none focus:border-emerald-400 transition bg-white"
+              className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 transition bg-white"
             >
               {[1, 2, 3, 4, 5].map((s) => (
                 <option key={s} value={s}>
@@ -123,7 +123,7 @@ export default function CreateProductPage() {
           <input
             {...register('shortDesc')}
             placeholder="Trà cổ thụ 280 năm tuổi, hái tay, sao thủ công..."
-            className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-800 outline-none focus:border-emerald-400 transition"
+            className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 transition"
           />
           {errors.shortDesc && (
             <p className="text-xs text-red-500 mt-1">{errors.shortDesc.message}</p>
@@ -138,7 +138,7 @@ export default function CreateProductPage() {
             </label>
             <select
               {...register('unit')}
-              className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-800 outline-none focus:border-emerald-400 transition bg-white"
+              className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 transition bg-white"
             >
               <option value="">-- Chọn đơn vị --</option>
               {PRODUCT_UNITS.map((unit) => (
@@ -156,7 +156,7 @@ export default function CreateProductPage() {
               type="number"
               {...register('weightGram', { valueAsNumber: true })}
               placeholder="250"
-              className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-800 outline-none focus:border-emerald-400 transition"
+              className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 transition"
             />
           </div>
         </div>
@@ -169,7 +169,7 @@ export default function CreateProductPage() {
           <input
             {...register('productionArea')}
             placeholder="Đồi Thẩm Mã, thôn Lũng Cú, Hà Giang"
-            className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-800 outline-none focus:border-emerald-400 transition"
+            className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 transition"
           />
         </div>
 
@@ -182,7 +182,7 @@ export default function CreateProductPage() {
             {...register('description')}
             rows={5}
             placeholder="## Giới thiệu&#10;Mô tả đầy đủ về sản phẩm..."
-            className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-800 outline-none focus:border-emerald-400 transition resize-none"
+            className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 transition resize-none"
           />
         </div>
 

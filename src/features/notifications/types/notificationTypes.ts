@@ -30,7 +30,7 @@ export interface INotification {
   read: boolean;
   actionable: boolean;
   targetUrl: string | null;
-  receiverRole: 'CUSTOMER' | 'SELLER' | 'ADMIN';
+  receiverRole: 'USER' | 'SELLER' | 'ADMIN';
 }
 
 export interface NotificationResponse {

@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils';
 import { ShopListItem, ShopDocument } from '../types/adminTypes';
 
 import dynamic from 'next/dynamic';
+import { Button } from '@/components/ui/AppButton';
 
 const PdfPreview = dynamic(() => import('@/components/ui/PdfPreview'), {
   ssr: false,
@@ -134,20 +135,21 @@ const ShopDetailLegality: React.FC<ShopDetailLegalityProps> = React.memo(
               </div>
               {!activeDoc.isVerified && (
                 <div className="mt-6 flex gap-3">
-                  <button
+                  <Button
                     onClick={() => onVerifyDoc(activeDoc.id)}
                     disabled={isVerifying}
                     className="flex-1 py-4 bg-[#0D631B] text-white rounded-2xl text-xs font-black shadow-lg shadow-emerald-900/20 flex items-center justify-center gap-2 hover:opacity-90 transition-all disabled:opacity-50"
                   >
                     <FiCheck /> {isVerifying ? 'Đang duyệt...' : 'Chấp nhận'}
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variant="outline"
                     onClick={() => onRejectDoc(activeDoc.id)}
                     disabled={isRejecting}
                     className="flex-1 py-4 bg-white text-red-600 border border-red-100 rounded-2xl text-xs font-black flex items-center justify-center gap-2 hover:bg-red-50 transition-all disabled:opacity-50"
                   >
                     <FiXCircle /> {isRejecting ? 'Đang xử lý...' : 'Từ chối'}
-                  </button>
+                  </Button>
                 </div>
               )}
               {activeDoc.isVerified && (

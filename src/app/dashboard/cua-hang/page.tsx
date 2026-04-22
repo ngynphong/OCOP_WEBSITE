@@ -66,7 +66,7 @@ const ShopStatusBadge = ({ status }: { status: ShopStatus }) => {
 const InfoRow = ({ label, value }: { label: string; value: React.ReactNode }) => (
   <div className="flex items-start justify-between gap-4 py-3 border-b border-stone-50 last:border-0">
     <span className="text-sm text-stone-500 shrink-0">{label}</span>
-    <span className="text-sm font-semibold text-stone-800 text-right">{value}</span>
+    <span className="text-sm font-semibold text-stone-700 text-right">{value}</span>
   </div>
 );
 
@@ -229,7 +229,8 @@ export default function SellerShopPage() {
               </span>
             </div>
             <p className="text-sm text-stone-500 mt-1 flex items-center gap-1.5 italic">
-              URL cửa hàng: <span className="text-green-600">ocop.vn/cua-hang/{shop.slug}</span>
+              URL cửa hàng:{' '}
+              <span className="text-green-600">ocop.iesconnect.vn/cua-hang/{shop.slug}</span>
             </p>
           </div>
           <button
@@ -333,6 +334,13 @@ export default function SellerShopPage() {
         )}
       </AnimatePresence>
 
+      <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-5">
+        <h3 className="text-sm font-bold text-stone-700 mb-3 flex items-center gap-2">
+          <FiTag size={15} className="text-green-600" /> Mô tả
+        </h3>
+        <p className="text-sm text-stone-500 whitespace-pre-wrap">{shop.description || '—'}</p>
+      </div>
+
       {/* Shop Detail Info */}
       {!isEditing && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -340,7 +348,7 @@ export default function SellerShopPage() {
             <h3 className="text-sm font-bold text-stone-700 mb-3 flex items-center gap-2">
               <FiTag size={15} className="text-green-600" /> Thông tin shop
             </h3>
-            <InfoRow label="Mô tả" value={shop.description || '—'} />
+            {/* <InfoRow label="Mô tả" value={shop.description || '—'} /> */}
             <InfoRow label="Địa chỉ" value={shop.addressLine || '—'} />
             <InfoRow label="Phường/Xã" value={shop.wardName || '—'} />
             <InfoRow label="Quận/Huyện" value={shop.districtName} />

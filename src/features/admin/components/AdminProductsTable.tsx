@@ -38,7 +38,7 @@ const STATUS_COLORS: Record<ProductStatus, string> = {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export const AdminProductsTable = () => {
-  const [params, setParams] = useState<AdminProductListParams>({ page: 0, size: 20 });
+  const [params, setParams] = useState<AdminProductListParams>({ pageNo: 1, pageSize: 20 });
   const [activeTab, setActiveTab] = useState<'PRODUCTS' | 'FLASH_SALE'>('PRODUCTS');
   const [rejectModal, setRejectModal] = useState<{ open: boolean; productId: number | null }>({
     open: false,

@@ -151,7 +151,7 @@ const FormMode = ({
         )}
       </div>
 
-      <div className="mt-12 sticky bottom-0 -mx-8 -mb-8 p-6 border-t border-stone-100 bg-white/80 backdrop-blur-md z-10">
+      <div className="mt-2 sticky -bottom-8 -mx-8 -mb-8 p-6 border-t border-stone-100 bg-white/80 backdrop-blur-md z-10">
         <Button
           type="submit"
           variant="primary"

@@ -102,7 +102,7 @@ const CategoryItemForm = React.memo(
         setSlugStatus('checking');
         try {
           const response = await checkSlug(debouncedSlug);
-          setSlugStatus(response.data ? 'taken' : 'available');
+          setSlugStatus(response.data ? 'available' : 'taken');
         } catch {
           setSlugStatus('idle');
         }

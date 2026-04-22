@@ -233,7 +233,7 @@ export default function AdminReviewsPage() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Tìm theo sản phẩm hoặc user..."
-                className="w-full pl-10 pr-4 py-2.5 bg-stone-50 text-gray-700 border border-stone-100 rounded-2xl text-xs focus:ring-2 focus:ring-emerald-500/20 outline-none"
+                className="w-full pl-10 pr-4 py-2.5 bg-stone-50 text-gray-700 border border-stone-100 rounded-2xl text-xs focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
               />
             </div>
           </div>
@@ -410,7 +410,7 @@ export default function AdminReviewsPage() {
                 onChange={(e) => setNote(e.target.value)}
                 rows={3}
                 placeholder="Nhập lý do hoặc ghi chú..."
-                className="w-full px-4 py-3 bg-stone-50 text-gray-700 border border-stone-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-green-600"
+                className="w-full px-4 py-3 bg-stone-50 text-gray-700 border border-stone-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
               />
             </div>
 

@@ -112,6 +112,13 @@ const DashboardSidebar = () => {
 
     // Seller Only
     {
+      id: 'shop',
+      label: 'Cửa hàng của tôi',
+      icon: FiTag,
+      href: '/dashboard/cua-hang',
+      roles: ['USER', 'SELLER'],
+    },
+    {
       id: 'product',
       label: 'Sản phẩm',
       icon: FiPackage,
@@ -119,6 +126,7 @@ const DashboardSidebar = () => {
       roles: ['SELLER'],
       permission: 'seller.product.manage',
     },
+
     {
       id: 'seller-orders',
       label: 'Quản lý Đơn hàng',
@@ -159,14 +167,13 @@ const DashboardSidebar = () => {
       roles: ['SELLER'],
       permission: 'seller.shop.manage',
     },
-
-    // Special: Cửa hàng của tôi (Always exists but might lead to different views)
     {
-      id: 'shop',
-      label: 'Cửa hàng của tôi',
-      icon: FiTag,
-      href: '/dashboard/cua-hang',
-      roles: ['USER', 'SELLER'],
+      id: 'supply-chain',
+      label: 'Truy xuất nguồn gốc',
+      icon: FiTrendingUp,
+      href: '/dashboard/truy-xuat',
+      roles: ['SELLER'],
+      permission: 'seller.shop.manage',
     },
 
     {

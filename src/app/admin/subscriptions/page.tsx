@@ -19,6 +19,7 @@ import PlanStatusBadge from '@/features/admin/components/PlanStatusBadge';
 import SubscriptionFormDrawer from '@/features/admin/components/SubscriptionFormDrawer';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
+import { Button } from '@/components/ui/AppButton';
 
 const AdminSubscriptionPage = () => {
   const { data, isLoading } = useSubscriptionPlansQuery();
@@ -62,12 +63,12 @@ const AdminSubscriptionPage = () => {
             Thiết lập và điều chỉnh các gói thành viên cho nhà bán hàng trên hệ thống OCOP.
           </p>
         </div>
-        <button
+        <Button
           onClick={handleAdd}
           className="px-6 py-3 bg-[#0D631B] text-white rounded-2xl text-sm font-black shadow-lg shadow-emerald-900/20 flex items-center gap-2 hover:translate-y-[-2px] active:scale-95 transition-all"
         >
           <FiPlus size={20} /> Thêm gói mới
-        </button>
+        </Button>
       </div>
 
       {/* Stats Cards */}
@@ -174,13 +175,14 @@ const AdminSubscriptionPage = () => {
                       <div className="flex justify-end gap-2">
                         <button
                           onClick={() => handleEdit(plan)}
-                          className="p-2.5 hover:bg-white rounded-xl transition-all text-[#00490E] shadow-sm border border-transparent hover:border-stone-100 flex items-center gap-2 font-bold text-xs"
+                          title="Chỉnh sửa"
+                          className="p-2.5 hover:bg-white rounded-xl transition-all text-[#00490E] shadow-sm border border-transparent hover:border-stone-100 flex items-center gap-2 font-bold text-xs cursor-pointer"
                         >
                           <FiEdit2 size={16} />
                         </button>
                         <button
                           onClick={() => setToggleTarget(plan)}
-                          className={`p-2.5 rounded-xl transition-all shadow-sm border border-transparent flex items-center gap-2 font-bold text-xs ${
+                          className={`p-2.5 rounded-xl transition-all shadow-sm border border-transparent flex items-center gap-2 font-bold text-xs cursor-pointer ${
                             plan.isActive
                               ? 'text-rose-600 hover:bg-rose-50 hover:border-rose-100'
                               : 'text-emerald-600 hover:bg-emerald-50 hover:border-emerald-100'

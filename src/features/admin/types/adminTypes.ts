@@ -22,6 +22,7 @@ export interface AdminUserListItem {
   createdAt: string;
   updatedAt: string;
   roles: string[];
+  loyaltyPoints: number;
   staffProfile: StaffProfile | null;
 }
 
@@ -197,7 +198,20 @@ export interface SubscriptionPlan {
   unlimitedProducts: boolean;
   maxImagesPerProduct: string;
   commissionRate: number;
-  features: string[];
+  commissionCashbackRate: number;
+  cashbackThreshold: number;
+  paymentFeeRate: number;
+  payoutFee: number;
+  payoutDays: string;
+  features: {
+    flashSale: boolean;
+    affiliate: boolean;
+    blog: boolean;
+    exportReport: boolean;
+    bulkImport: boolean;
+    apiAccess: boolean;
+    analyticsPro: boolean;
+  };
 }
 
 export interface CreateSubscriptionPlanRequest {
@@ -205,12 +219,14 @@ export interface CreateSubscriptionPlanRequest {
   slug: string;
   priceMonthly: number;
   priceYearly: number;
-  yearlyDiscountPercent: number;
-  isFree: boolean;
   maxProducts: number;
-  unlimitedProducts: boolean;
   maxImagesPerProduct: string;
   commissionRate: number;
+  commissionCashbackRate: number;
+  cashbackThreshold: number;
+  paymentFeeRate: number;
+  payoutFee: number;
+  payoutDays: string;
   features: string[];
   sortOrder: string;
 }
