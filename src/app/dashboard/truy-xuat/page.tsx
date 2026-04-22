@@ -29,12 +29,12 @@ const LotListPage = () => {
     try {
       setLoading(true);
       const resp = await supplyChainApi.getSellerLots({
-        pageNo: page,
-        pageSize: 10,
+        page: page,
+        size: 10,
         status: statusFilter,
       });
-      setLots(resp.data.items);
-      setTotalPage(resp.data.totalPage);
+      setLots(resp.data.content);
+      setTotalPage(resp.data.totalPages);
     } catch (error) {
       console.error('Fetch lots error', error);
       toast.error('Không thể tải danh sách lô hàng');

@@ -23,11 +23,11 @@ export const supplyChainApi = {
       unknown,
       {
         data: {
-          pageNo: number;
-          pageSize: number;
-          totalPage: number;
-          totalElement: number;
-          items: ISupplyChainLot[];
+          page: number;
+          size: number;
+          totalPages: number;
+          totalElements: number;
+          content: ISupplyChainLot[];
         };
       }
     >('/seller/supply-chain/lots', { params });
@@ -97,11 +97,11 @@ export const supplyChainApi = {
       unknown,
       {
         data: {
-          pageNo: number;
-          pageSize: number;
-          totalPage: number;
-          totalElement: number;
-          items: ISupplyChainLot[];
+          page: number;
+          size: number;
+          totalPages: number;
+          totalElements: number;
+          content: ISupplyChainLot[];
         };
       }
     >('/supply-chain/lots', { params });

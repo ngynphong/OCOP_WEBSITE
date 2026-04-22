@@ -18,7 +18,6 @@ import { SubscriptionPlan } from '@/features/admin/types/adminTypes';
 import PlanStatusBadge from '@/features/admin/components/PlanStatusBadge';
 import SubscriptionFormDrawer from '@/features/admin/components/SubscriptionFormDrawer';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
-import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 import { Button } from '@/components/ui/AppButton';
 
 const AdminSubscriptionPage = () => {
@@ -51,7 +50,7 @@ const AdminSubscriptionPage = () => {
 
   return (
     <div className="space-y-10">
-      {isLoading && <LoadingOverlay />}
+      {isLoading && null}
 
       {/* Header Section */}
       <div className="flex justify-between items-end">

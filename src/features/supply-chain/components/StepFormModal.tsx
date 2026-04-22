@@ -292,7 +292,7 @@ export const StepFormModal = ({ isOpen, onClose, stepType, onSubmit }: StepFormM
                 name="storageType"
                 value={formData.storageType}
                 onChange={handleChange}
-                className="w-full px-4 py-2 bg-stone-50 border border-stone-200 rounded-xl outline-none"
+                className="w-full px-4 py-2 bg-stone-50 text-gray-700 border border-stone-200 rounded-xl outline-none"
               >
                 <option value="AMBIENT">Nhiệt độ thường</option>
                 <option value="REFRIGERATED">Mát (2-8°C)</option>
@@ -477,7 +477,7 @@ export const StepFormModal = ({ isOpen, onClose, stepType, onSubmit }: StepFormM
             value={formData.notes}
             onChange={handleChange}
             placeholder="Thêm mô tả chi tiết nếu có..."
-            className="w-full px-4 py-2 bg-stone-50 border border-stone-200 rounded-xl outline-none resize-none focus:ring-2 focus:ring-emerald-500/20"
+            className="w-full px-4 py-2 bg-stone-50 text-gray-700 border border-stone-200 rounded-xl outline-none resize-none focus:ring-2 focus:ring-emerald-500/20"
           />
         </div>
 
@@ -526,7 +526,7 @@ const InputField = ({
       required={required}
       value={value || ''}
       onChange={onChange}
-      className="w-full px-4 py-2 bg-stone-50 border border-stone-200 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm font-semibold"
+      className="w-full px-4 py-2 bg-stone-50 text-gray-700 border border-stone-200 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm font-semibold"
     />
   </div>
 );

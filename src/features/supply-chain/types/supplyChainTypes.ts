@@ -51,8 +51,8 @@ export interface ICreateLotReq {
 
 export interface ILotListReq {
   status?: TLotStatus;
-  pageNo: number;
-  pageSize: number;
+  page: number;
+  size: number;
 }
 
 export interface IPublicLotListReq extends ILotListReq {
