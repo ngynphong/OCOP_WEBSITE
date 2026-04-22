@@ -131,7 +131,7 @@ const AddressFormModal = ({ isOpen, onClose, initialData }: AddressFormModalProp
             </label>
             <input
               {...register('recipient')}
-              className="w-full px-5 py-3 rounded-2xl border text-gray-700 border-stone-100 bg-stone-50/50 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-600 transition-all font-bold text-sm"
+              className="w-full px-5 py-3 rounded-2xl border text-gray-700 border-stone-100 bg-stone-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-all font-bold text-sm"
               placeholder="Nhập tên người nhận"
             />
             {errors.recipient && (
@@ -145,7 +145,7 @@ const AddressFormModal = ({ isOpen, onClose, initialData }: AddressFormModalProp
             </label>
             <input
               {...register('phone')}
-              className="w-full px-5 py-3 rounded-2xl border text-gray-700 border-stone-100 bg-stone-50/50 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-600 transition-all font-bold text-sm"
+              className="w-full px-5 py-3 rounded-2xl border text-gray-700 border-stone-100 bg-stone-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-all font-bold text-sm"
               placeholder="Nhập số điện thoại"
             />
             {errors.phone && (
@@ -167,7 +167,7 @@ const AddressFormModal = ({ isOpen, onClose, initialData }: AddressFormModalProp
                 setValue('districtId', 0);
                 setValue('wardId', 0);
               }}
-              className="w-full px-4 py-3 rounded-2xl border text-gray-700 border-stone-100 bg-stone-50/50 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-600 transition-all font-bold text-sm appearance-none"
+              className="w-full px-4 py-3 rounded-2xl border text-gray-700 border-stone-100 bg-stone-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-all font-bold text-sm appearance-none"
             >
               <option value={0}>Chọn Tỉnh/Thành</option>
               {provinces?.data.map((p) => (
@@ -193,7 +193,7 @@ const AddressFormModal = ({ isOpen, onClose, initialData }: AddressFormModalProp
                 setValue('wardId', 0);
               }}
               disabled={!provinceId}
-              className="w-full px-4 py-3 rounded-2xl border text-gray-700 border-stone-100 bg-stone-50/50 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-600 transition-all font-bold text-sm appearance-none disabled:opacity-50"
+              className="w-full px-4 py-3 rounded-2xl border text-gray-700 border-stone-100 bg-stone-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-all font-bold text-sm appearance-none disabled:opacity-50"
             >
               <option value={0}>Chọn Quận/Huyện</option>
               {districts?.data.map((d) => (
@@ -214,7 +214,7 @@ const AddressFormModal = ({ isOpen, onClose, initialData }: AddressFormModalProp
             <select
               {...register('wardId', { valueAsNumber: true })}
               disabled={!districtId}
-              className="w-full px-4 py-3 rounded-2xl border text-gray-700 border-stone-100 bg-stone-50/50 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-600 transition-all font-bold text-sm appearance-none disabled:opacity-50"
+              className="w-full px-4 py-3 rounded-2xl border text-gray-700 border-stone-100 bg-stone-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-all font-bold text-sm appearance-none disabled:opacity-50"
             >
               <option value={0}>Chọn Phường/Xã</option>
               {wards?.data.map((w) => (
@@ -236,7 +236,7 @@ const AddressFormModal = ({ isOpen, onClose, initialData }: AddressFormModalProp
           <textarea
             {...register('addressLine')}
             rows={2}
-            className="w-full px-5 py-3 rounded-2xl border text-gray-700 border-stone-100 bg-stone-50/50 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-600 transition-all font-bold text-sm resize-none"
+            className="w-full px-5 py-3 rounded-2xl border text-gray-700 border-stone-100 bg-stone-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-all font-bold text-sm resize-none"
             placeholder="Số nhà, tên đường, tòa nhà..."
           />
           {errors.addressLine && (
@@ -261,7 +261,7 @@ const AddressFormModal = ({ isOpen, onClose, initialData }: AddressFormModalProp
                 className={cn(
                   'flex-1 flex flex-col items-center justify-center py-3 rounded-2xl border-2 transition-all gap-1 cursor-pointer',
                   currentLabel === type.id
-                    ? 'border-green-600 bg-green-50/30 text-green-700'
+                    ? 'border-emerald-600 bg-emerald-50/30 text-emerald-700'
                     : 'border-stone-100 bg-stone-50/30 text-stone-400 hover:border-stone-200',
                 )}
               >
@@ -278,7 +278,7 @@ const AddressFormModal = ({ isOpen, onClose, initialData }: AddressFormModalProp
           <input
             type="checkbox"
             {...register('isDefault')}
-            className="w-5 h-5 rounded-lg border-stone-200 text-green-600 focus:ring-green-500"
+            className="w-5 h-5 rounded-lg border-stone-200 text-emerald-600 focus:ring-emerald-500"
           />
           <span className="text-sm font-bold text-stone-600 group-hover:text-stone-900 transition-colors">
             Đặt làm địa chỉ mặc định

@@ -187,7 +187,7 @@ const Step5Documents = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             onClick={onFinish}
-            className="w-full flex items-center justify-center gap-2 py-4 bg-green-600 text-white rounded-2xl font-black shadow-xl shadow-green-500/25 hover:bg-green-700 hover:-translate-y-0.5 transition-all"
+            className="w-full flex items-center justify-center gap-2 py-4 bg-green-600 text-white rounded-2xl font-black shadow-xl shadow-green-500/25 hover:bg-green-700 hover:-translate-y-0.5 transition-all cursor-pointer"
           >
             Hoàn tất & Về Dashboard <FiArrowRight />
           </motion.button>

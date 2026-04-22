@@ -275,8 +275,8 @@ export interface UpdateAttributesRequest {
 }
 
 export interface ProductListParams {
-  page?: number;
-  size?: number;
+  pageNo?: number;
+  pageSize?: number;
   status?: ProductStatus;
   categoryId?: number;
   search?: string;

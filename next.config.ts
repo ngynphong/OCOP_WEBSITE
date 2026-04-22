@@ -27,6 +27,18 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'ghtk.vn',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'minio.ocop.iesconnect.vn',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };

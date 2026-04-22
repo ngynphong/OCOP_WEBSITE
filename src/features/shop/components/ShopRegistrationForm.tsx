@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useMemo } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiChevronRight, FiChevronLeft, FiLoader, FiCheck } from 'react-icons/fi';
@@ -15,6 +15,7 @@ import Step2Address from './registration/Step2Address';
 import Step3Legal from './registration/Step3Legal';
 import Step4Plan from './registration/Step4Plan';
 import Step5Documents from './registration/Step5Documents';
+import { Button } from '@/components/ui/AppButton';
 
 const STEP_FIELDS: Record<number, (keyof CreateShopFormData)[]> = {
   1: ['name', 'slug', 'description'],
@@ -28,13 +29,7 @@ export const ShopRegistrationForm = () => {
   const { data: myShopData } = useMyShopQuery();
 
   const [currentStep, setCurrentStep] = useState(1);
-
-  // Persistence logic: If shop exists and pending, jump to step 5
-  React.useEffect(() => {
-    if (myShopData?.data && myShopData.data.shopResponse?.status === 'PENDING') {
-      setCurrentStep(5);
-    }
-  }, [myShopData]);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const {
     register,
@@ -61,6 +56,49 @@ export const ShopRegistrationForm = () => {
     },
   });
 
+  const watchedValues = useWatch({ control });
+
+  // 1. Load data from localStorage on mount
+  React.useEffect(() => {
+    const savedData = localStorage.getItem('shop_registration_draft');
+    const savedStep = localStorage.getItem('shop_registration_step');
+
+    if (savedData) {
+      try {
+        const parsedData = JSON.parse(savedData);
+        Object.entries(parsedData).forEach(([key, value]) => {
+          setValue(
+            key as keyof CreateShopFormData,
+            value as CreateShopFormData[keyof CreateShopFormData],
+          );
+        });
+      } catch (e) {
+        console.error('Failed to parse saved shop data', e);
+      }
+    }
+
+    if (savedStep) {
+      setCurrentStep(Number(savedStep));
+    }
+
+    setIsLoaded(true);
+  }, [setValue]);
+
+  // 2. Save data to localStorage when values change
+  React.useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem('shop_registration_draft', JSON.stringify(watchedValues));
+      localStorage.setItem('shop_registration_step', String(currentStep));
+    }
+  }, [watchedValues, currentStep, isLoaded]);
+
+  // Persistence logic from BE: If shop exists and pending, jump to step 5 (Documents)
+  React.useEffect(() => {
+    if (myShopData?.data && myShopData.data.shopResponse?.status === 'PENDING') {
+      setCurrentStep(5);
+    }
+  }, [myShopData]);
+
   const handleNext = useCallback(async () => {
     const fieldsToValidate = STEP_FIELDS[currentStep];
     const isValid = await trigger(fieldsToValidate);
@@ -75,6 +113,9 @@ export const ShopRegistrationForm = () => {
     async (data: CreateShopFormData) => {
       try {
         await createShop(data);
+        // Clear draft after success
+        localStorage.removeItem('shop_registration_draft');
+        localStorage.removeItem('shop_registration_step');
         setCurrentStep(5);
       } catch (error) {
         console.error('Registration failed:', error);
@@ -89,63 +130,74 @@ export const ShopRegistrationForm = () => {
   );
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-8">
+    <div className="space-y-8">
       <StepIndicator currentStep={currentStep} />
 
       <AnimatePresence mode="wait">
-        <motion.div
-          key={currentStep}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.25 }}
-        >
-          {currentStep === 1 && <Step1BasicInfo {...stepProps} />}
-          {currentStep === 2 && <Step2Address {...stepProps} />}
-          {currentStep === 3 && <Step3Legal {...stepProps} />}
-          {currentStep === 4 && <Step4Plan {...stepProps} />}
-          {currentStep === 5 && <Step5Documents />}
-        </motion.div>
-      </AnimatePresence>
-
-      {currentStep < 5 && (
-        <div className="flex justify-between pt-4 border-t border-stone-100">
-          <button
-            type="button"
-            onClick={handleBack}
-            disabled={currentStep === 1}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-stone-600 hover:bg-stone-100 disabled:opacity-0 disabled:pointer-events-none transition-all"
+        {currentStep === 5 ? (
+          <motion.div
+            key={5}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.25 }}
           >
-            <FiChevronLeft size={16} /> Quay lại
-          </button>
+            <Step5Documents />
+          </motion.div>
+        ) : (
+          <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-8">
+            <motion.div
+              key={currentStep}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.25 }}
+            >
+              {currentStep === 1 && <Step1BasicInfo {...stepProps} />}
+              {currentStep === 2 && <Step2Address {...stepProps} />}
+              {currentStep === 3 && <Step3Legal {...stepProps} />}
+              {currentStep === 4 && <Step4Plan {...stepProps} />}
+            </motion.div>
 
-          {currentStep < 4 ? (
-            <button
-              type="button"
-              onClick={handleNext}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold bg-green-600 text-white hover:bg-green-700 shadow-lg shadow-green-500/20 transition-all"
-            >
-              Tiếp theo <FiChevronRight size={16} />
-            </button>
-          ) : (
-            <button
-              type="submit"
-              disabled={isCreatingShop}
-              className="flex items-center gap-2 px-7 py-2.5 rounded-xl text-sm font-bold bg-green-600 text-white hover:bg-green-700 shadow-lg shadow-green-500/20 disabled:opacity-60 transition-all"
-            >
-              {isCreatingShop ? (
-                <>
-                  <FiLoader size={16} className="animate-spin" /> Đang xử lý...
-                </>
+            <div className="flex justify-between pt-4 border-t border-stone-100">
+              <button
+                type="button"
+                onClick={handleBack}
+                disabled={currentStep === 1}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-stone-600 hover:bg-stone-100 disabled:opacity-0 disabled:pointer-events-none transition-all cursor-pointer"
+              >
+                <FiChevronLeft size={16} /> Quay lại
+              </button>
+
+              {currentStep < 4 ? (
+                <Button
+                  type="button"
+                  onClick={handleNext}
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold bg-green-600 text-white hover:bg-green-700 shadow-lg shadow-green-500/20 transition-all"
+                >
+                  Tiếp theo <FiChevronRight size={16} />
+                </Button>
               ) : (
-                <>
-                  <FiCheck size={16} /> Đăng ký shop
-                </>
+                <Button
+                  type="submit"
+                  disabled={isCreatingShop}
+                  className="flex items-center gap-2 px-7 py-2.5 rounded-xl text-sm font-bold bg-green-600 text-white hover:bg-green-700 shadow-lg shadow-green-500/20 disabled:opacity-60 transition-all"
+                >
+                  {isCreatingShop ? (
+                    <>
+                      <FiLoader size={16} className="animate-spin" /> Đang xử lý...
+                    </>
+                  ) : (
+                    <>
+                      <FiCheck size={16} /> Đăng ký shop
+                    </>
+                  )}
+                </Button>
               )}
-            </button>
-          )}
-        </div>
-      )}
-    </form>
+            </div>
+          </form>
+        )}
+      </AnimatePresence>
+    </div>
   );
 };

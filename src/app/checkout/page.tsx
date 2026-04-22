@@ -316,7 +316,7 @@ function CheckoutContent() {
                     value={note}
                     onChange={(e) => setNote(e.target.value)}
                     disabled={isSubmitting}
-                    className="w-full bg-stone-50 border text-gray-700 border-stone-200 rounded-2xl p-4 text-sm focus:outline-hidden focus:ring-2 focus:ring-green-600/20 focus:border-green-600 transition-all font-medium placeholder:text-stone-400 placeholder:font-normal resize-none"
+                    className="w-full bg-stone-50 border text-gray-700 border-stone-200 rounded-2xl p-4 text-sm focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all font-medium placeholder:text-stone-400 placeholder:font-normal resize-none"
                     rows={2}
                   />
                 </div>

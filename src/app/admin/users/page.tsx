@@ -80,12 +80,20 @@ const UserListPage = () => {
             <span>Đã hỗ trợ Quản lý Điểm thưởng trong Chi tiết người dùng</span>
           </div>
         </div>
-        <Link
-          href="/admin/roles"
-          className="flex items-center gap-2 px-6 py-3 bg-emerald-900 text-white text-sm font-black rounded-2xl hover:bg-emerald-800 transition-all shadow-lg shadow-emerald-900/10 active:scale-95"
-        >
-          <FiShield size={18} /> Quản lý Vai trò
-        </Link>
+        <div className="flex gap-4">
+          <Link
+            href="/admin/permissions"
+            className="flex items-center gap-2 px-6 py-3 bg-stone-100 text-stone-600 font-medium rounded-2xl hover:bg-green-200 transition-all shadow-lg shadow-stone-900/10 active:scale-95"
+          >
+            <FiShield size={18} /> Quản lý Quyền
+          </Link>
+          <Link
+            href="/admin/roles"
+            className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white text-sm font-black rounded-2xl hover:bg-green-800 transition-all shadow-lg shadow-green-900/10 active:scale-95"
+          >
+            <FiShield size={18} /> Quản lý Vai trò
+          </Link>
+        </div>
       </div>
 
       {/* Filters & Search */}
@@ -185,14 +193,14 @@ const UserListPage = () => {
                             />
                           ) : (
                             <span className="text-emerald-700 font-black text-xs">
-                              {user.lastName[0]}
-                              {user.firstName[0]}
+                              {user?.lastName?.charAt(0)}
+                              {user?.firstName?.charAt(0)}
                             </span>
                           )}
                         </div>
                         <div>
                           <p className="text-sm font-black text-stone-900 leading-tight">
-                            {user.lastName} {user.firstName}
+                            {user?.lastName} {user?.firstName}
                           </p>
                         </div>
                       </div>

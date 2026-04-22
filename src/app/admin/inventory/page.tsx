@@ -118,7 +118,7 @@ const AdminInventoryPage = () => {
             value={tempKeyword}
             onChange={(e) => setTempKeyword(e.target.value)}
             placeholder="Tìm kiếm theo tên sản phẩm hoặc mã SKU..."
-            className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-stone-50 text-gray-700 border border-stone-100 focus:bg-white focus:border-green-500 focus:ring-4 focus:ring-green-500/5 transition-all outline-none text-sm font-medium"
+            className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-stone-50 text-gray-700 border border-stone-100 focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 transition-all outline-none text-sm font-medium"
           />
           <button type="submit" className="hidden" />
         </form>
@@ -135,7 +135,7 @@ const AdminInventoryPage = () => {
                 setShopId(e.target.value);
                 setPage(1);
               }}
-              className="w-full pl-12 pr-10 py-3.5 rounded-2xl bg-stone-50 border border-stone-100 appearance-none outline-none focus:border-green-500 focus:bg-white transition-all text-sm font-bold text-stone-700 cursor-pointer"
+              className="w-full pl-12 pr-10 py-3.5 rounded-2xl bg-stone-50 border border-stone-100 appearance-none outline-none focus:border-emerald-500 focus:bg-white transition-all text-sm font-bold text-stone-700 cursor-pointer"
             >
               <option value="">Tất cả cửa hàng</option>
               {/* Ở đây có thể fetch danh sách shop để render option nếu cần */}

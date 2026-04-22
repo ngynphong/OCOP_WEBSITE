@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { FiArrowLeft, FiCheck, FiXCircle, FiLock, FiUnlock } from 'react-icons/fi';
 import { ShopListItem } from '../types/adminTypes';
 import ShopStatusBadge from './ShopStatusBadge';
+import { Button } from '@/components/ui/AppButton';
 
 interface ShopDetailHeaderProps {
   shop: ShopListItem;
@@ -30,7 +31,7 @@ const ShopDetailHeader: React.FC<ShopDetailHeaderProps> = React.memo(
         <div className="flex items-center gap-4">
           <button
             onClick={() => router.back()}
-            className="p-3 bg-white border border-stone-100 rounded-2xl hover:bg-stone-50 transition-colors shadow-sm text-stone-400 hover:text-stone-600"
+            className="p-3 bg-white border border-stone-100 rounded-2xl hover:bg-stone-50 transition-colors shadow-sm text-stone-400 hover:text-stone-600 cursor-pointer"
           >
             <FiArrowLeft size={20} />
           </button>
@@ -55,39 +56,42 @@ const ShopDetailHeader: React.FC<ShopDetailHeaderProps> = React.memo(
         <div className="flex items-center gap-2">
           {shop.status === 'PENDING' && (
             <>
-              <button
+              <Button
                 onClick={() => onConfirmAction('APPROVE')}
                 disabled={isActionLoading.isApproving || !allDocsVerified}
                 className="px-6 py-3 bg-[#0D631B] text-white rounded-2xl text-sm font-black shadow-lg shadow-emerald-900/20 flex items-center gap-2 hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <FiCheck /> {isActionLoading.isApproving ? 'Đang duyệt...' : 'Duyệt Shop'}
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="outline"
                 onClick={() => onConfirmAction('REJECT')}
                 disabled={isActionLoading.isRejecting}
                 className="px-6 py-3 bg-red-50 text-red-600 border-2 border-red-100 rounded-2xl text-sm font-black flex items-center gap-2 hover:bg-red-100 transition-all disabled:opacity-50"
               >
                 <FiXCircle /> {isActionLoading.isRejecting ? 'Đang xử lý...' : 'Từ chối'}
-              </button>
+              </Button>
             </>
           )}
           {shop.status === 'ACTIVE' && (
-            <button
+            <Button
+              variant="outline"
               onClick={() => onConfirmAction('LOCK')}
               disabled={isActionLoading.isLocking}
               className="px-6 py-3 bg-amber-50 text-amber-600 border-2 border-amber-100 rounded-2xl text-sm font-black flex items-center gap-2 hover:bg-amber-100 transition-all disabled:opacity-50"
             >
               <FiLock /> {isActionLoading.isLocking ? 'Đang khóa...' : 'Khóa Shop'}
-            </button>
+            </Button>
           )}
           {shop.status === 'LOCKED' && (
-            <button
+            <Button
+              variant="outline"
               onClick={() => onConfirmAction('UNLOCK')}
               disabled={isActionLoading.isUnlocking}
               className="px-6 py-3 bg-emerald-50 text-emerald-600 border-2 border-emerald-100 rounded-2xl text-sm font-black flex items-center gap-2 hover:bg-emerald-100 transition-all disabled:opacity-50"
             >
               <FiUnlock /> {isActionLoading.isUnlocking ? 'Đang mở khóa...' : 'Mở khóa Shop'}
-            </button>
+            </Button>
           )}
         </div>
       </div>

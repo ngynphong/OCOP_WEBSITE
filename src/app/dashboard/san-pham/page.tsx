@@ -38,7 +38,7 @@ const STATUS_COLORS: Record<ProductStatus, string> = {
 
 export default function SellerProductsPage() {
   const router = useRouter();
-  const [params, setParams] = useState<ProductListParams>({ page: 0, size: 20 });
+  const [params, setParams] = useState<ProductListParams>({ pageNo: 1, pageSize: 10 });
   const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<'PRODUCTS' | 'FLASH_SALE'>('PRODUCTS');
   const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);

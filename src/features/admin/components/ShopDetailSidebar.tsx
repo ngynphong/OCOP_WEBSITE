@@ -30,7 +30,7 @@ const ShopDetailSidebar: React.FC<ShopDetailSidebarProps> = React.memo(({ shop }
             {shop.bannerUrl ? (
               <Image src={shop.bannerUrl} alt="Banner" fill className="object-cover rounded-3xl" />
             ) : (
-              <div className="w-full h-full bg-linear-to-br from-emerald-400 to-blue-500 rounded-3xl"></div>
+              <div className="w-full h-full bg-gray-50 rounded-3xl"></div>
             )}
           </div>
 
@@ -68,7 +68,7 @@ const ShopDetailSidebar: React.FC<ShopDetailSidebarProps> = React.memo(({ shop }
         </h4>
         <div className="flex items-center gap-4 p-4 bg-emerald-50/50 rounded-2xl border border-emerald-100/50">
           <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-black">
-            {shop.ownerName[0]}
+            {shop.ownerName[0].toUpperCase()}
           </div>
           <div>
             <p className="text-sm font-black text-stone-800 leading-none mb-1">{shop.ownerName}</p>
