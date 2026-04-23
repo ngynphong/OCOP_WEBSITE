@@ -45,8 +45,8 @@ export const MainBanner = memo(function MainBanner() {
   };
 
   return (
-    <div className="relative w-full group overflow-hidden rounded-[32px] shadow-2xl shadow-emerald-900/10">
-      <div className="relative w-full aspect-[21/9] md:aspect-[21/7] lg:h-[500px]">
+    <div className="relative w-full group overflow-hidden rounded-[24px] md:rounded-[32px] shadow-2xl shadow-emerald-900/10">
+      <div className="relative w-full aspect-[16/10] md:aspect-[21/7] lg:h-[500px]">
         <AnimatePresence mode="wait">
           <motion.div
             key={banners[currentIndex].id}
@@ -80,20 +80,23 @@ export const MainBanner = memo(function MainBanner() {
                   />
                 </div>
 
-                {/* Overlay text if needed - Can be customized per banner design */}
-                <div className="absolute inset-0 bg-linear-to-r from-black/40 via-transparent to-transparent flex flex-col justify-center px-8 md:px-16">
+                {/* Overlay text */}
+                <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent flex flex-col justify-center px-6 md:px-16">
                   <motion.div
                     initial={{ opacity: 0, x: -30 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.3, duration: 0.5 }}
-                    className="max-w-lg"
+                    className="max-w-[280px] sm:max-w-md md:max-w-lg"
                   >
-                    <h2 className="text-white text-3xl md:text-5xl font-black mb-4 drop-shadow-lg leading-tight">
+                    <h2 className="text-white text-xl sm:text-2xl md:text-5xl font-black mb-2 md:mb-4 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] leading-tight">
                       {banners[currentIndex].title}
                     </h2>
-                    <p className="text-white/90 text-sm md:text-lg mb-8 drop-shadow-md line-clamp-2">
+                    <p className="text-white/90 text-[10px] sm:text-xs md:text-lg mb-4 md:mb-8 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] line-clamp-2 md:line-clamp-3">
                       {banners[currentIndex].description}
                     </p>
+                    <div className="inline-flex md:hidden px-4 py-1.5 bg-green-600 text-white text-[10px] font-bold rounded-full shadow-lg">
+                      Xem ngay
+                    </div>
                   </motion.div>
                 </div>
               </div>

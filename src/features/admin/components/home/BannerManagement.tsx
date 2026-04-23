@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, memo } from 'react';
+import { useState, memo, useCallback } from 'react';
 import {
   FiPlus,
   FiEdit2,
@@ -22,6 +22,7 @@ import { BannerFormModal } from './BannerFormModal';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { Button } from '@/components/ui/AppButton';
+import { ConfirmModal } from '@/components/ui/ConfirmModal';
 
 export const BannerManagement = memo(function BannerManagement() {
   const { data: bannersResp, isLoading } = useAdminBannersQuery();
@@ -31,27 +32,40 @@ export const BannerManagement = memo(function BannerManagement() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBanner, setSelectedBanner] = useState<AdminBanner | undefined>(undefined);
 
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [bannerIdToDelete, setBannerIdToDelete] = useState<number | null>(null);
+
   const banners = bannersResp?.data || [];
 
-  const handleCreate = () => {
+  const handleCreate = useCallback(() => {
     setSelectedBanner(undefined);
     setIsModalOpen(true);
-  };
+  }, []);
 
-  const handleEdit = (banner: AdminBanner) => {
+  const handleEdit = useCallback((banner: AdminBanner) => {
     setSelectedBanner(banner);
     setIsModalOpen(true);
-  };
+  }, []);
 
-  const handleDelete = async (id: number) => {
-    if (confirm('Bạn có chắc chắn muốn xóa banner này?')) {
-      await deleteMutation.mutateAsync(id);
+  const handleDelete = useCallback((id: number) => {
+    setBannerIdToDelete(id);
+    setIsConfirmOpen(true);
+  }, []);
+
+  const handleConfirmDelete = useCallback(async () => {
+    if (bannerIdToDelete) {
+      await deleteMutation.mutateAsync(bannerIdToDelete);
+      setIsConfirmOpen(false);
+      setBannerIdToDelete(null);
     }
-  };
+  }, [bannerIdToDelete, deleteMutation]);
 
-  const handleToggleStatus = (id: number) => {
-    toggleStatusMutation.mutate(id);
-  };
+  const handleToggleStatus = useCallback(
+    (id: number) => {
+      toggleStatusMutation.mutate(id);
+    },
+    [toggleStatusMutation],
+  );
 
   if (isLoading) {
     return (
@@ -118,7 +132,7 @@ export const BannerManagement = memo(function BannerManagement() {
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => handleToggleStatus(banner.id)}
-                        className={`p-2 rounded-xl transition-all ${
+                        className={`p-2 rounded-xl transition-all cursor-pointer ${
                           banner.isActive !== false
                             ? 'text-emerald-600 bg-emerald-50 hover:bg-emerald-100'
                             : 'text-stone-400 bg-stone-50 hover:bg-stone-100'
@@ -129,13 +143,13 @@ export const BannerManagement = memo(function BannerManagement() {
                       </button>
                       <button
                         onClick={() => handleEdit(banner)}
-                        className="p-2 text-stone-600 bg-stone-50 hover:bg-stone-100 rounded-xl transition-all"
+                        className="p-2 text-stone-600 bg-stone-50 hover:bg-stone-100 rounded-xl transition-all cursor-pointer"
                       >
                         <FiEdit2 size={18} />
                       </button>
                       <button
                         onClick={() => handleDelete(banner.id)}
-                        className="p-2 text-red-600 bg-red-50 hover:bg-red-100 rounded-xl transition-all"
+                        className="p-2 text-red-600 bg-red-50 hover:bg-red-100 rounded-xl transition-all cursor-pointer"
                       >
                         <FiTrash2 size={18} />
                       </button>
@@ -201,6 +215,21 @@ export const BannerManagement = memo(function BannerManagement() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         banner={selectedBanner}
+      />
+
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        title="Xóa Banner"
+        message="Bạn có chắc chắn muốn xóa banner này? Hành động này không thể hoàn tác."
+        confirmText="Xóa ngay"
+        cancelText="Để sau"
+        onConfirm={handleConfirmDelete}
+        onCancel={() => {
+          setIsConfirmOpen(false);
+          setBannerIdToDelete(null);
+        }}
+        type="danger"
+        isLoading={deleteMutation.isPending}
       />
     </div>
   );

@@ -168,7 +168,7 @@ const WishlistButton = memo(({ id, isWishlisted }: { id: number; isWishlisted: b
       disabled={isLoading}
       onClick={handleWishlistClick}
       className={cn(
-        'p-2 rounded-full backdrop-blur-md transition-all duration-300 active:scale-90',
+        'p-2 rounded-full backdrop-blur-md transition-all duration-300 active:scale-90 cursor-pointer',
         isWishlisted ? 'bg-red-50 text-red-500' : 'bg-black/10 text-white hover:bg-black/20',
         isLoading && 'opacity-50 cursor-not-allowed',
       )}

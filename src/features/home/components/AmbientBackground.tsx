@@ -22,14 +22,32 @@ export const AmbientBackground = memo(function AmbientBackground() {
         >
           {/* Main Ambient Image - Lower blur to make it recognizable */}
           <div className="absolute inset-0 origin-center">
-            <Image
-              src={activeBanner?.imageUrl || '/images/fresh-green-produce.jpg'}
-              alt="Event Background"
-              fill
-              priority
-              className="object-cover blur-[3px] saturate-[1.5] brightness-90"
-              sizes="100vw"
-            />
+            {/* Desktop Background */}
+            <div className="hidden md:block absolute inset-0">
+              <Image
+                src={activeBanner?.imageUrl || '/images/fresh-green-produce.jpg'}
+                alt="Event Background"
+                fill
+                priority
+                className="object-cover blur-[3px] saturate-[1.5] brightness-90"
+                sizes="100vw"
+              />
+            </div>
+            {/* Mobile Background */}
+            <div className="block md:hidden absolute inset-0">
+              <Image
+                src={
+                  activeBanner?.imageMobileUrl ||
+                  activeBanner?.imageUrl ||
+                  '/images/fresh-green-produce.jpg'
+                }
+                alt="Event Background Mobile"
+                fill
+                priority
+                className="object-cover blur-[3px] saturate-[1.5] brightness-90"
+                sizes="100vw"
+              />
+            </div>
           </div>
 
           {/* Subtle noise texture */}

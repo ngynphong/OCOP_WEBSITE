@@ -32,6 +32,27 @@ export const usePublicProductsQuery = (
   });
 };
 
+export const usePublicProductsInfiniteQuery = (
+  params?: PublicProductListParams,
+  options?: Record<string, unknown>,
+) => {
+  return useInfiniteQuery({
+    queryKey: ['public-products-infinite', params],
+    queryFn: ({ pageParam = 1 }) =>
+      publicProductApi.getProducts({
+        ...params,
+        pageNo: pageParam as number,
+      }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const { pageNo, totalPage } = lastPage.data;
+      return pageNo < totalPage ? pageNo + 1 : undefined;
+    },
+    staleTime: 60 * 1000,
+    ...options,
+  });
+};
+
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 export const useInfiniteDiscoveryProductsQuery = (

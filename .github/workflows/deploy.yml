@@ -20,18 +20,18 @@ jobs:
           script: |
             # Di chuyển vào thư mục chứa code trên VPS
             cd /var/www/ocop-frontend
-            
+
             # Kéo code mới nhất về
             git pull origin main
-            
+
             # Tạo file .env từ GitHub Secrets
             echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" > .env
-            
+
             # Cài đặt thư viện mới (nếu có)
-            npm install
-            
+            npm ci
+
             # Build lại app Next.js
             npm run build
-            
+
             # Restart lại PM2 để apply code mới (Zero-downtime)
             pm2 reload ocop-web
