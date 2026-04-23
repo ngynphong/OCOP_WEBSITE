@@ -32,6 +32,51 @@ export const usePublicProductsQuery = (
   });
 };
 
+export const usePublicProductsInfiniteQuery = (
+  params?: PublicProductListParams,
+  options?: Record<string, unknown>,
+) => {
+  return useInfiniteQuery({
+    queryKey: ['public-products-infinite', params],
+    queryFn: ({ pageParam = 1 }) =>
+      publicProductApi.getProducts({
+        ...params,
+        pageNo: pageParam as number,
+      }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const { pageNo, totalPage } = lastPage.data;
+      return pageNo < totalPage ? pageNo + 1 : undefined;
+    },
+    staleTime: 60 * 1000,
+    ...options,
+  });
+};
+
+import { useInfiniteQuery } from '@tanstack/react-query';
+
+export const useInfiniteDiscoveryProductsQuery = (
+  params?: { pageSize?: number; sort?: string },
+  options?: Record<string, unknown>,
+) => {
+  return useInfiniteQuery({
+    queryKey: ['public-products-discovery', params],
+    queryFn: ({ pageParam = 1 }) =>
+      publicProductApi.getDiscoveryProducts({
+        ...params,
+        pageNo: pageParam as number,
+        pageSize: params?.pageSize || 20,
+      }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => {
+      const { pageNo, totalPage } = lastPage.data;
+      return pageNo + 1 < totalPage ? pageNo + 1 : undefined;
+    },
+    staleTime: 5 * 60 * 1000,
+    ...options,
+  });
+};
+
 export const usePublicProductDetailQuery = (slugOrId: string | number | null | undefined) => {
   return useQuery({
     queryKey: ['public-product', slugOrId],

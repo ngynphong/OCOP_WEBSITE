@@ -1,76 +1,17 @@
 'use client';
 
 import { ProductCard } from '@/components/ui/ProductCard';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Loader2 } from 'lucide-react';
 import { useWishlistStatus } from '@/features/wishlist/hooks/useWishlist';
 import { useAppSelector } from '@/store/hooks';
-
-const productsData = [
-  {
-    name: 'Tiêu đen hữu cơ Đắk Lắk',
-    price: 145000,
-    oldPrice: 180000,
-    rating: 4.9,
-    reviewCount: 128,
-    image: '/images/fresh-green-produce.jpg',
-    ocopStar: 5,
-    location: 'Đắk Lắk',
-    slug: 'tieu-den-huu-co-dak-lak',
-    id: 101,
-  },
-  {
-    name: 'Mật ong hoa bạc hà Mèo Vạc',
-    price: 320000,
-    oldPrice: 450000,
-    rating: 4.8,
-    reviewCount: 95,
-    image: '/images/fresh-green-produce.jpg',
-    ocopStar: 4,
-    location: 'Hà Giang',
-    slug: 'mat-ong-hoa-bac-ha-meo-vac',
-    id: 102,
-  },
-  {
-    name: 'Hạt điều rang muối Bình Phước',
-    price: 210000,
-    oldPrice: 250000,
-    rating: 5.0,
-    reviewCount: 214,
-    image: '/images/fresh-green-produce.jpg',
-    ocopStar: 5,
-    location: 'Bình Phước',
-    slug: 'hat-dieu-rang-muoi-binh-phuoc',
-    id: 103,
-  },
-  {
-    name: 'Cà phê Robusta Buôn Ma Thuột',
-    price: 185000,
-    oldPrice: 220000,
-    rating: 4.7,
-    reviewCount: 88,
-    image: '/images/fresh-green-produce.jpg',
-    ocopStar: 4,
-    location: 'Đắk Lắk',
-    slug: 'ca-phe-robusta-buon-ma-thuot',
-    id: 104,
-  },
-  {
-    name: 'Dầu dừa tinh khiết Bến Tre',
-    price: 85000,
-    oldPrice: 110000,
-    rating: 4.6,
-    reviewCount: 52,
-    image: '/images/fresh-green-produce.jpg',
-    ocopStar: 3,
-    location: 'Bến Tre',
-    slug: 'dau-dua-tinh-khiet-ben-tre',
-    id: 105,
-  },
-];
+import { useFeaturedProductsQuery } from '@/features/products/hooks/usePublicProducts';
 
 export function BestSellersSection() {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
-  const productIds = productsData.map((p) => p.id);
+  const { data: featuredResp, isLoading } = useFeaturedProductsQuery(10);
+
+  const products = featuredResp?.data?.items || [];
+  const productIds = products.map((p) => p.id);
   const { data: wishlistStatusData } = useWishlistStatus(isAuthenticated ? productIds : []);
   const wishlistStatusMap = wishlistStatusData?.data || {};
 
@@ -94,24 +35,44 @@ export function BestSellersSection() {
         </div>
       </div>
 
-      <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
-        {productsData.map((product, index) => (
-          <ProductCard
-            key={index}
-            name={product.name}
-            price={product.price}
-            oldPrice={product.oldPrice}
-            rating={product.rating}
-            reviewCount={product.reviewCount}
-            image={product.image}
-            ocopStar={product.ocopStar}
-            location={product.location}
-            slug={product.slug}
-            id={product.id}
-            isWishlisted={!!wishlistStatusMap[product.id]}
-          />
-        ))}
-      </div>
+      {isLoading ? (
+        <div className="w-full h-64 flex items-center justify-center bg-stone-50 rounded-[40px] border border-dashed border-stone-200">
+          <div className="flex flex-col items-center gap-3 text-stone-400">
+            <Loader2 className="w-8 h-8 animate-spin" />
+            <span className="text-sm font-bold uppercase tracking-widest">
+              Đang tải sản phẩm tiêu biểu...
+            </span>
+          </div>
+        </div>
+      ) : products.length === 0 ? (
+        <div className="w-full h-64 flex flex-col items-center justify-center bg-stone-50 rounded-[40px] border border-dashed border-stone-200 text-stone-400 gap-4">
+          <div className="p-4 bg-white rounded-full shadow-sm">
+            <Loader2 className="w-8 h-8 opacity-20" /> {/* Or a better empty icon */}
+          </div>
+          <span className="text-sm font-bold uppercase tracking-widest">
+            Chưa có sản phẩm bán chạy
+          </span>
+        </div>
+      ) : (
+        <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
+          {products.map((product) => (
+            <ProductCard
+              key={product.id}
+              name={product.name}
+              price={product.minPrice}
+              oldPrice={product.maxPrice > product.minPrice ? product.maxPrice : undefined}
+              rating={product.ratingAvg}
+              image={product.imageUrl || product.thumbnailUrl || null}
+              ocopStar={product.ocopStar}
+              location={product.provinceName || undefined}
+              shopName={product.shopName}
+              slug={product.slug}
+              id={product.id}
+              isWishlisted={!!wishlistStatusMap[product.id]}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 }

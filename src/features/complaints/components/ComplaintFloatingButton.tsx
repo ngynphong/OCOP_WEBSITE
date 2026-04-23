@@ -80,10 +80,9 @@ export const ComplaintFloatingButton = () => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={handleOpenForm}
-          className="w-14 h-14 bg-emerald-800 text-white rounded-full flex items-center justify-center shadow-2xl shadow-emerald-200 border-4 border-white cursor-pointer group relative overflow-hidden"
+          className="w-14 h-14 bg-emerald-800 text-white rounded-full flex items-center justify-center border-4 border-white cursor-pointer group relative overflow-hidden"
           aria-label="Gửi khiếu nại"
         >
-          <div className="absolute inset-0 bg-gradient-to-tr from-emerald-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
           <MessageCircle size={24} className="relative z-10" />
         </motion.button>
       </div>

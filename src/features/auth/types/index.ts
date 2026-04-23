@@ -11,7 +11,7 @@ export interface AuthUser {
   online: boolean;
 }
 
-export interface AuthResponseBase<T> {
+export interface ResponseBase<T> {
   code: number;
   message: string;
   data: T;
@@ -25,15 +25,15 @@ export type LoginResponseData = {
   roles: string[];
 };
 
-export type LoginResponse = AuthResponseBase<LoginResponseData>;
+export type LoginResponse = ResponseBase<LoginResponseData>;
 
-export type RegisterResponse = AuthResponseBase<AuthUser>;
+export type RegisterResponse = ResponseBase<AuthUser>;
 
-export type LogoutResponse = AuthResponseBase<null>;
+export type LogoutResponse = ResponseBase<null>;
 
-export type VerifyEmailResponse = AuthResponseBase<LoginResponseData>;
+export type VerifyEmailResponse = ResponseBase<LoginResponseData>;
 
-export type RefreshTokenResponse = AuthResponseBase<{
+export type RefreshTokenResponse = ResponseBase<{
   accessToken: string;
   refreshToken?: string;
 }>;
@@ -50,7 +50,7 @@ export interface VerifyOtpRequest {
 
 export type VerifyOtpResponseData = string;
 
-export type VerifyOtpResponse = AuthResponseBase<VerifyOtpResponseData>;
+export type VerifyOtpResponse = ResponseBase<VerifyOtpResponseData>;
 
 export interface ResetPasswordRequest {
   resetToken: string;
@@ -186,7 +186,7 @@ export interface UserProfile {
   twoFaEnabled: boolean;
 }
 
-export type UserProfileResponse = AuthResponseBase<UserProfile>;
+export type UserProfileResponse = ResponseBase<UserProfile>;
 
 export interface UpdateProfileRequest {
   firstName: string;
@@ -214,7 +214,7 @@ export interface ChangePasswordRequest {
   newPassword: string;
 }
 
-export type ChangePasswordResponse = AuthResponseBase<string>;
+export type ChangePasswordResponse = ResponseBase<string>;
 
 export const changePasswordSchema = z
   .object({

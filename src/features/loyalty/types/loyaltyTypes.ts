@@ -1,4 +1,4 @@
-import { AuthResponseBase } from '@/features/auth/types';
+import { ResponseBase } from '@/features/auth/types';
 
 export interface ILoyaltyAccount {
   availablePoints: number;
@@ -47,8 +47,8 @@ export interface IRedeemInfo {
   note: string;
 }
 
-export type AdminLoyaltyAccountResponse = AuthResponseBase<ILoyaltyAccount>;
-export type AdminAdjustPointsResponse = AuthResponseBase<ILoyaltyTransaction>;
-export type UserLoyaltyAccountResponse = AuthResponseBase<ILoyaltyAccount>;
-export type UserTransactionListResponse = AuthResponseBase<ILoyaltyTransactionListResponse>;
-export type CheckRedeemResponse = AuthResponseBase<IRedeemInfo>;
+export type AdminLoyaltyAccountResponse = ResponseBase<ILoyaltyAccount>;
+export type AdminAdjustPointsResponse = ResponseBase<ILoyaltyTransaction>;
+export type UserLoyaltyAccountResponse = ResponseBase<ILoyaltyAccount>;
+export type UserTransactionListResponse = ResponseBase<ILoyaltyTransactionListResponse>;
+export type CheckRedeemResponse = ResponseBase<IRedeemInfo>;

@@ -9,7 +9,7 @@ import {
   PublicBrandListResponse,
   PublicBrandDetailResponse,
   TraceDetailResponse,
-  AuthResponseBase,
+  ResponseBase,
 } from '@/features/products/types/productTypes';
 
 export const publicProductApi = {
@@ -53,11 +53,18 @@ export const publicProductApi = {
     return publicAxiosClient.get(`/trace/${qrCode}`);
   },
 
-  recordQrScan: (qrCode: string): Promise<AuthResponseBase<string>> => {
+  recordQrScan: (qrCode: string): Promise<ResponseBase<string>> => {
     return publicAxiosClient.post(`/trace/${qrCode}/scan`);
   },
 
-  getProvinces: (): Promise<AuthResponseBase<{ id: number; name: string }[]>> => {
+  getProvinces: (): Promise<ResponseBase<{ id: number; name: string }[]>> => {
     return publicAxiosClient.get('/location/provinces');
+  },
+  getDiscoveryProducts: (params?: {
+    pageNo?: number;
+    pageSize?: number;
+    sort?: string;
+  }): Promise<ProductListResponse> => {
+    return publicAxiosClient.get('/products/discovery', { params });
   },
 };

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { AuthResponseBase } from '@/features/admin/types/adminTypes';
+import { ResponseBase } from '@/features/admin/types/adminTypes';
 
 export type FlashSaleStatus = 'DRAFT' | 'UPCOMING' | 'ACTIVE' | 'FINISHED' | 'CANCELLED';
 
@@ -102,10 +102,10 @@ export interface BuyFlashSaleOrderData {
   discountPercent: number;
 }
 
-export type FlashSaleDetailResponse = AuthResponseBase<FlashSale>;
-export type FlashSaleListResponse = AuthResponseBase<FlashSale[]>;
-export type BuyFlashSaleResponse = AuthResponseBase<BuyFlashSaleOrderData>;
-export type FlashSaleAdminListResponse = AuthResponseBase<{
+export type FlashSaleDetailResponse = ResponseBase<FlashSale>;
+export type FlashSaleListResponse = ResponseBase<FlashSale[]>;
+export type BuyFlashSaleResponse = ResponseBase<BuyFlashSaleOrderData>;
+export type FlashSaleAdminListResponse = ResponseBase<{
   content: FlashSale[];
   totalElements: number;
   totalPages: number;

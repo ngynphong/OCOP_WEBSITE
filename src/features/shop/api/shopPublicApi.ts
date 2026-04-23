@@ -1,6 +1,8 @@
 import { publicAxiosClient } from '@/lib/axios';
 import {
+  ResponseBase,
   GetShopsPublicParams,
+  ShopInfo,
   ShopListResponse,
   ShopPolicyResponse,
   ShopPublicDetailResponse,
@@ -27,5 +29,9 @@ export const shopPublicApi = {
 
   getSubscriptionPlans: (): Promise<SubscriptionPlanListResponse> => {
     return publicAxiosClient.get('/shops/subscription-plans');
+  },
+
+  getFeaturedShops: (limit = 6): Promise<ResponseBase<ShopInfo[]>> => {
+    return publicAxiosClient.get('/shops/featured', { params: { limit } });
   },
 };

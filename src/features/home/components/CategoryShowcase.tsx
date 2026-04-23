@@ -1,198 +1,168 @@
-import { ProductCard } from '@/components/ui/ProductCard';
-import Image from 'next/image';
+'use client';
+
+import { memo } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
+import { motion } from 'framer-motion';
+import { ArrowRight, Sparkles } from 'lucide-react';
+import { ProductCard } from '@/components/ui/ProductCard';
+import {
+  usePublicCategoriesQuery,
+  usePublicProductsQuery,
+} from '@/features/products/hooks/usePublicProducts';
+import { CategorySectionSkeleton } from './CategorySectionSkeleton';
+import { PublicCategory } from '@/features/products/types/productTypes';
 
-const LEAFY_GREENS_DATA = [
-  {
-    name: 'Cải Chíp Organic',
-    price: 45000,
-    unit: 'kg',
-    location: 'Đà Lạt, Lâm Đồng',
-    image: '/images/fresh-green-produce.jpg',
-    ocopStar: 4,
-    rating: 5,
-    reviewCount: 0,
-    slug: 'cai-chip-organic',
-    id: 201,
-  },
-  {
-    name: 'Cải Kale T.Canh',
-    price: 75000,
-    unit: 'kg',
-    location: 'Đơn Dương, Lâm Đồng',
-    image: '/images/fresh-green-produce.jpg',
-    ocopStar: 5,
-    rating: 5,
-    reviewCount: 0,
-    slug: 'cai-kale-tuyet-canh',
-    id: 202,
-  },
-  {
-    name: 'Bó Xôi Organic',
-    price: 55000,
-    unit: 'kg',
-    location: 'Mộc Châu, Sơn La',
-    image: '/images/fresh-green-produce.jpg',
-    ocopStar: 4,
-    rating: 5,
-    reviewCount: 0,
-    slug: 'bo-xoi-organic',
-    id: 203,
-  },
-  {
-    name: 'Xà Lách Lolo Tím',
-    price: 42000,
-    unit: 'kg',
-    location: 'Lạc Dương, Lâm Đồng',
-    image: '/images/fresh-green-produce.jpg',
-    ocopStar: 3,
-    rating: 5,
-    reviewCount: 0,
-    slug: 'xa-lach-lolo-tim',
-    id: 204,
-  },
-];
+/**
+ * Individual Category Section with its own data fetching
+ */
+const CategorySection = memo(({ category, index }: { category: PublicCategory; index: number }) => {
+  const { data: productsData, isLoading } = usePublicProductsQuery({
+    categoryIds: [category.id],
+    pageSize: 4,
+  });
 
-export function CategoryShowcase() {
+  const products = productsData?.data.items || [];
+  const isEven = index % 2 === 0;
+
+  if (isLoading) return <CategorySectionSkeleton />;
+  if (products.length === 0) return null;
+
   return (
-    <div className="w-full max-w-7xl mx-auto flex flex-col justify-start items-start gap-16 md:gap-32 py-10 md:py-20 px-6">
-      {/* --- RAU LÁ XANH SECTION --- */}
-      <section className="w-full flex flex-col justify-start items-start gap-8 md:gap-12">
-        <div className="w-full inline-flex justify-start items-center gap-4">
-          <h2 className="text-stone-900 text-3xl md:text-4xl font-bold font-sans leading-10 whitespace-nowrap">
-            Rau Lá Xanh
+    <motion.section
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-100px' }}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+      className="w-full flex flex-col gap-8 md:gap-12"
+    >
+      {/* --- Section Header --- */}
+      <div className="w-full inline-flex justify-start items-center gap-4">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-stone-100 rounded-xl">
+            <Sparkles className="w-5 h-5 text-green-700" />
+          </div>
+          <h2 className="text-stone-900 text-2xl md:text-4xl font-black font-sans tracking-tight uppercase">
+            {category.name}
           </h2>
-          <div className="flex-1 h-0.5 bg-stone-200 rounded-full" />
-          <Link
-            href="/category/rau-la-xanh"
-            className="text-green-900 text-sm md:text-base font-bold font-sans whitespace-nowrap hidden sm:block hover:text-green-700 transition-colors"
-          >
-            Xem tất cả
-          </Link>
         </div>
+        <div className="flex-1 h-px bg-stone-200 rounded-full" />
+        <Link
+          href={`/danh-muc/${category.slug}`}
+          className="group flex items-center gap-2 text-green-900 text-sm md:text-base font-bold hover:text-green-700 transition-all whitespace-nowrap"
+        >
+          Xem tất cả
+          <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+        </Link>
+      </div>
 
-        <div className="w-full grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          {LEAFY_GREENS_DATA.map((item, index) => (
+      {/* --- Layout Pattern --- */}
+      {isEven ? (
+        /* Standard Grid Layout */
+        <div className="w-full grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+          {products.map((product) => (
             <ProductCard
-              key={index}
-              name={item.name}
-              price={item.price}
-              unit={item.unit}
-              location={item.location}
-              image={item.image}
-              ocopStar={item.ocopStar}
-              rating={item.rating}
-              reviewCount={item.reviewCount}
-              slug={item.slug}
-              id={item.id}
+              key={product.id}
+              id={product.id}
+              name={product.name}
+              slug={product.slug}
+              price={product.minPrice}
+              oldPrice={product.maxPrice > product.minPrice ? product.maxPrice : undefined}
+              image={product.imageUrl || product.thumbnailUrl || ''}
+              rating={product.ratingAvg}
+              soldCount={product.soldCount}
+              ocopStar={product.ocopStar}
+              shopName={product.shopName}
+              location={product.provinceName || 'Việt Nam'}
             />
           ))}
         </div>
-      </section>
-
-      {/* --- CỦ & QUẢ SECTION --- */}
-      <section className="w-full p-4 sm:p-6 md:p-12 lg:p-20 bg-orange-100/80 rounded-[24px] md:rounded-[48px] flex flex-col justify-start items-start gap-8 md:gap-12 shadow-sm">
-        <div className="w-full inline-flex justify-start items-center gap-4">
-          <h2 className="text-stone-900 text-3xl md:text-4xl font-bold font-sans leading-10 whitespace-nowrap">
-            Củ & Quả
-          </h2>
-          <div className="flex-1 h-0.5 bg-stone-300 rounded-full" />
-          <Link
-            href="/category/cu-qua"
-            className="text-green-900 text-sm md:text-base font-bold font-sans whitespace-nowrap hidden sm:block hover:text-green-700 transition-colors"
-          >
-            Xem tất cả
-          </Link>
-        </div>
-
-        <div className="w-full flex flex-col lg:flex-row justify-start items-stretch gap-6">
-          {/* Featured Banner Card */}
-          <div className="flex-1 relative bg-stone-900 rounded-2xl md:rounded-3xl shadow-xl flex flex-col justify-end items-start overflow-hidden min-h-[340px] md:min-h-[384px] cursor-pointer group">
+      ) : (
+        /* Featured / Editorial Layout */
+        <div className="w-full flex flex-col lg:flex-row gap-6 md:gap-8">
+          {/* Big Featured Card */}
+          <div className="flex-1 relative min-h-[400px] md:min-h-[500px] rounded-[32px] md:rounded-[48px] overflow-hidden group shadow-2xl shadow-stone-200">
             <Image
-              src="/images/fresh-green-produce.jpg"
-              alt="Khoai Tây Vàng Mộc Châu"
+              src={category.bannerUrl || '/images/fresh-green-produce.jpg'}
+              alt={category.name}
               fill
-              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-              className="object-cover group-hover:scale-105 transition-transform duration-500 opacity-80"
+              className="object-cover transition-transform duration-1000 group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-linear-to-t md:bg-linear-to-l from-black/90 via-black/40 to-black/0" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
 
-            <div className="relative z-10 w-full p-5 md:p-10 flex flex-col justify-end items-start h-full">
-              <div className="pb-4 flex justify-start items-center gap-2">
-                <span className="px-3 py-1 bg-yellow-600 rounded-full text-white text-xs font-bold leading-4 tracking-wide shadow-sm">
-                  OCOP 5 SAO
+            <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-end items-start gap-4">
+              <div className="flex gap-2">
+                <span className="px-3 py-1 bg-green-600 text-white text-[10px] font-bold rounded-full uppercase tracking-widest">
+                  Nổi bật
                 </span>
-                <span className="px-3 py-1 bg-white/20 rounded-full backdrop-blur-md text-white text-xs font-bold leading-4 tracking-wide">
-                  MIỀN BẮC
+                <span className="px-3 py-1 bg-white/20 backdrop-blur-md text-white text-[10px] font-bold rounded-full uppercase tracking-widest">
+                  OCOP
                 </span>
               </div>
-
-              <h3 className="text-white text-2xl md:text-3xl lg:text-4xl font-bold font-sans leading-tight mb-2">
-                Khoai Tây Vàng Mộc Châu
+              <h3 className="text-white text-3xl md:text-5xl font-black leading-tight max-w-md">
+                Khám phá <span className="text-green-400">{category.name}</span> Đặc Sản
               </h3>
-
-              <p className="text-white/80 text-sm md:text-base font-normal font-sans leading-6 max-w-sm mb-6">
-                Thơm ngon, bở tơi, đậm đà hương vị núi rừng Tây Bắc. Canh tác hoàn toàn tự nhiên.
+              <p className="text-white/70 text-sm md:text-lg font-medium max-w-sm mb-4">
+                Tuyển chọn những sản phẩm chất lượng nhất từ các vùng miền Việt Nam.
               </p>
-
-              <div className="flex flex-col sm:flex-row justify-start items-start sm:items-center gap-3 md:gap-6 mt-auto">
-                <span className="text-green-300 text-xl md:text-2xl lg:text-3xl font-black font-sans leading-none">
-                  38.000đ/kg
-                </span>
-                <button
-                  suppressHydrationWarning
-                  className="w-full sm:w-auto px-6 md:px-8 py-3 bg-green-900 hover:bg-green-800 transition-colors rounded-full text-white text-sm md:text-base font-bold font-sans whitespace-nowrap shadow-md"
-                >
-                  Thêm vào giỏ
-                </button>
-              </div>
+              <Link
+                href={`/danh-muc/${category.slug}`}
+                className="px-8 py-4 bg-white text-stone-900 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-green-500 hover:text-white transition-all shadow-xl"
+              >
+                Trải nghiệm ngay
+              </Link>
             </div>
           </div>
 
-          {/* Side Card */}
-          <div className="w-full lg:w-80 bg-white rounded-3xl shadow-lg flex flex-col justify-start items-start overflow-hidden hover:shadow-xl transition-shadow cursor-pointer group">
-            <div className="w-full relative aspect-5/3 lg:aspect-auto lg:flex-1 overflow-hidden">
-              <Image
-                src="/images/fresh-green-produce.jpg"
-                alt="Cà Rốt Đà Lạt"
-                fill
-                sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-                className="object-cover group-hover:scale-105 transition-transform duration-500"
+          {/* Grid of remaining products */}
+          <div className="lg:w-[420px] grid grid-cols-2 lg:grid-cols-1 gap-4 md:gap-6">
+            {products.slice(0, 2).map((product) => (
+              <ProductCard
+                key={product.id}
+                id={product.id}
+                name={product.name}
+                slug={product.slug}
+                price={product.minPrice}
+                oldPrice={product.maxPrice > product.minPrice ? product.maxPrice : undefined}
+                image={product.imageUrl || product.thumbnailUrl || ''}
+                rating={product.ratingAvg}
+                soldCount={product.soldCount}
+                ocopStar={product.ocopStar}
+                shopName={product.shopName}
+                location={product.provinceName || 'Việt Nam'}
               />
-              <div className="p-2 absolute right-4 top-4 bg-green-900 rounded-full shadow-md">
-                {/* SVG Leaf Icon representation */}
-                <div
-                  className="w-5 h-3 bg-white"
-                  style={{ clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }}
-                />
-              </div>
-            </div>
-
-            <div className="w-full p-6 lg:p-8 flex flex-col justify-between items-start flex-none">
-              <div className="w-full flex flex-col justify-start items-start gap-2 mb-6">
-                <h3 className="text-stone-900 text-2xl font-bold font-sans leading-8">
-                  Cà Rốt Đà Lạt
-                </h3>
-                <p className="text-neutral-700 text-sm font-normal font-sans leading-5">
-                  Giòn ngọt, giàu dinh dưỡng, thu hoạch mới mỗi sáng.
-                </p>
-              </div>
-
-              <div className="w-full pt-4 border-t border-orange-100 flex justify-between items-center mt-auto">
-                <span className="text-green-900 text-xl font-black font-sans leading-7">
-                  28.000đ/kg
-                </span>
-                <button
-                  suppressHydrationWarning
-                  className="text-green-900 text-base font-bold font-sans hover:text-green-700"
-                >
-                  Chi tiết
-                </button>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
-      </section>
+      )}
+    </motion.section>
+  );
+});
+
+CategorySection.displayName = 'CategorySection';
+
+export function CategoryShowcase() {
+  const { data: categoriesData, isLoading } = usePublicCategoriesQuery();
+
+  // Get top 3 categories for the showcase (top level categories only)
+  const categories = categoriesData?.data.filter((c) => !c.parentId).slice(0, 3) || [];
+
+  if (isLoading) {
+    return (
+      <div className="w-full max-w-7xl mx-auto flex flex-col gap-16 py-20 px-6">
+        <CategorySectionSkeleton />
+        <CategorySectionSkeleton />
+      </div>
+    );
+  }
+
+  if (categories.length === 0) return null;
+
+  return (
+    <div className="w-full max-w-7xl mx-auto flex flex-col gap-24 md:gap-32 py-10 md:py-20 px-6 overflow-hidden">
+      {categories.map((category, index) => (
+        <CategorySection key={category.id} category={category} index={index} />
+      ))}
     </div>
   );
 }

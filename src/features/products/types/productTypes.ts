@@ -1,6 +1,6 @@
-import { AuthResponseBase, PaginatedResponse } from '@/features/admin/types/adminTypes';
+import { ResponseBase, PaginatedResponse } from '@/features/admin/types/adminTypes';
 
-export type { AuthResponseBase, PaginatedResponse };
+export type { ResponseBase, PaginatedResponse };
 
 // ─── Enums ────────────────────────────────────────────────────────────────────
 
@@ -156,6 +156,7 @@ export interface Product {
   variants: ProductVariant[];
   images?: ProductImage[]; // Added back based on API response
   thumbnailUrl?: string;
+  imageUrl?: string;
   url?: string;
   journals: ProductJournal[];
   qrCode: ProductQrCode | null;
@@ -304,16 +305,16 @@ export interface PublicProductListParams {
 
 // ─── Response type aliases ────────────────────────────────────────────────────
 
-export type ProductDetailResponse = AuthResponseBase<Product>;
-export type ProductListResponse = AuthResponseBase<PaginatedResponse<Product>>;
-export type VariantListResponse = AuthResponseBase<ProductVariant[]>;
-export type VariantDetailResponse = AuthResponseBase<ProductVariant>;
-export type ImageListResponse = AuthResponseBase<ProductImage[]>;
-export type ImageDetailResponse = AuthResponseBase<ProductImage>;
-export type JournalListResponse = AuthResponseBase<ProductJournal[]>;
-export type JournalDetailResponse = AuthResponseBase<ProductJournal>;
-export type QrCodeResponse = AuthResponseBase<ProductQrCode>;
-export type AttributeListResponse = AuthResponseBase<ProductAttributeValue[]>;
+export type ProductDetailResponse = ResponseBase<Product>;
+export type ProductListResponse = ResponseBase<PaginatedResponse<Product>>;
+export type VariantListResponse = ResponseBase<ProductVariant[]>;
+export type VariantDetailResponse = ResponseBase<ProductVariant>;
+export type ImageListResponse = ResponseBase<ProductImage[]>;
+export type ImageDetailResponse = ResponseBase<ProductImage>;
+export type JournalListResponse = ResponseBase<ProductJournal[]>;
+export type JournalDetailResponse = ResponseBase<ProductJournal>;
+export type QrCodeResponse = ResponseBase<ProductQrCode>;
+export type AttributeListResponse = ResponseBase<ProductAttributeValue[]>;
 
 export interface AttributeTemplate {
   id: number;
@@ -324,7 +325,7 @@ export interface AttributeTemplate {
   level: 'PRODUCT' | 'VARIANT';
 }
 
-export type AttributeTemplateListResponse = AuthResponseBase<AttributeTemplate[]>;
+export type AttributeTemplateListResponse = ResponseBase<AttributeTemplate[]>;
 
 // ─── Public Category ─────────────────────────────────────────────────────────
 
@@ -341,8 +342,8 @@ export interface PublicCategory {
   children: PublicCategory[];
 }
 
-export type PublicCategoryListResponse = AuthResponseBase<PublicCategory[]>;
-export type PublicCategoryDetailResponse = AuthResponseBase<PublicCategory>;
+export type PublicCategoryListResponse = ResponseBase<PublicCategory[]>;
+export type PublicCategoryDetailResponse = ResponseBase<PublicCategory>;
 
 // ─── Public Brand ────────────────────────────────────────────────────────────
 
@@ -356,8 +357,8 @@ export interface PublicBrand {
   isActive: boolean;
 }
 
-export type PublicBrandListResponse = AuthResponseBase<PublicBrand[]>;
-export type PublicBrandDetailResponse = AuthResponseBase<PublicBrand>;
+export type PublicBrandListResponse = ResponseBase<PublicBrand[]>;
+export type PublicBrandDetailResponse = ResponseBase<PublicBrand>;
 
 // ─── Trace Detail ────────────────────────────────────────────────────────────
 
@@ -389,7 +390,7 @@ export interface TraceDetail {
   scanCount: number;
 }
 
-export type TraceDetailResponse = AuthResponseBase<TraceDetail>;
+export type TraceDetailResponse = ResponseBase<TraceDetail>;
 
 // ─── Admin-specific response ──────────────────────────────────────────────────
 
@@ -403,4 +404,4 @@ export interface AdminApproveResponse {
   message: string;
 }
 
-export type AdminApproveProductResponse = AuthResponseBase<AdminApproveResponse>;
+export type AdminApproveProductResponse = ResponseBase<AdminApproveResponse>;

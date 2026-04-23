@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo, memo, useCallback } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { ProductImage } from '@/features/products/types/productTypes';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface ProductGalleryProps {
   images?: ProductImage[];
@@ -11,25 +12,63 @@ interface ProductGalleryProps {
   videoUrl?: string;
 }
 
-export function ProductGallery({
+export const ProductGallery = memo(function ProductGallery({
   images = [],
   name,
   videoUrl = 'https://assets.mixkit.co/videos/preview/mixkit-farmer-walking-through-a-field-of-wheat-4428-large.mp4',
 }: ProductGalleryProps) {
+  const sortedImages = useMemo(
+    () => [...images].sort((a, b) => a.sortOrder - b.sortOrder),
+    [images],
+  );
+
+  const mediaList = useMemo(() => {
+    const list: { type: 'IMAGE' | 'VIDEO'; url: string; id?: number | string }[] = [];
+    if (videoUrl) {
+      list.push({ type: 'VIDEO', url: videoUrl, id: 'video' });
+    }
+    sortedImages.forEach((img) => {
+      list.push({ type: 'IMAGE', url: img.url, id: img.id });
+    });
+    if (list.length === 0) {
+      list.push({ type: 'IMAGE', url: '/images/fresh-green-produce.jpg', id: 'fallback' });
+    }
+    return list;
+  }, [sortedImages, videoUrl]);
+
   const [activeMedia, setActiveMedia] = useState<{
     type: 'IMAGE' | 'VIDEO';
     url: string;
     id?: number | string;
-  }>({
-    type: 'IMAGE',
-    url:
-      images.find((img) => img.isPrimary)?.url ||
-      images[0]?.url ||
-      '/images/fresh-green-produce.jpg',
-    id: images.find((img) => img.isPrimary)?.id || images[0]?.id,
-  });
+  }>(mediaList[0]);
 
-  const sortedImages = [...images].sort((a, b) => a.sortOrder - b.sortOrder);
+  const currentIndex = mediaList.findIndex(
+    (m) => m.type === activeMedia.type && (m.id === activeMedia.id || m.url === activeMedia.url),
+  );
+
+  const handlePrev = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (currentIndex > 0) {
+        setActiveMedia(mediaList[currentIndex - 1]);
+      } else {
+        setActiveMedia(mediaList[mediaList.length - 1]);
+      }
+    },
+    [currentIndex, mediaList],
+  );
+
+  const handleNext = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (currentIndex < mediaList.length - 1) {
+        setActiveMedia(mediaList[currentIndex + 1]);
+      } else {
+        setActiveMedia(mediaList[0]);
+      }
+    },
+    [currentIndex, mediaList],
+  );
 
   if (!images.length && !videoUrl) {
     return (
@@ -42,7 +81,7 @@ export function ProductGallery({
   return (
     <div className="flex flex-col gap-4">
       {/* Main Display */}
-      <div className="w-full relative aspect-square rounded-3xl overflow-hidden bg-stone-50 border border-stone-100 shadow-sm group">
+      <div className="w-full max-h-[500px] aspect-square relative rounded-3xl overflow-hidden bg-stone-50 border border-stone-100 shadow-sm group">
         {activeMedia.type === 'VIDEO' ? (
           <video
             src={activeMedia.url}
@@ -59,19 +98,29 @@ export function ProductGallery({
             fill
             priority
             sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-contain p-4 group-hover:scale-105 transition-transform duration-1000 ease-out"
+            className="object-contain scale-105 p-4 group-hover:scale-110 transition-transform duration-1000 ease-out"
           />
         )}
 
-        {/* Badge Overlay */}
-        <div className="absolute top-4 left-4">
-          <div className="bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-xl shadow-sm border border-stone-100 flex items-center gap-1.5">
-            <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-            <span className="text-[9px] font-black uppercase tracking-widest text-stone-900">
-              Premium OCOP
-            </span>
-          </div>
-        </div>
+        {/* Navigation Arrows */}
+        {mediaList.length > 1 && (
+          <>
+            <button
+              onClick={handlePrev}
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 backdrop-blur-sm shadow-md rounded-full flex items-center justify-center text-stone-600 hover:bg-white hover:text-green-600 hover:scale-110 transition-all opacity-0 group-hover:opacity-100 z-10"
+              aria-label="Previous image"
+            >
+              <ChevronLeft className="w-6 h-6 mr-0.5" />
+            </button>
+            <button
+              onClick={handleNext}
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 backdrop-blur-sm shadow-md rounded-full flex items-center justify-center text-stone-600 hover:bg-white hover:text-green-600 hover:scale-110 transition-all opacity-0 group-hover:opacity-100 z-10"
+              aria-label="Next image"
+            >
+              <ChevronRight className="w-6 h-6 ml-0.5" />
+            </button>
+          </>
+        )}
       </div>
 
       {/* Thumbnails Row */}
@@ -79,7 +128,7 @@ export function ProductGallery({
         {/* Video Thumbnail (Always first if exists) */}
         {videoUrl && (
           <button
-            onClick={() => setActiveMedia({ type: 'VIDEO', url: videoUrl })}
+            onClick={() => setActiveMedia({ type: 'VIDEO', url: videoUrl, id: 'video' })}
             className={cn(
               'relative w-14 h-14 rounded-xl overflow-hidden border-2 transition-all duration-300 group',
               activeMedia.type === 'VIDEO'
@@ -120,4 +169,4 @@ export function ProductGallery({
       </div>
     </div>
   );
-}
+});

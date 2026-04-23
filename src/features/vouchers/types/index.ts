@@ -17,6 +17,10 @@ export interface Voucher {
   startAt: string;
   expiredAt: string;
   status: VoucherStatus;
+  shopId?: number | null;
+  shopName?: string | null;
+  shopSlug?: string | null;
+  shopLogoUrl?: string | null;
 }
 
 export interface VoucherListResponse {

@@ -35,3 +35,11 @@ export const useSubscriptionPlansQuery = () => {
     staleTime: 30 * 60 * 1000,
   });
 };
+
+export const useFeaturedShopsQuery = (limit = 6) => {
+  return useQuery({
+    queryKey: ['public-shops-featured', limit],
+    queryFn: () => shopPublicApi.getFeaturedShops(limit),
+    staleTime: 10 * 60 * 1000,
+  });
+};

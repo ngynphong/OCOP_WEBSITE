@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo, memo } from 'react';
 import Image from 'next/image';
 import { Quote } from 'lucide-react';
 
@@ -10,9 +10,15 @@ interface ProductStoryProps {
   images: string[];
 }
 
-export function ProductStory({ description, name, images }: ProductStoryProps) {
-  // Split description into paragraphs for magazine layout
-  const paragraphs = description.split('\n\n').filter((p) => p.trim() !== '');
+export const ProductStory = memo(function ProductStory({
+  description,
+  name,
+  images,
+}: ProductStoryProps) {
+  const paragraphs = useMemo(
+    () => description.split('\n\n').filter((p) => p.trim() !== ''),
+    [description],
+  );
 
   return (
     <section className="py-6 border-t border-stone-100 overflow-hidden">
@@ -31,8 +37,8 @@ export function ProductStory({ description, name, images }: ProductStoryProps) {
         {/* Story Content - Magazine Layout */}
         <div className="flex flex-col gap-8">
           {/* Section 1: Image Left, Text Right */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-center">
-            <div className="relative aspect-4/5 rounded-3xl overflow-hidden shadow-xl skew-y-1 hover:skew-y-0 transition-transform duration-700">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-center justify-between">
+            <div className="relative max-h-[500px] aspect-4/5 rounded-3xl overflow-hidden shadow-xl skew-y-1 hover:skew-y-0 transition-transform duration-700">
               <Image
                 src={images[0] || '/images/placeholder-product.jpg'}
                 alt="Product Origin"
@@ -74,7 +80,7 @@ export function ProductStory({ description, name, images }: ProductStoryProps) {
           </div>
 
           {/* Section 3: Text Left, Image Right */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-center justify-between">
             <div className="flex flex-col gap-4 px-6 order-2 lg:order-1">
               <div className="prose prose-stone text-sm max-w-none text-stone-600 font-medium leading-[1.65]">
                 {paragraphs.slice(1).map((p, idx) => (
@@ -89,7 +95,7 @@ export function ProductStory({ description, name, images }: ProductStoryProps) {
                 )}
               </div>
             </div>
-            <div className="relative aspect-4/5 rounded-3xl overflow-hidden shadow-xl -skew-y-1 hover:skew-y-0 transition-transform duration-700 order-1 lg:order-2">
+            <div className="relative w-full max-w-[400px] lg:ml-auto aspect-4/5 rounded-3xl overflow-hidden shadow-xl -skew-y-1 hover:skew-y-0 transition-transform duration-700 order-1 lg:order-2">
               <Image
                 src={images[2] || images[1] || images[0] || '/images/placeholder-product.jpg'}
                 alt="Craftsmanship"
@@ -103,4 +109,4 @@ export function ProductStory({ description, name, images }: ProductStoryProps) {
       </div>
     </section>
   );
-}
+});

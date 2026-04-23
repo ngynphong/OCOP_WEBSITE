@@ -39,7 +39,7 @@ export const useInfiniteSellerOrders = (params: Omit<ISellerOrderListReq, 'pageN
       ),
     getNextPageParam: (lastPage) => {
       const { page, totalPages } = lastPage.data;
-      return page < totalPages ? page + 1 : undefined;
+      return page + 1 < totalPages ? page + 2 : undefined;
     },
     initialPageParam: 1,
     staleTime: 1000 * 60,

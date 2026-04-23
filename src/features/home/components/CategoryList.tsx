@@ -37,14 +37,14 @@ export function CategoryList() {
       <div className="w-full flex flex-wrap justify-center gap-6 md:gap-12">
         {categories.map((cat) => (
           <Link
-            href={`/category/${cat.slug}`}
+            href={`/danh-muc/${cat.slug}`}
             key={cat.id}
             className="flex flex-col justify-start items-center gap-4 group cursor-pointer"
           >
-            <div className="w-28 h-28 md:w-32 md:h-32 p-1.5 md:p-2 bg-stone-100 rounded-full border border-transparent group-hover:border-green-600/30 transition-colors flex flex-col justify-center items-center overflow-hidden shadow-sm hover:shadow-md">
+            <div className="w-28 h-28 md:w-32 md:h-32 p-1.5 md:p-2 bg-white/40 backdrop-blur-sm rounded-full border border-white/40 group-hover:border-green-600/30 transition-colors flex flex-col justify-center items-center overflow-hidden shadow-sm hover:shadow-md">
               <div className="relative w-full h-full rounded-full overflow-hidden">
                 <Image
-                  src={cat.iconUrl || '/images/placeholder-category.jpg'}
+                  src={cat.iconUrl || '/images/default-image.png'}
                   alt={cat.name}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

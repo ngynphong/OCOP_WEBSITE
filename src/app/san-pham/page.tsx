@@ -32,6 +32,7 @@ export default function ProductsPage() {
   const [maxPrice, setMaxPrice] = useState<number>(MAX_PRICE_LIMIT);
   const [sortBy, setSortBy] = useState('newest');
   const [page, setPage] = useState(0);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { isAuthenticated } = useAppSelector((state) => state.auth);
 
   // Debounce inputs to prevent excessive API calls
@@ -117,66 +118,153 @@ export default function ProductsPage() {
             </p>
           </div>
 
-          {/* Sort Dropdown */}
-          <div className="flex items-center gap-4 relative">
-            <span className="text-sm font-semibold text-neutral-500 uppercase tracking-widest font-sans whitespace-nowrap">
-              Sắp xếp
-            </span>
-            <div className="relative">
-              <select
-                value={sortBy}
-                onChange={(e) => {
-                  setSortBy(e.target.value);
-                  setPage(0);
-                }}
-                suppressHydrationWarning
-                className="appearance-none bg-white px-6 py-3 pr-10 rounded-xl border border-stone-200 font-bold font-sans text-sm text-stone-700 hover:bg-stone-50 transition-colors shadow-sm outline-none cursor-pointer focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
-              >
-                <option value="newest">Mới nhất</option>
-                <option value="price-asc">Giá từ thấp đến cao</option>
-                <option value="price-desc">Giá từ cao đến thấp</option>
-                <option value="rating-desc">Đánh giá OCOP cao nhất</option>
-              </select>
-              <ChevronDown className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-stone-500" />
+          <div className="flex flex-wrap items-center gap-4">
+            {/* Mobile Filter Button */}
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="lg:hidden flex items-center gap-2 bg-white px-5 py-3 rounded-xl border border-stone-200 font-bold text-sm text-stone-700 shadow-sm hover:bg-stone-50 transition-all active:scale-95"
+            >
+              <Search className="w-4 h-4" />
+              Bộ lọc {hasActiveFilters && <span className="w-2 h-2 bg-green-600 rounded-full" />}
+            </button>
+
+            {/* Sort Dropdown */}
+            <div className="flex items-center gap-4 relative">
+              <span className="hidden sm:inline text-sm font-semibold text-neutral-500 uppercase tracking-widest font-sans whitespace-nowrap">
+                Sắp xếp
+              </span>
+              <div className="relative">
+                <select
+                  value={sortBy}
+                  onChange={(e) => {
+                    setSortBy(e.target.value);
+                    setPage(0);
+                  }}
+                  suppressHydrationWarning
+                  className="appearance-none bg-white px-6 py-3 pr-10 rounded-xl border border-stone-200 font-bold font-sans text-sm text-stone-700 hover:bg-stone-50 transition-colors shadow-sm outline-none cursor-pointer focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
+                >
+                  <option value="newest">Mới nhất</option>
+                  <option value="price-asc">Giá từ thấp đến cao</option>
+                  <option value="price-desc">Giá từ cao đến thấp</option>
+                  <option value="rating-desc">Đánh giá OCOP cao nhất</option>
+                </select>
+                <ChevronDown className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-stone-500" />
+              </div>
             </div>
           </div>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-12">
-          {/* Sidebar Filter */}
-          <ProductSidebar
-            searchQuery={searchQuery}
-            setSearchQuery={(v) => {
-              setSearchQuery(v);
-              setPage(0);
-            }}
-            selectedRatings={selectedRatings}
-            setSelectedRatings={(v) => {
-              setSelectedRatings(v);
-              setPage(0);
-            }}
-            selectedProvinceId={selectedProvinceId}
-            setSelectedProvinceId={(v) => {
-              setSelectedProvinceId(v);
-              setPage(0);
-            }}
-            minPrice={minPrice}
-            maxPrice={maxPrice}
-            setMaxPrice={(v) => {
-              setMaxPrice(v);
-              setPage(0);
-            }}
-            selectedCategoryIds={selectedCategoryIds}
-            setSelectedCategoryIds={(v) => {
-              setSelectedCategoryIds(v);
-              setPage(0);
-            }}
-            selectedBrandIds={selectedBrandIds}
-            setSelectedBrandIds={(v) => {
-              setSelectedBrandIds(v);
-              setPage(0);
-            }}
-          />
+          {/* Desktop Sidebar Filter */}
+          <div className="hidden lg:block">
+            <ProductSidebar
+              searchQuery={searchQuery}
+              setSearchQuery={(v) => {
+                setSearchQuery(v);
+                setPage(0);
+              }}
+              selectedRatings={selectedRatings}
+              setSelectedRatings={(v) => {
+                setSelectedRatings(v);
+                setPage(0);
+              }}
+              selectedProvinceId={selectedProvinceId}
+              setSelectedProvinceId={(v) => {
+                setSelectedProvinceId(v);
+                setPage(0);
+              }}
+              minPrice={minPrice}
+              maxPrice={maxPrice}
+              setMaxPrice={(v) => {
+                setMaxPrice(v);
+                setPage(0);
+              }}
+              selectedCategoryIds={selectedCategoryIds}
+              setSelectedCategoryIds={(v) => {
+                setSelectedCategoryIds(v);
+                setPage(0);
+              }}
+              selectedBrandIds={selectedBrandIds}
+              setSelectedBrandIds={(v) => {
+                setSelectedBrandIds(v);
+                setPage(0);
+              }}
+            />
+          </div>
+
+          {/* Mobile Drawer Filter */}
+          <div
+            className={`fixed inset-0 z-50 lg:hidden transition-opacity duration-300 ${
+              isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+            }`}
+          >
+            {/* Backdrop */}
+            <div
+              className="absolute inset-0 bg-stone-900/60 backdrop-blur-sm"
+              onClick={() => setIsSidebarOpen(false)}
+            />
+            {/* Sliding Panel */}
+            <div
+              className={`absolute top-0 right-0 h-full w-[320px] bg-white shadow-2xl transition-transform duration-300 ease-out transform ${
+                isSidebarOpen ? 'translate-x-0' : 'translate-x-full'
+              }`}
+            >
+              <div className="flex flex-col h-full">
+                <div className="flex items-center justify-between p-6 border-b border-stone-100">
+                  <h2 className="text-xl font-bold text-stone-900">Bộ lọc sản phẩm</h2>
+                  <button
+                    onClick={() => setIsSidebarOpen(false)}
+                    className="p-2 hover:bg-stone-100 rounded-full transition-colors"
+                  >
+                    <X className="w-6 h-6 text-stone-500" />
+                  </button>
+                </div>
+                <div className="flex-1 overflow-y-auto p-6">
+                  <ProductSidebar
+                    searchQuery={searchQuery}
+                    setSearchQuery={(v) => {
+                      setSearchQuery(v);
+                      setPage(0);
+                    }}
+                    selectedRatings={selectedRatings}
+                    setSelectedRatings={(v) => {
+                      setSelectedRatings(v);
+                      setPage(0);
+                    }}
+                    selectedProvinceId={selectedProvinceId}
+                    setSelectedProvinceId={(v) => {
+                      setSelectedProvinceId(v);
+                      setPage(0);
+                    }}
+                    minPrice={minPrice}
+                    maxPrice={maxPrice}
+                    setMaxPrice={(v) => {
+                      setMaxPrice(v);
+                      setPage(0);
+                    }}
+                    selectedCategoryIds={selectedCategoryIds}
+                    setSelectedCategoryIds={(v) => {
+                      setSelectedCategoryIds(v);
+                      setPage(0);
+                    }}
+                    selectedBrandIds={selectedBrandIds}
+                    setSelectedBrandIds={(v) => {
+                      setSelectedBrandIds(v);
+                      setPage(0);
+                    }}
+                  />
+                </div>
+                <div className="p-6 border-t border-stone-100 bg-stone-50">
+                  <button
+                    onClick={() => setIsSidebarOpen(false)}
+                    className="w-full bg-green-700 text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-green-800 transition-all active:scale-95"
+                  >
+                    Áp dụng bộ lọc
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* Product Grid Area */}
           <div className="grow flex flex-col">

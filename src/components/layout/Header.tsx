@@ -11,7 +11,7 @@ import {
   LayoutDashboard,
   LogOut,
   ChevronDown,
-  QrCode,
+  ScanLine,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
@@ -38,8 +38,6 @@ export function Header() {
   const { logout, isLoggingOut, handleClientLogout, profile } = useAuth();
   const role = useAppSelector((state) => state.auth.roles);
 
-  // Cart count badge — lấy từ useCart (cùng cache key với CartPage)
-  // Sau khi addToCart/removeItem invalidate CART_QUERY_KEYS.cart, badge tự cập nhật
   const { data: cartResp } = useCart();
   const cartCount = cartResp?.data?.totalItems ?? 0;
 
@@ -95,13 +93,13 @@ export function Header() {
               suppressHydrationWarning
               className="inline-flex flex-row justify-start items-center"
             >
-              <div className="bg-white/90 backdrop-blur-md rounded-2xl px-3 py-2 shadow-md border border-gray-100">
+              <div className="bg-white/90 backdrop-blur-md rounded-2xl px-2 py-1 shadow-md border border-gray-100">
                 <Image
                   src="/images/dNUEl-removebg-preview.png"
                   alt="OCOP IES CONNECT"
-                  width={230}
-                  height={60}
-                  className="h-12 lg:h-14 w-auto object-contain scale-125"
+                  width={165}
+                  height={50}
+                  className="h-8 lg:h-12 w-auto object-contain scale-115"
                   priority
                 />
               </div>
@@ -122,6 +120,12 @@ export function Header() {
                       ? 'text-white text-sm font-semibold font-sans leading-5'
                       : 'text-emerald-100 text-sm font-semibold font-sans leading-5'
                   }
+                  onClick={() => {
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth',
+                    });
+                  }}
                 >
                   Trang Chủ
                 </span>
@@ -140,20 +144,48 @@ export function Header() {
                       ? 'text-white text-sm font-semibold font-sans leading-5'
                       : 'text-emerald-100 text-sm font-semibold font-sans leading-5'
                   }
+                  onClick={() => {
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth',
+                    });
+                  }}
                 >
                   Sản Phẩm
                 </span>
               </Link>
               <Link
-                href="/san-pham"
-                className="inline-flex flex-col justify-start items-start relative hover:after:content-[''] hover:after:absolute hover:after:bg-white hover:after:w-full hover:after:h-[2px] hover:after:bottom-[-5px]"
+                href="/vung-mien"
+                className={
+                  isHydrated && pathname.startsWith('/vung-mien')
+                    ? 'py-[5px] border-b-2 border-white inline-flex flex-col justify-start items-start'
+                    : "inline-flex flex-col justify-start items-start relative hover:after:content-[''] hover:after:absolute hover:after:bg-white hover:after:w-full hover:after:h-[2px] hover:after:bottom-[-5px]"
+                }
               >
-                <span className="text-emerald-100 text-sm font-semibold font-sans leading-5">
+                <span
+                  className={
+                    isHydrated && pathname.startsWith('/vung-mien')
+                      ? 'text-white text-sm font-semibold font-sans leading-5'
+                      : 'text-emerald-100 text-sm font-semibold font-sans leading-5'
+                  }
+                  onClick={() => {
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth',
+                    });
+                  }}
+                >
                   Vùng Miền
                 </span>
               </Link>
               <Link
                 href="/san-pham"
+                onClick={() => {
+                  window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth',
+                  });
+                }}
                 className="inline-flex flex-col justify-start items-start relative hover:after:content-[''] hover:after:absolute hover:after:bg-white hover:after:w-full hover:after:h-[2px] hover:after:bottom-[-5px]"
               >
                 <span className="text-emerald-100 text-sm font-semibold font-sans leading-5">
@@ -280,7 +312,7 @@ export function Header() {
               aria-label="Quét mã QR"
               className="h-10 w-10 inline-flex flex-col justify-center items-center text-white hover:bg-white/10 rounded-full transition-colors cursor-pointer group"
             >
-              <QrCode className="w-5 h-5 group-hover:scale-110 transition-transform" />
+              <ScanLine className="w-5 h-5 group-hover:scale-110 transition-transform" />
             </button>
             {isAuthenticated && <NotificationBell />}
             <Link
@@ -344,7 +376,14 @@ export function Header() {
             >
               Sản Phẩm
             </Link>
-            <Link href="/san-pham" className="text-emerald-100 text-base font-semibold">
+            <Link
+              href="/vung-mien"
+              className={
+                isHydrated && pathname.startsWith('/vung-mien')
+                  ? 'text-white text-base font-semibold'
+                  : 'text-emerald-100 text-base font-semibold'
+              }
+            >
               Vùng Miền
             </Link>
             <Link href="/san-pham" className="text-emerald-100 text-base font-semibold">

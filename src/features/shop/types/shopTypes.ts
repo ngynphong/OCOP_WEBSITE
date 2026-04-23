@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { AuthResponseBase } from '@/features/auth/types';
+import { ResponseBase } from '@/features/auth/types';
 
-export type { AuthResponseBase };
+export type { ResponseBase };
 
 // ─── Enums ───────────────────────────────────────────────────────────────────
 
@@ -153,22 +153,22 @@ export interface CreateSubscriptionRequest {
 
 // ─── Response Types ──────────────────────────────────────────────────────────
 
-export type ShopListResponse = AuthResponseBase<PaginatedShops>;
+export type ShopListResponse = ResponseBase<PaginatedShops>;
 export interface ShopDetailData {
   shopResponse: ShopInfo;
   missingRequiredDocuments: boolean;
   missingFields: string[];
 }
 
-export type ShopDetailResponse = AuthResponseBase<ShopDetailData>;
-export type ShopPublicDetailResponse = AuthResponseBase<ShopInfo>;
-export type ShopPolicyResponse = AuthResponseBase<ShopPolicy>;
-export type SubscriptionPlanListResponse = AuthResponseBase<SubscriptionPlan[]>;
-export type ShopDocumentListResponse = AuthResponseBase<ShopDocument[]>;
-export type ShopDocumentResponse = AuthResponseBase<ShopDocument>;
-export type ShopDocumentDeleteResponse = AuthResponseBase<string>;
-export type ShopSubscriptionResponse = AuthResponseBase<ShopSubscription>;
-export type ShopSubscriptionListResponse = AuthResponseBase<ShopSubscription[]>;
+export type ShopDetailResponse = ResponseBase<ShopDetailData>;
+export type ShopPublicDetailResponse = ResponseBase<ShopInfo>;
+export type ShopPolicyResponse = ResponseBase<ShopPolicy>;
+export type SubscriptionPlanListResponse = ResponseBase<SubscriptionPlan[]>;
+export type ShopDocumentListResponse = ResponseBase<ShopDocument[]>;
+export type ShopDocumentResponse = ResponseBase<ShopDocument>;
+export type ShopDocumentDeleteResponse = ResponseBase<string>;
+export type ShopSubscriptionResponse = ResponseBase<ShopSubscription>;
+export type ShopSubscriptionListResponse = ResponseBase<ShopSubscription[]>;
 
 // ─── Zod Schemas (Form Validation) ────────────────────────────────────────────
 
