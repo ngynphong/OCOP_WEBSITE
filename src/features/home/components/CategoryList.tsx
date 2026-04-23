@@ -37,7 +37,7 @@ export function CategoryList() {
       <div className="w-full flex flex-wrap justify-center gap-6 md:gap-12">
         {categories.map((cat) => (
           <Link
-            href={`/category/${cat.slug}`}
+            href={`/danh-muc/${cat.slug}`}
             key={cat.id}
             className="flex flex-col justify-start items-center gap-4 group cursor-pointer"
           >

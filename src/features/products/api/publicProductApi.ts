@@ -60,4 +60,11 @@ export const publicProductApi = {
   getProvinces: (): Promise<AuthResponseBase<{ id: number; name: string }[]>> => {
     return publicAxiosClient.get('/location/provinces');
   },
+  getDiscoveryProducts: (params?: {
+    pageNo?: number;
+    pageSize?: number;
+    sort?: string;
+  }): Promise<ProductListResponse> => {
+    return publicAxiosClient.get('/products/discovery', { params });
+  },
 };

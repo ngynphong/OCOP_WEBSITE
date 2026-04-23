@@ -28,4 +28,9 @@ export const voucherApi = {
     publicAxiosClient.get<VoucherValidateResponse>('/vouchers/validate', {
       params: { code, shopId },
     }),
+
+  getPublicFeaturedVouchers: (limit = 4) =>
+    publicAxiosClient.get<Voucher[]>('/vouchers/featured', { params: { limit } }),
+
+  collectVoucher: (voucherId: number) => axiosClient.post(`/vouchers/${voucherId}/collect`),
 };

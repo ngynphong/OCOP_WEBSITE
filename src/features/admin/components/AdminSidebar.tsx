@@ -23,6 +23,7 @@ import { FaWarehouse } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { IoTicket } from 'react-icons/io5';
 import { BiSupport } from 'react-icons/bi';
+import { CiShop } from 'react-icons/ci';
 
 interface AdminSidebarProps {
   isCollapsed: boolean;
@@ -32,7 +33,7 @@ interface AdminSidebarProps {
 // Hoist menu items out of the component to optimize memory
 const MENU_ITEMS = [
   { label: 'Tổng quan', icon: FiGrid, href: '/admin', id: 'overview' },
-  { label: 'Cửa hàng', icon: FiShoppingBag, href: '/admin/shops', id: 'shops' },
+  { label: 'Cửa hàng', icon: CiShop, href: '/admin/shops', id: 'shops' },
   { label: 'Đơn hàng', icon: FiShoppingBag, href: '/admin/orders', id: 'orders' },
   { label: 'Sản phẩm', icon: FiBox, href: '/admin/products', id: 'products' },
   { label: 'Kho hàng', icon: FaWarehouse, href: '/admin/inventory', id: 'inventory' },
@@ -55,6 +56,18 @@ const MENU_ITEMS = [
     icon: BiSupport,
     href: '/admin/support-tickets',
     id: 'admin-support-tickets',
+  },
+  {
+    label: 'Banner trang chủ',
+    icon: FiBox,
+    href: '/admin/banners',
+    id: 'banners',
+  },
+  {
+    label: 'Liên kết nhanh',
+    icon: FiGrid,
+    href: '/admin/quick-links',
+    id: 'quick-links',
   },
   // { label: 'Vận hành', icon: FiSettings, href: '/admin/van-hanh', id: 'operations' },
   // { label: 'Dữ liệu gốc', icon: FiDatabase, href: '/admin/du-lieu', id: 'master-data' },

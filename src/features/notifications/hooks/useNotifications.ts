@@ -9,10 +9,6 @@ export const NOTIFICATION_KEYS = {
   count: () => [...NOTIFICATION_KEYS.all, 'unread-count'] as const,
 };
 
-/**
- * Hook lấy danh sách thông báo với khả năng load more (Infinite Scroll)
- * Sử dụng React Query để cache và invalidate khi có notification mới từ WS
- */
 export const useInfiniteNotifications = (pageSize = 10) => {
   return useInfiniteQuery({
     queryKey: NOTIFICATION_KEYS.lists(),
@@ -23,7 +19,7 @@ export const useInfiniteNotifications = (pageSize = 10) => {
         sorts: 'createdAt:desc',
       });
     },
-    initialPageParam: 1, // API 1-indexed (pageNo=1 là trang đầu tiên)
+    initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
       const totalPage = lastPage.data?.totalPage ?? 0;
       const nextPageParam = allPages.length + 1;
@@ -46,7 +42,6 @@ export const useUnreadCountScope = () => {
   useEffect(() => {
     if (!client) return;
 
-    // Hàm thực hiện subscribe (dùng lại cho cả lúc đã connect và lúc mới connect)
     const setupSubscriptions = () => {
       const personalSub = client.subscribe('/user/queue/notifications', (message) => {
         console.log('[WS] Personal notification:', message.body);
@@ -67,13 +62,9 @@ export const useUnreadCountScope = () => {
     let subscriptionCleanup: (() => void) | undefined;
 
     if (client.connected) {
-      // 1. Trường hợp đã kết nối: Subscribe luôn
       subscriptionCleanup = setupSubscriptions();
     } else {
-      // 2. Trường hợp chưa kết nối: Đăng ký vào Hub tập trung (không gây memory leak)
       const removeListener = addConnectListener(() => {
-        // Khi hub báo đã connect, thực hiện subscribe
-        // Cần đảm bảo dọn dẹp subscription cũ nếu bị gọi lại
         subscriptionCleanup?.();
         subscriptionCleanup = setupSubscriptions();
       });
@@ -95,9 +86,6 @@ export const useUnreadCountScope = () => {
   };
 };
 
-/**
- * Hook tổng hợp các mutations cho thông báo
- */
 export const useNotificationMutations = () => {
   const queryClient = useQueryClient();
 

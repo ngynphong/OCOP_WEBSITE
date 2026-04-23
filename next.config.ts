@@ -39,6 +39,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'bvtb.org.vn',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };

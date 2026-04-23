@@ -17,8 +17,8 @@ import {
 } from '@/features/seller-orders/components/SellerFinanceTables';
 import { ISellerOrderItem } from '@/features/seller-orders/types/sellerOrderTypes';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
-import { useInView } from 'react-intersection-observer';
-import { Loader2 } from 'lucide-react';
+import { Plus } from 'lucide-react';
+import { Button } from '@/components/ui/AppButton';
 
 const STATUS_TABS = [
   { value: 'ALL', label: 'Tất cả' },
@@ -76,7 +76,6 @@ function OrdersManagementContent() {
   // Quản lý status Orders
   const currentStatus = searchParams.get('status') || 'ALL';
   const pageNo = parseInt(searchParams.get('page') || '1');
-  const { ref, inView } = useInView();
 
   const {
     data: ordersData,
@@ -90,11 +89,7 @@ function OrdersManagementContent() {
     pageSize: 10,
   });
 
-  React.useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage && activeMainTab === 'orders') {
-      fetchNextPage();
-    }
-  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage, activeMainTab]);
+  // Gỡ bỏ auto-fetch scroll
 
   const orders = ordersData?.pages.flatMap((page) => page.data.content) || [];
 
@@ -182,18 +177,22 @@ function OrdersManagementContent() {
                     <SellerOrderCard key={`${order.id}-${idx}`} order={order} />
                   ))}
 
-                  {/* Load more trigger */}
-                  <div ref={ref} className="py-8 flex justify-center">
-                    {isFetchingNextPage ? (
-                      <div className="flex items-center gap-2 text-stone-400 font-bold text-xs uppercase tracking-widest">
-                        <Loader2 className="animate-spin" size={16} />
-                        Đang tải thêm đơn hàng...
-                      </div>
-                    ) : hasNextPage ? (
-                      <div className="h-4" />
+                  {/* Load more trigger - Switched to Button for stability */}
+                  <div className="py-12 flex flex-col items-center gap-4">
+                    {hasNextPage ? (
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        onClick={() => fetchNextPage()}
+                        isLoading={isFetchingNextPage}
+                        className="min-w-[200px] rounded-2xl border-2 border-stone-200 hover:border-green-600 hover:text-green-700 font-black tracking-widest uppercase text-xs transition-all shadow-sm"
+                      >
+                        <Plus className="mr-2" size={16} />
+                        Xem thêm đơn hàng
+                      </Button>
                     ) : (
-                      <div className="text-[10px] font-black text-stone-300 uppercase tracking-widest bg-stone-50 px-4 py-2 rounded-full border border-stone-100">
-                        Bạn đã xem hết danh sách đơn hàng
+                      <div className="text-[10px] font-black text-stone-400 uppercase tracking-widest bg-stone-50 px-6 py-3 rounded-full border border-stone-100 shadow-inner">
+                        ✨ Bạn đã xem hết danh sách đơn hàng
                       </div>
                     )}
                   </div>

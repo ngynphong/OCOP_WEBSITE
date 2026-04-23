@@ -84,3 +84,20 @@ export const useValidateVoucher = () => {
       voucherApi.validateVoucher(code, shopId),
   });
 };
+
+export const usePublicFeaturedVouchers = (limit = 4) => {
+  return useQuery({
+    queryKey: ['vouchers', 'featured', limit],
+    queryFn: () => voucherApi.getPublicFeaturedVouchers(limit),
+    staleTime: 10 * 60 * 1000,
+  });
+};
+
+export const useCollectVoucher = () => {
+  return useMutation({
+    mutationFn: (voucherId: number) => voucherApi.collectVoucher(voucherId),
+    onSuccess: () => {
+      toast.success('Đã lưu mã giảm giá vào ví của bạn');
+    },
+  });
+};

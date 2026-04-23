@@ -29,7 +29,7 @@ export const RejectOrderModal: React.FC<RejectOrderModalProps> = ({
         </p>
 
         <textarea
-          className="w-full border-2 border-stone-200 rounded-xl p-4 min-h-[120px] focus:outline-none focus:border-green-600 transition-colors"
+          className="w-full border-2 border-stone-200 text-gray-700 rounded-xl p-4 min-h-[120px] focus:outline-none focus:border-green-600 transition-colors"
           placeholder="Lý do từ chối... (VD: Hết hàng, Sai thông tin...)"
           value={reason}
           onChange={(e) => setReason(e.target.value)}
