@@ -26,16 +26,6 @@ const ReactQueryDevtools = dynamic(
   },
 );
 
-const ComplaintFloatingButton = dynamic(
-  () =>
-    import('@/features/complaints/components/ComplaintFloatingButton').then(
-      (mod) => mod.ComplaintFloatingButton,
-    ),
-  {
-    ssr: false,
-  },
-);
-
 export default function AppProvider({ children }: { children: React.ReactNode }) {
   const [store] = useState(() => makeStore());
 
@@ -96,7 +86,6 @@ export default function AppProvider({ children }: { children: React.ReactNode })
           }}
         />
         <LoadingOverlay />
-        <ComplaintFloatingButton />
         {/* Bật Devtools ở góc dưới bên phải màn hình (chỉ hiện trong môi trường dev) */}
         <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
       </QueryClientProvider>

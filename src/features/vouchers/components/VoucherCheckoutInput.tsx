@@ -1,16 +1,14 @@
-'use client';
-
-import React, { useState } from 'react';
-import { Tag, Loader2, X } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Tag, Loader2, X, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useValidateVoucher } from '@/features/vouchers/hooks/useVouchers';
 import type { VoucherValidateResponse } from '@/features/vouchers/types';
 import toast from 'react-hot-toast';
-import { Button } from '@/components/ui/AppButton';
+import { useDebounce } from '@/hooks/useDebounce';
 
 interface VoucherCheckoutInputProps {
   onApply: (voucher: VoucherValidateResponse | null) => void;
   appliedVoucher: VoucherValidateResponse | null;
-  shopId?: number; // Optional: if voucher is per shop
+  shopId?: number;
 }
 
 export const VoucherCheckoutInput = ({
@@ -19,39 +17,51 @@ export const VoucherCheckoutInput = ({
   shopId,
 }: VoucherCheckoutInputProps) => {
   const [voucherCode, setVoucherCode] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const { mutate: checkVoucher, isPending } = useValidateVoucher();
 
-  const handleApply = () => {
-    if (!voucherCode.trim()) return;
+  const debouncedVoucherCode = useDebounce(voucherCode, 900);
 
-    checkVoucher(
-      { code: voucherCode, shopId },
-      {
-        onSuccess: (res) => {
-          if (!res.data.valid) {
-            onApply(res.data);
-            toast.success('Áp dụng mã giảm giá thành công!');
-          } else {
+  const handleApply = useCallback(
+    (code: string) => {
+      checkVoucher(
+        { code, shopId },
+        {
+          onSuccess: (res) => {
+            if (res.data.valid) {
+              onApply(res.data);
+              setError(null);
+              toast.success('Áp dụng mã giảm giá thành công!');
+            } else {
+              onApply(null);
+              setError(res.data.description || 'Mã giảm giá không hợp lệ hoặc đã hết hạn');
+            }
+          },
+          onError: () => {
             onApply(null);
-            toast.error('Mã giảm giá này đã được sử dụng');
-          }
+            setError('Có lỗi xảy ra khi kiểm tra mã');
+          },
         },
-        onError: () => {
-          onApply(null);
-          toast.error('Có lỗi xảy ra khi kiểm tra mã');
-        },
-      },
-    );
-  };
+      );
+    },
+    [checkVoucher, onApply, shopId],
+  );
+
+  useEffect(() => {
+    if (debouncedVoucherCode && !appliedVoucher && debouncedVoucherCode.length >= 3) {
+      handleApply(debouncedVoucherCode);
+    }
+  }, [debouncedVoucherCode, appliedVoucher, handleApply]);
 
   const handleRemove = () => {
     onApply(null);
     setVoucherCode('');
+    setError(null);
   };
 
   return (
     <div className="space-y-3">
-      <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest block">
+      <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest block ml-1">
         Mã giảm giá
       </label>
 
@@ -59,7 +69,7 @@ export const VoucherCheckoutInput = ({
         <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-2xl px-4 py-3 group animate-in fade-in slide-in-from-top-1">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center">
-              <Tag className="w-4 h-4 text-emerald-600" />
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
             </div>
             <div>
               <p className="text-sm font-black text-emerald-800">{appliedVoucher.code}</p>
@@ -76,25 +86,45 @@ export const VoucherCheckoutInput = ({
           </button>
         </div>
       ) : (
-        <div className="flex gap-2">
-          <div className="flex-1 flex items-center gap-3 bg-stone-50 border border-stone-200 rounded-2xl px-4 py-3 focus-within:border-green-500 focus-within:ring-4 focus-within:ring-green-500/5 transition-all">
-            <Tag className="w-4 h-4 text-stone-400 shrink-0" />
-            <input
-              type="text"
-              value={voucherCode}
-              onChange={(e) => setVoucherCode(e.target.value.toUpperCase())}
-              placeholder="VÍ DỤ: OCOP2024"
-              className="flex-1 text-sm font-bold text-stone-900 bg-transparent focus:outline-none placeholder:text-stone-300 placeholder:font-bold"
-            />
+        <div className="space-y-2">
+          <div className="relative group">
+            <div
+              className={`flex items-center gap-3 bg-stone-50 border rounded-2xl px-4 py-3.5 transition-all duration-300 ${
+                error
+                  ? 'border-red-200 bg-red-50/30 ring-4 ring-red-500/5'
+                  : 'border-stone-200 focus-within:border-green-500 focus-within:ring-4 focus-within:ring-green-500/5'
+              }`}
+            >
+              <Tag
+                className={`w-4 h-4 shrink-0 transition-colors ${error ? 'text-red-400' : 'text-stone-400 group-focus-within:text-green-600'}`}
+              />
+              <input
+                type="text"
+                value={voucherCode}
+                onChange={(e) => {
+                  setVoucherCode(e.target.value.toUpperCase());
+                  setError(null);
+                }}
+                placeholder="VÍ DỤ: OCOP2024"
+                className="flex-1 text-sm font-bold text-stone-900 bg-transparent focus:outline-none placeholder:text-stone-300"
+              />
+              {isPending && <Loader2 size={16} className="animate-spin text-green-600 shrink-0" />}
+            </div>
+
+            {/* Error Message */}
+            {error && (
+              <div className="flex items-center gap-1.5 px-3 mt-1.5 animate-in fade-in slide-in-from-top-1">
+                <AlertCircle size={12} className="text-red-500" />
+                <span className="text-[10px] font-bold text-red-500 uppercase tracking-tight">
+                  {error}
+                </span>
+              </div>
+            )}
           </div>
-          <Button
-            onClick={handleApply}
-            variant="primary"
-            disabled={isPending || !voucherCode.trim()}
-            className="px-6 py-3 disabled:bg-stone-100 disabled:text-stone-300 text-white text-xs font-black rounded-2xl transition-all shadow-sm active:scale-95 shrink-0 min-w-[100px] flex items-center justify-center"
-          >
-            {isPending ? <Loader2 size={16} className="animate-spin" /> : 'ÁP DỤNG'}
-          </Button>
+
+          <p className="text-[10px] text-stone-400 font-medium px-1">
+            * Nhập mã để hệ thống tự động kiểm tra và áp dụng.
+          </p>
         </div>
       )}
     </div>

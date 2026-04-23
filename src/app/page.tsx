@@ -16,6 +16,7 @@ import { DailyDiscoverFeed } from '@/features/home/components/DailyDiscoverFeed'
 import { MainBanner } from '@/features/home/components/MainBanner';
 import { SubBanners } from '@/features/home/components/SubBanners';
 import { AmbientBackground } from '@/features/home/components/AmbientBackground';
+import { ComplaintFloatingButton } from '@/features/complaints/components/ComplaintFloatingButton';
 
 export default function Home() {
   return (
@@ -54,6 +55,7 @@ export default function Home() {
           <NewsletterSection />
         </div>
         {/* <ScrollToTop /> */}
+        <ComplaintFloatingButton />
       </main>
 
       <Footer />
