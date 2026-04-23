@@ -10,7 +10,7 @@ import {
   AdminReviewQueryParams,
   ContentFlagListResponse,
 } from '../types/reviewTypes';
-import { AuthResponseBase } from '@/features/auth/types/index';
+import { ResponseBase } from '@/features/auth/types/index';
 
 export const reviewApi = {
   // ─── Consumer API ──────────────────────────────────────────────────────────
@@ -31,12 +31,12 @@ export const reviewApi = {
   },
 
   /** Báo cáo vi phạm đánh giá */
-  flagReview: (reviewId: number, data: FlagReviewPayload): Promise<AuthResponseBase<string>> => {
+  flagReview: (reviewId: number, data: FlagReviewPayload): Promise<ResponseBase<string>> => {
     return axiosClient.post(`/reviews/${reviewId}/flag`, data);
   },
 
   /** Đánh dấu đánh giá là hữu ích */
-  markHelpful: (reviewId: number): Promise<AuthResponseBase<string>> => {
+  markHelpful: (reviewId: number): Promise<ResponseBase<string>> => {
     return axiosClient.post(`/reviews/${reviewId}/helpful`);
   },
 
@@ -87,7 +87,7 @@ export const reviewApi = {
   },
 
   /** Admin xử lý báo cáo vi phạm sản phẩm/đánh giá */
-  resolveContentFlag: (flagId: number, action: string): Promise<AuthResponseBase<string>> => {
+  resolveContentFlag: (flagId: number, action: string): Promise<ResponseBase<string>> => {
     return axiosClient.post(`/admin/content-flags/${flagId}/resolve`, null, {
       params: { action },
     });

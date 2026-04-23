@@ -1,4 +1,4 @@
-import { AuthResponseBase } from '@/features/auth/types';
+import { ResponseBase } from '@/features/auth/types';
 
 export interface WishlistItem {
   productId: number;
@@ -62,7 +62,7 @@ export interface CartResponse {
   guestItemsMerged: number;
 }
 
-export type WishlistListResponse = AuthResponseBase<{
+export type WishlistListResponse = ResponseBase<{
   content: WishlistItem[];
   totalElements: number;
   totalPages: number;
@@ -70,8 +70,8 @@ export type WishlistListResponse = AuthResponseBase<{
   size: number;
 }>;
 
-export type MoveToCartResponse = AuthResponseBase<CartResponse>;
+export type MoveToCartResponse = ResponseBase<CartResponse>;
 
-export type WishlistActionResponse = AuthResponseBase<Record<string, string>>;
-export type WishlistCountDataResponse = AuthResponseBase<WishlistCountResponse>;
-export type WishlistStatusDataResponse = AuthResponseBase<WishlistStatusResponse>;
+export type WishlistActionResponse = ResponseBase<Record<string, string>>;
+export type WishlistCountDataResponse = ResponseBase<WishlistCountResponse>;
+export type WishlistStatusDataResponse = ResponseBase<WishlistStatusResponse>;

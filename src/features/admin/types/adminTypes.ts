@@ -1,6 +1,6 @@
-import { AuthResponseBase } from '@/features/auth/types';
+import { ResponseBase } from '@/features/auth/types';
 
-export type { AuthResponseBase };
+export type { ResponseBase };
 
 export interface AdminUserListItem {
   id: string;
@@ -62,11 +62,11 @@ export interface AdminRole {
   permissions: UserPermission[];
 }
 
-export type AdminUserListResponse = AuthResponseBase<PaginatedResponse<AdminUserListItem>>;
-export type AdminUserDetailResponse = AuthResponseBase<AdminUserListItem>;
-export type AdminUserPermissionsResponse = AuthResponseBase<UserPermission[]>;
-export type AdminRoleListResponse = AuthResponseBase<AdminRole[]>;
-export type AdminRoleDetailResponse = AuthResponseBase<AdminRole>;
+export type AdminUserListResponse = ResponseBase<PaginatedResponse<AdminUserListItem>>;
+export type AdminUserDetailResponse = ResponseBase<AdminUserListItem>;
+export type AdminUserPermissionsResponse = ResponseBase<UserPermission[]>;
+export type AdminRoleListResponse = ResponseBase<AdminRole[]>;
+export type AdminRoleDetailResponse = ResponseBase<AdminRole>;
 
 export interface CreateRoleRequest {
   name: string;
@@ -165,11 +165,11 @@ export interface ShopActionRequest {
   note: string;
 }
 
-export type AdminShopListResponse = AuthResponseBase<PaginatedResponse<ShopListItem>>;
-export type AdminShopDetailResponse = AuthResponseBase<ShopListItem>;
-export type AdminShopStatusLogsResponse = AuthResponseBase<ShopStatusLog[]>;
-export type AdminShopDocumentResponse = AuthResponseBase<ShopDocument>;
-export type AdminOverridePlanResponse = AuthResponseBase<{
+export type AdminShopListResponse = ResponseBase<PaginatedResponse<ShopListItem>>;
+export type AdminShopDetailResponse = ResponseBase<ShopListItem>;
+export type AdminShopStatusLogsResponse = ResponseBase<ShopStatusLog[]>;
+export type AdminShopDocumentResponse = ResponseBase<ShopDocument>;
+export type AdminOverridePlanResponse = ResponseBase<{
   id: number;
   planName: string;
   planSlug: string;
@@ -233,8 +233,8 @@ export interface CreateSubscriptionPlanRequest {
 
 export type UpdateSubscriptionPlanRequest = CreateSubscriptionPlanRequest;
 
-export type AdminSubscriptionPlanListResponse = AuthResponseBase<SubscriptionPlan[]>;
-export type AdminSubscriptionPlanDetailResponse = AuthResponseBase<SubscriptionPlan>;
+export type AdminSubscriptionPlanListResponse = ResponseBase<SubscriptionPlan[]>;
+export type AdminSubscriptionPlanDetailResponse = ResponseBase<SubscriptionPlan>;
 // ─── Category Management Types ──────────────────────────────────────────────
 
 export interface Category {
@@ -263,9 +263,9 @@ export interface CategoryCreateRequest {
 
 export type CategoryUpdateRequest = CategoryCreateRequest;
 
-export type AdminCategoryListResponse = AuthResponseBase<Category[]>;
-export type AdminCategoryDetailResponse = AuthResponseBase<Category>;
-export type CategoryCheckSlugResponse = AuthResponseBase<boolean>;
+export type AdminCategoryListResponse = ResponseBase<Category[]>;
+export type AdminCategoryDetailResponse = ResponseBase<Category>;
+export type CategoryCheckSlugResponse = ResponseBase<boolean>;
 
 // ─── Admin Order Management Types ──────────────────────────────────────────
 
@@ -367,8 +367,8 @@ export interface IAdminPayoutRes {
   paymentRef: string;
 }
 
-export type AdminOrderListResponse = AuthResponseBase<IAdminOrderListRes>;
-export type AdminDashboardResponse = AuthResponseBase<IAdminDashboardRes>;
-export type AdminRefundListResponse = AuthResponseBase<IAdminRefundListRes>;
-export type AdminPayoutResponse = AuthResponseBase<IAdminPayoutRes>;
-export type AdminRefundActionResponse = AuthResponseBase<IAdminRefundListItem>;
+export type AdminOrderListResponse = ResponseBase<IAdminOrderListRes>;
+export type AdminDashboardResponse = ResponseBase<IAdminDashboardRes>;
+export type AdminRefundListResponse = ResponseBase<IAdminRefundListRes>;
+export type AdminPayoutResponse = ResponseBase<IAdminPayoutRes>;
+export type AdminRefundActionResponse = ResponseBase<IAdminRefundListItem>;

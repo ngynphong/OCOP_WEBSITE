@@ -30,7 +30,7 @@ export function TestimonialSection() {
   ];
 
   return (
-    <section className="w-full pb-20 bg-lime-50/50 flex flex-col justify-start items-center">
+    <section className="w-full pb-20 flex flex-col justify-start items-center">
       <div className="w-full max-w-7xl px-6 md:px-8 flex flex-col justify-start items-center gap-12 md:gap-16">
         {/* Header */}
         <div className="w-full flex flex-col justify-start items-center gap-4">

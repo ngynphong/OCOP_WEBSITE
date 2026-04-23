@@ -1,4 +1,4 @@
-import { AuthResponseBase } from '@/features/auth/types';
+import { ResponseBase } from '@/features/auth/types';
 
 export interface Province {
   id: number;
@@ -19,6 +19,6 @@ export interface Ward {
   code: string;
 }
 
-export type ProvinceListResponse = AuthResponseBase<Province[]>;
-export type DistrictListResponse = AuthResponseBase<District[]>;
-export type WardListResponse = AuthResponseBase<Ward[]>;
+export type ProvinceListResponse = ResponseBase<Province[]>;
+export type DistrictListResponse = ResponseBase<District[]>;
+export type WardListResponse = ResponseBase<Ward[]>;

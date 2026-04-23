@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { AuthResponseBase } from '@/features/auth/types/index';
+import { ResponseBase } from '@/features/auth/types/index';
 
 // ─── Core Interfaces ─────────────────────────────────────────────────────────
 
@@ -41,8 +41,8 @@ export interface ReviewListResponseData extends ReviewPaginatedResponse<Review> 
   summary?: ReviewSummary;
 }
 
-export type ReviewListResponse = AuthResponseBase<ReviewListResponseData>;
-export type ReviewDetailResponse = AuthResponseBase<Review>;
+export type ReviewListResponse = ResponseBase<ReviewListResponseData>;
+export type ReviewDetailResponse = ResponseBase<Review>;
 
 // ─── Content Flag Interfaces ─────────────────────────────────────────────────
 
@@ -60,7 +60,7 @@ export interface ContentFlag {
   review?: Review; // Nested review context
 }
 
-export type ContentFlagListResponse = AuthResponseBase<ReviewPaginatedResponse<ContentFlag>>;
+export type ContentFlagListResponse = ResponseBase<ReviewPaginatedResponse<ContentFlag>>;
 
 // ─── Validation Schemas ──────────────────────────────────────────────────────
 

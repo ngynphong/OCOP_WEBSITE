@@ -5,7 +5,7 @@ import {
   AdminUserPermissionsResponse,
   UpdateStaffProfileRequest,
   GetUsersParams,
-  AuthResponseBase,
+  ResponseBase,
   StaffProfile,
   GetShopsParams,
   AdminShopListResponse,
@@ -51,11 +51,11 @@ export const adminApi = {
     return axiosClient.get(`/admin/users/${userId}/permissions`);
   },
 
-  revokePermissions: (userId: string, permissions: string[]): Promise<AuthResponseBase<string>> => {
+  revokePermissions: (userId: string, permissions: string[]): Promise<ResponseBase<string>> => {
     return axiosClient.post(`/admin/users/${userId}/permissions/revoke`, permissions);
   },
 
-  grantPermissions: (userId: string, permissions: string[]): Promise<AuthResponseBase<string>> => {
+  grantPermissions: (userId: string, permissions: string[]): Promise<ResponseBase<string>> => {
     return axiosClient.post(`/admin/users/${userId}/permissions/grant`, permissions);
   },
 
@@ -69,14 +69,14 @@ export const adminApi = {
     return axiosClient.patch(`/admin/users/${userId}/roles`, { roles });
   },
 
-  deleteUser: (userId: string): Promise<AuthResponseBase<string>> => {
+  deleteUser: (userId: string): Promise<ResponseBase<string>> => {
     return axiosClient.delete(`/admin/users/${userId}`);
   },
 
   updateStaffProfile: (
     userId: string,
     data: UpdateStaffProfileRequest,
-  ): Promise<AuthResponseBase<StaffProfile>> => {
+  ): Promise<ResponseBase<StaffProfile>> => {
     return axiosClient.put(`/admin/users/${userId}/staff-profile`, data);
   },
 
@@ -100,7 +100,7 @@ export const adminApi = {
   approveShop: (
     shopId: number | string,
     data: ShopActionRequest,
-  ): Promise<AuthResponseBase<string>> => {
+  ): Promise<ResponseBase<string>> => {
     return axiosClient.post(`/admin/shops/${shopId}/approve`, data);
   },
 
@@ -111,17 +111,11 @@ export const adminApi = {
     return axiosClient.post(`/admin/shops/${shopId}/reject`, data);
   },
 
-  lockShop: (
-    shopId: number | string,
-    data: ShopActionRequest,
-  ): Promise<AuthResponseBase<string>> => {
+  lockShop: (shopId: number | string, data: ShopActionRequest): Promise<ResponseBase<string>> => {
     return axiosClient.post(`/admin/shops/${shopId}/lock`, data);
   },
 
-  unlockShop: (
-    shopId: number | string,
-    data: ShopActionRequest,
-  ): Promise<AuthResponseBase<string>> => {
+  unlockShop: (shopId: number | string, data: ShopActionRequest): Promise<ResponseBase<string>> => {
     return axiosClient.post(`/admin/shops/${shopId}/unlock`, data);
   },
 
@@ -179,7 +173,7 @@ export const adminApi = {
     return axiosClient.get('/permissions');
   },
 
-  deletePermission: (permission: string): Promise<AuthResponseBase<string>> => {
+  deletePermission: (permission: string): Promise<ResponseBase<string>> => {
     return axiosClient.delete(`/permissions/${permission}`);
   },
 
@@ -211,7 +205,7 @@ export const adminApi = {
     return axiosClient.delete(`/roles/${roleName}/permissions`, { data });
   },
 
-  deleteRole: (roleName: string): Promise<AuthResponseBase<string>> => {
+  deleteRole: (roleName: string): Promise<ResponseBase<string>> => {
     return axiosClient.delete(`/roles/${roleName}`);
   },
 
@@ -236,7 +230,7 @@ export const adminApi = {
     return axiosClient.put(`/admin/categories/${id}`, data);
   },
 
-  deleteCategory: (id: number): Promise<AuthResponseBase<string>> => {
+  deleteCategory: (id: number): Promise<ResponseBase<string>> => {
     return axiosClient.delete(`/admin/categories/${id}`);
   },
 

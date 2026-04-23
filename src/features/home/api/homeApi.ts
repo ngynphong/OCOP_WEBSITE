@@ -1,5 +1,5 @@
 import { publicAxiosClient } from '@/lib/axios';
-import { AuthResponseBase } from '@/features/auth/types';
+import { ResponseBase } from '@/features/auth/types';
 
 export interface Banner {
   id: number;
@@ -21,7 +21,13 @@ export interface QuickLink {
 }
 
 export const homeApi = {
-  getBanners: () => publicAxiosClient.get<AuthResponseBase<Banner[]>>('/banners'),
+  getBanners: () =>
+    publicAxiosClient.get<ResponseBase<Banner[]>>('/banners') as unknown as Promise<
+      ResponseBase<Banner[]>
+    >,
 
-  getQuickLinks: () => publicAxiosClient.get<AuthResponseBase<QuickLink[]>>('/home/quick-links'),
+  getQuickLinks: () =>
+    publicAxiosClient.get<ResponseBase<QuickLink[]>>('/home/quick-links') as unknown as Promise<
+      ResponseBase<QuickLink[]>
+    >,
 };

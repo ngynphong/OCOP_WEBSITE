@@ -1,6 +1,6 @@
-import { AuthResponseBase, PaginatedResponse } from '@/features/admin/types/adminTypes';
+import { ResponseBase, PaginatedResponse } from '@/features/admin/types/adminTypes';
 
-export type { AuthResponseBase, PaginatedResponse };
+export type { ResponseBase, PaginatedResponse };
 
 // ─── Enums ────────────────────────────────────────────────────────────────────
 
@@ -79,7 +79,7 @@ export interface ThresholdRequest {
 
 // ─── Response type aliases ────────────────────────────────────────────────────
 
-export type InventoryListResponse = AuthResponseBase<PaginatedResponse<InventoryItem>>;
-export type InventoryDetailResponse = AuthResponseBase<InventoryItem>;
-export type InventoryLogListResponse = AuthResponseBase<PaginatedResponse<InventoryLog>>;
-export type LowStockAlertResponse = AuthResponseBase<InventoryItem[]>;
+export type InventoryListResponse = ResponseBase<PaginatedResponse<InventoryItem>>;
+export type InventoryDetailResponse = ResponseBase<InventoryItem>;
+export type InventoryLogListResponse = ResponseBase<PaginatedResponse<InventoryLog>>;
+export type LowStockAlertResponse = ResponseBase<InventoryItem[]>;

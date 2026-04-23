@@ -11,6 +11,7 @@ import {
 } from '../../hooks/useAdminHome';
 import { AdminQuickLink } from '../../types/adminHomeTypes';
 import { QuickLinkFormModal } from './QuickLinkFormModal';
+import { Button } from '@/components/ui/AppButton';
 
 export const QuickLinkManagement = memo(function QuickLinkManagement() {
   const { data: qlResp, isLoading } = useAdminQuickLinksQuery();
@@ -59,12 +60,13 @@ export const QuickLinkManagement = memo(function QuickLinkManagement() {
           <h2 className="text-xl font-bold text-stone-900">Quản lý Liên kết nhanh</h2>
           <p className="text-sm text-stone-500">Quản lý các icon truy cập nhanh trên trang chủ</p>
         </div>
-        <button
+        <Button
           onClick={handleCreate}
+          type="button"
           className="flex items-center gap-2 px-4 py-2 bg-[#0D631B] text-white rounded-xl font-bold hover:bg-emerald-700 transition-all shadow-lg active:scale-95"
         >
           <FiPlus /> Thêm Liên kết
-        </button>
+        </Button>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
@@ -107,7 +109,7 @@ export const QuickLinkManagement = memo(function QuickLinkManagement() {
                   Thứ tự: {ql.displayOrder}
                 </p>
 
-                <button
+                <Button
                   onClick={() => handleToggleStatus(ql.id)}
                   className={`mt-auto px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest transition-all ${
                     ql.isActive
@@ -116,7 +118,7 @@ export const QuickLinkManagement = memo(function QuickLinkManagement() {
                   }`}
                 >
                   {ql.isActive ? 'Đang bật' : 'Đang tắt'}
-                </button>
+                </Button>
               </motion.div>
             ))
         )}

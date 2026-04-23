@@ -48,7 +48,7 @@ export const OcopMallSection = memo(function OcopMallSection() {
             <motion.div
               key={shop.id}
               whileHover={{ y: -6 }}
-              className="group relative bg-white border border-stone-100 rounded-[32px] overflow-hidden shadow-sm hover:shadow-xl hover:shadow-green-900/5 transition-all duration-500"
+              className="group relative bg-white/60 backdrop-blur-md border border-white/40 rounded-[32px] overflow-hidden shadow-sm hover:shadow-xl hover:shadow-green-900/5 transition-all duration-500"
             >
               {/* Card Header Background - Using shop.bannerUrl if available */}
               <div className="h-28 bg-linear-to-br from-[#113B28] to-[#1a4d35] relative overflow-hidden">
@@ -57,6 +57,7 @@ export const OcopMallSection = memo(function OcopMallSection() {
                     src={shop.bannerUrl}
                     alt={shop.name}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-cover opacity-60 group-hover:scale-110 transition-transform duration-700"
                   />
                 ) : (
@@ -79,6 +80,7 @@ export const OcopMallSection = memo(function OcopMallSection() {
                       src={shop.logoUrl || '/images/logo-ocop-rm.jpg'}
                       alt={shop.name}
                       fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className="object-contain"
                     />
                   </div>
@@ -116,6 +118,7 @@ export const OcopMallSection = memo(function OcopMallSection() {
                             alt="Product"
                             width={36}
                             height={36}
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             className="object-cover"
                           />
                         </div>

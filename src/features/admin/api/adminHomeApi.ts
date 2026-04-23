@@ -11,7 +11,7 @@ import {
   UpdateBannerRequest,
   UpdateQuickLinkRequest,
 } from '../types/adminHomeTypes';
-import { AuthResponseBase } from '@/features/auth/types';
+import { ResponseBase } from '@/features/auth/types';
 
 export const adminHomeApi = {
   // ─── Banner Management ─────────────────────────────────────────────────────
@@ -32,11 +32,11 @@ export const adminHomeApi = {
     return axiosClient.put(`/admin/banners/${id}`, data);
   },
 
-  deleteBanner: (id: number): Promise<AuthResponseBase<string>> => {
+  deleteBanner: (id: number): Promise<ResponseBase<string>> => {
     return axiosClient.delete(`/admin/banners/${id}`);
   },
 
-  toggleBannerStatus: (id: number): Promise<AuthResponseBase<AdminBanner>> => {
+  toggleBannerStatus: (id: number): Promise<ResponseBase<AdminBanner>> => {
     return axiosClient.post(`/admin/banners/${id}/toggle`);
   },
 
@@ -61,11 +61,11 @@ export const adminHomeApi = {
     return axiosClient.put(`/admin/quick-links/${id}`, data);
   },
 
-  deleteQuickLink: (id: number): Promise<AuthResponseBase<string>> => {
+  deleteQuickLink: (id: number): Promise<ResponseBase<string>> => {
     return axiosClient.delete(`/admin/quick-links/${id}`);
   },
 
-  toggleQuickLinkStatus: (id: number): Promise<AuthResponseBase<AdminQuickLink>> => {
+  toggleQuickLinkStatus: (id: number): Promise<ResponseBase<AdminQuickLink>> => {
     return axiosClient.post(`/admin/quick-links/${id}/toggle`);
   },
 };

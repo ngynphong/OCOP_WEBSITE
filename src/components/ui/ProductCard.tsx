@@ -113,11 +113,11 @@ export const ProductCard = memo(function ProductCard({
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-stone-400 text-[10px] font-black uppercase tracking-widest">
+            <span className="text-stone-600 text-[10px] font-black uppercase tracking-widest">
               {shopName || 'Nhà Cung Cấp'}
             </span>
             <div className="w-1 h-1 rounded-full bg-stone-300" />
-            <span className="text-stone-400 text-[10px] font-black uppercase tracking-widest">
+            <span className="text-stone-600 text-[10px] font-black uppercase tracking-widest">
               {location || 'Việt Nam'}
             </span>
           </div>

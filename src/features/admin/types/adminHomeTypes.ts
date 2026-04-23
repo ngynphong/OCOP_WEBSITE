@@ -1,4 +1,4 @@
-import { AuthResponseBase } from '@/features/auth/types';
+import { ResponseBase } from '@/features/auth/types';
 
 // ─── Banner Types ────────────────────────────────────────────────────────────
 
@@ -34,8 +34,8 @@ export interface CreateBannerRequest {
 
 export type UpdateBannerRequest = Partial<CreateBannerRequest>;
 
-export type AdminBannerListResponse = AuthResponseBase<AdminBanner[]>;
-export type AdminBannerDetailResponse = AuthResponseBase<AdminBanner>;
+export type AdminBannerListResponse = ResponseBase<AdminBanner[]>;
+export type AdminBannerDetailResponse = ResponseBase<AdminBanner>;
 
 // ─── Quick Link Types ────────────────────────────────────────────────────────
 
@@ -59,5 +59,5 @@ export interface CreateQuickLinkRequest {
 
 export type UpdateQuickLinkRequest = Partial<CreateQuickLinkRequest>;
 
-export type AdminQuickLinkListResponse = AuthResponseBase<AdminQuickLink[]>;
-export type AdminQuickLinkDetailResponse = AuthResponseBase<AdminQuickLink>;
+export type AdminQuickLinkListResponse = ResponseBase<AdminQuickLink[]>;
+export type AdminQuickLinkDetailResponse = ResponseBase<AdminQuickLink>;

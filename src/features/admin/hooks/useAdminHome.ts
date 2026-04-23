@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { adminHomeApi } from '../api/adminHomeApi';
 import toast from 'react-hot-toast';
 import { AxiosError } from 'axios';
-import { AuthResponseBase } from '@/features/auth/types';
+import { ResponseBase } from '@/features/auth/types';
 import {
   CreateBannerRequest,
   UpdateBannerRequest,
@@ -35,7 +35,7 @@ export const useCreateBannerMutation = () => {
       toast.success('Tạo banner mới thành công');
       queryClient.invalidateQueries({ queryKey: ['admin-banners'] });
     },
-    onError: (error: AxiosError<AuthResponseBase<null>>) => {
+    onError: (error: AxiosError<ResponseBase<null>>) => {
       toast.error(error?.response?.data?.message || 'Có lỗi xảy ra khi tạo banner');
     },
   });
@@ -51,7 +51,7 @@ export const useUpdateBannerMutation = () => {
       queryClient.invalidateQueries({ queryKey: ['admin-banners'] });
       queryClient.invalidateQueries({ queryKey: ['admin-banners', res.data.id] });
     },
-    onError: (error: AxiosError<AuthResponseBase<null>>) => {
+    onError: (error: AxiosError<ResponseBase<null>>) => {
       toast.error(error.response?.data?.message || 'Có lỗi xảy ra khi cập nhật banner');
     },
   });
@@ -65,7 +65,7 @@ export const useDeleteBannerMutation = () => {
       toast.success('Xóa banner thành công');
       queryClient.invalidateQueries({ queryKey: ['admin-banners'] });
     },
-    onError: (error: AxiosError<AuthResponseBase<null>>) => {
+    onError: (error: AxiosError<ResponseBase<null>>) => {
       toast.error(error?.response?.data?.message || 'Có lỗi xảy ra khi xóa banner');
     },
   });
@@ -78,7 +78,7 @@ export const useToggleBannerStatusMutation = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-banners'] });
     },
-    onError: (error: AxiosError<AuthResponseBase<null>>) => {
+    onError: (error: AxiosError<ResponseBase<null>>) => {
       toast.error(error?.response?.data?.message || 'Có lỗi xảy ra khi thay đổi trạng thái');
     },
   });
@@ -109,7 +109,7 @@ export const useCreateQuickLinkMutation = () => {
       toast.success('Tạo quick link mới thành công');
       queryClient.invalidateQueries({ queryKey: ['admin-quick-links'] });
     },
-    onError: (error: AxiosError<AuthResponseBase<null>>) => {
+    onError: (error: AxiosError<ResponseBase<null>>) => {
       toast.error(error?.response?.data?.message || 'Có lỗi xảy ra khi tạo quick link');
     },
   });
@@ -125,7 +125,7 @@ export const useUpdateQuickLinkMutation = () => {
       queryClient.invalidateQueries({ queryKey: ['admin-quick-links'] });
       queryClient.invalidateQueries({ queryKey: ['admin-quick-links', res.data.id] });
     },
-    onError: (error: AxiosError<AuthResponseBase<null>>) => {
+    onError: (error: AxiosError<ResponseBase<null>>) => {
       toast.error(error?.response?.data?.message || 'Có lỗi xảy ra khi cập nhật quick link');
     },
   });
@@ -139,7 +139,7 @@ export const useDeleteQuickLinkMutation = () => {
       toast.success('Xóa quick link thành công');
       queryClient.invalidateQueries({ queryKey: ['admin-quick-links'] });
     },
-    onError: (error: AxiosError<AuthResponseBase<null>>) => {
+    onError: (error: AxiosError<ResponseBase<null>>) => {
       toast.error(error?.response?.data?.message || 'Có lỗi xảy ra khi xóa quick link');
     },
   });
@@ -152,7 +152,7 @@ export const useToggleQuickLinkStatusMutation = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-quick-links'] });
     },
-    onError: (error: AxiosError<AuthResponseBase<null>>) => {
+    onError: (error: AxiosError<ResponseBase<null>>) => {
       toast.error(error?.response?.data?.message || 'Có lỗi xảy ra khi thay đổi trạng thái');
     },
   });

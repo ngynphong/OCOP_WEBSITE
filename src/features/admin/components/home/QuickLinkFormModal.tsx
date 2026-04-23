@@ -8,6 +8,7 @@ import { Modal } from '@/components/ui/Modal';
 import { useCreateQuickLinkMutation, useUpdateQuickLinkMutation } from '../../hooks/useAdminHome';
 import { AdminQuickLink } from '../../types/adminHomeTypes';
 import { Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/AppButton';
 
 const quickLinkSchema = z.object({
   label: z.string().min(2, 'Nhãn phải có ít nhất 2 ký tự').max(20, 'Nhãn quá dài'),
@@ -75,7 +76,6 @@ export const QuickLinkFormModal = memo(function QuickLinkFormModal({
       }
       onClose();
     } catch (error) {
-      // Error handled in hook
       console.error(error);
     }
   };
@@ -94,7 +94,7 @@ export const QuickLinkFormModal = memo(function QuickLinkFormModal({
           </label>
           <input
             {...register('label')}
-            className="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all"
+            className="w-full px-4 py-3 bg-stone-50 border text-gray-700 border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all"
             placeholder="VD: Flash Sale"
           />
           {errors.label && <p className="text-xs text-red-500 font-bold">{errors.label.message}</p>}
@@ -106,7 +106,7 @@ export const QuickLinkFormModal = memo(function QuickLinkFormModal({
           </label>
           <input
             {...register('iconUrl')}
-            className="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all"
+            className="w-full px-4 py-3 bg-stone-50 border text-gray-700 border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all"
             placeholder="https://..."
           />
           {errors.iconUrl && (
@@ -120,7 +120,7 @@ export const QuickLinkFormModal = memo(function QuickLinkFormModal({
           </label>
           <input
             {...register('url')}
-            className="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all"
+            className="w-full px-4 py-3 bg-stone-50 border text-gray-700 border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all"
             placeholder="/products/flash-sale"
           />
           {errors.url && <p className="text-xs text-red-500 font-bold">{errors.url.message}</p>}
@@ -133,26 +133,27 @@ export const QuickLinkFormModal = memo(function QuickLinkFormModal({
           <input
             type="number"
             {...register('displayOrder', { valueAsNumber: true })}
-            className="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all"
+            className="w-full px-4 py-3 bg-stone-50 border text-gray-700 border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all"
           />
         </div>
 
         <div className="pt-6 flex gap-3">
-          <button
+          <Button
             type="button"
+            variant="outline"
             onClick={onClose}
             className="flex-1 px-6 py-3 border border-stone-200 text-stone-600 rounded-xl font-bold hover:bg-stone-50 transition-all uppercase tracking-widest text-[10px]"
           >
             Hủy bỏ
-          </button>
-          <button
+          </Button>
+          <Button
             type="submit"
             disabled={isPending}
             className="flex-2 px-6 py-3 bg-[#0D631B] text-white rounded-xl font-black shadow-lg shadow-emerald-900/10 hover:bg-emerald-700 transition-all disabled:opacity-50 flex items-center justify-center gap-2 uppercase tracking-widest text-[10px]"
           >
             {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
             {quickLink ? 'Cập nhật' : 'Tạo mới'}
-          </button>
+          </Button>
         </div>
       </form>
     </Modal>

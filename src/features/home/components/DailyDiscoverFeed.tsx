@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, memo } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { Sparkles } from 'lucide-react';
 import { ProductCard } from '@/components/ui/ProductCard';
 import { Button } from '@/components/ui/AppButton';
@@ -11,8 +11,14 @@ import {
 import { cn } from '@/lib/utils';
 
 export const DailyDiscoverFeed = memo(function DailyDiscoverFeed() {
+  const [isMounted, setIsMounted] = useState(false);
   const [activeCategoryId, setActiveCategoryId] = useState<number | null>(null);
   const [sortBy, setSortBy] = useState('createdAt:desc');
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsMounted(true);
+  }, []);
 
   const { data: categoriesData } = usePublicCategoriesQuery();
   const categories = categoriesData?.data || [];
@@ -35,10 +41,23 @@ export const DailyDiscoverFeed = memo(function DailyDiscoverFeed() {
     { label: 'Giá cao', value: 'minPrice:desc' },
   ];
 
+  if (!isMounted) {
+    return (
+      <section className="w-full max-w-7xl mx-auto px-4 md:px-6 py-12">
+        <div className="w-full h-24 bg-stone-100/50 animate-pulse rounded-3xl" />
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-6 mt-8">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="aspect-[3/4] bg-stone-100/50 animate-pulse rounded-2xl" />
+          ))}
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="w-full max-w-7xl mx-auto px-4 md:px-6 py-12 flex flex-col gap-8">
       {/* Header & Filter Bar */}
-      <div className="sticky top-[72px] z-30 rounded-3xl bg-white/95 backdrop-blur-xl p-4 md:p-6 border border-stone-100 shadow-sm">
+      <div className="sticky top-[72px] z-30 rounded-3xl bg-white/70 backdrop-blur-sm p-4 md:p-6 border border-white/50 shadow-sm transition-all duration-300">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
@@ -59,10 +78,11 @@ export const DailyDiscoverFeed = memo(function DailyDiscoverFeed() {
                 <button
                   key={opt.value}
                   onClick={() => setSortBy(opt.value)}
+                  suppressHydrationWarning
                   className={cn(
-                    'px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap border',
+                    'px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap border cursor-pointer',
                     sortBy === opt.value
-                      ? 'bg-stone-900 text-white border-stone-900 shadow-sm shadow-stone-900/20'
+                      ? 'bg-green-700 text-white border-green-700 shadow-sm shadow-green-900/20'
                       : 'bg-white text-stone-600 border-stone-200 hover:border-stone-400',
                   )}
                 >
@@ -76,8 +96,9 @@ export const DailyDiscoverFeed = memo(function DailyDiscoverFeed() {
           <div className="flex items-center gap-3 overflow-x-auto pb-2 -mx-2 px-2 hide-scrollbar">
             <button
               onClick={() => setActiveCategoryId(null)}
+              suppressHydrationWarning
               className={cn(
-                'px-6 py-2.5 rounded-2xl text-sm font-bold transition-all whitespace-nowrap border-2',
+                'px-6 py-2.5 rounded-2xl text-sm font-bold transition-all whitespace-nowrap border-2 cursor-pointer',
                 activeCategoryId === null
                   ? 'bg-green-700 border-green-700 text-white shadow-sm shadow-green-900/20'
                   : 'bg-white border-stone-100 text-stone-600 hover:border-stone-300',
@@ -89,8 +110,9 @@ export const DailyDiscoverFeed = memo(function DailyDiscoverFeed() {
               <button
                 key={cat.id}
                 onClick={() => setActiveCategoryId(cat.id)}
+                suppressHydrationWarning
                 className={cn(
-                  'px-6 py-2.5 rounded-2xl text-sm font-bold transition-all whitespace-nowrap border-2',
+                  'px-6 py-2.5 rounded-2xl text-sm font-bold transition-all whitespace-nowrap border-2 cursor-pointer',
                   activeCategoryId === cat.id
                     ? 'bg-green-700 border-green-700 text-white shadow-xl shadow-green-900/20'
                     : 'bg-white border-stone-100 text-stone-600 hover:border-stone-300',

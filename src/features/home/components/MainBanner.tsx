@@ -74,6 +74,7 @@ export const MainBanner = memo(function MainBanner() {
                     src={banners[currentIndex].imageMobileUrl || banners[currentIndex].imageUrl}
                     alt={banners[currentIndex].title}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     priority
                     className="object-cover"
                   />

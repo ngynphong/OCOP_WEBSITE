@@ -11,7 +11,7 @@ import {
   LayoutDashboard,
   LogOut,
   ChevronDown,
-  QrCode,
+  ScanLine,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
@@ -38,8 +38,6 @@ export function Header() {
   const { logout, isLoggingOut, handleClientLogout, profile } = useAuth();
   const role = useAppSelector((state) => state.auth.roles);
 
-  // Cart count badge — lấy từ useCart (cùng cache key với CartPage)
-  // Sau khi addToCart/removeItem invalidate CART_QUERY_KEYS.cart, badge tự cập nhật
   const { data: cartResp } = useCart();
   const cartCount = cartResp?.data?.totalItems ?? 0;
 
@@ -122,6 +120,12 @@ export function Header() {
                       ? 'text-white text-sm font-semibold font-sans leading-5'
                       : 'text-emerald-100 text-sm font-semibold font-sans leading-5'
                   }
+                  onClick={() => {
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth',
+                    });
+                  }}
                 >
                   Trang Chủ
                 </span>
@@ -140,12 +144,24 @@ export function Header() {
                       ? 'text-white text-sm font-semibold font-sans leading-5'
                       : 'text-emerald-100 text-sm font-semibold font-sans leading-5'
                   }
+                  onClick={() => {
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth',
+                    });
+                  }}
                 >
                   Sản Phẩm
                 </span>
               </Link>
               <Link
                 href="/san-pham"
+                onClick={() => {
+                  window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth',
+                  });
+                }}
                 className="inline-flex flex-col justify-start items-start relative hover:after:content-[''] hover:after:absolute hover:after:bg-white hover:after:w-full hover:after:h-[2px] hover:after:bottom-[-5px]"
               >
                 <span className="text-emerald-100 text-sm font-semibold font-sans leading-5">
@@ -154,6 +170,12 @@ export function Header() {
               </Link>
               <Link
                 href="/san-pham"
+                onClick={() => {
+                  window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth',
+                  });
+                }}
                 className="inline-flex flex-col justify-start items-start relative hover:after:content-[''] hover:after:absolute hover:after:bg-white hover:after:w-full hover:after:h-[2px] hover:after:bottom-[-5px]"
               >
                 <span className="text-emerald-100 text-sm font-semibold font-sans leading-5">
@@ -280,7 +302,7 @@ export function Header() {
               aria-label="Quét mã QR"
               className="h-10 w-10 inline-flex flex-col justify-center items-center text-white hover:bg-white/10 rounded-full transition-colors cursor-pointer group"
             >
-              <QrCode className="w-5 h-5 group-hover:scale-110 transition-transform" />
+              <ScanLine className="w-5 h-5 group-hover:scale-110 transition-transform" />
             </button>
             {isAuthenticated && <NotificationBell />}
             <Link
