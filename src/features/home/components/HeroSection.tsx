@@ -51,7 +51,11 @@ export const HeroSection = memo(function HeroSection() {
   }, []);
 
   const { data: featuredResp, isLoading: isProductsLoading } = useFeaturedProductsQuery(12);
-  const products = featuredResp?.data?.items || [];
+
+  // Handle both direct array data and paginated data structure
+  const products = Array.isArray(featuredResp?.data)
+    ? featuredResp.data
+    : featuredResp?.data?.items || [];
 
   const productIds = products.map((p) => p.id);
   const { data: wishlistStatusData } = useWishlistStatus(isAuthenticated ? productIds : []);
@@ -240,7 +244,7 @@ export const HeroSection = memo(function HeroSection() {
                           <div className="flex items-center gap-3">
                             <button
                               onClick={() => handleBuyNow(item.slug)}
-                              className="flex-1 bg-linear-to-r from-[#D4AF37] to-[#C2A052] hover:brightness-110 text-[#133D29] py-3.5 rounded-xl font-bold text-sm md:text-base border-none outline-none shadow-xl transition-all flex items-center justify-center gap-2 group active:scale-95"
+                              className="flex-1 bg-linear-to-r from-[#D4AF37] to-[#C2A052] hover:brightness-110 text-[#133D29] py-3.5 rounded-xl font-bold text-sm md:text-base border-none outline-none shadow-xl transition-all flex items-center justify-center gap-2 group active:scale-95 cursor-pointer"
                             >
                               <ShoppingCart className="w-4 h-4 md:w-5 md:h-5 group-hover:-rotate-12 transition-transform" />{' '}
                               Mua ngay
@@ -249,7 +253,7 @@ export const HeroSection = memo(function HeroSection() {
                               onClick={(e) => handleWishlistToggle(e, item.id)}
                               disabled={isWishlistLoading}
                               className={cn(
-                                'px-5 py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center group active:scale-95',
+                                'px-5 py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center group active:scale-95 cursor-pointer',
                                 wishlistStatusMap[item.id]
                                   ? 'bg-red-500 text-white'
                                   : 'bg-white/10 hover:bg-white/20 text-white',

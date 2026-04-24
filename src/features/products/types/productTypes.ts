@@ -25,6 +25,10 @@ export interface ProductShop {
   name: string;
   slug: string;
   logoUrl: string;
+  ownerName?: string;
+  ownerRole?: string;
+  ownerQuote?: string;
+  ownerImageUrl?: string;
 }
 
 export interface ProductCategory {
@@ -121,6 +125,12 @@ export interface ProductAttributeValue {
 
 // ─── Main Product interface ───────────────────────────────────────────────────
 
+export interface ImpactStat {
+  iconType: string;
+  value: string;
+  label: string;
+}
+
 export interface Product {
   id: number;
   name: string;
@@ -130,7 +140,10 @@ export interface Product {
   ocopStar: number;
   status: ProductStatus;
   isFeatured: boolean;
-  isFlashSaleEligible: boolean;
+  isFeaturedStory?: boolean;
+  storyTitle?: string;
+  storyImage?: string;
+  impactStats?: ImpactStat[];
   unit: string;
   weightGram: number;
   minPrice: number;

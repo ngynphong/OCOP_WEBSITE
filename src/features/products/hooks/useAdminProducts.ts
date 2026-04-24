@@ -59,10 +59,22 @@ export const useAdminProductMutations = () => {
   });
 
   const setFeaturedMutation = useMutation({
-    mutationFn: ({ id, isFeatured }: { id: number; isFeatured: boolean }) =>
-      adminProductApi.setFeatured(id, isFeatured),
-    onSuccess: (_, { id, isFeatured }) => {
-      toast.success(isFeatured ? 'Đã ghim sản phẩm nổi bật' : 'Đã bỏ ghim sản phẩm');
+    mutationFn: ({ id, featured }: { id: number; featured: boolean }) =>
+      adminProductApi.setFeatured(id, featured),
+    onSuccess: (_, { id, featured }) => {
+      toast.success(featured ? 'Đã ghim sản phẩm nổi bật' : 'Đã bỏ ghim sản phẩm');
+      invalidate(id);
+    },
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data?.message || 'Có lỗi khi cập nhật trạng thái nổi bật');
+    },
+  });
+
+  const setFeaturedStoryMutation = useMutation({
+    mutationFn: ({ id, featuredStory }: { id: number; featuredStory: boolean }) =>
+      adminProductApi.setFeaturedStory(id, featuredStory),
+    onSuccess: (_, { id, featuredStory }) => {
+      toast.success(featuredStory ? 'Đã ghim câu chuyện nổi bật' : 'Đã bỏ ghim câu chuyện');
       invalidate(id);
     },
     onError: (error: ApiError) => {
@@ -88,6 +100,8 @@ export const useAdminProductMutations = () => {
     isRejecting: rejectProductMutation.isPending,
     setFeatured: setFeaturedMutation.mutateAsync,
     isSettingFeatured: setFeaturedMutation.isPending,
+    setFeaturedStory: setFeaturedStoryMutation.mutateAsync,
+    isSettingFeaturedStory: setFeaturedStoryMutation.isPending,
     hideProduct: hideProductMutation.mutateAsync,
     isHiding: hideProductMutation.isPending,
   };

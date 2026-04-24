@@ -27,6 +27,10 @@ export const publicProductApi = {
     return publicAxiosClient.get('/products/featured', { params: { limit } });
   },
 
+  getFeaturedStory: (): Promise<ProductDetailResponse> => {
+    return publicAxiosClient.get('/products/featured-story');
+  },
+
   traceQr: (qrCode: string): Promise<QrCodeResponse> => {
     return publicAxiosClient.get(`/trace/${qrCode}`);
   },

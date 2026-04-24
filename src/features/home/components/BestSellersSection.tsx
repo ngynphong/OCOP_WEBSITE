@@ -10,7 +10,10 @@ export function BestSellersSection() {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const { data: featuredResp, isLoading } = useFeaturedProductsQuery(10);
 
-  const products = featuredResp?.data?.items || [];
+  // Handle both direct array data and paginated data structure
+  const products = Array.isArray(featuredResp?.data)
+    ? featuredResp.data
+    : featuredResp?.data?.items || [];
   const productIds = products.map((p) => p.id);
   const { data: wishlistStatusData } = useWishlistStatus(isAuthenticated ? productIds : []);
   const wishlistStatusMap = wishlistStatusData?.data || {};

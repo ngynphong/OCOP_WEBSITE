@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { FiCheck, FiX, FiStar, FiEye } from 'react-icons/fi';
+import { FiCheck, FiX, FiStar, FiEye, FiBookOpen } from 'react-icons/fi';
 import { CiShop } from 'react-icons/ci';
 import {
   useAdminProductsQuery,
@@ -47,8 +47,15 @@ export const AdminProductsTable = () => {
   const [rejectNote, setRejectNote] = useState('');
 
   const { data, isPending, isError } = useAdminProductsQuery(params);
-  const { approveProduct, isApproving, rejectProduct, isRejecting, setFeatured, hideProduct } =
-    useAdminProductMutations();
+  const {
+    approveProduct,
+    isApproving,
+    rejectProduct,
+    isRejecting,
+    setFeatured,
+    setFeaturedStory,
+    hideProduct,
+  } = useAdminProductMutations();
 
   const products: Product[] = data?.data?.items ?? [];
   const total = data?.data?.totalElement ?? 0;
@@ -69,7 +76,11 @@ export const AdminProductsTable = () => {
   };
 
   const handleToggleFeatured = async (product: Product) => {
-    await setFeatured({ id: product.id, isFeatured: !product.isFeatured });
+    await setFeatured({ id: product.id, featured: !product.isFeatured });
+  };
+
+  const handleToggleFeaturedStory = async (product: Product) => {
+    await setFeaturedStory({ id: product.id, featuredStory: !product.isFeaturedStory });
   };
 
   const handleHide = async (id: number) => {
@@ -305,17 +316,36 @@ export const AdminProductsTable = () => {
                           </>
                         )}
                         {product.status === 'APPROVED' && (
-                          <button
-                            onClick={() => handleToggleFeatured(product)}
-                            title={product.isFeatured ? 'Bỏ nổi bật' : 'Ghim nổi bật'}
-                            className={`p-1.5 rounded-lg transition cursor-pointer ${
-                              product.isFeatured
-                                ? 'bg-amber-50 text-amber-500 hover:bg-amber-100'
-                                : 'bg-stone-50 text-stone-400 hover:bg-stone-100'
-                            }`}
-                          >
-                            <FiStar size={14} />
-                          </button>
+                          <>
+                            <button
+                              onClick={() => handleToggleFeatured(product)}
+                              title={
+                                product.isFeatured ? 'Bỏ ghim nổi bật' : 'Ghim sản phẩm nổi bật'
+                              }
+                              className={`p-1.5 rounded-lg transition cursor-pointer ${
+                                product.isFeatured
+                                  ? 'bg-amber-50 text-amber-500 hover:bg-amber-100'
+                                  : 'bg-stone-50 text-stone-400 hover:bg-stone-100'
+                              }`}
+                            >
+                              <FiStar size={14} />
+                            </button>
+                            <button
+                              onClick={() => handleToggleFeaturedStory(product)}
+                              title={
+                                product.isFeaturedStory
+                                  ? 'Bỏ ghim câu chuyện'
+                                  : 'Ghim câu chuyện nổi bật'
+                              }
+                              className={`p-1.5 rounded-lg transition cursor-pointer ${
+                                product.isFeaturedStory
+                                  ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
+                                  : 'bg-stone-50 text-stone-400 hover:bg-stone-100'
+                              }`}
+                            >
+                              <FiBookOpen size={14} />
+                            </button>
+                          </>
                         )}
                         <button
                           onClick={() => handleHide(product.id)}

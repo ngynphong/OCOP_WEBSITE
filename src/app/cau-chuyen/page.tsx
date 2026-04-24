@@ -5,10 +5,13 @@ import { motion } from 'framer-motion';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { SearchBox } from '@/features/products/components/SearchBox';
-import { usePublicProductsQuery } from '@/features/products/hooks/usePublicProducts';
+import {
+  usePublicProductsQuery,
+  useFeaturedStoryQuery,
+} from '@/features/products/hooks/usePublicProducts';
 import Image from 'next/image';
 import Link from 'next/link';
-import { MapPin, Star, ArrowRight, Loader2, BookOpen } from 'lucide-react';
+import { MapPin, Star, ArrowRight, Loader2, BookOpen, Sparkles } from 'lucide-react';
 
 export default function StoryLandingPage() {
   const [selectedProvince] = useState<number | undefined>(undefined);
@@ -18,6 +21,9 @@ export default function StoryLandingPage() {
     // We want products that likely have stories
     sortBy: 'viewCount,desc',
   });
+
+  const { data: featuredStoryRes } = useFeaturedStoryQuery();
+  const featuredStory = featuredStoryRes?.data;
 
   const products = productsRes?.data?.items || [];
 
@@ -157,36 +163,49 @@ export default function StoryLandingPage() {
         </section>
 
         {/* Featured Story of the Month */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8 mt-24">
-          <div className="relative rounded-[48px] overflow-hidden bg-[#113B28] h-[500px] flex items-center">
-            <div className="absolute inset-0 opacity-30">
-              <Image
-                src="/images/artisan-working.jpg"
-                alt="Artisan"
-                fill
-                className="object-cover"
-              />
-            </div>
-            <div className="relative z-10 w-full md:w-1/2 p-12 md:p-20 space-y-6">
-              <span className="px-4 py-1.5 bg-[#D4AF37] text-[#113B28] rounded-full text-xs font-black uppercase tracking-widest">
-                Câu chuyện nổi bật
-              </span>
-              <h3 className="text-white text-4xl md:text-5xl font-black font-serif italic leading-tight">
-                Nghệ nhân Ma Văn Khởi và hồn trà Shan Tuyết
-              </h3>
-              <p className="text-emerald-50/70 text-lg leading-relaxed">
-                Hành trình 40 năm gìn giữ giống trà cổ thụ quý hiếm trên đỉnh Tây Côn Lĩnh...
-              </p>
-              <Link
-                href="/san-pham/tra-shan-tuyet-co-thu/cau-chuyen"
-                className="inline-flex items-center gap-3 bg-white text-[#113B28] px-8 py-4 rounded-full font-black hover:bg-[#D4AF37] transition-all group"
-              >
-                Khám phá ngay{' '}
-                <ArrowRight className="group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
-          </div>
-        </section>
+        {featuredStory && (
+          <section className="max-w-7xl mx-auto px-6 lg:px-8 mt-24">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="relative rounded-[48px] overflow-hidden bg-[#113B28] min-h-[500px] flex items-center"
+            >
+              <div className="absolute inset-0 opacity-30">
+                <Image
+                  src={
+                    featuredStory.storyImage ||
+                    featuredStory.thumbnailUrl ||
+                    '/images/artisan-working.jpg'
+                  }
+                  alt={featuredStory.storyTitle || featuredStory.name}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div className="relative z-10 w-full md:w-1/2 p-12 md:p-20 space-y-6">
+                <div className="flex items-center gap-3">
+                  <span className="px-4 py-1.5 bg-[#D4AF37] text-[#113B28] rounded-full text-xs font-black uppercase tracking-widest flex items-center gap-2">
+                    <Sparkles size={12} fill="currentColor" /> Câu chuyện nổi bật
+                  </span>
+                </div>
+                <h3 className="text-white text-4xl md:text-5xl font-black font-serif italic leading-tight">
+                  {featuredStory.storyTitle || featuredStory.name}
+                </h3>
+                <p className="text-emerald-50/70 text-lg leading-relaxed line-clamp-3">
+                  {featuredStory.shortDesc}
+                </p>
+                <Link
+                  href={`/cau-chuyen/${featuredStory.slug}`}
+                  className="inline-flex items-center gap-3 bg-white text-[#113B28] px-8 py-4 rounded-full font-black hover:bg-[#D4AF37] transition-all group"
+                >
+                  Khám phá ngay{' '}
+                  <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </motion.div>
+          </section>
+        )}
       </main>
 
       <Footer />

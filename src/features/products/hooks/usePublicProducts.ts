@@ -104,6 +104,14 @@ export const useFeaturedProductsQuery = (limit = 12) => {
   });
 };
 
+export const useFeaturedStoryQuery = () => {
+  return useQuery({
+    queryKey: ['public-featured-story'],
+    queryFn: () => publicProductApi.getFeaturedStory(),
+    staleTime: 10 * 60 * 1000,
+  });
+};
+
 export const useTraceQrQuery = (qrCode: string | null | undefined) => {
   return useQuery({
     queryKey: ['trace-qr', qrCode],
