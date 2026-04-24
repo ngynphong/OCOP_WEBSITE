@@ -14,8 +14,10 @@ interface MapGeography {
 
 const VietnamMap = memo(function VietnamMap({
   onSelectProvince,
+  selectedProvince,
 }: {
   onSelectProvince: (provinceName: string) => void;
+  selectedProvince?: string | null;
 }) {
   const router = useRouter();
   const [tooltip, setTooltip] = useState('');
@@ -43,11 +45,24 @@ const VietnamMap = memo(function VietnamMap({
 
   const handleMouseLeave = useCallback(() => setTooltip(''), []);
 
+  // Helper to check if a province is selected
+  const isSelected = useCallback(
+    (geo: MapGeography) => {
+      if (!selectedProvince) return false;
+      const name = geo.properties.name || geo.properties.NAME_1 || geo.properties.ten_tinh || '';
+      return (
+        name.toLowerCase().includes(selectedProvince.toLowerCase()) ||
+        selectedProvince.toLowerCase().includes(name.toLowerCase())
+      );
+    },
+    [selectedProvince],
+  );
+
   return (
     <div className="relative w-full h-[500px] mx-auto">
       {/* Hiển thị tên tỉnh khi hover */}
       {tooltip && (
-        <div className="absolute top-0 right-0 bg-white/90 backdrop-blur-md px-4 py-2 border border-green-500/50 text-green-700 font-bold rounded-xl shadow-lg z-20 animate-in fade-in zoom-in duration-200 pointer-events-none">
+        <div className="absolute top-0 right-0 bg-white/90 backdrop-blur-md px-4 py-2 border border-emerald-500/50 text-emerald-700 font-bold rounded-xl shadow-lg z-20 animate-in fade-in zoom-in duration-200 pointer-events-none">
           {tooltip}
         </div>
       )}
@@ -63,35 +78,38 @@ const VietnamMap = memo(function VietnamMap({
         <ZoomableGroup zoom={1} center={[108, 16]}>
           <Geographies geography={geoUrl}>
             {({ geographies }) =>
-              geographies.map((geo) => (
-                <Geography
-                  key={geo.rsmKey}
-                  geography={geo}
-                  onClick={() => handleProvinceClick(geo)}
-                  onMouseEnter={() => handleMouseEnter(geo)}
-                  onMouseLeave={handleMouseLeave}
-                  style={{
-                    default: {
-                      fill: '#f0f9ff',
-                      stroke: '#bae6fd',
-                      strokeWidth: 0.5,
-                      outline: 'none',
-                      transition: 'all 250ms',
-                    },
-                    hover: {
-                      fill: '#16a34a',
-                      stroke: '#ffffff',
-                      strokeWidth: 1,
-                      outline: 'none',
-                      cursor: 'pointer',
-                    },
-                    pressed: {
-                      fill: '#15803d',
-                      outline: 'none',
-                    },
-                  }}
-                />
-              ))
+              geographies.map((geo) => {
+                const active = isSelected(geo);
+                return (
+                  <Geography
+                    key={geo.rsmKey}
+                    geography={geo}
+                    onClick={() => handleProvinceClick(geo)}
+                    onMouseEnter={() => handleMouseEnter(geo)}
+                    onMouseLeave={handleMouseLeave}
+                    style={{
+                      default: {
+                        fill: active ? '#059669' : '#F0FDF4',
+                        stroke: active ? '#ffffff' : '#A7F3D0',
+                        strokeWidth: active ? 1 : 0.5,
+                        outline: 'none',
+                        transition: 'all 250ms',
+                      },
+                      hover: {
+                        fill: '#10b981',
+                        stroke: '#ffffff',
+                        strokeWidth: 1,
+                        outline: 'none',
+                        cursor: 'pointer',
+                      },
+                      pressed: {
+                        fill: '#047857',
+                        outline: 'none',
+                      },
+                    }}
+                  />
+                );
+              })
             }
           </Geographies>
 
@@ -105,21 +123,24 @@ const VietnamMap = memo(function VietnamMap({
             [111.6, 16.3],
             [112.5, 16.2],
             [112.7, 16.5],
-          ].map((coord, idx) => (
-            <Marker
-              key={`hs-${idx}`}
-              coordinates={coord as [number, number]}
-              onClick={() => handleProvinceClick({ properties: { name: 'Đà Nẵng' } })}
-              onMouseEnter={() => setTooltip('Quần đảo Hoàng Sa (Đà Nẵng)')}
-              onMouseLeave={handleMouseLeave}
-            >
-              <circle
-                r={0.7}
-                fill="#16a34a"
-                className="cursor-pointer hover:fill-green-700 transition-colors"
-              />
-            </Marker>
-          ))}
+          ].map((coord, idx) => {
+            const isActive = selectedProvince?.toLowerCase().includes('đà nẵng');
+            return (
+              <Marker
+                key={`hs-${idx}`}
+                coordinates={coord as [number, number]}
+                onClick={() => handleProvinceClick({ properties: { name: 'Đà Nẵng' } })}
+                onMouseEnter={() => setTooltip('Quần đảo Hoàng Sa (Đà Nẵng)')}
+                onMouseLeave={handleMouseLeave}
+              >
+                <circle
+                  r={isActive ? 1.2 : 0.8}
+                  fill={isActive ? '#059669' : '#10b981'}
+                  className="cursor-pointer hover:fill-emerald-700 transition-colors"
+                />
+              </Marker>
+            );
+          })}
           <Marker
             coordinates={[112.0, 16.5]}
             onClick={() => handleProvinceClick({ properties: { name: 'Đà Nẵng' } })}
@@ -132,7 +153,7 @@ const VietnamMap = memo(function VietnamMap({
               y={-5}
               style={{
                 fontFamily: 'sans-serif',
-                fill: '#1f2937',
+                fill: '#064e3b',
                 fontSize: '4px',
                 fontWeight: 'bold',
                 cursor: 'pointer',
@@ -165,21 +186,24 @@ const VietnamMap = memo(function VietnamMap({
             [112.8, 10.1],
             [114.4, 11.3],
             [112.2, 9.5],
-          ].map((coord, idx) => (
-            <Marker
-              key={`ts-${idx}`}
-              coordinates={coord as [number, number]}
-              onClick={() => handleProvinceClick({ properties: { name: 'Khánh Hòa' } })}
-              onMouseEnter={() => setTooltip('Quần đảo Trường Sa (Khánh Hòa)')}
-              onMouseLeave={handleMouseLeave}
-            >
-              <circle
-                r={0.7}
-                fill="#16a34a"
-                className="cursor-pointer hover:fill-green-700 transition-colors"
-              />
-            </Marker>
-          ))}
+          ].map((coord, idx) => {
+            const isActive = selectedProvince?.toLowerCase().includes('khánh hòa');
+            return (
+              <Marker
+                key={`ts-${idx}`}
+                coordinates={coord as [number, number]}
+                onClick={() => handleProvinceClick({ properties: { name: 'Khánh Hòa' } })}
+                onMouseEnter={() => setTooltip('Quần đảo Trường Sa (Khánh Hòa)')}
+                onMouseLeave={handleMouseLeave}
+              >
+                <circle
+                  r={isActive ? 1.2 : 0.8}
+                  fill={isActive ? '#059669' : '#10b981'}
+                  className="cursor-pointer hover:fill-emerald-700 transition-colors"
+                />
+              </Marker>
+            );
+          })}
           <Marker
             coordinates={[114.0, 10.0]}
             onClick={() => handleProvinceClick({ properties: { name: 'Khánh Hòa' } })}
@@ -192,7 +216,7 @@ const VietnamMap = memo(function VietnamMap({
               y={-5}
               style={{
                 fontFamily: 'sans-serif',
-                fill: '#1f2937',
+                fill: '#064e3b',
                 fontSize: '4px',
                 fontWeight: 'bold',
                 cursor: 'pointer',
@@ -211,9 +235,9 @@ const VietnamMap = memo(function VietnamMap({
             onMouseLeave={handleMouseLeave}
           >
             <circle
-              r={1.5}
-              fill="#16a34a"
-              className="cursor-pointer hover:fill-green-700 transition-colors"
+              r={selectedProvince?.toLowerCase().includes('kiên giang') ? 2 : 1.5}
+              fill={selectedProvince?.toLowerCase().includes('kiên giang') ? '#059669' : '#10b981'}
+              className="cursor-pointer hover:fill-emerald-700 transition-colors"
             />
             <text
               textAnchor="end"
@@ -221,7 +245,7 @@ const VietnamMap = memo(function VietnamMap({
               y={1.5}
               style={{
                 fontFamily: 'sans-serif',
-                fill: '#1f2937',
+                fill: '#064e3b',
                 fontSize: '3px',
                 fontWeight: 'bold',
                 cursor: 'pointer',

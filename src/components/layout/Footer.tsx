@@ -3,7 +3,7 @@ import { MapPin, Phone, Mail, Camera, Globe, Tv } from 'lucide-react';
 
 export function Footer() {
   return (
-    <footer className="w-full px-8 py-12 bg-emerald-50 border-t z-[100] border-emerald-100 flex flex-col justify-start items-center">
+    <footer className="w-full px-8 py-12 bg-emerald-50 border-t z-50 border-emerald-100 flex flex-col justify-start items-center">
       <div className="w-full max-w-7xl flex flex-col md:flex-row justify-between items-start gap-12">
         <div className="inline-flex flex-col justify-start items-start gap-3.5 flex-1">
           <div className="flex flex-col justify-start items-start">

@@ -177,7 +177,7 @@ const RoleFormDrawer = ({ isOpen, onClose, role }: RoleFormDrawerProps) => {
                             'w-full pl-11 pr-4 py-3 bg-stone-50 border rounded-2xl text-sm font-bold text-stone-800 transition-all outline-none',
                             errors.name
                               ? 'border-red-300 ring-4 ring-red-50'
-                              : 'border-stone-100 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500',
+                              : 'border-stone-100 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500',
                             role && 'bg-stone-100 cursor-not-allowed opacity-70',
                           )}
                         />
@@ -202,7 +202,7 @@ const RoleFormDrawer = ({ isOpen, onClose, role }: RoleFormDrawerProps) => {
                             'w-full pl-11 pr-4 py-3 bg-stone-50 border rounded-2xl text-sm font-bold text-stone-800 transition-all outline-none resize-none',
                             errors.description
                               ? 'border-red-300 ring-4 ring-red-50'
-                              : 'border-stone-100 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500',
+                              : 'border-stone-100 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500',
                           )}
                         />
                       </div>

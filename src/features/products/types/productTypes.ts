@@ -357,6 +357,17 @@ export interface PublicBrand {
   isActive: boolean;
 }
 
+export interface CreateBrandRequest {
+  name: string;
+  slug: string;
+  logoUrl?: string;
+  description?: string;
+  website?: string;
+  isActive?: boolean;
+}
+
+export type UpdateBrandRequest = Partial<CreateBrandRequest>;
+
 export type PublicBrandListResponse = ResponseBase<PublicBrand[]>;
 export type PublicBrandDetailResponse = ResponseBase<PublicBrand>;
 

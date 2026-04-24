@@ -73,7 +73,7 @@ const UserRoleManagement = ({
           <select
             value={newRole}
             onChange={(e) => setNewRole(e.target.value)}
-            className="w-full pl-11 pr-4 py-3.5 bg-stone-50 border border-stone-100 rounded-2xl text-xs font-black text-stone-800 outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all appearance-none cursor-pointer"
+            className="w-full pl-11 pr-4 py-3.5 bg-stone-50 border border-stone-100 rounded-2xl text-xs font-black text-stone-800 outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all appearance-none cursor-pointer"
           >
             <option value="">Chọn vai trò để thêm...</option>
             {availableRoles.map((role: AdminRole) => (

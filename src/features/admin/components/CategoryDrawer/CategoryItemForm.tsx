@@ -170,7 +170,7 @@ const CategoryItemForm = React.memo(
                       <FiType className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-300" />
                       <input
                         {...register(`categories.${index}.name`)}
-                        className="w-full pl-11 pr-4 py-3 bg-stone-50 border border-stone-100 rounded-2xl text-sm font-bold text-stone-800 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all outline-none"
+                        className="w-full pl-11 pr-4 py-3 bg-stone-50 border border-stone-100 rounded-2xl text-sm font-bold text-stone-800 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
                       />
                     </div>
                     {errors?.name && (
@@ -186,7 +186,7 @@ const CategoryItemForm = React.memo(
                       <FiLink className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-300" />
                       <input
                         {...register(`categories.${index}.slug`)}
-                        className={`w-full pl-11 pr-10 py-3 bg-stone-50 border rounded-2xl text-sm font-bold text-stone-800 focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none ${
+                        className={`w-full pl-11 pr-10 py-3 bg-stone-50 border rounded-2xl text-sm font-bold text-stone-800 focus:ring-2 focus:ring-emerald-500 transition-all outline-none ${
                           slugStatus === 'taken'
                             ? 'border-red-500 bg-red-50/10'
                             : slugStatus === 'available'

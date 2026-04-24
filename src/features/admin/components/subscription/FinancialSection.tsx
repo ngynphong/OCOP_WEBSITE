@@ -35,7 +35,7 @@ const FinancialSection = () => {
                   onChange(val === '' ? 0 : parseInt(val, 10));
                 }}
                 placeholder="0"
-                className={`w-full px-4 py-3 bg-stone-50 border ${errors.maxProducts ? 'border-red-300 ring-4 ring-red-50' : 'border-stone-100 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500'} rounded-2xl text-sm font-bold text-stone-800 transition-all outline-none`}
+                className={`w-full px-4 py-3 bg-stone-50 border ${errors.maxProducts ? 'border-red-300 ring-4 ring-red-50' : 'border-stone-100 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500'} rounded-2xl text-sm font-bold text-stone-800 transition-all outline-none`}
               />
             )}
           />
@@ -47,7 +47,7 @@ const FinancialSection = () => {
           <input
             {...register('maxImagesPerProduct')}
             placeholder="Ví dụ: 5"
-            className={`w-full px-4 py-3 bg-stone-50 border ${errors.maxImagesPerProduct ? 'border-red-300 ring-4 ring-red-50' : 'border-stone-100 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500'} rounded-2xl text-sm font-bold text-stone-800 transition-all outline-none`}
+            className={`w-full px-4 py-3 bg-stone-50 border ${errors.maxImagesPerProduct ? 'border-red-300 ring-4 ring-red-50' : 'border-stone-100 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500'} rounded-2xl text-sm font-bold text-stone-800 transition-all outline-none`}
           />
         </div>
         <div>
@@ -66,7 +66,7 @@ const FinancialSection = () => {
                   onChange(val === '' ? 0 : parseFloat(val));
                 }}
                 placeholder="0"
-                className={`w-full px-4 py-3 bg-stone-50 border ${errors.commissionRate ? 'border-red-300 ring-4 ring-red-50' : 'border-stone-100 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500'} rounded-2xl text-sm font-bold text-stone-800 transition-all outline-none`}
+                className={`w-full px-4 py-3 bg-stone-50 border ${errors.commissionRate ? 'border-red-300 ring-4 ring-red-50' : 'border-stone-100 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500'} rounded-2xl text-sm font-bold text-stone-800 transition-all outline-none`}
               />
             )}
           />
@@ -88,7 +88,7 @@ const FinancialSection = () => {
                   onChange(val === '' ? 0 : parseFloat(val));
                 }}
                 placeholder="0"
-                className={`w-full px-4 py-3 bg-stone-50 border ${errors.commissionCashbackRate ? 'border-red-300 ring-4 ring-red-50' : 'border-stone-100 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500'} rounded-2xl text-sm font-bold text-stone-800 transition-all outline-none`}
+                className={`w-full px-4 py-3 bg-stone-50 border ${errors.commissionCashbackRate ? 'border-red-300 ring-4 ring-red-50' : 'border-stone-100 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500'} rounded-2xl text-sm font-bold text-stone-800 transition-all outline-none`}
               />
             )}
           />
@@ -106,7 +106,7 @@ const FinancialSection = () => {
                 value={formatVNDInput(value)}
                 onChange={(e) => onChange(parseVNDInput(e.target.value))}
                 placeholder="0"
-                className={`w-full px-4 py-3 bg-stone-50 border ${errors.cashbackThreshold ? 'border-red-300 ring-4 ring-red-50' : 'border-stone-100 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500'} rounded-2xl text-sm font-bold text-stone-800 transition-all outline-none`}
+                className={`w-full px-4 py-3 bg-stone-50 border ${errors.cashbackThreshold ? 'border-red-300 ring-4 ring-red-50' : 'border-stone-100 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500'} rounded-2xl text-sm font-bold text-stone-800 transition-all outline-none`}
               />
             )}
           />
@@ -127,7 +127,7 @@ const FinancialSection = () => {
                   onChange(val === '' ? 0 : parseFloat(val));
                 }}
                 placeholder="0"
-                className={`w-full px-4 py-3 bg-stone-50 border ${errors.paymentFeeRate ? 'border-red-300 ring-4 ring-red-50' : 'border-stone-100 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500'} rounded-2xl text-sm font-bold text-stone-800 transition-all outline-none`}
+                className={`w-full px-4 py-3 bg-stone-50 border ${errors.paymentFeeRate ? 'border-red-300 ring-4 ring-red-50' : 'border-stone-100 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500'} rounded-2xl text-sm font-bold text-stone-800 transition-all outline-none`}
               />
             )}
           />
@@ -146,7 +146,7 @@ const FinancialSection = () => {
                 value={formatVNDInput(value)}
                 onChange={(e) => onChange(parseVNDInput(e.target.value))}
                 placeholder="0"
-                className={`w-full px-4 py-3 bg-stone-50 border ${errors.payoutFee ? 'border-red-300 ring-4 ring-red-50' : 'border-stone-100 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500'} rounded-2xl text-sm font-bold text-stone-800 transition-all outline-none`}
+                className={`w-full px-4 py-3 bg-stone-50 border ${errors.payoutFee ? 'border-red-300 ring-4 ring-red-50' : 'border-stone-100 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500'} rounded-2xl text-sm font-bold text-stone-800 transition-all outline-none`}
               />
             )}
           />
@@ -158,7 +158,7 @@ const FinancialSection = () => {
           <input
             {...register('payoutDays')}
             placeholder="Ví dụ: T+7"
-            className={`w-full px-4 py-3 bg-stone-50 border ${errors.payoutDays ? 'border-red-300 ring-4 ring-red-50' : 'border-stone-100 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500'} rounded-2xl text-sm font-bold text-stone-800 transition-all outline-none`}
+            className={`w-full px-4 py-3 bg-stone-50 border ${errors.payoutDays ? 'border-red-300 ring-4 ring-red-50' : 'border-stone-100 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500'} rounded-2xl text-sm font-bold text-stone-800 transition-all outline-none`}
           />
         </div>
       </div>

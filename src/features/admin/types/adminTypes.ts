@@ -139,11 +139,11 @@ export interface ShopListItem {
 
 export interface ShopStatusLog {
   id: number;
-  fromStatus: ShopStatus;
+  fromStatus: ShopStatus | null;
   toStatus: ShopStatus;
-  note: string;
-  createdByEmail: string;
-  createdAt: string;
+  reason: string;
+  changedByEmail: string;
+  changedAt: string;
 }
 
 export interface GetShopsParams {

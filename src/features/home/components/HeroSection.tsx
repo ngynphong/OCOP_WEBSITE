@@ -3,7 +3,6 @@
 import { useState, useEffect, memo } from 'react';
 import Image from 'next/image';
 import {
-  Search,
   ShoppingCart,
   Star,
   Leaf,
@@ -13,6 +12,11 @@ import {
   Grape,
   Carrot,
   Loader2,
+  Package,
+  Store,
+  Map,
+  LucideIcon,
+  QrCode,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useFeaturedProductsQuery } from '@/features/products/hooks/usePublicProducts';
@@ -146,43 +150,13 @@ export const HeroSection = memo(function HeroSection() {
           <p className="text-emerald-50/80 text-base md:text-lg max-w-lg mb-12 font-sans leading-relaxed">
             Kết nối nông dân • Nghệ nhân • Người tiêu dùng
             <br />
-            Truy xuất nguồn gốc 100% qua QR
+            Truy xuất nguồn gốc qua QR
           </p>
-
-          {isMounted ? (
-            <form
-              className="w-full max-w-xl bg-white rounded-xl md:rounded-full p-1.5 md:p-2 flex flex-col sm:flex-row items-center shadow-2xl mb-12 transition-all focus-within:ring-4 focus-within:ring-white/20 gap-2 sm:gap-0"
-              onSubmit={(e) => {
-                e.preventDefault();
-                const q = (e.currentTarget.elements.namedItem('search') as HTMLInputElement).value;
-                if (q) router.push(`/san-pham?keyword=${encodeURIComponent(q)}`);
-              }}
-            >
-              <div className="flex items-center w-full flex-1 px-2">
-                <Search className="w-5 h-5 text-gray-400 ml-2 md:ml-4 shrink-0" />
-                <input
-                  name="search"
-                  type="text"
-                  placeholder="Tìm mật ong, trà, gạo ST25, lụa Bảo Lộc..."
-                  className="w-full bg-transparent border-none outline-none px-3 md:px-4 py-2 md:py-0 text-sm md:text-base text-gray-800 placeholder:text-gray-400 font-sans"
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full sm:w-auto bg-[#2A5C45] text-white px-6 md:px-8 py-3.5 md:py-3 rounded-xl sm:rounded-full text-sm md:text-base font-bold font-sans hover:bg-[#1f4734] transition-all shadow-md shrink-0 active:scale-95 sm:hover:-translate-y-px"
-              >
-                Tìm kiếm
-              </button>
-            </form>
-          ) : (
-            <div className="w-full max-w-xl h-[60px] bg-white/20 rounded-full mb-12 animate-pulse" />
-          )}
-
-          <div className="w-full grid grid-cols-4 gap-4 md:gap-8">
-            <StatItem value="12K+" label="Sản phẩm OCOP" />
-            <StatItem value="3.400+" label="Cửa hàng" />
-            <StatItem value="63" label="Tỉnh thành" />
-            <StatItem value="100%" label="Blockchain" />
+          <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+            <StatItem value="12K+" label="Sản phẩm OCOP" icon={Package} />
+            <StatItem value="3.400+" label="Cửa hàng" icon={Store} />
+            <StatItem value="63" label="Tỉnh thành" icon={Map} />
+            <StatItem value="QR" label="Truy xuất" icon={QrCode} />
           </div>
         </div>
 
@@ -317,12 +291,21 @@ export const HeroSection = memo(function HeroSection() {
   );
 });
 
-const StatItem = memo(({ value, label }: { value: string; label: string }) => (
-  <div className="flex flex-col">
-    <p className="text-[#D4AF37] text-xl md:text-3xl font-black font-sans tracking-tight">
-      {value}
-    </p>
-    <p className="text-white/70 text-[10px] md:text-xs mt-1 font-medium tracking-wide">{label}</p>
-  </div>
-));
+const StatItem = memo(
+  ({ value, label, icon: Icon }: { value: string; label: string; icon: LucideIcon }) => (
+    <div className="flex items-start gap-3">
+      <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+        <Icon className="w-5 h-5 text-[#D4AF37]" />
+      </div>
+      <div className="flex flex-col">
+        <p className="text-[#D4AF37] text-xl md:text-2xl font-black font-sans tracking-tight leading-none">
+          {value}
+        </p>
+        <p className="text-white/70 text-[10px] md:text-xs mt-1 font-medium tracking-wide leading-tight">
+          {label}
+        </p>
+      </div>
+    </div>
+  ),
+);
 StatItem.displayName = 'StatItem';

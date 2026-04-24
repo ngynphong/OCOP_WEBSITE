@@ -26,12 +26,16 @@ const ShopDetailHistory: React.FC<ShopDetailHistoryProps> = React.memo(({ logs }
                 <div className="flex items-center justify-between gap-1 mb-2">
                   <div className="font-black text-[#00490E] text-xs uppercase">{log.toStatus}</div>
                   <time className="font-bold text-[9px] text-stone-400 uppercase tracking-tighter">
-                    {format(new Date(log.createdAt), 'dd/MM/yyyy HH:mm')}
+                    {(() => {
+                      if (!log.changedAt) return '---';
+                      const d = new Date(log.changedAt);
+                      return isNaN(d.getTime()) ? '---' : format(d, 'dd/MM/yyyy HH:mm');
+                    })()}
                   </time>
                 </div>
-                <div className="text-xs text-stone-500 mb-4 font-medium">{log.note}</div>
+                <div className="text-xs text-stone-500 mb-4 font-medium">{log.reason}</div>
                 <div className="flex items-center gap-2 text-[9px] font-bold text-stone-400 uppercase tracking-widest">
-                  Admin: <span className="text-emerald-600">{log.createdByEmail}</span>
+                  Admin: <span className="text-emerald-600">{log.changedByEmail}</span>
                 </div>
               </div>
             </div>

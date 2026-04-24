@@ -6,8 +6,6 @@ import {
   QrCodeResponse,
   PublicCategoryListResponse,
   PublicCategoryDetailResponse,
-  PublicBrandListResponse,
-  PublicBrandDetailResponse,
   TraceDetailResponse,
   ResponseBase,
 } from '@/features/products/types/productTypes';
@@ -39,14 +37,6 @@ export const publicProductApi = {
 
   getCategoryBySlug: (slug: string): Promise<PublicCategoryDetailResponse> => {
     return publicAxiosClient.get(`/categories/${slug}`);
-  },
-
-  getBrands: (): Promise<PublicBrandListResponse> => {
-    return publicAxiosClient.get('/brands');
-  },
-
-  getBrandBySlug: (slug: string): Promise<PublicBrandDetailResponse> => {
-    return publicAxiosClient.get(`/brands/${slug}`);
   },
 
   traceQrDetail: (qrCode: string): Promise<TraceDetailResponse> => {

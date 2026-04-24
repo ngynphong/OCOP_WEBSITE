@@ -18,6 +18,8 @@ import {
   FiTruck,
   FiMessageSquare,
   FiTrendingUp,
+  FiTag,
+  FiMapPin,
 } from 'react-icons/fi';
 import { FaWarehouse } from 'react-icons/fa';
 import { motion } from 'framer-motion';
@@ -36,9 +38,10 @@ const MENU_ITEMS = [
   { label: 'Cửa hàng', icon: CiShop, href: '/admin/shops', id: 'shops' },
   { label: 'Đơn hàng', icon: FiShoppingBag, href: '/admin/orders', id: 'orders' },
   { label: 'Sản phẩm', icon: FiBox, href: '/admin/products', id: 'products' },
+  { label: 'Thương hiệu', icon: FiTag, href: '/admin/brands', id: 'brands' },
+  { label: 'Danh mục', icon: FiGrid, href: '/admin/categories', id: 'categories' },
   { label: 'Kho hàng', icon: FaWarehouse, href: '/admin/inventory', id: 'inventory' },
-  // { label: 'Phê duyệt', icon: FiCheckSquare, href: '/admin/phe-duyet', id: 'approval' },
-  // { label: 'Tài chính', icon: FiDollarSign, href: '/admin/tai-chinh', id: 'financials' },
+  { label: 'Tỉnh thành', icon: FiMapPin, href: '/admin/locations', id: 'locations' },
   { label: 'Thanh toán', icon: FiCreditCard, href: '/admin/payment-gateways', id: 'payments' },
   { label: 'Vận chuyển', icon: FiTruck, href: '/admin/shipping-providers', id: 'shipping' },
   { label: 'Người dùng', icon: FiUsers, href: '/admin/users', id: 'users' },

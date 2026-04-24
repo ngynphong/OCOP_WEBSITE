@@ -54,10 +54,8 @@ export default function Home() {
           <QRTraceabilitySection />
           <NewsletterSection />
         </div>
-        {/* <ScrollToTop /> */}
-        <ComplaintFloatingButton />
       </main>
-
+      <ComplaintFloatingButton />
       <Footer />
     </div>
   );

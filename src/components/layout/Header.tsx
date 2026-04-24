@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import {
   Search,
   ShoppingCart,
@@ -22,6 +22,7 @@ import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { useCart } from '@/features/cart/hooks/useCart';
 import { QRScannerModal } from '@/components/ui/QRScannerModal';
 import { NotificationBell } from '@/features/notifications/components/NotificationBell';
+import { SearchBox } from '@/features/products/components/SearchBox';
 
 export function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -30,10 +31,8 @@ export function Header() {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isQRModalOpen, setIsQRModalOpen] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
 
   const pathname = usePathname();
-  const router = useRouter();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const { logout, isLoggingOut, handleClientLogout, profile } = useAuth();
   const role = useAppSelector((state) => state.auth.roles);
@@ -61,14 +60,6 @@ export function Header() {
       handleClientLogout();
     }
     setIsLogoutModalOpen(false);
-  };
-
-  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && searchQuery.trim()) {
-      router.push(`/san-pham?search=${encodeURIComponent(searchQuery.trim())}`);
-      setIsSearchOpen(false);
-      setIsMenuOpen(false);
-    }
   };
 
   return (
@@ -179,7 +170,7 @@ export function Header() {
                 </span>
               </Link>
               <Link
-                href="/san-pham"
+                href="/cau-chuyen"
                 onClick={() => {
                   window.scrollTo({
                     top: 0,
@@ -195,22 +186,7 @@ export function Header() {
             </nav>
           </div>
           <div className="hidden lg:flex flex-1 max-w-[512px] px-8 flex-col justify-start items-start">
-            <div className="w-full inline-flex justify-center items-center">
-              <div className="w-full relative inline-flex flex-col justify-start items-start">
-                <div className="w-full px-4 py-2.5 bg-white/10 rounded-full inline-flex items-center gap-2 overflow-hidden border border-transparent focus-within:border-emerald-300 transition-colors">
-                  <Search className="w-4 h-4 text-white/70" />
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyDown={handleSearch}
-                    suppressHydrationWarning
-                    placeholder="Tìm kiếm tinh hoa đất Việt..."
-                    className="flex-1 bg-transparent text-white text-sm font-normal font-sans focus:outline-none placeholder:text-emerald-100/70"
-                  />
-                </div>
-              </div>
-            </div>
+            <SearchBox variant="header" />
           </div>
           <div className="px-2 flex justify-start items-center gap-1 md:gap-2.5 relative z-[103]">
             <button
@@ -333,21 +309,9 @@ export function Header() {
 
         {/* Mobile Search Bar Expansion */}
         <div
-          className={`w-full bg-green-800 transition-all duration-300 overflow-hidden lg:hidden ${isSearchOpen ? 'max-h-16 py-3 px-4' : 'max-h-0'}`}
+          className={`w-full bg-green-800 transition-all duration-300 overflow-hidden lg:hidden ${isSearchOpen ? 'max-h-24 py-3 px-4' : 'max-h-0'}`}
         >
-          <div className="w-full px-4 py-2 bg-white/10 rounded-full inline-flex items-center gap-2 border border-emerald-300/30">
-            <Search className="w-4 h-4 text-white/70" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={handleSearch}
-              suppressHydrationWarning
-              placeholder="Tìm kiếm sản phẩm OCOP..."
-              className="flex-1 bg-transparent text-white text-sm focus:outline-none placeholder:text-emerald-100/50"
-              autoFocus={isSearchOpen}
-            />
-          </div>
+          <SearchBox variant="header" onClose={() => setIsSearchOpen(false)} />
         </div>
 
         {/* Mobile Menu Expansion */}
@@ -386,7 +350,14 @@ export function Header() {
             >
               Vùng Miền
             </Link>
-            <Link href="/san-pham" className="text-emerald-100 text-base font-semibold">
+            <Link
+              href="/cau-chuyen"
+              className={
+                isHydrated && pathname.startsWith('/cau-chuyen')
+                  ? 'text-white text-base font-semibold'
+                  : 'text-emerald-100 text-base font-semibold'
+              }
+            >
               Câu Chuyện
             </Link>
           </nav>
