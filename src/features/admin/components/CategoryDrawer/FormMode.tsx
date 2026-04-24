@@ -94,7 +94,7 @@ const FormMode = ({
                 {...register('commonParentId', {
                   setValueAs: (v) => (v === null || v === '' ? null : Number(v)),
                 })}
-                className="w-full pl-11 pr-4 py-3 bg-emerald-50/30 border border-emerald-100 rounded-2xl text-sm font-bold text-stone-800 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all outline-none appearance-none font-sans"
+                className="w-full pl-11 pr-4 py-3 bg-emerald-50/30 border border-emerald-100 rounded-2xl text-sm font-bold text-stone-800 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none appearance-none font-sans"
               >
                 <option value="">-- Không có (Danh mục gốc) --</option>
                 {categoriesList.map((cat) => (

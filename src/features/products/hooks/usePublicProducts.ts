@@ -1,5 +1,6 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { publicProductApi } from '@/features/products/api/publicProductApi';
+import { brandApi } from '@/features/products/api/brandApi';
 import { PublicProductListParams } from '@/features/products/types/productTypes';
 
 export const usePublicCategoriesQuery = () => {
@@ -103,6 +104,14 @@ export const useFeaturedProductsQuery = (limit = 12) => {
   });
 };
 
+export const useFeaturedStoryQuery = () => {
+  return useQuery({
+    queryKey: ['public-featured-story'],
+    queryFn: () => publicProductApi.getFeaturedStory(),
+    staleTime: 10 * 60 * 1000,
+  });
+};
+
 export const useTraceQrQuery = (qrCode: string | null | undefined) => {
   return useQuery({
     queryKey: ['trace-qr', qrCode],
@@ -124,7 +133,7 @@ export const usePublicCategoryDetailQuery = (slug: string | null | undefined) =>
 export const usePublicBrandsQuery = () => {
   return useQuery({
     queryKey: ['public-brands'],
-    queryFn: () => publicProductApi.getBrands(),
+    queryFn: () => brandApi.getBrands(),
     staleTime: 30 * 60 * 1000,
   });
 };
@@ -132,7 +141,7 @@ export const usePublicBrandsQuery = () => {
 export const usePublicBrandDetailQuery = (slug: string | null | undefined) => {
   return useQuery({
     queryKey: ['public-brand-detail', slug],
-    queryFn: () => publicProductApi.getBrandBySlug(slug!),
+    queryFn: () => brandApi.getBrandBySlug(slug!),
     enabled: !!slug,
     staleTime: 60 * 60 * 1000,
   });

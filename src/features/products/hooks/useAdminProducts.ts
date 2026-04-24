@@ -1,7 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { adminProductApi } from '@/features/products/api/adminProductApi';
-import { AdminProductListParams } from '@/features/products/types/productTypes';
+import {
+  AdminProductListParams,
+  UpdateProductStoryRequest,
+} from '@/features/products/types/productTypes';
 
 type ApiError = { response?: { data?: { message?: string } } };
 
@@ -59,10 +62,22 @@ export const useAdminProductMutations = () => {
   });
 
   const setFeaturedMutation = useMutation({
-    mutationFn: ({ id, isFeatured }: { id: number; isFeatured: boolean }) =>
-      adminProductApi.setFeatured(id, isFeatured),
-    onSuccess: (_, { id, isFeatured }) => {
-      toast.success(isFeatured ? 'Đã ghim sản phẩm nổi bật' : 'Đã bỏ ghim sản phẩm');
+    mutationFn: ({ id, featured }: { id: number; featured: boolean }) =>
+      adminProductApi.setFeatured(id, featured),
+    onSuccess: (_, { id, featured }) => {
+      toast.success(featured ? 'Đã ghim sản phẩm nổi bật' : 'Đã bỏ ghim sản phẩm');
+      invalidate(id);
+    },
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data?.message || 'Có lỗi khi cập nhật trạng thái nổi bật');
+    },
+  });
+
+  const setFeaturedStoryMutation = useMutation({
+    mutationFn: ({ id, featuredStory }: { id: number; featuredStory: boolean }) =>
+      adminProductApi.setFeaturedStory(id, featuredStory),
+    onSuccess: (_, { id, featuredStory }) => {
+      toast.success(featuredStory ? 'Đã ghim câu chuyện nổi bật' : 'Đã bỏ ghim câu chuyện');
       invalidate(id);
     },
     onError: (error: ApiError) => {
@@ -81,6 +96,18 @@ export const useAdminProductMutations = () => {
     },
   });
 
+  const updateProductStoryMutation = useMutation({
+    mutationFn: ({ id, data }: { id: number; data: UpdateProductStoryRequest }) =>
+      adminProductApi.updateProductStory(id, data),
+    onSuccess: (_, { id }) => {
+      toast.success('Cập nhật câu chuyện thành công');
+      invalidate(id);
+    },
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data?.message || 'Có lỗi khi cập nhật câu chuyện');
+    },
+  });
+
   return {
     approveProduct: approveProductMutation.mutateAsync,
     isApproving: approveProductMutation.isPending,
@@ -88,7 +115,11 @@ export const useAdminProductMutations = () => {
     isRejecting: rejectProductMutation.isPending,
     setFeatured: setFeaturedMutation.mutateAsync,
     isSettingFeatured: setFeaturedMutation.isPending,
+    setFeaturedStory: setFeaturedStoryMutation.mutateAsync,
+    isSettingFeaturedStory: setFeaturedStoryMutation.isPending,
     hideProduct: hideProductMutation.mutateAsync,
     isHiding: hideProductMutation.isPending,
+    updateProductStory: updateProductStoryMutation.mutateAsync,
+    isUpdatingStory: updateProductStoryMutation.isPending,
   };
 };

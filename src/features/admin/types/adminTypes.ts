@@ -122,6 +122,9 @@ export interface ShopListItem {
   rejectionNote: string | null;
   ownerEmail: string;
   ownerName: string;
+  ownerRole?: string;
+  ownerQuote?: string;
+  ownerImageUrl?: string;
   provinceName: string;
   districtName: string;
   wardName: string;
@@ -139,11 +142,11 @@ export interface ShopListItem {
 
 export interface ShopStatusLog {
   id: number;
-  fromStatus: ShopStatus;
+  fromStatus: ShopStatus | null;
   toStatus: ShopStatus;
-  note: string;
-  createdByEmail: string;
-  createdAt: string;
+  reason: string;
+  changedByEmail: string;
+  changedAt: string;
 }
 
 export interface GetShopsParams {
@@ -163,6 +166,13 @@ export interface OverridePlanRequest {
 
 export interface ShopActionRequest {
   note: string;
+}
+
+export interface UpdateShopOwnerRequest {
+  ownerName: string;
+  ownerRole: string;
+  ownerQuote: string;
+  ownerImageUrl: string;
 }
 
 export type AdminShopListResponse = ResponseBase<PaginatedResponse<ShopListItem>>;

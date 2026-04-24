@@ -77,7 +77,7 @@ export const WithdrawalRequestModal: React.FC<WithdrawalRequestModalProps> = ({
                     value={formatVNDInput(field.value)}
                     onChange={(e) => field.onChange(parseVNDInput(e.target.value))}
                     placeholder="VD: 100.000"
-                    className={`w-full px-5 py-4 rounded-2xl bg-stone-50 text-gray-700 border transition-all duration-300 focus:outline-hidden focus:ring-4 focus:ring-emerald-500/10 ${
+                    className={`w-full px-5 py-4 rounded-2xl bg-stone-50 text-gray-700 border transition-all duration-300 focus:outline-hidden focus:ring-2 focus:ring-emerald-500 ${
                       formState.errors.amount
                         ? 'border-red-300'
                         : 'border-stone-200 focus:border-emerald-500'
@@ -102,7 +102,7 @@ export const WithdrawalRequestModal: React.FC<WithdrawalRequestModalProps> = ({
               {...register('bankInfo')}
               rows={3}
               placeholder="VD: MB Bank - 0123456789 - NGUYEN VAN A"
-              className={`w-full px-5 py-4 rounded-2xl bg-stone-50 text-gray-700 border transition-all duration-300 focus:outline-hidden focus:ring-4 focus:ring-emerald-500/10 resize-none ${
+              className={`w-full px-5 py-4 rounded-2xl bg-stone-50 text-gray-700 border transition-all duration-300 focus:outline-hidden focus:ring-2 focus:ring-emerald-500 resize-none ${
                 formState.errors.bankInfo
                   ? 'border-red-300'
                   : 'border-stone-200 focus:border-emerald-500'

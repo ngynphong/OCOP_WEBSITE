@@ -25,6 +25,10 @@ export interface ProductShop {
   name: string;
   slug: string;
   logoUrl: string;
+  ownerName?: string;
+  ownerRole?: string;
+  ownerQuote?: string;
+  ownerImageUrl?: string;
 }
 
 export interface ProductCategory {
@@ -121,6 +125,13 @@ export interface ProductAttributeValue {
 
 // ─── Main Product interface ───────────────────────────────────────────────────
 
+export interface ImpactStat {
+  iconType: string;
+  icon?: string;
+  value: string;
+  label: string;
+}
+
 export interface Product {
   id: number;
   name: string;
@@ -130,7 +141,10 @@ export interface Product {
   ocopStar: number;
   status: ProductStatus;
   isFeatured: boolean;
-  isFlashSaleEligible: boolean;
+  isFeaturedStory?: boolean;
+  storyTitle?: string;
+  storyImage?: string;
+  impactStats?: string;
   unit: string;
   weightGram: number;
   minPrice: number;
@@ -192,6 +206,12 @@ export interface UpdateProductRequest {
   productionArea?: string;
   unit?: string;
   weightGram?: number;
+}
+
+export interface UpdateProductStoryRequest {
+  storyTitle: string;
+  storyImage: string;
+  impactStats: string;
 }
 
 export interface CreateVariantRequest {
@@ -356,6 +376,17 @@ export interface PublicBrand {
   website: string | null;
   isActive: boolean;
 }
+
+export interface CreateBrandRequest {
+  name: string;
+  slug: string;
+  logoUrl?: string;
+  description?: string;
+  website?: string;
+  isActive?: boolean;
+}
+
+export type UpdateBrandRequest = Partial<CreateBrandRequest>;
 
 export type PublicBrandListResponse = ResponseBase<PublicBrand[]>;
 export type PublicBrandDetailResponse = ResponseBase<PublicBrand>;

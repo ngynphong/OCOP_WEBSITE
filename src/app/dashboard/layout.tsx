@@ -71,8 +71,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               { label: getPageTitle() },
             ]}
           />
-
           <div className="flex items-center gap-4">
+            <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">
+              Lần đăng nhập cuối:
+            </p>
+            <p className="text-xs font-bold text-stone-900">
+              {profile?.lastLoginAt?.split('T')[0] || 'Chưa có'}
+            </p>
             {/* Notification Bell */}
             {isMounted && (
               <NotificationBell className="text-stone-500 hover:text-stone-900 hover:bg-stone-100 border border-stone-100 shadow-xs" />

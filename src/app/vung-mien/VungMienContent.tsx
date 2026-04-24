@@ -114,8 +114,11 @@ export default function VungMienContent() {
             <h2 className="text-lg font-bold text-stone-800">Bản Đồ Đặc Sản</h2>
           </div>
 
-          <div className="w-full flex justify-center py-4 bg-blue-50/30 rounded-xl relative overflow-hidden">
-            <VietnamMap onSelectProvince={handleSelectProvince} />
+          <div className="w-full flex justify-center py-4 bg-emerald-50/30 rounded-xl relative overflow-hidden border border-emerald-100/50">
+            <VietnamMap
+              onSelectProvince={handleSelectProvince}
+              selectedProvince={selectedProvince}
+            />
           </div>
 
           <p className="text-sm text-stone-500 mt-6 text-center italic">
@@ -147,36 +150,54 @@ export default function VungMienContent() {
               )}
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {products.length === 0 && !isFetching && (
-                <div className="col-span-full py-12 flex flex-col items-center justify-center text-stone-500 bg-stone-50 rounded-xl border border-dashed border-stone-200">
-                  <Package className="w-12 h-12 text-stone-300 mb-3" />
-                  <p className="font-medium text-center text-stone-600">
-                    Chưa có dữ liệu sản phẩm cho khu vực này
-                  </p>
-                  <p className="text-sm mt-1 text-center">
-                    Vui lòng chọn tỉnh thành khác hoặc xem sản phẩm tiêu biểu bên dưới
-                  </p>
+            <div className="relative min-h-[400px]">
+              {/* Loading Overlay */}
+              {isFetching && !isFetchingNextPage && (
+                <div className="absolute inset-0 bg-white/50 backdrop-blur-[1px] z-10 flex items-center justify-center rounded-xl transition-all">
+                  <div className="flex flex-col items-center gap-3">
+                    <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+                    <p className="text-xs font-bold text-emerald-700 uppercase tracking-widest animate-pulse">
+                      Đang cập nhật...
+                    </p>
+                  </div>
                 </div>
               )}
 
-              {products.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  id={product.id}
-                  name={product.name}
-                  slug={product.slug}
-                  price={product.minPrice || 0}
-                  rating={product.ratingAvg || 0}
-                  image={product.thumbnailUrl || product.imageUrl || null}
-                  ocopStar={product.ocopStar}
-                  unit={product.unit}
-                  location={product.provinceName || undefined}
-                  shopName={product.shopName}
-                  categoryName={product.categoryName}
-                  soldCount={product.soldCount}
-                />
-              ))}
+              <div
+                className={`grid grid-cols-1 sm:grid-cols-2 gap-4 transition-opacity duration-300 ${
+                  isFetching && !isFetchingNextPage ? 'opacity-40' : 'opacity-100'
+                }`}
+              >
+                {products.length === 0 && !isFetching && (
+                  <div className="col-span-full py-12 flex flex-col items-center justify-center text-stone-500 bg-stone-50 rounded-xl border border-dashed border-stone-200">
+                    <Package className="w-12 h-12 text-stone-300 mb-3" />
+                    <p className="font-medium text-center text-stone-600">
+                      Chưa có dữ liệu sản phẩm cho khu vực này
+                    </p>
+                    <p className="text-sm mt-1 text-center">
+                      Vui lòng chọn tỉnh thành khác hoặc xem sản phẩm tiêu biểu bên dưới
+                    </p>
+                  </div>
+                )}
+
+                {products.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    id={product.id}
+                    name={product.name}
+                    slug={product.slug}
+                    price={product.minPrice || 0}
+                    rating={product.ratingAvg || 0}
+                    image={product.thumbnailUrl || product.imageUrl || null}
+                    ocopStar={product.ocopStar}
+                    unit={product.unit}
+                    location={product.provinceName || undefined}
+                    shopName={product.shopName}
+                    categoryName={product.categoryName}
+                    soldCount={product.soldCount}
+                  />
+                ))}
+              </div>
             </div>
 
             {/* Load More Button */}

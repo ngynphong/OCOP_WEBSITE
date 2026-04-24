@@ -1,4 +1,4 @@
-import { axiosClient } from '@/lib/axios';
+import { axiosClient, publicAxiosClient } from '@/lib/axios';
 import {
   ISupplyChainLot,
   ICreateLotReq,
@@ -83,17 +83,17 @@ export const supplyChainApi = {
 
   // Public APIs
   getLotByCode: async (lotCode: string) => {
-    return axiosClient.get<unknown, { data: ISupplyChainLot }>(
+    return publicAxiosClient.get<unknown, { data: ISupplyChainLot }>(
       `/supply-chain/lots/by-code/${lotCode}`,
     );
   },
 
   getPublicLotDetail: async (id: number) => {
-    return axiosClient.get<unknown, { data: ISupplyChainLot }>(`/supply-chain/lots/${id}`);
+    return publicAxiosClient.get<unknown, { data: ISupplyChainLot }>(`/supply-chain/lots/${id}`);
   },
 
   getPublicLots: async (params: IPublicLotListReq) => {
-    return axiosClient.get<
+    return publicAxiosClient.get<
       unknown,
       {
         data: {

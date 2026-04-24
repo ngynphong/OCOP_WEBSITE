@@ -39,7 +39,7 @@ export const CheckoutSummary = memo(function CheckoutSummary({
     let disc = 0;
     if (appliedVoucher.type === 'PERCENT') {
       disc = (subtotal * appliedVoucher.discountValue) / 100;
-      if (appliedVoucher.maxDiscount > 0) {
+      if (appliedVoucher.maxDiscount && appliedVoucher.maxDiscount > 0) {
         disc = Math.min(disc, appliedVoucher.maxDiscount);
       }
     } else {
@@ -55,7 +55,7 @@ export const CheckoutSummary = memo(function CheckoutSummary({
 
   return (
     <div className="bg-white rounded-[32px] p-8 border border-stone-100 shadow-xl shadow-stone-200/50 sticky top-28">
-      <h2 className="text-xl font-black text-stone-900 mb-6 tracking-tight">Tóm tắt thanh toàn</h2>
+      <h2 className="text-xl font-black text-stone-900 mb-6 tracking-tight">Tóm tắt thanh toán</h2>
 
       {/* Voucher Input */}
       <div className="mb-6">

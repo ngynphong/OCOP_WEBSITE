@@ -4,6 +4,7 @@ import {
   ProductDetailResponse,
   ProductListResponse,
   AdminApproveProductResponse,
+  UpdateProductStoryRequest,
 } from '@/features/products/types/productTypes';
 
 export const adminProductApi = {
@@ -23,11 +24,24 @@ export const adminProductApi = {
     return axiosClient.post(`/admin/products/${id}/reject`, { note });
   },
 
-  setFeatured: (id: number, isFeatured: boolean): Promise<ProductDetailResponse> => {
-    return axiosClient.patch(`/admin/products/${id}/featured`, { isFeatured });
+  setFeatured: (id: number, featured: boolean): Promise<ProductDetailResponse> => {
+    return axiosClient.patch(`/admin/products/${id}/feature`, null, { params: { featured } });
+  },
+
+  setFeaturedStory: (id: number, featuredStory: boolean): Promise<ProductDetailResponse> => {
+    return axiosClient.patch(`/admin/products/${id}/feature-story`, null, {
+      params: { featuredStory },
+    });
   },
 
   hideProduct: (id: number): Promise<ProductDetailResponse> => {
     return axiosClient.patch(`/admin/products/${id}/hide`);
+  },
+
+  updateProductStory: (
+    id: number,
+    data: UpdateProductStoryRequest,
+  ): Promise<ProductDetailResponse> => {
+    return axiosClient.patch(`/admin/products/${id}/story`, data);
   },
 };

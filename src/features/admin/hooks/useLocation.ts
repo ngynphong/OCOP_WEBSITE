@@ -1,4 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
 import { locationApi } from '../api/locationApi';
 
 export const useLocation = () => {
@@ -25,9 +26,22 @@ export const useLocation = () => {
     });
   };
 
+  const useImportLocationsMutation = () => {
+    return useMutation({
+      mutationFn: (file: File) => locationApi.importLocations(file),
+      onSuccess: () => {
+        toast.success('Nhập dữ liệu tỉnh thành thành công');
+      },
+      onError: (error: { message?: string }) => {
+        toast.error(error?.message || 'Có lỗi khi nhập dữ liệu tỉnh thành');
+      },
+    });
+  };
+
   return {
     useProvinces,
     useDistricts,
     useWards,
+    useImportLocationsMutation,
   };
 };

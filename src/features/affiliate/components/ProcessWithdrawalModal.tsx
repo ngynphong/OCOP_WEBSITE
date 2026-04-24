@@ -95,7 +95,7 @@ export const ProcessWithdrawalModal: React.FC<ProcessWithdrawalModalProps> = ({
               {...register('adminNote')}
               rows={3}
               placeholder="VD: Đã chuyển tiền thành công hoặc Lý do từ chối..."
-              className="w-full px-5 py-4 rounded-2xl bg-stone-50 border border-stone-200 transition-all duration-300 focus:outline-hidden focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 resize-none"
+              className="w-full px-5 py-4 rounded-2xl bg-stone-50 border border-stone-200 transition-all duration-300 focus:outline-hidden focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 resize-none"
             />
           </div>
         </div>

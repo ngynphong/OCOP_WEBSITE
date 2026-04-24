@@ -75,6 +75,13 @@ const DashboardSidebar = () => {
       roles: ['USER'],
     },
     {
+      id: 'vouchers',
+      label: 'Mã giảm giá',
+      icon: IoTicket,
+      href: '/dashboard/vouchers',
+      roles: ['USER'],
+    },
+    {
       id: 'affiliate',
       label: 'Tiếp thị liên kết',
       icon: FiTrendingUp,
