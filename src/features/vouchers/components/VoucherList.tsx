@@ -11,9 +11,15 @@ interface VoucherListProps {
   vouchers: Voucher[];
   onEdit: (voucher: Voucher) => void;
   isLoading?: boolean;
+  hideActions?: boolean;
 }
 
-export function VoucherList({ vouchers, onEdit, isLoading }: VoucherListProps) {
+export function VoucherList({
+  vouchers,
+  onEdit,
+  isLoading,
+  hideActions = false,
+}: VoucherListProps) {
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const { deleteVoucher, toggleVoucher } = useSellerVoucherMutations();
 
@@ -50,30 +56,32 @@ export function VoucherList({ vouchers, onEdit, isLoading }: VoucherListProps) {
         <VoucherCard
           key={voucher.id}
           voucher={voucher}
-          onEdit={onEdit}
-          onDelete={(id) => setDeleteId(id)}
-          onToggle={(id) => toggleVoucher.mutate(id)}
+          onEdit={!hideActions ? onEdit : undefined}
+          onDelete={!hideActions ? (id) => setDeleteId(id) : undefined}
+          onToggle={!hideActions ? (id) => toggleVoucher.mutate(id) : undefined}
           isActionsLoading={isMutating}
         />
       ))}
 
-      <ConfirmModal
-        isOpen={deleteId !== null}
-        title="Xóa Voucher?"
-        message="Hành động này sẽ xóa vĩnh viễn voucher này khỏi hệ thống và không thể hoàn tác. Bạn có chắc chắn?"
-        confirmText="Xóa vĩnh viễn"
-        cancelText="Hủy bỏ"
-        type="danger"
-        isLoading={deleteVoucher.isPending}
-        onConfirm={() => {
-          if (deleteId) {
-            deleteVoucher.mutate(deleteId, {
-              onSuccess: () => setDeleteId(null),
-            });
-          }
-        }}
-        onCancel={() => setDeleteId(null)}
-      />
+      {!hideActions && (
+        <ConfirmModal
+          isOpen={deleteId !== null}
+          title="Xóa Voucher?"
+          message="Hành động này sẽ xóa vĩnh viễn voucher này khỏi hệ thống và không thể hoàn tác. Bạn có chắc chắn?"
+          confirmText="Xóa vĩnh viễn"
+          cancelText="Hủy bỏ"
+          type="danger"
+          isLoading={deleteVoucher.isPending}
+          onConfirm={() => {
+            if (deleteId) {
+              deleteVoucher.mutate(deleteId, {
+                onSuccess: () => setDeleteId(null),
+              });
+            }
+          }}
+          onCancel={() => setDeleteId(null)}
+        />
+      )}
     </div>
   );
 }

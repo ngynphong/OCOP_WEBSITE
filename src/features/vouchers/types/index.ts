@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-export type VoucherType = 'PERCENT' | 'CASH';
-export type VoucherStatus = 'ACTIVE' | 'INACTIVE' | 'EXPIRED';
+export type VoucherType = 'FIXED_AMOUNT' | 'PERCENT' | 'FREE_SHIPPING';
+export type VoucherStatus = 'ACTIVE' | 'PAUSED' | 'EXPIRED' | 'USED_UP';
 
 export interface Voucher {
   id: number;
@@ -9,7 +9,7 @@ export interface Voucher {
   name: string;
   type: VoucherType;
   discountValue: number;
-  maxDiscount: number;
+  maxDiscount: number | null;
   minOrderValue: number;
   usageLimit: number;
   usedCount: number;
@@ -23,6 +23,13 @@ export interface Voucher {
   shopLogoUrl?: string | null;
 }
 
+export interface SavedVoucherResponse extends Voucher {
+  savedId: number;
+  savedAt: string;
+  userUsedCount: number;
+  isUsable: boolean;
+}
+
 export interface VoucherListResponse {
   content: Voucher[];
   totalElements: number;
@@ -31,17 +38,29 @@ export interface VoucherListResponse {
   size: number;
 }
 
+export interface SavedVoucherListResponse {
+  content: SavedVoucherResponse[];
+  totalElements: number;
+  totalPages: number;
+  page: number;
+  size: number;
+}
+
 export interface VoucherValidateResponse {
+  valid: boolean;
+  invalidReason: string | null;
   code: string;
   type: VoucherType;
   discountValue: number;
-  maxDiscount: number;
+  maxDiscount: number | null;
   minOrderValue: number;
   description: string;
-  valid: boolean;
+  calculatedDiscount: number | null;
+  applicableProductIds: number[] | null;
+  applicableCategoryIds: number[] | null;
 }
 
-// Zod Schema cho Form Validation
+// Zod Schema cho Form Validation (Dành cho Seller tạo voucher)
 export const voucherSchema = z
   .object({
     code: z
@@ -50,9 +69,9 @@ export const voucherSchema = z
       .max(20, 'Mã voucher tối đa 20 ký tự')
       .toUpperCase(),
     name: z.string().min(5, 'Tên voucher phải có ít nhất 5 ký tự'),
-    type: z.enum(['PERCENT', 'CASH']),
-    discountValue: z.number().min(1, 'Giá trị giảm tối thiểu là 1'),
-    maxDiscount: z.number().min(0, 'Mức giảm tối đa không hợp lệ'),
+    type: z.enum(['FIXED_AMOUNT', 'PERCENT', 'FREE_SHIPPING']),
+    discountValue: z.number().min(0, 'Giá trị giảm không hợp lệ'),
+    maxDiscount: z.number().nullable(),
     minOrderValue: z.number().min(0, 'Giá trị đơn hàng tối thiểu không hợp lệ'),
     usageLimit: z.number().min(1, 'Giới hạn sử dụng phải ít nhất là 1'),
     perUserLimit: z.number().min(1, 'Giới hạn mỗi người dùng phải ít nhất là 1'),

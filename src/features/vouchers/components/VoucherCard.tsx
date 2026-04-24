@@ -50,9 +50,13 @@ export function VoucherCard({
       >
         <div className="text-center">
           <span className="block text-2xl font-black tracking-tighter leading-none">
-            {voucher.type === 'PERCENT' ? `${voucher.discountValue}%` : 'VND'}
+            {voucher.type === 'PERCENT'
+              ? `${voucher.discountValue}%`
+              : voucher.type === 'FREE_SHIPPING'
+                ? 'FREE'
+                : 'VND'}
           </span>
-          {voucher.type === 'CASH' && (
+          {voucher.type === 'FIXED_AMOUNT' && (
             <span className="block text-[11px] font-black mt-1 leading-none truncate max-w-[80px]">
               {formatCurrencyVND(voucher.discountValue).replace('₫', '')}
             </span>
@@ -141,8 +145,13 @@ export function VoucherCard({
               </span>
             </div>
             <div className="flex items-center gap-1.5 text-stone-500">
-              <span className="text-[11px] font-medium italic">
-                Giảm tối đa: {formatCurrencyVND(voucher.maxDiscount)}
+              <span className="text-[11px] font-medium italic whitespace-nowrap">
+                Giảm tối đa: {formatCurrencyVND(voucher.maxDiscount || 0)}
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5 text-stone-500">
+              <span className="text-[11px] font-black italic bg-stone-100 px-1.5 py-0.5 rounded text-stone-600">
+                {voucher.perUserLimit} lượt/người
               </span>
             </div>
           </div>

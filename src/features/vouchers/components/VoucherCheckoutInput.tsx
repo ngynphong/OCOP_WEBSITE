@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Tag, Loader2, X, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Tag, Loader2, X, CheckCircle2, AlertCircle, Wallet } from 'lucide-react';
 import { useValidateVoucher } from '@/features/vouchers/hooks/useVouchers';
 import type { VoucherValidateResponse } from '@/features/vouchers/types';
 import toast from 'react-hot-toast';
 import { useDebounce } from '@/hooks/useDebounce';
+
+import { VoucherSelectionModal } from './VoucherSelectionModal';
 
 interface VoucherCheckoutInputProps {
   onApply: (voucher: VoucherValidateResponse | null) => void;
@@ -21,6 +23,8 @@ export const VoucherCheckoutInput = ({
   const { mutate: checkVoucher, isPending } = useValidateVoucher();
 
   const debouncedVoucherCode = useDebounce(voucherCode, 900);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleApply = useCallback(
     (code: string) => {
@@ -48,10 +52,15 @@ export const VoucherCheckoutInput = ({
   );
 
   useEffect(() => {
-    if (debouncedVoucherCode && !appliedVoucher && debouncedVoucherCode.length >= 3) {
+    if (
+      debouncedVoucherCode &&
+      !appliedVoucher &&
+      debouncedVoucherCode === voucherCode &&
+      debouncedVoucherCode.length >= 3
+    ) {
       handleApply(debouncedVoucherCode);
     }
-  }, [debouncedVoucherCode, appliedVoucher, handleApply]);
+  }, [debouncedVoucherCode, voucherCode, appliedVoucher, handleApply]);
 
   const handleRemove = () => {
     onApply(null);
@@ -61,9 +70,20 @@ export const VoucherCheckoutInput = ({
 
   return (
     <div className="space-y-3">
-      <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest block ml-1">
-        Mã giảm giá
-      </label>
+      <div className="flex items-center justify-between ml-1">
+        <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest block">
+          Mã giảm giá
+        </label>
+        {!appliedVoucher && (
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center gap-1.5 text-[10px] font-black text-emerald-600 hover:text-emerald-700 uppercase tracking-widest transition-colors"
+          >
+            <Wallet size={12} />
+            Ví Voucher
+          </button>
+        )}
+      </div>
 
       {appliedVoucher ? (
         <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-2xl px-4 py-3 group animate-in fade-in slide-in-from-top-1">
@@ -123,10 +143,20 @@ export const VoucherCheckoutInput = ({
           </div>
 
           <p className="text-[10px] text-stone-400 font-medium px-1">
-            * Nhập mã để hệ thống tự động kiểm tra và áp dụng.
+            * Nhập mã hoặc chọn từ ví để nhận ưu đãi.
           </p>
         </div>
       )}
+
+      <VoucherSelectionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSelect={(code) => {
+          setVoucherCode(code);
+          handleApply(code);
+        }}
+        currentCode={appliedVoucher?.code}
+      />
     </div>
   );
 };

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Ticket, Download } from 'lucide-react';
+import { Ticket } from 'lucide-react';
 import { useAdminVouchers, useAdminVoucherMutations } from '@/features/vouchers/hooks/useVouchers';
 import { VoucherList } from '@/features/vouchers/components/VoucherList';
 import { Pagination } from '@/components/ui/Pagination';
@@ -47,13 +47,6 @@ export default function AdminVouchersPage() {
             className="rounded-2xl bg-white text-white hover:bg-stone-100 border-none px-8 py-7 shadow-lg shadow-black/10"
           >
             Tạo Voucher hệ thống
-          </Button>
-          <Button
-            variant="outline"
-            leftIcon={<Download size={18} />}
-            className="rounded-2xl border-white/20 text-white hover:bg-white/10"
-          >
-            Xuất báo cáo (CSV)
           </Button>
         </div>
       </div>

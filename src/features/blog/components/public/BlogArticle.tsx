@@ -67,7 +67,7 @@ export const BlogArticle = () => {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-black text-white font-serif italic mb-6 leading-tight"
+            className="text-4xl md:text-5xl lg:text-6xl font-black text-white  italic mb-6 leading-tight"
           >
             {blog.title}
           </motion.h1>
@@ -86,7 +86,7 @@ export const BlogArticle = () => {
 
       {/* Content */}
       <main className="max-w-3xl mx-auto px-6 py-16">
-        <p className="text-xl md:text-2xl text-stone-500 font-serif italic leading-relaxed mb-12 border-l-4 border-[#D4AF37] pl-6">
+        <p className="text-xl md:text-2xl text-stone-500  italic leading-relaxed mb-12 border-l-4 border-[#D4AF37] pl-6">
           {blog.shortDesc}
         </p>
 
@@ -95,7 +95,7 @@ export const BlogArticle = () => {
           Tạm thời dùng các class tuỳ chỉnh nếu chưa cài plugin typography. 
         */}
         <div
-          className="prose prose-emerald prose-lg max-w-none text-stone-800 leading-relaxed font-serif
+          className="prose prose-emerald prose-lg max-w-none text-stone-800 leading-relaxed 
           prose-headings:font-black prose-headings:font-sans
           prose-a:text-emerald-600 prose-img:rounded-3xl prose-img:shadow-lg"
           dangerouslySetInnerHTML={{ __html: blog.content.replace(/\n/g, '<br/>') }}

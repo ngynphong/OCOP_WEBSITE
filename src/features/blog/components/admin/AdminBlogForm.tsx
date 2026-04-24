@@ -176,7 +176,7 @@ export const AdminBlogForm = ({ initialData, isEdit }: AdminBlogFormProps) => {
                 {...register('content')}
                 rows={15}
                 placeholder="Viết nội dung tại đây..."
-                className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-50 outline-none text-stone-800 leading-relaxed font-serif"
+                className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-50 outline-none text-stone-800 leading-relaxed "
               />
               {errors.content && (
                 <p className="text-xs text-red-500 font-bold">{errors.content.message}</p>

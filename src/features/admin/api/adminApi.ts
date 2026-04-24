@@ -15,6 +15,7 @@ import {
   AdminShopDocumentResponse,
   OverridePlanRequest,
   AdminOverridePlanResponse,
+  UpdateShopOwnerRequest,
   // Subscription Plan
   CreateSubscriptionPlanRequest,
   UpdateSubscriptionPlanRequest,
@@ -138,6 +139,13 @@ export const adminApi = {
     data: OverridePlanRequest,
   ): Promise<AdminOverridePlanResponse> => {
     return axiosClient.post(`/admin/shops/${shopId}/override-plan`, data);
+  },
+
+  updateShopOwner: (
+    shopId: number | string,
+    data: UpdateShopOwnerRequest,
+  ): Promise<AdminShopDetailResponse> => {
+    return axiosClient.patch(`/admin/shops/${shopId}/owner`, data);
   },
 
   // ─── Subscription Plans ─────────────────────────────────────────────────────

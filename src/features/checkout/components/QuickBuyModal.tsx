@@ -112,7 +112,7 @@ export function QuickBuyModal({ isOpen, onClose, product, selectedVariant }: Qui
     let disc = 0;
     if (appliedVoucher.type === 'PERCENT') {
       disc = (subtotal * appliedVoucher.discountValue) / 100;
-      if (appliedVoucher.maxDiscount > 0) {
+      if (appliedVoucher.maxDiscount && appliedVoucher.maxDiscount > 0) {
         disc = Math.min(disc, appliedVoucher.maxDiscount);
       }
     } else {

@@ -9,7 +9,7 @@ export const VOUCHER_KEYS = {
 };
 
 // --- Seller Hooks ---
-export const useSellerVouchers = (page = 0, size = 10) => {
+export const useSellerVouchers = (page = 1, size = 10) => {
   return useQuery({
     queryKey: VOUCHER_KEYS.sellerVouchers(page, size),
     queryFn: () => voucherApi.getSellerVouchers({ pageNo: page, pageSize: size }),
@@ -78,10 +78,11 @@ export const useAdminVoucherMutations = () => {
 };
 
 // --- Public Hooks ---
-export const useValidateVoucher = () => {
-  return useMutation({
-    mutationFn: ({ code, shopId }: { code: string; shopId?: number }) =>
-      voucherApi.validateVoucher(code, shopId),
+export const useVoucherDetail = (id: number) => {
+  return useQuery({
+    queryKey: ['vouchers', 'detail', id],
+    queryFn: () => voucherApi.getVoucherDetail(id),
+    enabled: !!id,
   });
 };
 
@@ -93,11 +94,51 @@ export const usePublicFeaturedVouchers = (limit = 4) => {
   });
 };
 
-export const useCollectVoucher = () => {
+export const useValidateVoucher = (isLoggedIn = false) => {
   return useMutation({
-    mutationFn: (voucherId: number) => voucherApi.collectVoucher(voucherId),
-    onSuccess: () => {
-      toast.success('Đã lưu mã giảm giá vào ví của bạn');
+    mutationFn: (params: { code: string; shopId?: number; subtotal?: number }) =>
+      isLoggedIn
+        ? voucherApi.validateVoucherUser(params)
+        : voucherApi.validateVoucherPublic(params),
+  });
+};
+
+// --- User Hooks ---
+export const useSavedVouchers = (page = 1, size = 20) => {
+  return useQuery({
+    queryKey: ['vouchers', 'saved', page, size],
+    queryFn: () => voucherApi.getSavedVouchers({ pageNo: page, pageSize: size }),
+  });
+};
+
+export const useCheckVoucherSaved = (voucherId: number, enabled = true) => {
+  return useQuery({
+    queryKey: ['vouchers', 'isSaved', voucherId],
+    queryFn: () => voucherApi.checkVoucherSaved(voucherId),
+    enabled: enabled && !!voucherId,
+  });
+};
+
+export const useSaveVoucherMutations = () => {
+  const queryClient = useQueryClient();
+
+  const saveVoucher = useMutation({
+    mutationFn: (voucherId: number) => voucherApi.saveVoucher(voucherId),
+    onSuccess: (_, voucherId) => {
+      toast.success('Đã lưu mã giảm giá vào ví');
+      queryClient.invalidateQueries({ queryKey: ['vouchers', 'saved'] });
+      queryClient.invalidateQueries({ queryKey: ['vouchers', 'isSaved', voucherId] });
     },
   });
+
+  const unsaveVoucher = useMutation({
+    mutationFn: (voucherId: number) => voucherApi.unsaveVoucher(voucherId),
+    onSuccess: (_, voucherId) => {
+      toast.success('Đã bỏ lưu mã giảm giá');
+      queryClient.invalidateQueries({ queryKey: ['vouchers', 'saved'] });
+      queryClient.invalidateQueries({ queryKey: ['vouchers', 'isSaved', voucherId] });
+    },
+  });
+
+  return { saveVoucher, unsaveVoucher };
 };
