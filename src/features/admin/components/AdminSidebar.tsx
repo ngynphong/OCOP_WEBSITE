@@ -48,6 +48,7 @@ const MENU_ITEMS = [
   { label: 'Mã giảm giá', icon: IoTicket, href: '/admin/vouchers', id: 'vouchers' },
   { label: 'Gói đăng ký', icon: FiCreditCard, href: '/admin/subscriptions', id: 'subscriptions' },
   { label: 'Affiliate', icon: FiTrendingUp, href: '/admin/affiliate', id: 'affiliate' },
+  { label: 'Bài viết', icon: FiMessageSquare, href: '/admin/blogs', id: 'blogs' },
   {
     label: 'Kiểm duyệt & Báo cáo',
     icon: FiMessageSquare,

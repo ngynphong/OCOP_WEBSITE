@@ -19,6 +19,7 @@ import BasicInfoSection from './subscription/BasicInfoSection';
 import PricingSection from './subscription/PricingSection';
 import FinancialSection from './subscription/FinancialSection';
 import FeaturesSection from './subscription/FeaturesSection';
+import { slugify } from '@/utils/slugify';
 
 interface SubscriptionFormDrawerProps {
   isOpen: boolean;
@@ -106,15 +107,7 @@ const SubscriptionFormDrawer = ({ isOpen, onClose, planId }: SubscriptionFormDra
   // Auto-generate slug
   useEffect(() => {
     if (!planId && watchedName) {
-      const generatedSlug = watchedName
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[đĐ]/g, 'd')
-        .replace(/([^0-9a-z-\s])/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-')
-        .replace(/^-+|-+$/g, '');
+      const generatedSlug = slugify(watchedName);
       setValue('slug', generatedSlug, { shouldValidate: true });
     }
   }, [watchedName, setValue, planId]);

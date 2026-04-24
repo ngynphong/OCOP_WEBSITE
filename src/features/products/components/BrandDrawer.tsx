@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAdminBrandMutations } from '../hooks/useAdminBrands';
 import { PublicBrand } from '../types/productTypes';
 import { Button } from '@/components/ui/AppButton';
+import { slugify } from '@/utils/slugify';
 
 const brandSchema = z.object({
   name: z.string().min(2, 'Tên thương hiệu phải có ít nhất 2 ký tự'),
@@ -71,10 +72,7 @@ export function BrandDrawer({ isOpen, onClose, brand }: BrandDrawerProps) {
   // Auto-generate slug from name if not editing
   useEffect(() => {
     if (!brand && name) {
-      const slug = name
-        .toLowerCase()
-        .replace(/ /g, '-')
-        .replace(/[^\w-]+/g, '');
+      const slug = slugify(name);
       setValue('slug', slug);
     }
   }, [name, brand, setValue]);

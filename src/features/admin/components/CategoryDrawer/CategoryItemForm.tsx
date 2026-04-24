@@ -18,6 +18,7 @@ import { useDebounce } from '@/hooks/useDebounce';
 import Image from 'next/image';
 import { BatchCategoryForm } from './FormMode';
 import { Category } from '../../types/adminTypes';
+import { slugify } from '@/utils/slugify';
 
 interface CategoryItemFormProps {
   index: number;
@@ -79,15 +80,7 @@ const CategoryItemForm = React.memo(
     // Auto-slug
     useEffect(() => {
       if (!selectedCategoryId && watchedName) {
-        const generatedSlug = watchedName
-          .toLowerCase()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '')
-          .replace(/[đĐ]/g, 'd')
-          .replace(/([^0-9a-z-\s])/g, '')
-          .replace(/\s+/g, '-')
-          .replace(/-+/g, '-')
-          .replace(/^-+|-+$/g, '');
+        const generatedSlug = slugify(watchedName);
         setValue(`categories.${index}.slug`, generatedSlug, { shouldValidate: true });
       }
     }, [watchedName, setValue, index, selectedCategoryId]);

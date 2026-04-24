@@ -177,10 +177,32 @@ export function Header() {
                     behavior: 'smooth',
                   });
                 }}
-                className="inline-flex flex-col justify-start items-start relative hover:after:content-[''] hover:after:absolute hover:after:bg-white hover:after:w-full hover:after:h-[2px] hover:after:bottom-[-5px]"
+                className={
+                  isHydrated && pathname.startsWith('/cau-chuyen')
+                    ? 'py-[5px] border-b-2 border-white inline-flex flex-col justify-start items-start'
+                    : "inline-flex flex-col justify-start items-start relative hover:after:content-[''] hover:after:absolute hover:after:bg-white hover:after:w-full hover:after:h-[2px] hover:after:bottom-[-5px]"
+                }
               >
                 <span className="text-emerald-100 text-sm font-semibold font-sans leading-5">
                   Câu Chuyện
+                </span>
+              </Link>
+              <Link
+                href="/bai-viet"
+                onClick={() => {
+                  window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth',
+                  });
+                }}
+                className={
+                  isHydrated && pathname.startsWith('/bai-viet')
+                    ? 'py-[5px] border-b-2 border-white inline-flex flex-col justify-start items-start'
+                    : "inline-flex flex-col justify-start items-start relative hover:after:content-[''] hover:after:absolute hover:after:bg-white hover:after:w-full hover:after:h-[2px] hover:after:bottom-[-5px]"
+                }
+              >
+                <span className="text-emerald-100 text-sm font-semibold font-sans leading-5">
+                  Bài Viết
                 </span>
               </Link>
             </nav>

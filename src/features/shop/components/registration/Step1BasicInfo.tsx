@@ -6,6 +6,7 @@ import { CreateShopFormData } from '@/features/shop/types/shopTypes';
 import FormField, { inputCls } from './FormField';
 import { cn } from '@/lib/utils';
 import { useWatch, UseFormSetValue, Control } from 'react-hook-form';
+import { slugify } from '@/utils/slugify';
 
 interface Step1BasicInfoProps {
   register: UseFormRegister<CreateShopFormData>;
@@ -20,15 +21,7 @@ const Step1BasicInfo: React.FC<Step1BasicInfoProps> = memo(
 
     React.useEffect(() => {
       if (watchedName) {
-        const generatedSlug = watchedName
-          .toLowerCase()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '')
-          .replace(/[đĐ]/g, 'd')
-          .replace(/([^0-9a-z-\s])/g, '')
-          .replace(/\s+/g, '-')
-          .replace(/-+/g, '-')
-          .replace(/^-+|-+$/g, '');
+        const generatedSlug = slugify(watchedName);
         setValue('slug', generatedSlug, { shouldValidate: true });
       }
     }, [watchedName, setValue]);
