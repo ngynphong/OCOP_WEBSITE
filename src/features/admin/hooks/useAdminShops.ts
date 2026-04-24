@@ -1,6 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { adminApi } from '../api/adminApi';
-import { GetShopsParams, ShopActionRequest, OverridePlanRequest } from '../types/adminTypes';
+import {
+  GetShopsParams,
+  ShopActionRequest,
+  OverridePlanRequest,
+  UpdateShopOwnerRequest,
+} from '../types/adminTypes';
 import toast from 'react-hot-toast';
 
 type ApiError = { response?: { data?: { message?: string } } };
@@ -124,6 +129,18 @@ export const useAdminShopMutations = () => {
     },
   });
 
+  const updateShopOwnerMutation = useMutation({
+    mutationFn: ({ shopId, data }: { shopId: number | string; data: UpdateShopOwnerRequest }) =>
+      adminApi.updateShopOwner(shopId, data),
+    onSuccess: () => {
+      toast.success('Cập nhật thông tin chủ cơ sở thành công');
+      queryClient.invalidateQueries({ queryKey: ['admin-shop-detail'] });
+    },
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data?.message || 'Có lỗi khi cập nhật thông tin chủ cơ sở');
+    },
+  });
+
   return {
     approveShop: approveShopMutation.mutateAsync,
     isApprovingShop: approveShopMutation.isPending,
@@ -139,6 +156,8 @@ export const useAdminShopMutations = () => {
     isRejectingDocument: rejectDocumentMutation.isPending,
     overridePlan: overridePlanMutation.mutateAsync,
     isOverridingPlan: overridePlanMutation.isPending,
+    updateShopOwner: updateShopOwnerMutation.mutateAsync,
+    isUpdatingOwner: updateShopOwnerMutation.isPending,
   };
 };
 

@@ -65,13 +65,13 @@ export default function ProductStoryPage() {
         <StoryHero
           name={product.storyTitle || product.name}
           province={product.provinceName || 'Việt Nam'}
-          imageUrl={product.storyImage || product.imageUrl || '/images/hero-tra.jpg'}
+          imageUrl={product.storyImage || product.imageUrl || '/images/default-image.png'}
         />
 
         <StoryOrigin
           title={product.storyTitle || 'Nguồn gốc & Di sản'}
           content={product.description}
-          subImage={product.thumbnailUrl || product.imageUrl || '/images/tra-nguyen-lieu.jpg'}
+          subImage={product.thumbnailUrl || product.imageUrl || '/images/default-image.png'}
         />
 
         {product.shop.ownerName && (
@@ -80,7 +80,7 @@ export default function ProductStoryPage() {
             role={product.shop.ownerRole || 'Chủ cơ sở'}
             quote={product.shop.ownerQuote || 'Chúng tôi gửi gắm cả tâm huyết vào từng sản phẩm.'}
             avatar={
-              product.shop.ownerImageUrl || product.shop.logoUrl || '/images/artisan-demo.jpg'
+              product.shop.ownerImageUrl || product.shop.logoUrl || '/images/default-image.png'
             }
           />
         )}
@@ -94,7 +94,7 @@ export default function ProductStoryPage() {
                     : 'Giai đoạn',
                   title: j.title,
                   description: j.description,
-                  image: j.images?.[0] || product.thumbnailUrl || '/images/placeholder.jpg',
+                  image: j.images?.[0] || product.thumbnailUrl || '/images/default-image.png',
                 }))
               : []
           }

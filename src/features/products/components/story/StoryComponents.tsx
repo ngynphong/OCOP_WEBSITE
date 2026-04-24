@@ -36,7 +36,7 @@ export const StoryHero = ({
         <span className="text-[#D4AF37] font-black uppercase tracking-[0.3em] text-xs md:text-sm mb-4 block">
           Tinh hoa nông sản Việt
         </span>
-        <h1 className="text-white text-5xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tight font-serif italic">
+        <h1 className="text-white text-5xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tight italic">
           {name}
         </h1>
         <div className="flex items-center justify-center gap-2 text-white/80 text-lg md:text-xl font-medium">
@@ -77,7 +77,7 @@ export const StoryOrigin = ({
           viewport={{ once: true }}
           className="space-y-8"
         >
-          <h2 className="text-4xl md:text-5xl font-black text-[#113B28] leading-tight font-serif italic">
+          <h2 className="text-4xl md:text-5xl font-black text-[#113B28] leading-tight  italic">
             {title}
           </h2>
           <p className="text-stone-600 text-lg leading-relaxed first-letter:text-5xl first-letter:font-black first-letter:text-emerald-700 first-letter:mr-3 first-letter:float-left">
@@ -131,7 +131,7 @@ export const StoryArtisan = ({
           </div>
         </div>
 
-        <blockquote className="text-2xl md:text-4xl font-serif italic leading-snug">
+        <blockquote className="text-2xl md:text-4xl  italic leading-snug">
           &quot;{quote}&quot;
         </blockquote>
 
@@ -156,7 +156,7 @@ export const StoryTimeline = ({ steps }: { steps: StoryTimelineStep[] }) => (
   <section className="py-24 bg-white">
     <div className="max-w-7xl mx-auto px-6 lg:px-8">
       <div className="text-center mb-20">
-        <h2 className="text-4xl md:text-5xl font-black text-[#113B28] font-serif italic mb-4">
+        <h2 className="text-4xl md:text-5xl font-black text-[#113B28]  italic mb-4">
           Hành trình tinh hoa
         </h2>
         <div className="w-24 h-1 bg-[#D4AF37] mx-auto rounded-full" />

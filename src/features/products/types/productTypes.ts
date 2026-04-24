@@ -127,6 +127,7 @@ export interface ProductAttributeValue {
 
 export interface ImpactStat {
   iconType: string;
+  icon?: string;
   value: string;
   label: string;
 }
@@ -143,7 +144,7 @@ export interface Product {
   isFeaturedStory?: boolean;
   storyTitle?: string;
   storyImage?: string;
-  impactStats?: ImpactStat[];
+  impactStats?: string;
   unit: string;
   weightGram: number;
   minPrice: number;
@@ -205,6 +206,12 @@ export interface UpdateProductRequest {
   productionArea?: string;
   unit?: string;
   weightGram?: number;
+}
+
+export interface UpdateProductStoryRequest {
+  storyTitle: string;
+  storyImage: string;
+  impactStats: string;
 }
 
 export interface CreateVariantRequest {

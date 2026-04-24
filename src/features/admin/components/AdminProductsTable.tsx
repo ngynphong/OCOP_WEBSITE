@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { FiCheck, FiX, FiStar, FiEye, FiBookOpen } from 'react-icons/fi';
+import { FiCheck, FiX, FiStar, FiEye, FiBookOpen, FiEdit3 } from 'react-icons/fi';
 import { CiShop } from 'react-icons/ci';
 import {
   useAdminProductsQuery,
@@ -12,10 +12,12 @@ import {
   Product,
   ProductStatus,
   AdminProductListParams,
+  UpdateProductStoryRequest,
 } from '@/features/products/types/productTypes';
 import { formatCurrencyVND } from '@/utils/format';
 import { FlashSaleManagementTab } from '@/features/flash-sale/components/FlashSaleManagementTab';
 import { FiZap } from 'react-icons/fi';
+import { Button } from '@/components/ui/AppButton';
 
 // ─── Status configuration ─────────────────────────────────────────────────────
 
@@ -55,7 +57,21 @@ export const AdminProductsTable = () => {
     setFeatured,
     setFeaturedStory,
     hideProduct,
+    updateProductStory,
+    isUpdatingStory,
+    isSettingFeaturedStory,
   } = useAdminProductMutations();
+
+  // Story Editing State
+  const [storyModal, setStoryModal] = useState<{ open: boolean; product: Product | null }>({
+    open: false,
+    product: null,
+  });
+  const [storyFormData, setStoryFormData] = useState<UpdateProductStoryRequest>({
+    storyTitle: '',
+    storyImage: '',
+    impactStats: '',
+  });
 
   const products: Product[] = data?.data?.items ?? [];
   const total = data?.data?.totalElement ?? 0;
@@ -85,6 +101,22 @@ export const AdminProductsTable = () => {
 
   const handleHide = async (id: number) => {
     await hideProduct(id);
+  };
+
+  // Story Management
+  const handleOpenStory = (product: Product) => {
+    setStoryModal({ open: true, product });
+    setStoryFormData({
+      storyTitle: product.storyTitle || '',
+      storyImage: product.storyImage || '',
+      impactStats: product.impactStats || '',
+    });
+  };
+
+  const handleSaveStory = async () => {
+    if (!storyModal.product) return;
+    await updateProductStory({ id: storyModal.product.id, data: storyFormData });
+    setStoryModal({ open: false, product: null });
   };
 
   if (isPending) {
@@ -331,7 +363,15 @@ export const AdminProductsTable = () => {
                               <FiStar size={14} />
                             </button>
                             <button
+                              onClick={() => handleOpenStory(product)}
+                              title="Chỉnh sửa câu chuyện"
+                              className="p-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition cursor-pointer"
+                            >
+                              <FiEdit3 size={14} />
+                            </button>
+                            <button
                               onClick={() => handleToggleFeaturedStory(product)}
+                              disabled={isSettingFeaturedStory}
                               title={
                                 product.isFeaturedStory
                                   ? 'Bỏ ghim câu chuyện'
@@ -390,6 +430,98 @@ export const AdminProductsTable = () => {
               >
                 {isRejecting ? 'Đang xử lý...' : 'Xác nhận từ chối'}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Product Story Modal */}
+      {storyModal.open && storyModal.product && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+          <div className="bg-white rounded-[40px] shadow-2xl w-full max-w-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="bg-green-700 px-10 py-8 flex justify-between items-center text-white">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-emerald-500 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                  <FiBookOpen size={24} />
+                </div>
+                <div>
+                  <h3 className="text-xl font-black tracking-tight uppercase">
+                    Quản lý câu chuyện
+                  </h3>
+                  <p className="text-stone-200 text-[10px] font-bold tracking-widest uppercase mt-0.5">
+                    {storyModal.product.name}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setStoryModal({ open: false, product: null })}
+                className="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-all text-white/50 hover:text-white cursor-pointer"
+              >
+                <FiX size={20} />
+              </button>
+            </div>
+
+            <div className="p-10 space-y-8 max-h-[60vh] overflow-y-auto custom-scrollbar">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">
+                    Tiêu đề câu chuyện
+                  </label>
+                  <input
+                    type="text"
+                    value={storyFormData.storyTitle}
+                    onChange={(e) =>
+                      setStoryFormData({ ...storyFormData, storyTitle: e.target.value })
+                    }
+                    className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-6 py-4 text-sm font-bold text-stone-800 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 transition-all"
+                    placeholder="Vị ngọt từ tâm huyết người thợ..."
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">
+                    URL Hình ảnh câu chuyện
+                  </label>
+                  <input
+                    type="text"
+                    value={storyFormData.storyImage}
+                    onChange={(e) =>
+                      setStoryFormData({ ...storyFormData, storyImage: e.target.value })
+                    }
+                    className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-6 py-4 text-sm font-medium text-stone-600 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 transition-all"
+                    placeholder="https://..."
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">
+                  Chỉ số tác động (Impact Stats)
+                </label>
+                <textarea
+                  value={storyFormData.impactStats}
+                  onChange={(e) =>
+                    setStoryFormData({ ...storyFormData, impactStats: e.target.value })
+                  }
+                  rows={4}
+                  className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-6 py-4 text-sm font-medium text-stone-600 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 transition-all resize-none"
+                  placeholder="Ví dụ: 500+ nông dân tham gia, 1000ha vùng nguyên liệu..."
+                />
+                <p className="text-[10px] text-stone-400 italic mt-2 ml-1">
+                  * Nhập các chỉ số tác động dưới dạng văn bản.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-10 bg-stone-50 border-t border-stone-100 flex justify-end gap-4">
+              <Button
+                onClick={() => setStoryModal({ open: false, product: null })}
+                variant="outline"
+              >
+                Đóng
+              </Button>
+              <Button onClick={handleSaveStory} disabled={isUpdatingStory}>
+                {isUpdatingStory ? 'Đang lưu...' : 'Lưu câu chuyện'}
+              </Button>
             </div>
           </div>
         </div>

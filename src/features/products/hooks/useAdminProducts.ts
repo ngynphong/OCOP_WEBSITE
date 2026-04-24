@@ -1,7 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { adminProductApi } from '@/features/products/api/adminProductApi';
-import { AdminProductListParams } from '@/features/products/types/productTypes';
+import {
+  AdminProductListParams,
+  UpdateProductStoryRequest,
+} from '@/features/products/types/productTypes';
 
 type ApiError = { response?: { data?: { message?: string } } };
 
@@ -93,6 +96,18 @@ export const useAdminProductMutations = () => {
     },
   });
 
+  const updateProductStoryMutation = useMutation({
+    mutationFn: ({ id, data }: { id: number; data: UpdateProductStoryRequest }) =>
+      adminProductApi.updateProductStory(id, data),
+    onSuccess: (_, { id }) => {
+      toast.success('Cập nhật câu chuyện thành công');
+      invalidate(id);
+    },
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data?.message || 'Có lỗi khi cập nhật câu chuyện');
+    },
+  });
+
   return {
     approveProduct: approveProductMutation.mutateAsync,
     isApproving: approveProductMutation.isPending,
@@ -104,5 +119,7 @@ export const useAdminProductMutations = () => {
     isSettingFeaturedStory: setFeaturedStoryMutation.isPending,
     hideProduct: hideProductMutation.mutateAsync,
     isHiding: hideProductMutation.isPending,
+    updateProductStory: updateProductStoryMutation.mutateAsync,
+    isUpdatingStory: updateProductStoryMutation.isPending,
   };
 };

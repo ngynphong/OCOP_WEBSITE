@@ -4,6 +4,7 @@ import {
   ProductDetailResponse,
   ProductListResponse,
   AdminApproveProductResponse,
+  UpdateProductStoryRequest,
 } from '@/features/products/types/productTypes';
 
 export const adminProductApi = {
@@ -35,5 +36,12 @@ export const adminProductApi = {
 
   hideProduct: (id: number): Promise<ProductDetailResponse> => {
     return axiosClient.patch(`/admin/products/${id}/hide`);
+  },
+
+  updateProductStory: (
+    id: number,
+    data: UpdateProductStoryRequest,
+  ): Promise<ProductDetailResponse> => {
+    return axiosClient.patch(`/admin/products/${id}/story`, data);
   },
 };

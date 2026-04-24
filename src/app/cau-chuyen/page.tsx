@@ -50,7 +50,7 @@ export default function StoryLandingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <h1 className="text-white text-5xl md:text-6xl font-black mb-6 font-serif italic">
+              <h1 className="text-white text-5xl md:text-6xl font-black mb-6 italic">
                 Hành trình Tinh hoa OCOP
               </h1>
               <p className="text-emerald-50/80 text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed">
@@ -105,9 +105,12 @@ export default function StoryLandingPage() {
                     >
                       <div className="relative aspect-square overflow-hidden">
                         <Image
-                          src={product.thumbnailUrl || product.imageUrl || '/images/default.jpg'}
+                          src={
+                            product.thumbnailUrl || product.imageUrl || '/images/default-image.png'
+                          }
                           alt={product.name}
                           fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           className="object-cover group-hover:scale-110 transition-transform duration-700"
                         />
                         <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
@@ -176,10 +179,11 @@ export default function StoryLandingPage() {
                   src={
                     featuredStory.storyImage ||
                     featuredStory.thumbnailUrl ||
-                    '/images/artisan-working.jpg'
+                    '/images/default-image.png'
                   }
                   alt={featuredStory.storyTitle || featuredStory.name}
                   fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   className="object-cover"
                 />
               </div>
@@ -189,7 +193,7 @@ export default function StoryLandingPage() {
                     <Sparkles size={12} fill="currentColor" /> Câu chuyện nổi bật
                   </span>
                 </div>
-                <h3 className="text-white text-4xl md:text-5xl font-black font-serif italic leading-tight">
+                <h3 className="text-white text-4xl md:text-5xl font-black  italic leading-tight">
                   {featuredStory.storyTitle || featuredStory.name}
                 </h3>
                 <p className="text-emerald-50/70 text-lg leading-relaxed line-clamp-3">
