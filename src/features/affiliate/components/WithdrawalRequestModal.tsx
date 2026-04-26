@@ -25,8 +25,12 @@ export const WithdrawalRequestModal: React.FC<WithdrawalRequestModalProps> = ({
   const { register, handleSubmit, reset, control, formState } = useForm<CreateWithdrawalPayload>({
     resolver: zodResolver(createWithdrawalSchema),
     defaultValues: {
-      amount: 50000,
-      bankInfo: '',
+      amount: 10000,
+      bankInfo: {
+        bankName: '',
+        accountNumber: '',
+        accountName: '',
+      },
     },
   });
 
@@ -76,7 +80,7 @@ export const WithdrawalRequestModal: React.FC<WithdrawalRequestModalProps> = ({
                     type="text"
                     value={formatVNDInput(field.value)}
                     onChange={(e) => field.onChange(parseVNDInput(e.target.value))}
-                    placeholder="VD: 100.000"
+                    placeholder="VD: 10.000"
                     className={`w-full px-5 py-4 rounded-2xl bg-stone-50 text-gray-700 border transition-all duration-300 focus:outline-hidden focus:ring-2 focus:ring-emerald-500 ${
                       formState.errors.amount
                         ? 'border-red-300'
@@ -96,26 +100,60 @@ export const WithdrawalRequestModal: React.FC<WithdrawalRequestModalProps> = ({
             )}
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-sm font-bold text-stone-700 ml-1">Thông tin ngân hàng</label>
-            <textarea
-              {...register('bankInfo')}
-              rows={3}
-              placeholder="VD: MB Bank - 0123456789 - NGUYEN VAN A"
-              className={`w-full px-5 py-4 rounded-2xl bg-stone-50 text-gray-700 border transition-all duration-300 focus:outline-hidden focus:ring-2 focus:ring-emerald-500 resize-none ${
-                formState.errors.bankInfo
-                  ? 'border-red-300'
-                  : 'border-stone-200 focus:border-emerald-500'
-              }`}
-            />
-            <p className="text-[11px] text-stone-400 ml-1">
-              * Vui lòng điền: Tên ngân hàng, Số tài khoản, Tên chủ tài khoản chính xác.
-            </p>
-            {formState.errors.bankInfo && (
-              <p className="text-xs text-red-500 mt-1 ml-1 flex items-center gap-1">
-                <FiInfo size={12} /> {formState.errors.bankInfo.message}
-              </p>
-            )}
+          <div className="grid grid-cols-1 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-sm font-bold text-stone-700 ml-1">Tên ngân hàng</label>
+              <input
+                {...register('bankInfo.bankName')}
+                placeholder="VD: Vietcombank, MB Bank..."
+                className={`w-full px-5 py-4 rounded-2xl bg-stone-50 text-gray-700 border transition-all duration-300 focus:outline-hidden focus:ring-2 focus:ring-emerald-500 ${
+                  formState.errors.bankInfo?.bankName
+                    ? 'border-red-300'
+                    : 'border-stone-200 focus:border-emerald-500'
+                }`}
+              />
+              {formState.errors.bankInfo?.bankName && (
+                <p className="text-xs text-red-500 mt-1 ml-1 flex items-center gap-1">
+                  <FiInfo size={12} /> {formState.errors.bankInfo.bankName.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-sm font-bold text-stone-700 ml-1">Số tài khoản</label>
+              <input
+                {...register('bankInfo.accountNumber')}
+                placeholder="VD: 0123456789"
+                className={`w-full px-5 py-4 rounded-2xl bg-stone-50 text-gray-700 border transition-all duration-300 focus:outline-hidden focus:ring-2 focus:ring-emerald-500 ${
+                  formState.errors.bankInfo?.accountNumber
+                    ? 'border-red-300'
+                    : 'border-stone-200 focus:border-emerald-500'
+                }`}
+              />
+              {formState.errors.bankInfo?.accountNumber && (
+                <p className="text-xs text-red-500 mt-1 ml-1 flex items-center gap-1">
+                  <FiInfo size={12} /> {formState.errors.bankInfo.accountNumber.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-sm font-bold text-stone-700 ml-1">Tên chủ tài khoản</label>
+              <input
+                {...register('bankInfo.accountName')}
+                placeholder="VD: NGUYEN VAN A"
+                className={`w-full px-5 py-4 rounded-2xl bg-stone-50 text-gray-700 border transition-all duration-300 focus:outline-hidden focus:ring-2 focus:ring-emerald-500 ${
+                  formState.errors.bankInfo?.accountName
+                    ? 'border-red-300'
+                    : 'border-stone-200 focus:border-emerald-500'
+                }`}
+              />
+              {formState.errors.bankInfo?.accountName && (
+                <p className="text-xs text-red-500 mt-1 ml-1 flex items-center gap-1">
+                  <FiInfo size={12} /> {formState.errors.bankInfo.accountName.message}
+                </p>
+              )}
+            </div>
           </div>
         </div>
 

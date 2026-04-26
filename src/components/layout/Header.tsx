@@ -111,12 +111,6 @@ export function Header() {
                       ? 'text-white text-sm font-semibold font-sans leading-5'
                       : 'text-emerald-100 text-sm font-semibold font-sans leading-5'
                   }
-                  onClick={() => {
-                    window.scrollTo({
-                      top: 0,
-                      behavior: 'smooth',
-                    });
-                  }}
                 >
                   Trang Chủ
                 </span>
@@ -135,12 +129,6 @@ export function Header() {
                       ? 'text-white text-sm font-semibold font-sans leading-5'
                       : 'text-emerald-100 text-sm font-semibold font-sans leading-5'
                   }
-                  onClick={() => {
-                    window.scrollTo({
-                      top: 0,
-                      behavior: 'smooth',
-                    });
-                  }}
                 >
                   Sản Phẩm
                 </span>
@@ -159,24 +147,12 @@ export function Header() {
                       ? 'text-white text-sm font-semibold font-sans leading-5'
                       : 'text-emerald-100 text-sm font-semibold font-sans leading-5'
                   }
-                  onClick={() => {
-                    window.scrollTo({
-                      top: 0,
-                      behavior: 'smooth',
-                    });
-                  }}
                 >
-                  Vùng Miền
+                  Vung Miền
                 </span>
               </Link>
               <Link
                 href="/cau-chuyen"
-                onClick={() => {
-                  window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth',
-                  });
-                }}
                 className={
                   isHydrated && pathname.startsWith('/cau-chuyen')
                     ? 'py-[5px] border-b-2 border-white inline-flex flex-col justify-start items-start'
@@ -189,12 +165,6 @@ export function Header() {
               </Link>
               <Link
                 href="/bai-viet"
-                onClick={() => {
-                  window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth',
-                  });
-                }}
                 className={
                   isHydrated && pathname.startsWith('/bai-viet')
                     ? 'py-[5px] border-b-2 border-white inline-flex flex-col justify-start items-start'
@@ -330,60 +300,82 @@ export function Header() {
         </div>
 
         {/* Mobile Search Bar Expansion */}
-        <div
-          className={`w-full bg-green-800 transition-all duration-300 overflow-hidden lg:hidden ${isSearchOpen ? 'max-h-24 py-3 px-4' : 'max-h-0'}`}
-        >
-          <SearchBox variant="header" onClose={() => setIsSearchOpen(false)} />
-        </div>
+        <AnimatePresence>
+          {isSearchOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="w-full bg-green-800 overflow-hidden lg:hidden"
+            >
+              <div className="py-3 px-4">
+                <SearchBox variant="header" onClose={() => setIsSearchOpen(false)} />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Mobile Menu Expansion */}
-        <div
-          className={`w-full bg-green-800 transition-all duration-300 overflow-hidden lg:hidden ${isMenuOpen ? 'max-h-64 py-4 px-6' : 'max-h-0'}`}
-        >
-          <nav className="flex flex-col gap-4">
-            <Link
-              suppressHydrationWarning
-              href="/"
-              className={
-                pathname === '/'
-                  ? 'text-white text-base font-semibold'
-                  : 'text-emerald-100 text-base font-semibold'
-              }
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="w-full bg-green-800 overflow-hidden lg:hidden"
             >
-              Trang Chủ
-            </Link>
-            <Link
-              href="/san-pham"
-              className={
-                isHydrated && pathname === '/san-pham'
-                  ? 'text-white text-base font-semibold'
-                  : 'text-emerald-100 text-base font-semibold'
-              }
-            >
-              Sản Phẩm
-            </Link>
-            <Link
-              href="/vung-mien"
-              className={
-                isHydrated && pathname.startsWith('/vung-mien')
-                  ? 'text-white text-base font-semibold'
-                  : 'text-emerald-100 text-base font-semibold'
-              }
-            >
-              Vùng Miền
-            </Link>
-            <Link
-              href="/cau-chuyen"
-              className={
-                isHydrated && pathname.startsWith('/cau-chuyen')
-                  ? 'text-white text-base font-semibold'
-                  : 'text-emerald-100 text-base font-semibold'
-              }
-            >
-              Câu Chuyện
-            </Link>
-          </nav>
-        </div>
+              <nav className="flex flex-col gap-4 py-4 px-6">
+                <Link
+                  suppressHydrationWarning
+                  href="/"
+                  onClick={() => setIsMenuOpen(false)}
+                  className={
+                    pathname === '/'
+                      ? 'text-white text-base font-semibold'
+                      : 'text-emerald-100 text-base font-semibold'
+                  }
+                >
+                  Trang Chủ
+                </Link>
+                <Link
+                  href="/san-pham"
+                  onClick={() => setIsMenuOpen(false)}
+                  className={
+                    isHydrated && pathname === '/san-pham'
+                      ? 'text-white text-base font-semibold'
+                      : 'text-emerald-100 text-base font-semibold'
+                  }
+                >
+                  Sản Phẩm
+                </Link>
+                <Link
+                  href="/vung-mien"
+                  onClick={() => setIsMenuOpen(false)}
+                  className={
+                    isHydrated && pathname.startsWith('/vung-mien')
+                      ? 'text-white text-base font-semibold'
+                      : 'text-emerald-100 text-base font-semibold'
+                  }
+                >
+                  Vùng Miền
+                </Link>
+                <Link
+                  href="/cau-chuyen"
+                  onClick={() => setIsMenuOpen(false)}
+                  className={
+                    isHydrated && pathname.startsWith('/cau-chuyen')
+                      ? 'text-white text-base font-semibold'
+                      : 'text-emerald-100 text-base font-semibold'
+                  }
+                >
+                  Câu Chuyện
+                </Link>
+              </nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {isLogoutModalOpen && (

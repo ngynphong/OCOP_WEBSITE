@@ -25,6 +25,12 @@ export const UserAffiliateOverview: React.FC<UserAffiliateOverviewProps> = ({ ac
         color: 'bg-emerald-500',
       },
       {
+        label: 'Hoa hồng chờ',
+        value: formatCurrencyVND(account.pendingBalance || 0),
+        icon: FiTrendingUp,
+        color: 'bg-orange-500',
+      },
+      {
         label: 'Tổng thu nhập',
         value: formatCurrencyVND(account.totalEarned),
         icon: FiTrendingUp,
@@ -49,7 +55,7 @@ export const UserAffiliateOverview: React.FC<UserAffiliateOverviewProps> = ({ ac
   return (
     <div className="space-y-6">
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {stats.map((stat, index) => (
           <div
             key={index}

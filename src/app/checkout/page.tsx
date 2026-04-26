@@ -35,21 +35,6 @@ function CheckoutContent() {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  // Protect route & check selection
-  React.useEffect(() => {
-    if (isInitialized) {
-      if (!isAuthenticated) {
-        toast.error('Vui lòng đăng nhập để tiếp tục thanh toán');
-        router.push(`/dang-nhap?redirect=/checkout`);
-        return;
-      }
-      if (selectedItemIds.length === 0) {
-        toast.error('Vui lòng chọn sản phẩm trong giỏ hàng trước khi thanh toán');
-        router.push('/gio-hang');
-      }
-    }
-  }, [isInitialized, isAuthenticated, selectedItemIds, router]);
-
   const { data: addresses, isLoading: isAddressLoading } = useUserAddresses();
   const { data: cartResponse, isLoading: isCartLoading } = useCart();
   const { mutateAsync: estimateFee } = useEstimateShippingFee();
@@ -60,6 +45,7 @@ function CheckoutContent() {
   const [selectedShipping, setSelectedShipping] = useState<ShippingProvider | undefined>(undefined);
   const [selectedPayment, setSelectedPayment] = useState<PaymentMethod | undefined>('COD');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [isCalculating, setIsCalculating] = useState(false);
   const [providerFees, setProviderFees] = useState<Record<string, number>>({});
   const [appliedVoucher, setAppliedVoucher] = useState<VoucherValidateResponse | null>(null);
@@ -69,6 +55,21 @@ function CheckoutContent() {
   const [affiliateCode, setAffiliateCode] = useState('');
 
   const searchParams = useSearchParams();
+
+  // Protect route & check selection
+  React.useEffect(() => {
+    if (isInitialized && !isSuccess) {
+      if (!isAuthenticated) {
+        toast.error('Vui lòng đăng nhập để tiếp tục thanh toán');
+        router.push(`/dang-nhap?redirect=/checkout`);
+        return;
+      }
+      if (selectedItemIds.length === 0) {
+        toast.error('Vui lòng chọn sản phẩm trong giỏ hàng trước khi thanh toán');
+        router.push('/gio-hang');
+      }
+    }
+  }, [isInitialized, isAuthenticated, selectedItemIds, router, isSuccess]);
 
   // Capture affiliate code from URL
   React.useEffect(() => {
@@ -187,6 +188,9 @@ function CheckoutContent() {
 
       queryClient.invalidateQueries({ queryKey: ['cart'] });
 
+      // Mark as success to prevent redirect to cart by useEffect
+      setIsSuccess(true);
+
       // Clear Redux selection after success
       dispatch(clearSelection());
 
@@ -253,7 +257,7 @@ function CheckoutContent() {
   }
 
   // Double check auth & selection to prevent flash of content
-  if (!isAuthenticated || selectedItemIds.length === 0) {
+  if (!isAuthenticated || (selectedItemIds.length === 0 && !isSuccess)) {
     return null;
   }
 

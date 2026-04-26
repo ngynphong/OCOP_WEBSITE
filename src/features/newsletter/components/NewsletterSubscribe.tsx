@@ -3,11 +3,11 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Send, Mail, Sparkles, CheckCircle2 } from 'lucide-react';
-import { useNewsletter } from '@/features/newsletter/hooks/useNewsletter';
+import { useNewsletter } from '../hooks/useNewsletter';
 import { useAppSelector } from '@/store/hooks';
 import { Button } from '@/components/ui/AppButton';
 
-export function NewsletterSection() {
+export const NewsletterSubscribe = () => {
   const [email, setEmail] = useState('');
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const { subscribe, isSubscribing, subscribeMe, isSubscribingMe } = useNewsletter();
@@ -37,7 +37,7 @@ export function NewsletterSection() {
   };
 
   return (
-    <section className="relative w-full py-24 overflow-hidden flex flex-col items-center">
+    <section className="relative py-24 overflow-hidden">
       {/* Background Decor */}
       <div className="absolute inset-0 bg-[#113B28] z-0" />
       <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none z-0">
@@ -45,8 +45,8 @@ export function NewsletterSection() {
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-emerald-400 rounded-full blur-[120px]" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 w-full">
-        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[48px] p-8 md:p-16 lg:p-20 overflow-hidden relative group">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[48px] p-8 md:p-16 lg:p-24 overflow-hidden relative group">
           {/* Animated Background Element */}
           <motion.div
             animate={{
@@ -71,7 +71,7 @@ export function NewsletterSection() {
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-emerald-400 text-xs font-black uppercase tracking-[0.2em]">
                 <Sparkles size={14} /> Đặc quyền OCOP
               </div>
-              <h2 className="text-4xl md:text-5xl font-black text-white leading-tight tracking-tight">
+              <h2 className="text-4xl md:text-6xl font-black text-white leading-tight tracking-tight">
                 Đăng ký bản tin, <br />
                 <span className="text-emerald-400">Nhận ngàn ưu đãi.</span>
               </h2>
@@ -85,7 +85,7 @@ export function NewsletterSection() {
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="relative w-full"
+              className="relative"
             >
               {isSuccess ? (
                 <motion.div
@@ -98,7 +98,7 @@ export function NewsletterSection() {
                   </div>
                   <div>
                     <h3 className="text-2xl font-black text-white mb-2">Đăng ký thành công!</h3>
-                    <p className="text-white/60 text-sm">
+                    <p className="text-white/60">
                       Chúng tôi đã gửi một email xác nhận đến hộp thư của bạn. Vui lòng kiểm tra để
                       hoàn tất đăng ký.
                     </p>
@@ -106,7 +106,7 @@ export function NewsletterSection() {
                   <Button
                     variant="outline"
                     onClick={() => setIsSuccess(false)}
-                    className="border-white/10 text-white hover:bg-white/5 rounded-full"
+                    className="border-white/10 text-white hover:bg-white/5"
                   >
                     Đăng ký email khác
                   </Button>
@@ -127,14 +127,14 @@ export function NewsletterSection() {
                           ? 'Sử dụng email tài khoản của bạn'
                           : 'Nhập địa chỉ email của bạn...'
                       }
-                      className="w-full bg-white/10 border border-white/10 rounded-[28px] pl-16 pr-8 py-4 text-white text-lg font-medium outline-none focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/10 transition-all placeholder:text-white/30"
+                      className="w-full bg-white/10 border border-white/10 rounded-[28px] pl-16 pr-8 py-6 text-white text-lg font-medium outline-none focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/10 transition-all placeholder:text-white/30"
                       required={!isAuthenticated}
                     />
                   </div>
                   <Button
                     type="submit"
                     disabled={isSubscribing || isSubscribingMe}
-                    className="w-full bg-emerald-500 hover:bg-emerald-400 text-white py-4 rounded-[28px] text-lg font-black uppercase tracking-widest flex items-center justify-center gap-3 shadow-xl shadow-emerald-500/20 transition-all active:scale-95 group"
+                    className="w-full bg-emerald-500 hover:bg-emerald-400 text-white py-6 rounded-[28px] text-lg font-black uppercase tracking-widest flex items-center justify-center gap-3 shadow-xl shadow-emerald-500/20 transition-all active:scale-95 group"
                   >
                     {isSubscribing || isSubscribingMe ? (
                       <span className="flex items-center gap-2">
@@ -167,4 +167,4 @@ export function NewsletterSection() {
       </div>
     </section>
   );
-}
+};

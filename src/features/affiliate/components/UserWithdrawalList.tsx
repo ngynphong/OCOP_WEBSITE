@@ -1,7 +1,7 @@
 import React from 'react';
-import { WithdrawalRequest } from '../types/affiliateTypes';
-import { FiClock, FiCheckCircle, FiXCircle, FiInfo } from 'react-icons/fi';
-import { formatCurrencyVND } from '@/utils/format';
+import { WithdrawalRequest, BankInfo } from '../types/affiliateTypes';
+import { FiClock, FiCheckCircle, FiXCircle, FiInfo, FiLoader, FiZap } from 'react-icons/fi';
+import { formatCurrencyVND, formatDate } from '@/utils/format';
 
 interface UserWithdrawalListProps {
   withdrawals: WithdrawalRequest[];
@@ -18,13 +18,25 @@ export const UserWithdrawalList: React.FC<UserWithdrawalListProps> = ({ withdraw
         );
       case 'APPROVED':
         return (
-          <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-600 text-xs font-bold ring-1 ring-emerald-200">
+          <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-bold ring-1 ring-blue-100">
             <FiCheckCircle size={12} /> Đã duyệt
+          </span>
+        );
+      case 'PROCESSING':
+        return (
+          <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-600 text-xs font-bold ring-1 ring-amber-100">
+            <FiLoader className="animate-spin" size={12} /> Đang xử lý
+          </span>
+        );
+      case 'PAID':
+        return (
+          <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-xs font-bold ring-1 ring-emerald-100">
+            <FiZap size={12} /> Đã thanh toán
           </span>
         );
       case 'REJECTED':
         return (
-          <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-100 text-red-600 text-xs font-bold ring-1 ring-red-200">
+          <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 text-red-600 text-xs font-bold ring-1 ring-red-100">
             <FiXCircle size={12} /> Từ chối
           </span>
         );
@@ -36,6 +48,22 @@ export const UserWithdrawalList: React.FC<UserWithdrawalListProps> = ({ withdraw
         );
       default:
         return status;
+    }
+  };
+
+  const renderBankInfo = (bankInfoStr: string) => {
+    try {
+      const info: BankInfo = JSON.parse(bankInfoStr);
+      return (
+        <div className="text-xs">
+          <p className="font-bold text-stone-900">{info.bankName}</p>
+          <p className="text-stone-500">
+            {info.accountNumber} - {info.accountName}
+          </p>
+        </div>
+      );
+    } catch {
+      return <span className="text-xs text-stone-600 italic">{bankInfoStr}</span>;
     }
   };
 
@@ -76,18 +104,11 @@ export const UserWithdrawalList: React.FC<UserWithdrawalListProps> = ({ withdraw
             ) : (
               withdrawals.map((item) => (
                 <tr key={item.id} className="hover:bg-stone-50/30 transition-colors">
-                  <td className="px-6 py-4">
-                    <p className="text-sm text-stone-600">
-                      {new Date(item.createdAt).toLocaleDateString('vi-VN')}
-                    </p>
-                    <p className="text-[10px] text-stone-400">
-                      {new Date(item.createdAt).toLocaleTimeString('vi-VN')}
-                    </p>
-                  </td>
+                  <td className="px-6 py-4 text-sm text-stone-600">{formatDate(item.createdAt)}</td>
                   <td className="px-6 py-4 text-sm font-bold text-stone-900">
                     {formatCurrencyVND(item.amount)}
                   </td>
-                  <td className="px-6 py-4 text-sm text-stone-600">{item.bankInfo}</td>
+                  <td className="px-6 py-4">{renderBankInfo(item.bankInfo)}</td>
                   <td className="px-6 py-4">{getStatusBadge(item.status)}</td>
                   <td className="px-6 py-4">
                     {item.adminNote ? (
