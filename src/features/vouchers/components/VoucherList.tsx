@@ -52,9 +52,9 @@ export function VoucherList({
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 pb-12">
-      {vouchers.map((voucher) => (
+      {vouchers.map((voucher, index) => (
         <VoucherCard
-          key={voucher.id}
+          key={`${voucher.id}-${index}`}
           voucher={voucher}
           onEdit={!hideActions ? onEdit : undefined}
           onDelete={!hideActions ? (id) => setDeleteId(id) : undefined}

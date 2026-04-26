@@ -3,15 +3,21 @@
 import React, { useState, useEffect } from 'react';
 import { UserAffiliateOverview } from '@/features/affiliate/components/UserAffiliateOverview';
 import { UserWithdrawalList } from '@/features/affiliate/components/UserWithdrawalList';
+import { UserCommissionList } from '@/features/affiliate/components/UserCommissionList';
 import { WithdrawalRequestModal } from '@/features/affiliate/components/WithdrawalRequestModal';
 import { useAffiliateAccount, useUserWithdrawals } from '@/features/affiliate/hooks/useAffiliate';
 import { Button } from '@/components/ui/AppButton';
-import { FiPlus, FiRefreshCcw } from 'react-icons/fi';
+import { FiPlus, FiRefreshCcw, FiList, FiDollarSign } from 'react-icons/fi';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
+import { cn } from '@/lib/utils';
+import { Pagination } from '@/components/ui/Pagination';
 
 export default function UserAffiliatePage() {
   const [isMounted, setIsMounted] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'commissions' | 'withdrawals'>('commissions');
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsMounted(true), 0);
@@ -20,9 +26,9 @@ export default function UserAffiliatePage() {
 
   const { account, isLoadingAccount, refetchAccount } = useAffiliateAccount();
 
-  const { withdrawals, isLoadingWithdrawals, refetchWithdrawals } = useUserWithdrawals({
-    pageNo: 1,
-    pageSize: 20,
+  const { withdrawals, pagination, isLoadingWithdrawals, refetchWithdrawals } = useUserWithdrawals({
+    pageNo: page,
+    pageSize: pageSize,
   });
 
   const handleRefresh = () => {
@@ -32,7 +38,7 @@ export default function UserAffiliatePage() {
 
   if (!isMounted) return <LoadingOverlay />;
 
-  if (isLoadingAccount || isLoadingWithdrawals) {
+  if (isLoadingAccount || (activeTab === 'withdrawals' && isLoadingWithdrawals)) {
     return <LoadingOverlay />;
   }
 
@@ -77,8 +83,59 @@ export default function UserAffiliatePage() {
       {/* Overview Stats */}
       <UserAffiliateOverview account={account} />
 
-      {/* History Table */}
-      <UserWithdrawalList withdrawals={withdrawals} />
+      {/* Main Tabs */}
+      <div className="space-y-6">
+        <div className="flex items-center gap-2 p-1.5 bg-stone-100 w-fit rounded-2xl">
+          <button
+            onClick={() => setActiveTab('commissions')}
+            className={cn(
+              'flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition-all',
+              activeTab === 'commissions'
+                ? 'bg-white text-emerald-600 shadow-sm'
+                : 'text-stone-500 hover:text-stone-700',
+            )}
+          >
+            <FiList />
+            Lịch sử Hoa hồng
+          </button>
+          <button
+            onClick={() => setActiveTab('withdrawals')}
+            className={cn(
+              'flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition-all',
+              activeTab === 'withdrawals'
+                ? 'bg-white text-emerald-600 shadow-sm'
+                : 'text-stone-500 hover:text-stone-700',
+            )}
+          >
+            <FiDollarSign />
+            Lịch sử Rút tiền
+          </button>
+        </div>
+
+        {activeTab === 'commissions' ? (
+          <UserCommissionList />
+        ) : (
+          <div className="space-y-6">
+            <UserWithdrawalList withdrawals={withdrawals} />
+
+            {pagination.totalPages > 1 && (
+              <div className="bg-white p-6 rounded-3xl border border-stone-100 shadow-sm">
+                <Pagination
+                  currentPage={page}
+                  totalPages={pagination.totalPages}
+                  pageSize={pageSize}
+                  totalElements={pagination.totalElements}
+                  onPageChange={setPage}
+                  onPageSizeChange={(size) => {
+                    setPageSize(size);
+                    setPage(1);
+                  }}
+                />
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
       {/* Request Modal */}
       <WithdrawalRequestModal

@@ -6,9 +6,7 @@ import {
   AdminQuickLink,
   AdminQuickLinkDetailResponse,
   AdminQuickLinkListResponse,
-  CreateBannerRequest,
   CreateQuickLinkRequest,
-  UpdateBannerRequest,
   UpdateQuickLinkRequest,
 } from '../types/adminHomeTypes';
 import { ResponseBase } from '@/features/auth/types';
@@ -24,12 +22,14 @@ export const adminHomeApi = {
     return axiosClient.get(`/admin/banners/${id}`);
   },
 
-  createBanner: (data: CreateBannerRequest): Promise<AdminBannerDetailResponse> => {
-    return axiosClient.post('/admin/banners', data);
+  createBanner: (formData: FormData): Promise<AdminBannerDetailResponse> => {
+    return axiosClient.post('/admin/banners', formData);
   },
 
-  updateBanner: (id: number, data: UpdateBannerRequest): Promise<AdminBannerDetailResponse> => {
-    return axiosClient.put(`/admin/banners/${id}`, data);
+  updateBanner: (id: number, formData: FormData): Promise<AdminBannerDetailResponse> => {
+    return axiosClient.put(`/admin/banners/${id}`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
   },
 
   deleteBanner: (id: number): Promise<ResponseBase<string>> => {

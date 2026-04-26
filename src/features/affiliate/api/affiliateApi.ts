@@ -7,6 +7,8 @@ import {
   PaginatedResponse,
   ApiResponse,
   GetWithdrawalsParams,
+  GetCommissionsParams,
+  Commission,
 } from '../types/affiliateTypes';
 
 export const affiliateApi = {
@@ -21,8 +23,18 @@ export const affiliateApi = {
     return axiosClient.get('/users/affiliate/withdrawals', { params });
   },
 
+  getUserCommissions: (
+    params: GetCommissionsParams,
+  ): Promise<ApiResponse<PaginatedResponse<Commission>>> => {
+    return axiosClient.get('/users/affiliate/commissions', { params });
+  },
+
   createWithdrawal: (data: CreateWithdrawalPayload): Promise<ApiResponse<WithdrawalRequest>> => {
-    return axiosClient.post('/users/affiliate/withdrawals', data);
+    const payload = {
+      ...data,
+      bankInfo: JSON.stringify(data.bankInfo),
+    };
+    return axiosClient.post('/users/affiliate/withdrawals', payload);
   },
 
   // Admin APIs

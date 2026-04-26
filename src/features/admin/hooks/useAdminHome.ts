@@ -3,12 +3,7 @@ import { adminHomeApi } from '../api/adminHomeApi';
 import toast from 'react-hot-toast';
 import { AxiosError } from 'axios';
 import { ResponseBase } from '@/features/auth/types';
-import {
-  CreateBannerRequest,
-  UpdateBannerRequest,
-  CreateQuickLinkRequest,
-  UpdateQuickLinkRequest,
-} from '../types/adminHomeTypes';
+import { CreateQuickLinkRequest, UpdateQuickLinkRequest } from '../types/adminHomeTypes';
 
 // ─── Banner Hooks ────────────────────────────────────────────────────────────
 
@@ -30,7 +25,7 @@ export const useAdminBannerDetailQuery = (id: number | null) => {
 export const useCreateBannerMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: CreateBannerRequest) => adminHomeApi.createBanner(data),
+    mutationFn: (formData: FormData) => adminHomeApi.createBanner(formData),
     onSuccess: () => {
       toast.success('Tạo banner mới thành công');
       queryClient.invalidateQueries({ queryKey: ['admin-banners'] });
@@ -44,8 +39,8 @@ export const useCreateBannerMutation = () => {
 export const useUpdateBannerMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: UpdateBannerRequest }) =>
-      adminHomeApi.updateBanner(id, data),
+    mutationFn: ({ id, formData }: { id: number; formData: FormData }) =>
+      adminHomeApi.updateBanner(id, formData),
     onSuccess: (res) => {
       toast.success('Cập nhật banner thành công');
       queryClient.invalidateQueries({ queryKey: ['admin-banners'] });

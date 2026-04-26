@@ -9,10 +9,11 @@ export const VOUCHER_KEYS = {
 };
 
 // --- Seller Hooks ---
-export const useSellerVouchers = (page = 1, size = 10) => {
+export const useSellerVouchers = (page = 1, size = 10, enabled = true) => {
   return useQuery({
     queryKey: VOUCHER_KEYS.sellerVouchers(page, size),
     queryFn: () => voucherApi.getSellerVouchers({ pageNo: page, pageSize: size }),
+    enabled,
   });
 };
 
@@ -104,10 +105,11 @@ export const useValidateVoucher = (isLoggedIn = false) => {
 };
 
 // --- User Hooks ---
-export const useSavedVouchers = (page = 1, size = 20) => {
+export const useSavedVouchers = (page = 1, size = 20, enabled = true) => {
   return useQuery({
     queryKey: ['vouchers', 'saved', page, size],
     queryFn: () => voucherApi.getSavedVouchers({ pageNo: page, pageSize: size }),
+    enabled,
   });
 };
 

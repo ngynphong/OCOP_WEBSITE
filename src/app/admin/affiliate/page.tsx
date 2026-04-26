@@ -7,23 +7,34 @@ import { useAdminAffiliate } from '@/features/affiliate/hooks/useAffiliate';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 import { FiRefreshCcw, FiExternalLink } from 'react-icons/fi';
 import { Button } from '@/components/ui/AppButton';
+import { WithdrawalRequest, WithdrawalStatus } from '@/features/affiliate/types/affiliateTypes';
+import { Pagination } from '@/components/ui/Pagination';
 
 export default function AdminAffiliatePage() {
   const [isMounted, setIsMounted] = useState(false);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedWithdrawal, setSelectedWithdrawal] = useState<WithdrawalRequest | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [filter, setFilter] = useState<'ALL' | 'PENDING' | 'APPROVED' | 'REJECTED'>('ALL');
+  const [filter, setFilter] = useState<WithdrawalStatus | 'ALL'>('ALL');
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsMounted(true), 0);
     return () => clearTimeout(timer);
   }, []);
 
-  const { withdrawals, isLoading, refetch } = useAdminAffiliate({ pageNo: 1, pageSize: 50 });
+  const { withdrawals, pagination, isLoading, refetch } = useAdminAffiliate({
+    pageNo: page,
+    pageSize: pageSize,
+    status: filter === 'ALL' ? undefined : filter,
+  });
 
   const handleProcess = (id: number) => {
-    setSelectedId(id);
-    setIsModalOpen(true);
+    const withdrawal = withdrawals.find((w) => w.id === id);
+    if (withdrawal) {
+      setSelectedWithdrawal(withdrawal);
+      setIsModalOpen(true);
+    }
   };
 
   const stats = useMemo(() => {
@@ -73,12 +84,33 @@ export default function AdminAffiliatePage() {
       </div>
 
       {/* Main Table Content */}
-      <AdminWithdrawalManager
-        withdrawals={withdrawals}
-        onProcess={handleProcess}
-        filter={filter}
-        onFilterChange={setFilter}
-      />
+      <div className="space-y-6">
+        <AdminWithdrawalManager
+          withdrawals={withdrawals}
+          onProcess={handleProcess}
+          filter={filter}
+          onFilterChange={(f) => {
+            setFilter(f);
+            setPage(1);
+          }}
+        />
+
+        {pagination.totalPages > 1 && (
+          <div className="bg-white p-6 rounded-3xl border border-stone-100 shadow-sm">
+            <Pagination
+              currentPage={page}
+              totalPages={pagination.totalPages}
+              pageSize={pageSize}
+              totalElements={pagination.totalElements}
+              onPageChange={setPage}
+              onPageSizeChange={(size) => {
+                setPageSize(size);
+                setPage(1);
+              }}
+            />
+          </div>
+        )}
+      </div>
 
       {/* Footer Stats / Info */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -106,7 +138,7 @@ export default function AdminAffiliatePage() {
       <ProcessWithdrawalModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        withdrawalId={selectedId}
+        withdrawal={selectedWithdrawal}
       />
     </div>
   );

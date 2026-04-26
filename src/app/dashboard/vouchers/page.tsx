@@ -33,9 +33,9 @@ export default function VoucherDashboardPage() {
     return () => clearTimeout(timer);
   }, []);
 
-  // API Hooks based on mode
-  const sellerVouchers = useSellerVouchers(page, 10);
-  const savedVouchers = useSavedVouchers(page, 10);
+  // API Hooks based on mode - Optimize: Only call the relevant API based on role/mode
+  const sellerVouchers = useSellerVouchers(page, 10, isSeller);
+  const savedVouchers = useSavedVouchers(page, 10, !isSeller);
 
   const {
     data: voucherRes,

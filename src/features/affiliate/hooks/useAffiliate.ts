@@ -5,6 +5,7 @@ import {
   CreateWithdrawalPayload,
   GetWithdrawalsParams,
   ProcessWithdrawalPayload,
+  GetCommissionsParams,
 } from '../types/affiliateTypes';
 
 /**
@@ -26,6 +27,30 @@ export const useAffiliateAccount = () => {
 };
 
 /**
+ * Hook lấy lịch sử hoa hồng của người dùng
+ */
+export const useUserCommissions = (params: GetCommissionsParams) => {
+  const commissionsQuery = useQuery({
+    queryKey: ['user-commissions', params],
+    queryFn: () => affiliateApi.getUserCommissions(params),
+    staleTime: 1 * 60 * 1000,
+  });
+
+  return {
+    commissions: commissionsQuery.data?.data?.content || [],
+    pagination: {
+      totalElements: commissionsQuery.data?.data?.totalElements || 0,
+      totalPages: commissionsQuery.data?.data?.totalPages || 0,
+      page: commissionsQuery.data?.data?.page || 0,
+      size: commissionsQuery.data?.data?.size || 10,
+    },
+    isLoadingCommissions: commissionsQuery.isLoading,
+    isErrorCommissions: commissionsQuery.isError,
+    refetchCommissions: commissionsQuery.refetch,
+  };
+};
+
+/**
  * Hook lấy lịch sử rút tiền của người dùng
  */
 export const useUserWithdrawals = (params: GetWithdrawalsParams) => {
@@ -40,6 +65,8 @@ export const useUserWithdrawals = (params: GetWithdrawalsParams) => {
     pagination: {
       totalElements: withdrawalsQuery.data?.data?.totalElements || 0,
       totalPages: withdrawalsQuery.data?.data?.totalPages || 0,
+      page: withdrawalsQuery.data?.data?.page || 0,
+      size: withdrawalsQuery.data?.data?.size || 10,
     },
     isLoadingWithdrawals: withdrawalsQuery.isLoading,
     isErrorWithdrawals: withdrawalsQuery.isError,
@@ -94,6 +121,8 @@ export const useAdminAffiliate = (params: GetWithdrawalsParams) => {
     pagination: {
       totalElements: withdrawalsQuery.data?.data?.totalElements || 0,
       totalPages: withdrawalsQuery.data?.data?.totalPages || 0,
+      page: withdrawalsQuery.data?.data?.page || 0,
+      size: withdrawalsQuery.data?.data?.size || 10,
     },
     isLoading: withdrawalsQuery.isLoading,
     isError: withdrawalsQuery.isError,

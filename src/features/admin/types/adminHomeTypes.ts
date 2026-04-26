@@ -23,8 +23,6 @@ export interface AdminBanner {
 export interface CreateBannerRequest {
   title: string;
   description: string;
-  imageUrl: string;
-  imageMobileUrl?: string;
   link: string;
   type: BannerType;
   displayOrder: number;
