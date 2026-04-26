@@ -89,8 +89,8 @@ const VietnamMap = memo(function VietnamMap({
                     onMouseLeave={handleMouseLeave}
                     style={{
                       default: {
-                        fill: active ? '#059669' : '#F0FDF4',
-                        stroke: active ? '#ffffff' : '#A7F3D0',
+                        fill: active ? '#059669' : '#DCFCE7',
+                        stroke: active ? '#ffffff' : '#6EE7B7',
                         strokeWidth: active ? 1 : 0.5,
                         outline: 'none',
                         transition: 'all 250ms',

@@ -3,11 +3,11 @@
 import React from 'react';
 import { Clock, Trash2, Edit2, Power, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Voucher } from '../types';
+import { Voucher, SavedVoucherResponse } from '../types';
 import { formatCurrencyVND } from '@/utils/format';
 
 interface VoucherCardProps {
-  voucher: Voucher;
+  voucher: Voucher | SavedVoucherResponse;
   onEdit?: (voucher: Voucher) => void;
   onDelete?: (id: number) => void;
   onToggle?: (id: number) => void;
@@ -157,28 +157,25 @@ export function VoucherCard({
           </div>
         </div>
 
-        {/* Usage Progress */}
-        <div className="mt-2 pt-2 border-t border-stone-100/50 flex items-center justify-between gap-4">
-          <div className="flex-1 space-y-1.5">
-            <div className="flex items-center justify-between text-[10px] font-bold">
-              <span className="text-stone-400 uppercase tracking-widest">Hiệu suất</span>
-              <span className="text-stone-700 tabular-nums">
-                {voucher.usedCount} / {voucher.usageLimit}
+        {/* Usable Status Badge (for User Wallet) */}
+        {'usable' in voucher && (
+          <div className="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between">
+            <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest">
+              Trạng thái
+            </span>
+            {voucher.usable ? (
+              <span className="flex items-center gap-1.5 text-[10px] font-black text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100 uppercase tracking-wider">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                Có thể dùng
               </span>
-            </div>
-            <div className="h-1.5 bg-stone-50 rounded-full overflow-hidden border border-stone-100">
-              <div
-                className={cn(
-                  'h-full rounded-full transition-all duration-500',
-                  isActive ? 'bg-emerald-500' : 'bg-stone-300',
-                )}
-                style={{
-                  width: `${Math.min((voucher.usedCount / voucher.usageLimit) * 100, 100)}%`,
-                }}
-              />
-            </div>
+            ) : (
+              <span className="flex items-center gap-1.5 text-[10px] font-black text-stone-400 bg-stone-50 px-2.5 py-1 rounded-lg border border-stone-200 uppercase tracking-wider">
+                <div className="w-1.5 h-1.5 rounded-full bg-stone-300" />
+                Đã sử dụng
+              </span>
+            )}
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
