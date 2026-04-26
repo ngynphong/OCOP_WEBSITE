@@ -37,13 +37,13 @@ export default function Home() {
 
           <div className="w-full flex flex-col gap-10 md:gap-16 mt-6 relative z-20">
             <QuickLinksRow />
+            <BestSellersSection />
             <VoucherHomeSection />
             <FlashSaleSection />
             <FeatureHighlights />
             <CategoryList />
             <SubBanners />
             <OcopMallSection />
-            <BestSellersSection />
             <CategoryShowcase />
             <DailyDiscoverFeed />
           </div>
