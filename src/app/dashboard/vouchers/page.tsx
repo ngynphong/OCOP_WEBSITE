@@ -136,11 +136,11 @@ export default function VoucherDashboardPage() {
             placeholder={
               isSeller ? 'Tìm kiếm mã hoặc tên voucher...' : 'Tìm kiếm voucher trong ví...'
             }
-            className="w-full bg-white border border-stone-200 rounded-3xl pl-16 pr-6 py-5 outline-none text-stone-800 font-bold placeholder:text-stone-300 focus:border-emerald-500/50 focus:ring-8 focus:ring-emerald-500/5 transition-all shadow-sm shadow-stone-200/50"
+            className="w-full bg-white border border-stone-200 rounded-3xl pl-16 pr-6 py-2 outline-none text-stone-800 font-bold placeholder:text-stone-300 focus:border-emerald-500/50 focus:ring-8 focus:ring-emerald-500/5 transition-all shadow-sm shadow-stone-200/50"
           />
         </div>
         <div className="lg:col-span-5 flex items-center gap-4">
-          <div className="flex-1 flex items-center gap-4 bg-white border border-stone-200 rounded-3xl px-6 py-5 shadow-sm shadow-stone-200/50">
+          <div className="flex-1 flex items-center gap-4 bg-white border border-stone-200 rounded-3xl px-6 py-2 shadow-sm shadow-stone-200/50">
             <Filter size={20} className="text-stone-400" />
             <select className="flex-1 bg-transparent outline-none text-sm font-black text-stone-800 appearance-none cursor-pointer">
               <option>Tất cả trạng thái</option>
@@ -152,7 +152,7 @@ export default function VoucherDashboardPage() {
           <button
             onClick={() => refetch()}
             disabled={isFetching}
-            className="p-5 bg-white border border-stone-200 rounded-3xl text-stone-500 hover:text-emerald-600 hover:border-emerald-200 transition-all shadow-sm shadow-stone-200/50 active:scale-95 disabled:opacity-50"
+            className="p-2 bg-white border border-stone-200 rounded-3xl text-stone-500 hover:text-emerald-600 hover:border-emerald-200 transition-all shadow-sm shadow-stone-200/50 active:scale-95 disabled:opacity-50 cursor-pointer"
           >
             <RefreshCw size={22} className={isFetching ? 'animate-spin' : ''} />
           </button>

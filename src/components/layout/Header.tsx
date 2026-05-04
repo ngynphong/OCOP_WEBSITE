@@ -66,7 +66,7 @@ export function Header() {
     <header className="w-full flex flex-col justify-start items-center sticky top-0 z-[100]">
       <div className="w-full py-2 bg-yellow-100 flex flex-col justify-start items-center relative z-[101]">
         <div className="text-center justify-center text-stone-900 text-xs font-medium font-sans leading-4 tracking-tight">
-          Freeship toàn quốc đơn từ 200k • Đồng hành cùng nông sản Việt
+          Kết nối tinh hoa nông sản Việt | OCOP chính hãng – Giao hàng toàn quốc
         </div>
       </div>
       <div className="w-full relative z-[102] bg-green-700 flex flex-col justify-start items-center shadow-md">
@@ -148,7 +148,7 @@ export function Header() {
                       : 'text-emerald-100 text-sm font-semibold font-sans leading-5'
                   }
                 >
-                  Vung Miền
+                  Vùng Miền
                 </span>
               </Link>
               <Link

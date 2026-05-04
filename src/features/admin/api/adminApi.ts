@@ -265,8 +265,8 @@ export const adminApi = {
   ): Promise<AdminCategoryDetailResponse> => {
     const formData = new FormData();
 
-    // Prepare data object (JSON)
-    const dataObj = {
+    // Prepare request object (JSON)
+    const requestObj = {
       name: data.name,
       slug: data.slug,
       parentId: data.parentId,
@@ -275,13 +275,16 @@ export const adminApi = {
       isActive: data.isActive,
     };
 
-    formData.append('data', JSON.stringify(dataObj));
+    formData.append(
+      'request',
+      new Blob([JSON.stringify(requestObj)], { type: 'application/json' }),
+    );
 
     if (data.iconFile && data.iconFile[0]) {
-      formData.append('icons', data.iconFile[0]);
+      formData.append('icon', data.iconFile[0]);
     }
     if (data.bannerFile && data.bannerFile[0]) {
-      formData.append('banners', data.bannerFile[0]);
+      formData.append('banner', data.bannerFile[0]);
     }
 
     return axiosClient.put(`/admin/categories/${id}`, formData, {

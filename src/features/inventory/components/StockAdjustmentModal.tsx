@@ -88,7 +88,7 @@ export const StockAdjustmentModal = ({
             {...register('delta', { valueAsNumber: true })}
             type="number"
             placeholder="Nhập 10 để tặng, -10 để giảm..."
-            className={`w-full px-4 py-3 rounded-xl bg-stone-50 border transition-all focus:outline-none focus:ring-2 focus:ring-green-500/20 ${
+            className={`w-full px-4 py-3 rounded-xl text-gray-700 bg-stone-50 border transition-all focus:outline-none focus:ring-2 focus:ring-green-500/20 ${
               errors.delta ? 'border-red-300' : 'border-stone-200 focus:border-green-500'
             }`}
           />
@@ -109,7 +109,7 @@ export const StockAdjustmentModal = ({
             {...register('note')}
             rows={3}
             placeholder="Nhập lý do chi tiết (VD: Nhập thêm hàng mới, Sản phẩm bị hỏng...)"
-            className={`w-full px-4 py-3 rounded-xl bg-stone-50 border transition-all focus:outline-none focus:ring-2 focus:ring-green-500/20 ${
+            className={`w-full px-4 py-3 rounded-xl text-gray-700 bg-stone-50 border transition-all focus:outline-none focus:ring-2 focus:ring-green-500/20 ${
               errors.note ? 'border-red-300' : 'border-stone-200 focus:border-green-500'
             }`}
           />

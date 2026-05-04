@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+'use client';
+
+import React, { useState, useEffect, useMemo, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -8,13 +10,13 @@ import {
   FiShield,
   FiMapPin,
   FiGrid,
-  FiChevronRight,
   FiTag,
   FiPackage,
   FiHeart,
   FiMessageSquare,
   FiTrendingUp,
   FiLifeBuoy,
+  FiChevronDown,
 } from 'react-icons/fi';
 import { BiSupport } from 'react-icons/bi';
 import { FaWarehouse } from 'react-icons/fa';
@@ -24,198 +26,275 @@ import { useDispatch } from 'react-redux';
 import { setDashboardMode } from '@/store/features/authSlice';
 import Image from 'next/image';
 import { IoTicket } from 'react-icons/io5';
+import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
+
+interface MenuItem {
+  id: string;
+  label: string;
+  icon: React.ElementType;
+  href: string;
+  roles: string[];
+  permission?: string;
+}
+
+interface MenuGroup {
+  id: string;
+  label: string;
+  icon: React.ElementType;
+  items: MenuItem[];
+  roles: string[];
+}
+
+const MENU_GROUPS: MenuGroup[] = [
+  {
+    id: 'shopping',
+    label: 'Mua sắm & Ưu đãi',
+    icon: FiShoppingBag,
+    roles: ['USER'],
+    items: [
+      {
+        id: 'orders',
+        label: 'Đơn hàng của tôi',
+        icon: FiShoppingBag,
+        href: '/dashboard/don-hang',
+        roles: ['USER'],
+      },
+      {
+        id: 'loyalty',
+        label: 'Điểm thưởng',
+        icon: FiAward,
+        href: '/dashboard/diem-thuong',
+        roles: ['USER'],
+      },
+      {
+        id: 'vouchers-user',
+        label: 'Mã giảm giá',
+        icon: IoTicket,
+        href: '/dashboard/vouchers',
+        roles: ['USER'],
+      },
+      {
+        id: 'wishlist',
+        label: 'Sản phẩm yêu thích',
+        icon: FiHeart,
+        href: '/dashboard/san-pham-yeu-thich',
+        roles: ['USER'],
+      },
+    ],
+  },
+  {
+    id: 'utilities',
+    label: 'Tiện ích & Hỗ trợ',
+    icon: FiGrid,
+    roles: ['USER'],
+    items: [
+      {
+        id: 'addresses',
+        label: 'Địa chỉ nhận hàng',
+        icon: FiMapPin,
+        href: '/dashboard/dia-chi',
+        roles: ['USER'],
+      },
+      {
+        id: 'affiliate',
+        label: 'Tiếp thị liên kết',
+        icon: FiTrendingUp,
+        href: '/dashboard/affiliate',
+        roles: ['USER'],
+      },
+      {
+        id: 'chat-user',
+        label: 'Tin nhắn',
+        icon: FiMessageSquare,
+        href: '/dashboard/chat',
+        roles: ['USER'],
+      },
+      {
+        id: 'complaints',
+        label: 'Khiếu nại',
+        icon: FiLifeBuoy,
+        href: '/dashboard/khieu-nai',
+        roles: ['USER'],
+      },
+      {
+        id: 'support',
+        label: 'Trung tâm hỗ trợ',
+        icon: BiSupport,
+        href: '/dashboard/ho-tro',
+        roles: ['USER'],
+      },
+    ],
+  },
+  {
+    id: 'sales-mgmt',
+    label: 'Quản lý bán hàng',
+    icon: FiPackage,
+    roles: ['SELLER'],
+    items: [
+      {
+        id: 'product',
+        label: 'Sản phẩm',
+        icon: FiPackage,
+        href: '/dashboard/san-pham',
+        roles: ['SELLER'],
+        permission: 'seller.product.manage',
+      },
+      {
+        id: 'seller-orders',
+        label: 'Đơn hàng',
+        icon: FiShoppingBag,
+        href: '/dashboard/cua-hang/don-hang',
+        roles: ['SELLER'],
+        permission: 'seller.shop.manage',
+      },
+      {
+        id: 'inventory',
+        label: 'Kho hàng',
+        icon: FaWarehouse,
+        href: '/dashboard/kho-hang',
+        roles: ['SELLER'],
+        permission: 'seller.shop.manage',
+      },
+      {
+        id: 'vouchers-seller',
+        label: 'Mã giảm giá',
+        icon: IoTicket,
+        href: '/dashboard/vouchers',
+        roles: ['SELLER'],
+        permission: 'seller.shop.manage',
+      },
+      {
+        id: 'reviews',
+        label: 'Đánh giá',
+        icon: FiMessageSquare,
+        href: '/dashboard/reviews',
+        roles: ['SELLER'],
+        permission: 'seller.shop.manage',
+      },
+    ],
+  },
+  {
+    id: 'operations-legal',
+    label: 'Vận hành & Pháp lý',
+    icon: FiShield,
+    roles: ['SELLER'],
+    items: [
+      {
+        id: 'shop',
+        label: 'Thông tin cửa hàng',
+        icon: FiTag,
+        href: '/dashboard/cua-hang',
+        roles: ['SELLER'],
+      },
+      {
+        id: 'shop-legality',
+        label: 'Hồ sơ pháp lý',
+        icon: FiShield,
+        href: '/dashboard/cua-hang/ho-so-phap-ly',
+        roles: ['SELLER'],
+        permission: 'seller.shop.manage',
+      },
+      {
+        id: 'supply-chain',
+        label: 'Truy xuất nguồn gốc',
+        icon: FiTrendingUp,
+        href: '/dashboard/truy-xuat',
+        roles: ['SELLER'],
+        permission: 'seller.shop.manage',
+      },
+      {
+        id: 'seller-chat',
+        label: 'Tin nhắn CSKH',
+        icon: FiMessageSquare,
+        href: '/dashboard/cua-hang/chat',
+        roles: ['SELLER'],
+      },
+    ],
+  },
+];
+
+const COMMON_ITEMS: MenuItem[] = [
+  {
+    id: 'overview',
+    label: 'Tổng quan',
+    icon: FiGrid,
+    href: '/dashboard',
+    roles: ['USER', 'SELLER'],
+  },
+  {
+    id: 'profile',
+    label: 'Hồ sơ cá nhân',
+    icon: FiUser,
+    href: '/dashboard/ho-so',
+    roles: ['USER', 'SELLER'],
+  },
+  {
+    id: 'security',
+    label: 'Bảo mật',
+    icon: FiShield,
+    href: '/dashboard/bao-mat',
+    roles: ['USER', 'SELLER'],
+  },
+];
 
 const DashboardSidebar = () => {
   const pathname = usePathname();
   const dispatch = useDispatch();
   const { profile } = useAuth();
   const { dashboardMode } = useAppSelector((state) => state.auth);
-  const [isMounted, setIsMounted] = useState(false);
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+  const [openGroups, setOpenGroups] = useState<string[]>([]);
 
   // Persistence and hydration fix
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIsMounted(true);
     const savedMode = localStorage.getItem('dashboard_mode');
     if (savedMode === 'USER' || savedMode === 'SELLER') {
       dispatch(setDashboardMode(savedMode));
     }
   }, [dispatch]);
 
-  const menuItems = [
-    // Chung
-    {
-      id: 'overview',
-      label: 'Tổng quan',
-      icon: FiGrid,
-      href: '/dashboard',
-      roles: ['USER', 'SELLER'],
-    },
-    {
-      id: 'profile',
-      label: 'Hồ sơ cá nhân',
-      icon: FiUser,
-      href: '/dashboard/ho-so',
-      roles: ['USER', 'SELLER'],
-    },
+  const filteredGroups = useMemo(() => {
+    return MENU_GROUPS.filter((group) => group.roles.includes(dashboardMode))
+      .map((group) => ({
+        ...group,
+        items: group.items.filter((item) => {
+          if (item.permission && !profile?.permissions?.includes(item.permission)) return false;
+          return true;
+        }),
+      }))
+      .filter((group) => group.items.length > 0);
+  }, [dashboardMode, profile]);
 
-    // User Only
-    {
-      id: 'orders',
-      label: 'Đơn hàng của tôi',
-      icon: FiShoppingBag,
-      href: '/dashboard/don-hang',
-      roles: ['USER'],
-    },
-    {
-      id: 'loyalty',
-      label: 'Điểm thưởng',
-      icon: FiAward,
-      href: '/dashboard/diem-thuong',
-      roles: ['USER'],
-    },
-    {
-      id: 'vouchers',
-      label: 'Mã giảm giá',
-      icon: IoTicket,
-      href: '/dashboard/vouchers',
-      roles: ['USER'],
-    },
-    {
-      id: 'affiliate',
-      label: 'Tiếp thị liên kết',
-      icon: FiTrendingUp,
-      href: '/dashboard/affiliate',
-      roles: ['USER'],
-    },
-    {
-      id: 'addresses',
-      label: 'Địa chỉ nhận hàng',
-      icon: FiMapPin,
-      href: '/dashboard/dia-chi',
-      roles: ['USER'],
-    },
-    {
-      id: 'wishlist',
-      label: 'Sản phẩm yêu thích',
-      icon: FiHeart,
-      href: '/dashboard/san-pham-yeu-thich',
-      roles: ['USER'],
-    },
-    {
-      id: 'complaints',
-      label: 'Khiếu nại của tôi',
-      icon: FiLifeBuoy,
-      href: '/dashboard/khieu-nai',
-      roles: ['USER'],
-    },
-    {
-      id: 'support',
-      label: 'Hỗ trợ',
-      icon: BiSupport,
-      href: '/dashboard/ho-tro',
-      roles: ['USER'],
-    },
+  const filteredCommon = useMemo(() => {
+    return COMMON_ITEMS.filter((item) => item.roles.includes(dashboardMode));
+  }, [dashboardMode]);
 
-    // Seller Only
-    {
-      id: 'shop',
-      label: 'Cửa hàng của tôi',
-      icon: FiTag,
-      href: '/dashboard/cua-hang',
-      roles: ['USER', 'SELLER'],
-    },
-    {
-      id: 'product',
-      label: 'Sản phẩm',
-      icon: FiPackage,
-      href: '/dashboard/san-pham',
-      roles: ['SELLER'],
-      permission: 'seller.product.manage',
-    },
+  // Sync open groups with pathname
+  useEffect(() => {
+    const activeGroup = filteredGroups.find((group) =>
+      group.items.some(
+        (item) =>
+          pathname === item.href ||
+          (item.href !== '/dashboard' && pathname.startsWith(`${item.href}/`)),
+      ),
+    );
+    if (activeGroup && !openGroups.includes(activeGroup.id)) {
+      setTimeout(() => setOpenGroups((prev) => [...prev, activeGroup.id]), 0);
+    }
+  }, [pathname, filteredGroups, openGroups]);
 
-    {
-      id: 'seller-orders',
-      label: 'Quản lý Đơn hàng',
-      icon: FiShoppingBag, // Using the same icon or FiInbox
-      href: '/dashboard/cua-hang/don-hang',
-      roles: ['SELLER'],
-      permission: 'seller.shop.manage',
-    },
-    {
-      id: 'inventory',
-      label: 'Kho hàng',
-      icon: FaWarehouse,
-      href: '/dashboard/kho-hang',
-      roles: ['SELLER'],
-      permission: 'seller.shop.manage',
-    },
-    {
-      id: 'vouchers',
-      label: 'Mã giảm giá',
-      icon: IoTicket,
-      href: '/dashboard/vouchers',
-      roles: ['SELLER'],
-      permission: 'seller.shop.manage',
-    },
-    {
-      id: 'reviews',
-      label: 'Quản lý Đánh giá',
-      icon: FiMessageSquare,
-      href: '/dashboard/reviews',
-      roles: ['SELLER'],
-      permission: 'seller.shop.manage',
-    },
-    {
-      id: 'shop-legality',
-      label: 'Hồ sơ pháp lý',
-      icon: FiShield,
-      href: '/dashboard/cua-hang/ho-so-phap-ly',
-      roles: ['SELLER'],
-      permission: 'seller.shop.manage',
-    },
-    {
-      id: 'supply-chain',
-      label: 'Truy xuất nguồn gốc',
-      icon: FiTrendingUp,
-      href: '/dashboard/truy-xuat',
-      roles: ['SELLER'],
-      permission: 'seller.shop.manage',
-    },
+  const toggleGroup = (groupId: string) => {
+    setOpenGroups((prev) =>
+      prev.includes(groupId) ? prev.filter((id) => id !== groupId) : [...prev, groupId],
+    );
+  };
 
-    {
-      id: 'chat',
-      label: 'Tin nhắn',
-      icon: FiMessageSquare,
-      href: '/dashboard/chat',
-      roles: ['USER'],
-    },
-    {
-      id: 'seller-chat',
-      label: 'Tin nhắn',
-      icon: FiMessageSquare,
-      href: '/dashboard/cua-hang/chat',
-      roles: ['SELLER'],
-    },
-    // Security (Chung)
-    {
-      id: 'security',
-      label: 'Bảo mật',
-      icon: FiShield,
-      href: '/dashboard/bao-mat',
-      roles: ['USER', 'SELLER'],
-    },
-  ];
-
-  const filteredMenu = menuItems.filter((item) => {
-    // Check role mode
-    if (!item.roles.includes(dashboardMode)) return false;
-
-    // Check specific permissions if defined
-    if (item.permission && !profile?.permissions?.includes(item.permission)) return false;
-
-    return true;
-  });
+  if (!mounted) return null;
 
   return (
     <div className="flex flex-col gap-6">
@@ -241,45 +320,101 @@ const DashboardSidebar = () => {
 
       {/* Navigation Menu */}
       <nav className="bg-white rounded-3xl p-3 border border-stone-100 shadow-xl shadow-stone-200/50 flex flex-col gap-1">
-        {isMounted &&
-          (() => {
-            // Find the most specific (longest) matching href for the current pathname
-            const activeHref = filteredMenu
-              .map((item) => item.href)
-              .filter(
-                (href) =>
-                  pathname === href || (href !== '/dashboard' && pathname.startsWith(`${href}/`)),
-              )
-              .sort((a, b) => b.length - a.length)[0];
+        {/* Common Items */}
+        {filteredCommon.map((item) => {
+          const isActive = pathname === item.href;
+          return (
+            <Link
+              key={item.id}
+              href={item.href}
+              className={cn(
+                'flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-300 group',
+                isActive
+                  ? 'bg-green-600 text-white shadow-lg shadow-green-500/25'
+                  : 'text-stone-600 hover:bg-stone-50',
+              )}
+            >
+              <item.icon
+                size={18}
+                className={isActive ? 'text-white' : 'text-stone-400 group-hover:text-green-600'}
+              />
+              <span className="font-semibold text-sm">{item.label}</span>
+            </Link>
+          );
+        })}
 
-            return filteredMenu.map((item) => {
-              const isActive = item.href === activeHref;
-              return (
-                <Link
-                  key={item.id}
-                  href={item.href}
-                  className={`flex items-center justify-between px-4 py-3.5 rounded-2xl transition-all duration-300 group ${
-                    isActive
-                      ? 'bg-green-600 text-white shadow-lg shadow-green-500/25'
-                      : 'text-stone-600 hover:bg-stone-50'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <item.icon
-                      size={18}
-                      className={
-                        isActive ? 'text-white' : 'text-stone-400 group-hover:text-green-600'
-                      }
-                    />
-                    <span className="font-semibold text-sm">{item.label}</span>
-                  </div>
-                  <FiChevronRight
-                    className={`transition-transform duration-300 ${isActive ? 'rotate-90' : 'opacity-0 group-hover:opacity-100'}`}
+        <div className="my-2 border-t border-stone-50" />
+
+        {/* Grouped Items */}
+        {filteredGroups.map((group) => {
+          const isOpen = openGroups.includes(group.id);
+          const hasActiveChild = group.items.some(
+            (item) =>
+              pathname === item.href ||
+              (item.href !== '/dashboard' && pathname.startsWith(`${item.href}/`)),
+          );
+
+          return (
+            <div key={group.id} className="flex flex-col gap-1">
+              <button
+                onClick={() => toggleGroup(group.id)}
+                className={cn(
+                  'flex items-center justify-between px-4 py-3.5 rounded-2xl transition-all duration-300 group cursor-pointer',
+                  isOpen ? 'bg-stone-50 text-green-700' : 'text-stone-600 hover:bg-stone-50',
+                  hasActiveChild && !isOpen && 'text-green-600 font-bold',
+                )}
+              >
+                <div className="flex items-center gap-3">
+                  <group.icon
+                    size={18}
+                    className={cn(
+                      'transition-colors',
+                      isOpen || hasActiveChild ? 'text-green-600' : 'text-stone-400',
+                    )}
                   />
-                </Link>
-              );
-            });
-          })()}
+                  <span className="font-semibold text-sm">{group.label}</span>
+                </div>
+                <FiChevronDown
+                  className={cn('transition-transform duration-300', isOpen && 'rotate-180')}
+                />
+              </button>
+
+              <AnimatePresence>
+                {isOpen && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden flex flex-col gap-1 ml-4 pl-4 border-l border-stone-100"
+                  >
+                    {group.items.map((item) => {
+                      const isActive =
+                        pathname === item.href ||
+                        (item.href !== '/dashboard' && pathname.startsWith(`${item.href}/`));
+                      return (
+                        <Link
+                          key={item.id}
+                          href={item.href}
+                          className={cn(
+                            'flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200',
+                            isActive
+                              ? 'text-green-600 font-bold bg-green-50'
+                              : 'text-stone-500 hover:text-stone-900 hover:bg-stone-50',
+                          )}
+                        >
+                          <span className="text-sm">{item.label}</span>
+                          {isActive && (
+                            <div className="ml-auto w-1.5 h-1.5 rounded-full bg-green-600" />
+                          )}
+                        </Link>
+                      );
+                    })}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          );
+        })}
       </nav>
     </div>
   );

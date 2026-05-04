@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { newsletterApi } from '../../api/newsletterApi';
+import { useAdminSubscribers } from '../../hooks/useNewsletter';
 import { NewsletterStatus, NewsletterSubscription } from '../../types/newsletterTypes';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { FiSearch, FiFilter, FiMail, FiClock, FiCheckCircle, FiXCircle } from 'react-icons/fi';
+import { Pagination } from '@/components/ui/Pagination';
 
 export const SubscriberTable = () => {
   const [params, setParams] = useState({
@@ -16,13 +16,12 @@ export const SubscriberTable = () => {
   });
   const [search, setSearch] = useState('');
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['admin-subscribers', params],
-    queryFn: () => newsletterApi.getSubscribers(params),
-  });
+  const { data, isLoading } = useAdminSubscribers(params);
 
-  const subscribers = data?.data?.items || [];
-  const total = data?.data?.totalElement || 0;
+  const subscribers = data?.data?.content || [];
+  const totalElements = data?.data?.totalElements || 0;
+  const totalPages = data?.data?.totalPages || 0;
+  const currentPage = params.pageNo;
 
   const getStatusIcon = (status: NewsletterStatus) => {
     switch (status) {
@@ -152,27 +151,16 @@ export const SubscriberTable = () => {
           </table>
         </div>
 
-        {/* Pagination Placeholder */}
-        <div className="p-6 border-t border-stone-100 flex items-center justify-between">
-          <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">
-            Hiển thị {subscribers.length} / {total} người đăng ký
-          </p>
-          <div className="flex gap-2">
-            <button
-              disabled={params.pageNo === 1}
-              onClick={() => setParams({ ...params, pageNo: params.pageNo - 1 })}
-              className="px-4 py-2 rounded-xl border border-stone-100 text-xs font-black uppercase tracking-widest text-stone-600 hover:bg-stone-50 transition-all disabled:opacity-50"
-            >
-              Trước
-            </button>
-            <button
-              disabled={subscribers.length < params.pageSize}
-              onClick={() => setParams({ ...params, pageNo: params.pageNo + 1 })}
-              className="px-4 py-2 rounded-xl border border-stone-100 text-xs font-black uppercase tracking-widest text-stone-600 hover:bg-stone-50 transition-all disabled:opacity-50"
-            >
-              Sau
-            </button>
-          </div>
+        {/* Pagination */}
+        <div className="p-8 border-t border-stone-100">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            pageSize={params.pageSize}
+            totalElements={totalElements}
+            onPageChange={(page) => setParams({ ...params, pageNo: page })}
+            onPageSizeChange={(size) => setParams({ ...params, pageSize: size, pageNo: 1 })}
+          />
         </div>
       </div>
     </div>

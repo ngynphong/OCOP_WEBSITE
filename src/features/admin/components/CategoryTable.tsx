@@ -148,26 +148,26 @@ const CategoryTable = ({ onEdit, onAdd }: CategoryTableProps) => {
               <Link
                 href={`/admin/categories/${cat.id}`}
                 title="Xem chi tiết"
-                className="p-2 text-stone-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all"
+                className="p-2 text-stone-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all cursor-pointer"
               >
                 <FiEye size={16} />
               </Link>
               <button
                 onClick={() => onAdd(cat.id)}
                 title="Thêm danh mục con"
-                className="p-2 text-stone-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all"
+                className="p-2 text-stone-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all cursor-pointer"
               >
                 <FiPlus size={16} />
               </button>
               <button
                 onClick={() => onEdit(cat)}
-                className="p-2 text-stone-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                className="p-2 text-stone-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all cursor-pointer"
               >
                 <FiEdit size={16} />
               </button>
               <button
                 onClick={() => handleDelete(cat.id, cat.name)}
-                className="p-2 text-stone-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                className="p-2 text-stone-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all cursor-pointer"
               >
                 <FiTrash2 size={16} />
               </button>

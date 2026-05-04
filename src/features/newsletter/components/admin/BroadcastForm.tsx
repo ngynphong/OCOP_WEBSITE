@@ -1,13 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { newsletterApi } from '../../api/newsletterApi';
+import { useBroadcastMutation } from '../../hooks/useNewsletter';
 import { Button } from '@/components/ui/AppButton';
 import { FiSend, FiFileText, FiType, FiEye, FiCheckCircle } from 'react-icons/fi';
+import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import toast from 'react-hot-toast';
-
-type ApiError = { response?: { data?: { message?: string } } };
 
 export const BroadcastForm = () => {
   const [formData, setFormData] = useState({
@@ -15,17 +13,9 @@ export const BroadcastForm = () => {
     htmlContent: '',
   });
   const [isPreview, setIsPreview] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
-  const broadcastMutation = useMutation({
-    mutationFn: (data: typeof formData) => newsletterApi.broadcast(data),
-    onSuccess: (res) => {
-      toast.success(res.message || 'Bản tin đã được gửi thành công!');
-      setFormData({ subject: '', htmlContent: '' });
-    },
-    onError: (error: ApiError) => {
-      toast.error(error?.response?.data?.message || 'Có lỗi xảy ra khi gửi bản tin.');
-    },
-  });
+  const broadcastMutation = useBroadcastMutation();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,9 +23,19 @@ export const BroadcastForm = () => {
       toast.error('Vui lòng nhập đầy đủ tiêu đề và nội dung.');
       return;
     }
-    if (confirm('Bạn có chắc chắn muốn gửi bản tin này đến tất cả người đăng ký?')) {
-      broadcastMutation.mutate(formData);
-    }
+    setIsConfirmOpen(true);
+  };
+
+  const handleConfirmSend = () => {
+    broadcastMutation.mutate(formData, {
+      onSuccess: () => {
+        setFormData({ subject: '', htmlContent: '' });
+        setIsConfirmOpen(false);
+      },
+      onError: () => {
+        setIsConfirmOpen(false);
+      },
+    });
   };
 
   return (
@@ -207,6 +207,17 @@ export const BroadcastForm = () => {
           font-weight: 700;
         }
       `}</style>
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        title="Xác nhận gửi bản tin"
+        message="Bạn có chắc chắn muốn gửi bản tin này đến tất cả người đăng ký đang hoạt động? Hành động này không thể hoàn tác."
+        confirmText="Gửi ngay"
+        cancelText="Hủy"
+        onConfirm={handleConfirmSend}
+        onCancel={() => setIsConfirmOpen(false)}
+        isLoading={broadcastMutation.isPending}
+        type="warning"
+      />
     </div>
   );
 };
