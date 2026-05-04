@@ -8,7 +8,7 @@ export function Footer() {
         <div className="inline-flex flex-col justify-start items-start gap-3.5 flex-1">
           <div className="flex flex-col justify-start items-start">
             <span className="text-emerald-800 text-xl font-bold font-sans leading-7">
-              OCOP Market
+              IES Connect OCOP
             </span>
           </div>
           <div className="flex flex-col justify-start items-start">
@@ -111,19 +111,19 @@ export function Footer() {
             <div className="flex items-center gap-3">
               <MapPin className="w-4 h-4 text-emerald-900" />
               <span className="text-emerald-900 text-sm font-normal font-sans leading-6">
-                Hà Nội, Việt Nam
+                Số 3 Công Trường Quốc Tế , Phường Xuân Hoà, Thành phố Hồ Chí Minh.
               </span>
             </div>
             <div className="flex items-center gap-3">
               <Phone className="w-4 h-4 text-emerald-900" />
               <span className="text-emerald-900 text-sm font-normal font-sans leading-6">
-                +84 123 456 789
+                +84 96 524 8115
               </span>
             </div>
             <div className="flex items-center gap-3">
               <Mail className="w-4 h-4 text-emerald-900" />
               <span className="text-emerald-900 text-sm font-normal font-sans leading-6">
-                contact@ocopmarket.vn
+                infovienies@gmail.com
               </span>
             </div>
           </div>
@@ -131,7 +131,7 @@ export function Footer() {
       </div>
       <div className="w-full max-w-7xl pt-8 mt-12 border-t border-emerald-100 flex flex-col justify-start items-center">
         <div className="w-full text-center text-emerald-600/60 text-base font-normal font-sans leading-6">
-          © {new Date().getFullYear()} OCOP Market - Tinh Hoa Đất Việt
+          © {new Date().getFullYear()} IES Connect OCOP
         </div>
       </div>
     </footer>
