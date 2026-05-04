@@ -1,5 +1,11 @@
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Trang chủ | Sàn OCOP',
+  description: 'Khám phá hàng ngàn sản phẩm đặc sản vùng miền, đạt chứng nhận OCOP.',
+};
 import { HeroSection } from '@/features/home/components/HeroSection';
 import { FeatureHighlights } from '@/features/home/components/FeatureHighlights';
 import { CategoryList } from '@/features/home/components/CategoryList';
