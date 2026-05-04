@@ -105,13 +105,13 @@ const CategoryDetailPage = ({ params }: PageProps) => {
         <div className="flex gap-3">
           <button
             onClick={() => setIsDrawerOpen(true)}
-            className="flex items-center gap-2 px-5 py-2.5 bg-white text-stone-600 text-xs font-black rounded-xl border border-stone-200 hover:bg-stone-50 transition-all shadow-sm uppercase tracking-widest"
+            className="flex items-center gap-2 px-5 py-2.5 bg-white text-stone-600 text-xs font-black rounded-xl border border-stone-200 hover:bg-stone-50 transition-all shadow-sm uppercase tracking-widest cursor-pointer"
           >
             <FiEdit /> Chỉnh sửa
           </button>
           <button
             onClick={handleDelete}
-            className="flex items-center gap-2 px-5 py-2.5 bg-red-50 text-red-600 text-xs font-black rounded-xl border border-red-100 hover:bg-red-100 transition-all shadow-sm uppercase tracking-widest"
+            className="flex items-center gap-2 px-5 py-2.5 bg-red-50 text-red-600 text-xs font-black rounded-xl border border-red-100 hover:bg-red-100 transition-all shadow-sm uppercase tracking-widest cursor-pointer"
           >
             <FiTrash2 /> Xoá
           </button>
