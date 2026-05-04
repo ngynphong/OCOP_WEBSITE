@@ -4,26 +4,30 @@ import {
   NewsletterConfirmResponse,
   SubscribeRequest,
   BroadcastRequest,
+  NewsletterListResponse,
 } from '../types/newsletterTypes';
 
 export const newsletterApi = {
   // Public / User
   subscribe: (data: SubscribeRequest): Promise<NewsletterResponse> =>
-    axiosClient.post('/newsletter/subscribe', data).then((res) => res.data),
+    axiosClient.post('/newsletter/subscribe', data),
 
-  subscribeMe: (): Promise<NewsletterResponse> =>
-    axiosClient.post('/newsletter/subscribe/me').then((res) => res.data),
+  subscribeMe: (): Promise<NewsletterResponse> => axiosClient.post('/newsletter/subscribe/me'),
 
   confirm: (token: string): Promise<NewsletterConfirmResponse> =>
-    axiosClient.get(`/newsletter/confirm?token=${token}`).then((res) => res.data),
+    axiosClient.get(`/newsletter/confirm?token=${token}`),
 
   unsubscribe: (token: string): Promise<NewsletterConfirmResponse> =>
-    axiosClient.get(`/newsletter/unsubscribe?token=${token}`).then((res) => res.data),
+    axiosClient.get(`/newsletter/unsubscribe?token=${token}`),
 
   // Admin
   broadcast: (data: BroadcastRequest): Promise<NewsletterConfirmResponse> =>
-    axiosClient.post('/admin/newsletter/broadcast', data).then((res) => res.data),
+    axiosClient.post('/admin/newsletter/broadcast', data),
 
-  getSubscribers: (params: { status?: string; pageNo?: number; pageSize?: number }) =>
-    axiosClient.get('/admin/newsletter/subscribers', { params }).then((res) => res.data),
+  getSubscribers: (params: {
+    status?: string;
+    pageNo?: number;
+    pageSize?: number;
+  }): Promise<NewsletterListResponse> =>
+    axiosClient.get('/admin/newsletter/subscribers', { params }),
 };

@@ -82,12 +82,6 @@ const UserListPage = () => {
         </div>
         <div className="flex gap-4">
           <Link
-            href="/admin/permissions"
-            className="flex items-center gap-2 px-6 py-3 bg-stone-100 text-stone-600 font-medium rounded-2xl hover:bg-green-200 transition-all shadow-lg shadow-stone-900/10 active:scale-95"
-          >
-            <FiShield size={18} /> Quản lý Quyền
-          </Link>
-          <Link
             href="/admin/roles"
             className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white text-sm font-black rounded-2xl hover:bg-green-800 transition-all shadow-lg shadow-green-900/10 active:scale-95"
           >

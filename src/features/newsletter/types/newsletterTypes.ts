@@ -25,4 +25,13 @@ export interface NewsletterConfirmResponse {
   message: string;
 }
 
+export interface SpringPaginatedResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  page: number;
+  size: number;
+}
+
 export type NewsletterResponse = ResponseBase<NewsletterSubscription>;
+export type NewsletterListResponse = ResponseBase<SpringPaginatedResponse<NewsletterSubscription>>;

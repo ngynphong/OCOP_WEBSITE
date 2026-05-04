@@ -61,3 +61,26 @@ export const useNewsletterUnsubscribe = (token: string | null) => {
     retry: false,
   });
 };
+
+export const useAdminSubscribers = (params: {
+  status?: string;
+  pageNo?: number;
+  pageSize?: number;
+}) => {
+  return useQuery({
+    queryKey: ['admin-subscribers', params],
+    queryFn: () => newsletterApi.getSubscribers(params),
+  });
+};
+
+export const useBroadcastMutation = () => {
+  return useMutation({
+    mutationFn: (data: { subject: string; htmlContent: string }) => newsletterApi.broadcast(data),
+    onSuccess: (res) => {
+      toast.success(res.message || 'Bản tin đã được gửi thành công!');
+    },
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data?.message || 'Có lỗi xảy ra khi gửi bản tin.');
+    },
+  });
+};
