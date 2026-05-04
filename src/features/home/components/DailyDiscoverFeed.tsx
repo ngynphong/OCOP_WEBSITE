@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, memo } from 'react';
-import { Sparkles } from 'lucide-react';
 import { ProductCard } from '@/components/ui/ProductCard';
 import { Button } from '@/components/ui/AppButton';
 import {
@@ -61,9 +60,6 @@ export const DailyDiscoverFeed = memo(function DailyDiscoverFeed() {
         <div className="flex flex-col gap-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-100 rounded-xl">
-                <Sparkles className="w-6 h-6 text-green-700 fill-current" />
-              </div>
               <h2 className="text-xl md:text-2xl font-black text-stone-900 tracking-tight uppercase">
                 GỢI Ý HÔM NAY
               </h2>

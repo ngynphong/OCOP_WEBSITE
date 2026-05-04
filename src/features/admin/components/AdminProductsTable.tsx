@@ -18,6 +18,7 @@ import { formatCurrencyVND } from '@/utils/format';
 import { FlashSaleManagementTab } from '@/features/flash-sale/components/FlashSaleManagementTab';
 import { FiZap } from 'react-icons/fi';
 import { Button } from '@/components/ui/AppButton';
+import { Eye, ShoppingCart, Star } from 'lucide-react';
 
 // ─── Status configuration ─────────────────────────────────────────────────────
 
@@ -143,7 +144,7 @@ export const AdminProductsTable = () => {
       <div className="flex items-center gap-4 border-b border-stone-100 pb-1">
         <button
           onClick={() => setActiveTab('PRODUCTS')}
-          className={`px-4 py-2 text-sm font-black uppercase tracking-widest transition-all relative ${
+          className={`px-4 py-2 text-sm font-black uppercase tracking-widest transition-all relative cursor-pointer ${
             activeTab === 'PRODUCTS' ? 'text-emerald-700' : 'text-stone-400 hover:text-stone-600'
           }`}
         >
@@ -154,7 +155,7 @@ export const AdminProductsTable = () => {
         </button>
         <button
           onClick={() => setActiveTab('FLASH_SALE')}
-          className={`px-4 py-2 text-sm font-black uppercase tracking-widest transition-all relative flex items-center gap-2 ${
+          className={`px-4 py-2 text-sm font-black uppercase tracking-widest transition-all relative flex items-center gap-2 cursor-pointer ${
             activeTab === 'FLASH_SALE' ? 'text-red-600' : 'text-stone-400 hover:text-stone-600'
           }`}
         >
@@ -300,7 +301,9 @@ export const AdminProductsTable = () => {
                     <td className="px-4 py-4 whitespace-nowrap">
                       <div className="flex flex-col gap-1.5 text-xs text-stone-500 font-medium">
                         <div className="flex items-center gap-1.5">
-                          <span className="text-amber-500">⭐</span>
+                          <span className="text-amber-500 text-lg">
+                            <Star size={14} />
+                          </span>
                           <span className="font-bold text-stone-700">
                             {product.ratingAvg > 0 ? product.ratingAvg.toFixed(1) : '0.0'}
                           </span>
@@ -309,11 +312,17 @@ export const AdminProductsTable = () => {
                           </span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                          <span className="text-emerald-500">🛒</span> Đã bán:{' '}
+                          <span className="text-emerald-500">
+                            <ShoppingCart size={14} />
+                          </span>{' '}
+                          Đã bán:{' '}
                           <span className="font-bold text-stone-700">{product.soldCount || 0}</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                          <span className="text-blue-400">👁</span> Lượt xem:{' '}
+                          <span className="text-blue-400">
+                            <Eye size={14} />
+                          </span>{' '}
+                          Lượt xem:{' '}
                           <span className="font-bold text-stone-700">{product.viewCount || 0}</span>
                         </div>
                       </div>

@@ -37,7 +37,7 @@ export const OcopMallSection = memo(function OcopMallSection() {
           </div>
           <Link
             href="/shops"
-            className="flex items-center gap-1 text-stone-500 hover:text-green-700 font-bold transition-colors"
+            className="flex items-center gap-1 text-green-900 hover:text-green-700 font-bold transition-colors"
           >
             Xem thêm <ChevronRight className="w-4 h-4" />
           </Link>

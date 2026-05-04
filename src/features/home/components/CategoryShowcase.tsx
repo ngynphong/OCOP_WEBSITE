@@ -4,7 +4,7 @@ import { memo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { ProductCard } from '@/components/ui/ProductCard';
 import {
   usePublicCategoriesQuery,
@@ -39,9 +39,6 @@ const CategorySection = memo(({ category, index }: { category: PublicCategory; i
       {/* --- Section Header --- */}
       <div className="w-full inline-flex justify-start items-center gap-4">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-stone-100 rounded-xl">
-            <Sparkles className="w-5 h-5 text-green-700" />
-          </div>
           <h2 className="text-stone-900 text-2xl md:text-4xl font-black font-sans tracking-tight uppercase">
             {category.name}
           </h2>
