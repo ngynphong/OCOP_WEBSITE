@@ -21,16 +21,16 @@ interface AdminOrderTableProps {
 }
 
 const statusMap: Record<string, { label: string; color: string }> = {
-  PENDING_PAYMENT: { label: 'Chờ thanh toán', color: 'bg-stone-100 text-stone-600' },
-  PENDING_CONFIRM: { label: 'Chờ xác nhận', color: 'bg-amber-100 text-amber-600' },
-  CONFIRMED: { label: 'Đã xác nhận', color: 'bg-blue-100 text-blue-600' },
-  PROCESSING: { label: 'Đang xử lý', color: 'bg-indigo-100 text-indigo-600' },
-  SHIPPED: { label: 'Đang giao', color: 'bg-orange-100 text-orange-600' },
-  DELIVERED: { label: 'Đã giao', color: 'bg-emerald-100 text-emerald-600' },
-  COMPLETED: { label: 'Hoàn thành', color: 'bg-green-100 text-green-600' },
-  CANCELLED: { label: 'Đã hủy', color: 'bg-red-100 text-red-600' },
-  REFUNDING: { label: 'Đang hoàn tiền', color: 'bg-rose-100 text-rose-600' },
-  REFUNDED: { label: 'Đã hoàn tiền', color: 'bg-rose-500 text-white' },
+  PENDING_PAYMENT: { label: 'Chờ thanh toán', color: 'text-stone-600' },
+  PENDING_CONFIRM: { label: 'Chờ xác nhận', color: 'text-amber-600' },
+  CONFIRMED: { label: 'Đã xác nhận', color: 'text-blue-600' },
+  PROCESSING: { label: 'Đang xử lý', color: 'text-indigo-600' },
+  SHIPPED: { label: 'Đang giao', color: 'text-orange-600' },
+  DELIVERED: { label: 'Đã giao', color: 'text-emerald-600' },
+  COMPLETED: { label: 'Hoàn thành', color: 'text-green-600' },
+  CANCELLED: { label: 'Đã hủy', color: 'text-red-600' },
+  REFUNDING: { label: 'Đang hoàn tiền', color: 'text-rose-600' },
+  REFUNDED: { label: 'Đã hoàn tiền', color: 'text-rose-600' },
 };
 
 export const AdminOrderTable = ({
@@ -69,7 +69,7 @@ export const AdminOrderTable = ({
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4">
           <div className="relative w-64">
             <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
             <input
@@ -78,6 +78,26 @@ export const AdminOrderTable = ({
               className="w-full pl-9 pr-4 py-2 bg-stone-50 text-gray-700 border-none rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/10"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <input
+              type="date"
+              className="bg-stone-50 border-none rounded-xl text-sm font-bold text-stone-600 py-2 px-4 focus:ring-2 focus:ring-emerald-500/10"
+              value={params.startDate || ''}
+              onChange={(e) =>
+                setParams({ ...params, startDate: e.target.value || undefined, pageNo: 1 })
+              }
+            />
+            <span className="text-stone-400 text-xs font-bold uppercase">đến</span>
+            <input
+              type="date"
+              className="bg-stone-50 border-none rounded-xl text-sm font-bold text-stone-600 py-2 px-4 focus:ring-2 focus:ring-emerald-500/10"
+              value={params.endDate || ''}
+              onChange={(e) =>
+                setParams({ ...params, endDate: e.target.value || undefined, pageNo: 1 })
+              }
             />
           </div>
 

@@ -16,11 +16,13 @@ const openSans = Open_Sans({
   display: 'swap',
 });
 
+import { defaultMetadata, siteConfig } from '@/lib/seo';
+
 export const metadata: Metadata = {
-  title: 'OCOP - Sàn thương mại điện tử OCOP',
-  description: 'Sàn thương mại điện tử OCOP',
+  metadataBase: new URL(siteConfig.url),
+  ...defaultMetadata,
   icons: {
-    icon: '/logo-ocop.jpg',
+    icon: '/images/dNUEl-removebg-preview.png',
   },
 };
 
