@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import React, { useState, useEffect, useSyncExternalStore } from 'react';
+import React, { useState, useEffect, useSyncExternalStore, useMemo } from 'react';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 import {
   FiGrid,
   FiCheckSquare,
@@ -41,7 +42,7 @@ interface MenuItem {
   href: string;
   id: string;
   roles?: string[];
-  permission?: string;
+  permissions?: string[];
 }
 
 interface MenuGroup {
@@ -57,11 +58,41 @@ const MENU_GROUPS: MenuGroup[] = [
     label: 'Kinh doanh',
     icon: CiShop,
     items: [
-      { label: 'Cửa hàng', icon: CiShop, href: '/admin/shops', id: 'shops' },
-      { label: 'Đơn hàng', icon: FiShoppingBag, href: '/admin/orders', id: 'orders' },
-      { label: 'Sản phẩm', icon: FiBox, href: '/admin/products', id: 'products' },
-      { label: 'Thương hiệu', icon: FiTag, href: '/admin/brands', id: 'brands' },
-      { label: 'Kho hàng', icon: FaWarehouse, href: '/admin/inventory', id: 'inventory' },
+      {
+        label: 'Cửa hàng',
+        icon: CiShop,
+        href: '/admin/shops',
+        id: 'shops',
+        permissions: ['shop.view', 'shop.manage'],
+      },
+      {
+        label: 'Đơn hàng',
+        icon: FiShoppingBag,
+        href: '/admin/orders',
+        id: 'orders',
+        permissions: ['order.view', 'order.manage'],
+      },
+      {
+        label: 'Sản phẩm',
+        icon: FiBox,
+        href: '/admin/products',
+        id: 'products',
+        permissions: ['product.view', 'product.manage'],
+      },
+      {
+        label: 'Thương hiệu',
+        icon: FiTag,
+        href: '/admin/brands',
+        id: 'brands',
+        permissions: ['brand.manage'],
+      },
+      {
+        label: 'Kho hàng',
+        icon: FaWarehouse,
+        href: '/admin/inventory',
+        id: 'inventory',
+        permissions: ['inventory.view', 'inventory.adjust'],
+      },
     ],
   },
   {
@@ -69,14 +100,33 @@ const MENU_GROUPS: MenuGroup[] = [
     label: 'Hạ tầng',
     icon: FiTruck,
     items: [
-      { label: 'Tỉnh thành', icon: FiMapPin, href: '/admin/locations', id: 'locations' },
-      { label: 'Thanh toán', icon: FiCreditCard, href: '/admin/payment-gateways', id: 'payments' },
-      { label: 'Vận chuyển', icon: FiTruck, href: '/admin/shipping-providers', id: 'shipping' },
+      {
+        label: 'Tỉnh thành',
+        icon: FiMapPin,
+        href: '/admin/locations',
+        id: 'locations',
+        permissions: ['location.manage'],
+      },
+      {
+        label: 'Thanh toán',
+        icon: FiCreditCard,
+        href: '/admin/payment-gateways',
+        id: 'payments',
+        permissions: ['payment.gateway.manage'],
+      },
+      {
+        label: 'Vận chuyển',
+        icon: FiTruck,
+        href: '/admin/shipping-providers',
+        id: 'shipping',
+        permissions: ['shipping.provider.manage'],
+      },
       {
         label: 'Gói đăng ký',
         icon: FiCreditCard,
         href: '/admin/subscriptions',
         id: 'subscriptions',
+        permissions: ['subscription.plan.manage'],
       },
     ],
   },
@@ -85,10 +135,34 @@ const MENU_GROUPS: MenuGroup[] = [
     label: 'Marketing & User',
     icon: FiUsers,
     items: [
-      { label: 'Người dùng', icon: FiUsers, href: '/admin/users', id: 'users' },
-      { label: 'Mã giảm giá', icon: IoTicket, href: '/admin/vouchers', id: 'vouchers' },
-      { label: 'Affiliate', icon: FiTrendingUp, href: '/admin/affiliate', id: 'affiliate' },
-      { label: 'Bản tin', icon: FiMail, href: '/admin/newsletter', id: 'newsletter' },
+      {
+        label: 'Người dùng',
+        icon: FiUsers,
+        href: '/admin/users',
+        id: 'users',
+        permissions: ['user.view', 'user.manage'],
+      },
+      {
+        label: 'Mã giảm giá',
+        icon: IoTicket,
+        href: '/admin/vouchers',
+        id: 'vouchers',
+        permissions: ['voucher.view', 'voucher.manage'],
+      },
+      {
+        label: 'Affiliate',
+        icon: FiTrendingUp,
+        href: '/admin/affiliate',
+        id: 'affiliate',
+        permissions: ['affiliate.manage'],
+      },
+      {
+        label: 'Bản tin',
+        icon: FiMail,
+        href: '/admin/newsletter',
+        id: 'newsletter',
+        permissions: ['newsletter.manage'],
+      },
     ],
   },
   {
@@ -96,22 +170,49 @@ const MENU_GROUPS: MenuGroup[] = [
     label: 'Nội dung & Hỗ trợ',
     icon: FiMessageSquare,
     items: [
-      { label: 'Bài viết', icon: FiMessageSquare, href: '/admin/blogs', id: 'blogs' },
-      { label: 'Kiểm duyệt', icon: FiCheckSquare, href: '/admin/reviews', id: 'admin-reviews' },
+      {
+        label: 'Bài viết',
+        icon: FiMessageSquare,
+        href: '/admin/blogs',
+        id: 'blogs',
+        permissions: ['blog.manage'],
+      },
+      {
+        label: 'Kiểm duyệt',
+        icon: FiCheckSquare,
+        href: '/admin/reviews',
+        id: 'admin-reviews',
+        permissions: ['review.manage'],
+      },
       {
         label: 'Hỗ trợ',
         icon: BiSupport,
         href: '/admin/support-tickets',
         id: 'admin-support-tickets',
+        permissions: ['support.ticket.manage'],
       },
-      { label: 'Banner', icon: FiBox, href: '/admin/banners', id: 'banners' },
-      { label: 'Liên kết nhanh', icon: FiGrid, href: '/admin/quick-links', id: 'quick-links' },
+      {
+        label: 'Banner',
+        icon: FiBox,
+        href: '/admin/banners',
+        id: 'banners',
+        roles: ['ADMIN', 'SUPER_ADMIN'],
+      },
+      {
+        label: 'Liên kết nhanh',
+        icon: FiGrid,
+        href: '/admin/quick-links',
+        id: 'quick-links',
+        roles: ['ADMIN', 'SUPER_ADMIN'],
+      },
     ],
   },
 ];
 
 const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
   const pathname = usePathname();
+  const { profile } = useAuth();
+
   const mounted = useSyncExternalStore(
     () => () => {},
     () => true,
@@ -119,15 +220,47 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
   );
   const [openGroups, setOpenGroups] = useState<string[]>([]);
 
+  const filteredMenuGroups = useMemo(() => {
+    const userPermissions = profile?.permissions || [];
+    const userRoles = profile?.roles || [];
+    const isSuperAdmin = userRoles.includes('SUPER_ADMIN');
+
+    return MENU_GROUPS.map((group) => {
+      const filteredItems = group.items.filter((item) => {
+        if (isSuperAdmin) return true;
+
+        let hasRole = true;
+        let hasPermission = true;
+
+        if (item.roles && item.roles.length > 0) {
+          hasRole = item.roles.some((r) => userRoles.includes(r));
+        }
+
+        if (item.permissions && item.permissions.length > 0) {
+          hasPermission = item.permissions.some((p) => userPermissions.includes(p));
+        }
+
+        // If an item specifies neither roles nor permissions, it is accessible
+        if (!item.roles?.length && !item.permissions?.length) {
+          return true;
+        }
+
+        return hasRole && hasPermission;
+      });
+
+      return { ...group, items: filteredItems };
+    }).filter((group) => group.items.length > 0);
+  }, [profile]);
+
   // Automatically open groups containing active path
   useEffect(() => {
-    const activeGroup = MENU_GROUPS.find((group) =>
+    const activeGroup = filteredMenuGroups.find((group) =>
       group.items.some((item) => pathname === item.href),
     );
     if (activeGroup && !openGroups.includes(activeGroup.id)) {
       setTimeout(() => setOpenGroups((prev) => [...prev, activeGroup.id]), 0);
     }
-  }, [pathname, openGroups]);
+  }, [pathname, openGroups, filteredMenuGroups]);
 
   const toggleGroup = (groupId: string) => {
     if (isCollapsed) {
@@ -182,7 +315,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
         </Link>
 
         {/* Groups */}
-        {MENU_GROUPS.map((group) => {
+        {filteredMenuGroups.map((group) => {
           const isGroupOpen = openGroups.includes(group.id);
           const hasActiveChild = group.items.some((item) => pathname === item.href);
 

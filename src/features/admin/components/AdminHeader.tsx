@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { FiSearch, FiBell, FiGrid, FiChevronRight, FiUser } from 'react-icons/fi';
+import { FiGrid, FiChevronRight, FiUser } from 'react-icons/fi';
 import { useAuth, useAuthProfile } from '@/features/auth/hooks/useAuth';
 import Image from 'next/image';
 import { LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
+import { NotificationBell } from '@/features/notifications/components/NotificationBell';
 
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -64,16 +65,6 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
       }`}
     >
       <div className="flex items-center gap-6 flex-1">
-        {/* Search */}
-        <div className="relative w-96 group">
-          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-lg group-focus-within:text-emerald-600 transition-colors" />
-          <input
-            type="text"
-            placeholder="Tìm kiếm hệ thống..."
-            className="w-full h-10 pl-10 pr-4 text-gray-700 bg-stone-100 border-none rounded-full text-sm focus:bg-white focus:ring-2 focus:ring-emerald-500/10 transition-all duration-300 outline-none"
-          />
-        </div>
-
         {/* Dynamic Breadcrumbs */}
         <nav className="hidden lg:flex items-center gap-2 text-xs font-bold text-stone-400 uppercase tracking-widest">
           <span>OCOP Market</span>
@@ -95,10 +86,7 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
 
       <div className="flex items-center gap-4">
         {/* Notifications */}
-        <button className="relative w-10 h-10 flex items-center justify-center hover:bg-stone-200/50 rounded-full transition-all text-stone-600">
-          <FiBell size={20} />
-          <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-[#F5F3EF]" />
-        </button>
+        <NotificationBell className="text-stone-600 hover:bg-stone-200/50 hover:text-stone-900" />
 
         {/* Apps */}
         <button className="w-10 h-10 flex items-center justify-center hover:bg-stone-200/50 rounded-full transition-all text-stone-600">
