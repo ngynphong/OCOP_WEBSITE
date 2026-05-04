@@ -58,7 +58,7 @@ export const VoucherHomeSection = memo(function VoucherHomeSection() {
               <Ticket className="w-8 h-8 text-red-500" />
             </h2>
           </div>
-          <button className="flex items-center gap-1 text-stone-400 hover:text-green-700 font-bold transition-all text-sm group">
+          <button className="flex items-center gap-1 text-green-900 hover:text-green-700 font-bold transition-all text-sm group">
             Xem tất cả{' '}
             <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </button>

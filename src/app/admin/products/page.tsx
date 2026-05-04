@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FiBox, FiLayers, FiDownload } from 'react-icons/fi';
+import { FiBox, FiLayers } from 'react-icons/fi';
 import CategoryTable from '@/features/admin/components/CategoryTable';
 import CategoryFormDrawer from '@/features/admin/components/CategoryDrawer';
 import { Category } from '@/features/admin/types/adminTypes';
@@ -54,19 +54,13 @@ const AdminProductsPage = () => {
             Thiết lập danh mục và giám sát kho hàng trên toàn hệ thống OCOP.
           </p>
         </motion.div>
-
-        <div className="flex gap-3">
-          <button className="flex items-center gap-2 px-5 py-2.5 bg-white text-stone-600 text-xs font-bold rounded-xl border border-stone-200 hover:bg-stone-50 transition-all shadow-sm">
-            <FiDownload /> Xuất báo cáo
-          </button>
-        </div>
       </div>
 
       {/* Tabs Navigation */}
       <div className="flex gap-1 p-1 bg-stone-100/50 rounded-2xl w-fit border border-stone-100">
         <button
           onClick={() => setActiveTab('products')}
-          className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
+          className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all cursor-pointer ${
             activeTab === 'products'
               ? 'bg-white text-emerald-600 shadow-sm border border-stone-100'
               : 'text-stone-400 hover:text-stone-600'
@@ -77,7 +71,7 @@ const AdminProductsPage = () => {
         </button>
         <button
           onClick={() => setActiveTab('categories')}
-          className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
+          className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all cursor-pointer ${
             activeTab === 'categories'
               ? 'bg-white text-emerald-600 shadow-sm border border-stone-100'
               : 'text-stone-400 hover:text-stone-600'

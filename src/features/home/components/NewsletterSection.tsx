@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Send, Mail, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Send, Mail, CheckCircle2 } from 'lucide-react';
 import { useNewsletter } from '@/features/newsletter/hooks/useNewsletter';
 import { useAppSelector } from '@/store/hooks';
 import { Button } from '@/components/ui/AppButton';
@@ -69,7 +69,7 @@ export function NewsletterSection() {
               className="space-y-6"
             >
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-emerald-400 text-xs font-black uppercase tracking-[0.2em]">
-                <Sparkles size={14} /> Đặc quyền OCOP
+                Đặc quyền OCOP
               </div>
               <h2 className="text-4xl md:text-5xl font-black text-white leading-tight tracking-tight">
                 Đăng ký bản tin, <br />
