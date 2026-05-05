@@ -24,16 +24,18 @@ export default function ChatPage() {
       const room = rooms.find((r) => String(r.id) === initialRoomId);
       if (room) {
         // Wrap in setTimeout to avoid synchronous state update during effect
-        setTimeout(() => {
+        const timer = setTimeout(() => {
           setSelectedRoom(room);
           setIsInitialized(true);
           if (room.unreadCount > 0) {
             markRead(room.id);
           }
         }, 0);
+        return () => clearTimeout(timer);
       }
     } else if (!isInitialized && rooms.length > 0) {
-      setTimeout(() => setIsInitialized(true), 0);
+      const timer = setTimeout(() => setIsInitialized(true), 0);
+      return () => clearTimeout(timer);
     }
   }, [initialRoomId, rooms, markRead, isInitialized]);
 

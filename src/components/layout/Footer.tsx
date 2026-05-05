@@ -1,14 +1,22 @@
+'use client';
+
 import Link from 'next/link';
 import { MapPin, Phone, Mail, Camera, Globe, Tv } from 'lucide-react';
+import Script from 'next/script';
+import { usePublicCategoriesQuery } from '@/features/products/hooks/usePublicProducts';
+import Image from 'next/image';
 
 export function Footer() {
+  const { data: categoriesResp, isLoading } = usePublicCategoriesQuery();
+  const categories = categoriesResp?.data?.slice(0, 4) || [];
+
   return (
     <footer className="w-full px-8 py-12 bg-emerald-50 border-t z-50 border-emerald-100 flex flex-col justify-start items-center">
       <div className="w-full max-w-7xl flex flex-col md:flex-row justify-between items-start gap-12">
         <div className="inline-flex flex-col justify-start items-start gap-3.5 flex-1">
           <div className="flex flex-col justify-start items-start">
             <span className="text-emerald-800 text-xl font-bold font-sans leading-7">
-              IES Connect OCOP
+              OCOP IES Connect
             </span>
           </div>
           <div className="flex flex-col justify-start items-start">
@@ -45,31 +53,32 @@ export function Footer() {
           <div className="pb-[0.75px] flex flex-col justify-start items-start">
             <span className="text-emerald-900 text-sm font-bold font-sans leading-6">Sản phẩm</span>
           </div>
-          <div className="flex flex-col justify-start items-start gap-1.5">
-            <Link
-              href="#"
-              className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900"
-            >
-              Thực phẩm sạch
-            </Link>
-            <Link
-              href="#"
-              className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900"
-            >
-              Gia vị
-            </Link>
-            <Link
-              href="#"
-              className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900"
-            >
-              Đồ thủ công
-            </Link>
-            <Link
-              href="#"
-              className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900"
-            >
-              Trà thảo mộc
-            </Link>
+          <div className="flex flex-col justify-start items-start gap-1.5 min-h-[144px]">
+            {isLoading
+              ? // Loading state
+                [...Array(4)].map((_, i) => (
+                  <div key={i} className="w-32 h-6 bg-emerald-100 animate-pulse rounded" />
+                ))
+              : categories.length > 0
+                ? categories.map((category) => (
+                    <Link
+                      key={category.id}
+                      href={`/danh-muc/${category.slug}`}
+                      className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900 transition-colors"
+                    >
+                      {category.name}
+                    </Link>
+                  ))
+                : // Fallback if no categories
+                  ['Thực phẩm sạch', 'Gia vị', 'Đồ thủ công', 'Trà thảo mộc'].map((item) => (
+                    <Link
+                      key={item}
+                      href="#"
+                      className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900"
+                    >
+                      {item}
+                    </Link>
+                  ))}
           </div>
         </div>
         <div className="w-72 pb-3.5 inline-flex flex-col justify-start items-start gap-3.5">
@@ -84,19 +93,19 @@ export function Footer() {
               Liên hệ chúng tôi
             </Link>
             <Link
-              href="#"
+              href="/chinh-sach-bao-mat"
               className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900"
             >
               Chính sách bảo mật
             </Link>
             <Link
-              href="#"
+              href="/chinh-sach-dat-hang"
               className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900"
             >
               Chính sách đặt hàng
             </Link>
             <Link
-              href="#"
+              href="/dieu-khoan-dich-vu"
               className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900"
             >
               Điều khoản dịch vụ
@@ -129,9 +138,26 @@ export function Footer() {
           </div>
         </div>
       </div>
-      <div className="w-full max-w-7xl pt-8 mt-12 border-t border-emerald-100 flex flex-col justify-start items-center">
-        <div className="w-full text-center text-emerald-600/60 text-base font-normal font-sans leading-6">
-          © {new Date().getFullYear()} IES Connect OCOP
+      <div className="w-full max-w-7xl flex items-center justify-start mt-6">
+        <a
+          href="//www.dmca.com/Protection/Status.aspx?ID=9083b6eb-63b9-43d0-8700-3a01749c1279"
+          title="DMCA.com Protection Status"
+          className="dmca-badge"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Image
+            src="https://images.dmca.com/Badges/dmca_protected_sml_120m.png?ID=9083b6eb-63b9-43d0-8700-3a01749c1279"
+            alt="DMCA.com Protection Status"
+            width={120}
+            height={40}
+          />
+        </a>
+        <Script src="https://images.dmca.com/Badges/DMCABadgeHelper.min.js" strategy="lazyOnload" />
+      </div>
+      <div className="w-full max-w-7xl pt-8 mt-12 border-t border-emerald-100 flex flex-col md:flex-row justify-center items-center gap-4">
+        <div className="text-center md:text-left text-emerald-600/60 text-base font-normal font-sans leading-6">
+          © {new Date().getFullYear()} OCOP IES Connect
         </div>
       </div>
     </footer>

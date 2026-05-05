@@ -30,7 +30,7 @@ export function ProductListClient() {
   const [selectedBrandIds, setSelectedBrandIds] = useState<number[]>([]);
   const [minPrice, setMinPrice] = useState<number>(0);
   const [maxPrice, setMaxPrice] = useState<number>(MAX_PRICE_LIMIT);
-  const [sortBy, setSortBy] = useState('newest');
+  const [sortBy, setSortBy] = useState('createdAt:desc');
   const [page, setPage] = useState(0);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { isAuthenticated } = useAppSelector((state) => state.auth);
@@ -52,7 +52,7 @@ export function ProductListClient() {
     ocopStar: selectedRatings.length === 1 ? selectedRatings[0] : undefined,
     minPrice: debouncedMinPrice > 0 ? debouncedMinPrice : undefined,
     maxPrice: debouncedMaxPrice < MAX_PRICE_LIMIT ? debouncedMaxPrice : undefined,
-    sortBy: sortBy !== 'newest' ? sortBy : undefined,
+    sortBy: sortBy !== 'createdAt:desc' ? sortBy : undefined,
     categoryIds: selectedCategoryIds.length > 0 ? selectedCategoryIds : undefined,
     provinceId: selectedProvinceId || undefined,
     brandIds: selectedBrandIds.length > 0 ? selectedBrandIds : undefined,

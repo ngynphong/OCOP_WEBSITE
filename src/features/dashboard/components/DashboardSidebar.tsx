@@ -284,7 +284,8 @@ const DashboardSidebar = () => {
       ),
     );
     if (activeGroup && !openGroups.includes(activeGroup.id)) {
-      setTimeout(() => setOpenGroups((prev) => [...prev, activeGroup.id]), 0);
+      const timer = setTimeout(() => setOpenGroups((prev) => [...prev, activeGroup.id]), 0);
+      return () => clearTimeout(timer);
     }
   }, [pathname, filteredGroups, openGroups]);
 

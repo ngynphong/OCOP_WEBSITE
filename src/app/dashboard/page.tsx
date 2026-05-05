@@ -18,9 +18,15 @@ import {
   FiPackage,
   FiBarChart2,
   FiDollarSign,
+  FiClock,
 } from 'react-icons/fi';
 import { useDispatch } from 'react-redux';
 import { setLoading } from '@/store/features/uiSlice';
+import { useSellerDashboard, useUserDashboard } from '@/features/dashboard/hooks/useDashboard';
+
+const formatCurrency = (amount: number) => {
+  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+};
 
 const DashboardPage = () => {
   const { profile } = useAuth();
@@ -28,37 +34,119 @@ const DashboardPage = () => {
   const dispatch = useDispatch();
   const [isMounted, setIsMounted] = React.useState(false);
 
-  React.useEffect(() => {
-    dispatch(setLoading({ isLoading: true, message: 'Đang khởi tạo Dashboard...' }));
-    // A small timeout to ensure the role and profile are fully synced from store
-    const timer = setTimeout(() => {
-      setIsMounted(true);
-      dispatch(setLoading({ isLoading: false }));
-    }, 400);
+  const isSellerMode = dashboardMode === 'SELLER';
 
-    return () => {
-      clearTimeout(timer);
-      dispatch(setLoading({ isLoading: false }));
-    };
-  }, [dispatch]);
+  const {
+    data: sellerData,
+    isPending: isSellerPending,
+    isError: isSellerError,
+  } = useSellerDashboard(isMounted && isSellerMode);
+
+  const {
+    data: userData,
+    isPending: isUserPending,
+    isError: isUserError,
+  } = useUserDashboard(isMounted && !isSellerMode);
+
+  React.useEffect(() => {
+    // Only dispatch global loading on first mount, react-query will handle subsequent loads silently
+    if (!isMounted) {
+      dispatch(setLoading({ isLoading: true, message: 'Đang khởi tạo Dashboard...' }));
+      const timer = setTimeout(() => {
+        setIsMounted(true);
+        dispatch(setLoading({ isLoading: false }));
+      }, 400);
+
+      return () => {
+        clearTimeout(timer);
+        dispatch(setLoading({ isLoading: false }));
+      };
+    }
+  }, [dispatch, isMounted]);
+
+  if (!isMounted) return null;
+
+  const isPending = isSellerMode ? isSellerPending : isUserPending;
+  const isError = isSellerMode ? isSellerError : isUserError;
+
+  if (isPending) {
+    return (
+      <div className="space-y-8 p-6 md:p-10 animate-pulse">
+        <div className="h-24 bg-stone-100 rounded-2xl w-full"></div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="h-32 bg-stone-100 rounded-2xl w-full"></div>
+          ))}
+        </div>
+        <div className="h-40 bg-stone-100 rounded-2xl w-full"></div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="p-10 text-center text-red-500 bg-red-50 rounded-2xl m-6">
+        <p className="font-bold">Không thể tải dữ liệu Dashboard. Vui lòng thử lại sau.</p>
+      </div>
+    );
+  }
 
   const consumerStats = [
-    { label: 'Đơn hàng', value: '0', icon: FiShoppingBag, color: 'bg-blue-500' },
-    { label: 'Đang vận chuyển', value: '0', icon: FiTruck, color: 'bg-amber-500' },
-    { label: 'Hoàn tất', value: '0', icon: FiStar, color: 'bg-green-500' },
-    { label: 'Điểm tích lũy', value: '0', icon: FiRepeat, color: 'bg-purple-500' },
+    {
+      label: 'Đơn hàng',
+      value: userData?.userStats?.totalOrders || 0,
+      icon: FiShoppingBag,
+      color: 'bg-blue-500',
+    },
+    {
+      label: 'Đang vận chuyển',
+      value: userData?.userStats?.shippingOrders || 0,
+      icon: FiTruck,
+      color: 'bg-amber-500',
+    },
+    {
+      label: 'Hoàn tất',
+      value: userData?.userStats?.completedOrders || 0,
+      icon: FiStar,
+      color: 'bg-green-500',
+    },
+    {
+      label: 'Điểm tích lũy',
+      value: userData?.userStats?.loyaltyPoints || 0,
+      icon: FiRepeat,
+      color: 'bg-purple-500',
+    },
   ];
 
   const sellerStats = [
-    { label: 'Doanh thu tháng', value: '0đ', icon: FiDollarSign, color: 'bg-emerald-600' },
-    { label: 'Đơn hàng mới', value: '0', icon: FiShoppingBag, color: 'bg-blue-600' },
-    { label: 'Sản phẩm', value: '0', icon: FiPackage, color: 'bg-orange-500' },
-    { label: 'Đánh giá shop', value: '5.0', icon: FiStar, color: 'bg-amber-400' },
+    {
+      label: 'Doanh thu tháng',
+      value: formatCurrency(sellerData?.sellerStats?.monthlyRevenue || 0),
+      icon: FiDollarSign,
+      color: 'bg-emerald-600',
+    },
+    {
+      label: 'Đơn hàng mới',
+      value: sellerData?.sellerStats?.newOrders || 0,
+      icon: FiShoppingBag,
+      color: 'bg-blue-600',
+    },
+    {
+      label: 'Sản phẩm',
+      value: sellerData?.sellerStats?.totalProducts || 0,
+      icon: FiPackage,
+      color: 'bg-orange-500',
+    },
+    {
+      label: 'Đánh giá shop',
+      value: sellerData?.sellerStats?.shopRating || '5.0',
+      icon: FiStar,
+      color: 'bg-amber-400',
+    },
   ];
 
-  const stats = dashboardMode === 'SELLER' ? sellerStats : consumerStats;
-
-  if (!isMounted) return null;
+  const stats = isSellerMode ? sellerStats : consumerStats;
+  const recentOrders = isSellerMode ? sellerData?.recentOrders : userData?.recentOrders;
 
   return (
     <div className="space-y-8 p-6 md:p-10">
@@ -70,27 +158,21 @@ const DashboardPage = () => {
       >
         <div>
           <h2 className={cn('text-xl font-bold text-green-900')}>
-            {dashboardMode === 'SELLER' ? 'Seller Center' : 'Chào mừng trở lại'},{' '}
-            {profile?.firstName}! 👋
+            {isSellerMode ? 'Seller Center' : 'Chào mừng trở lại'}, {profile?.firstName}! 👋
           </h2>
-          <p
-            className={cn(
-              'text-sm mt-1',
-              dashboardMode === 'SELLER' ? 'text-stone-400' : 'text-green-700',
-            )}
-          >
-            {dashboardMode === 'SELLER'
+          <p className={cn('text-sm mt-1', isSellerMode ? 'text-stone-400' : 'text-green-700')}>
+            {isSellerMode
               ? 'Hôm nay tình hình kinh doanh của shop thế nào?'
               : 'Hôm nay bạn muốn thưởng thức tinh hoa OCOP nào?'}
           </p>
         </div>
         <Link
-          href={dashboardMode === 'SELLER' ? '/dashboard/san-pham/tao-moi' : '/san-pham'}
+          href={isSellerMode ? '/dashboard/san-pham/tao-moi' : '/san-pham'}
           className={cn(
             'px-6 py-2.5 text-sm font-bold rounded-full transition-all shadow-lg w-fit bg-green-600 text-white hover:bg-green-700 shadow-green-600/20',
           )}
         >
-          {dashboardMode === 'SELLER' ? '+ Thêm sản phẩm' : 'Khám phá ngay'}
+          {isSellerMode ? '+ Thêm sản phẩm' : 'Khám phá ngay'}
         </Link>
       </div>
 
@@ -118,7 +200,7 @@ const DashboardPage = () => {
       </div>
 
       {/* Conditional Banner */}
-      {dashboardMode === 'USER' ? (
+      {!isSellerMode ? (
         <Link
           href="/dashboard/cua-hang"
           className="group flex items-center gap-5 p-5 rounded-2xl bg-linear-to-r from-green-700 to-emerald-600 text-white shadow-xl shadow-green-700/25 hover:shadow-green-600/40 transition-all hover:-translate-y-0.5"
@@ -147,7 +229,9 @@ const DashboardPage = () => {
               <p className="text-xs font-bold text-stone-400 uppercase tracking-tighter">
                 Sản phẩm chờ duyệt
               </p>
-              <p className="text-xl font-black text-stone-900">0</p>
+              <p className="text-xl font-black text-stone-900">
+                {sellerData?.overview?.pendingProducts || 0}
+              </p>
             </div>
           </div>
           <div className="p-5 rounded-2xl bg-white border border-stone-100 flex items-center gap-4">
@@ -158,7 +242,9 @@ const DashboardPage = () => {
               <p className="text-xs font-bold text-stone-400 uppercase tracking-tighter">
                 Lượt xem shop
               </p>
-              <p className="text-xl font-black text-stone-900">0</p>
+              <p className="text-xl font-black text-stone-900">
+                {sellerData?.overview?.shopViews || 0}
+              </p>
             </div>
           </div>
         </div>
@@ -169,49 +255,81 @@ const DashboardPage = () => {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="font-bold text-stone-900">
-              {dashboardMode === 'SELLER' ? 'Đơn hàng mới' : 'Đơn hàng gần đây'}
+              {isSellerMode ? 'Đơn hàng mới' : 'Đơn hàng gần đây'}
             </h3>
             <Link
-              href={dashboardMode === 'SELLER' ? '/dashboard/don-hang-shop' : '/dashboard/don-hang'}
+              href={isSellerMode ? '/dashboard/don-hang-shop' : '/dashboard/don-hang'}
               className="text-sm text-green-600 hover:text-green-700 font-semibold flex items-center gap-1 group"
             >
               Xem tất cả <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
-          <div className="bg-stone-50 rounded-2xl p-8 text-center space-y-3">
-            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm">
-              <FiShoppingBag size={20} className="text-stone-300" />
+
+          {recentOrders && recentOrders.length > 0 ? (
+            <div className="bg-white border border-stone-100 rounded-2xl overflow-hidden shadow-sm">
+              <div className="divide-y divide-stone-100">
+                {recentOrders.slice(0, 4).map((order) => (
+                  <div
+                    key={order.orderId}
+                    className="p-4 flex items-center justify-between hover:bg-stone-50 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-green-50 text-green-600 rounded-xl flex items-center justify-center shrink-0">
+                        <FiShoppingBag size={18} />
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-stone-800">{order.orderId}</p>
+                        <p className="text-xs text-stone-500">
+                          {isSellerMode ? order.customerName : order.shopName}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-black text-stone-900">
+                        {formatCurrency(order.totalAmount)}
+                      </p>
+                      <p className="text-[10px] font-bold text-stone-400 uppercase">
+                        {order.status}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-            <p className="text-sm text-stone-500">
-              {dashboardMode === 'SELLER'
-                ? 'Chưa có đơn hàng nào cần xử lý.'
-                : 'Bạn chưa có đơn hàng nào.'}
-            </p>
-          </div>
+          ) : (
+            <div className="bg-stone-50 rounded-2xl p-8 text-center space-y-3">
+              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm">
+                <FiClock size={20} className="text-stone-300" />
+              </div>
+              <p className="text-sm text-stone-500">
+                {isSellerMode ? 'Chưa có đơn hàng nào cần xử lý.' : 'Bạn chưa có đơn hàng nào.'}
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Account News/Tips */}
         <div className="space-y-4">
           <h3 className="font-bold text-stone-900">
-            {dashboardMode === 'SELLER' ? 'Công cụ bán hàng' : 'Thông tin tài khoản'}
+            {isSellerMode ? 'Công cụ bán hàng' : 'Thông tin tài khoản'}
           </h3>
-          <div className="bg-white border border-stone-100 rounded-2xl p-6 space-y-4">
+          <div className="bg-white border border-stone-100 rounded-2xl p-6 space-y-4 shadow-sm">
             <div className="flex items-center gap-4">
               <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600">
                 <FiUser size={18} />
               </div>
               <div>
                 <p className="text-sm font-bold text-stone-800">
-                  {dashboardMode === 'SELLER' ? 'Cài đặt Shop' : 'Cập nhật hồ sơ'}
+                  {isSellerMode ? 'Cài đặt Shop' : 'Cập nhật hồ sơ'}
                 </p>
                 <p className="text-xs text-stone-500">
-                  {dashboardMode === 'SELLER'
+                  {isSellerMode
                     ? 'Quản lý thông tin hiển thị của shop.'
                     : 'Hoàn thiện thông tin để nhận ưu đãi cá nhân.'}
                 </p>
               </div>
               <Link
-                href={dashboardMode === 'SELLER' ? '/dashboard/cua-hang' : '/dashboard/ho-so'}
+                href={isSellerMode ? '/dashboard/cua-hang' : '/dashboard/ho-so'}
                 className="ml-auto p-2 hover:bg-stone-50 rounded-full"
               >
                 <FiArrowRight size={16} />
@@ -223,20 +341,16 @@ const DashboardPage = () => {
               </div>
               <div>
                 <p className="text-sm font-bold text-stone-800">
-                  {dashboardMode === 'SELLER' ? 'Chính sách bán hàng' : 'Bảo mật'}
+                  {isSellerMode ? 'Chính sách bán hàng' : 'Bảo mật'}
                 </p>
                 <p className="text-xs text-stone-500">
-                  {dashboardMode === 'SELLER'
+                  {isSellerMode
                     ? 'Cập nhật các quy định bảo hành, đổi trả.'
                     : 'Thay đổi mật khẩu định kỳ để bảo vệ tài khoản.'}
                 </p>
               </div>
               <Link
-                href={
-                  dashboardMode === 'SELLER'
-                    ? '/dashboard/cua-hang/chinh-sach'
-                    : '/dashboard/bao-mat'
-                }
+                href={isSellerMode ? '/dashboard/cua-hang/chinh-sach' : '/dashboard/bao-mat'}
                 className="ml-auto p-2 hover:bg-stone-50 rounded-full"
               >
                 <FiArrowRight size={16} />

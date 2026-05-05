@@ -1,3 +1,5 @@
+'use client';
+
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { publicProductApi } from '@/features/products/api/publicProductApi';
 import { brandApi } from '@/features/products/api/brandApi';
