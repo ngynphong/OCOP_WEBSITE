@@ -14,7 +14,7 @@ export function Footer() {
         <div className="inline-flex flex-col justify-start items-start gap-3.5 flex-1">
           <div className="flex flex-col justify-start items-start">
             <span className="text-emerald-800 text-xl font-bold font-sans leading-7">
-              IES Connect OCOP
+              OCOP IES Connect
             </span>
           </div>
           <div className="flex flex-col justify-start items-start">
@@ -138,7 +138,7 @@ export function Footer() {
       </div>
       <div className="w-full max-w-7xl pt-8 mt-12 border-t border-emerald-100 flex flex-col justify-start items-center">
         <div className="w-full text-center text-emerald-600/60 text-base font-normal font-sans leading-6">
-          © {new Date().getFullYear()} IES Connect OCOP
+          © {new Date().getFullYear()} OCOP IES Connect
         </div>
       </div>
     </footer>
