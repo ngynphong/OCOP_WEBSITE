@@ -2,7 +2,9 @@
 
 import Link from 'next/link';
 import { MapPin, Phone, Mail, Camera, Globe, Tv } from 'lucide-react';
+import Script from 'next/script';
 import { usePublicCategoriesQuery } from '@/features/products/hooks/usePublicProducts';
+import Image from 'next/image';
 
 export function Footer() {
   const { data: categoriesResp, isLoading } = usePublicCategoriesQuery();
@@ -136,8 +138,25 @@ export function Footer() {
           </div>
         </div>
       </div>
-      <div className="w-full max-w-7xl pt-8 mt-12 border-t border-emerald-100 flex flex-col justify-start items-center">
-        <div className="w-full text-center text-emerald-600/60 text-base font-normal font-sans leading-6">
+      <div className="w-full max-w-7xl flex items-center justify-start mt-6">
+        <a
+          href="//www.dmca.com/Protection/Status.aspx?ID=9083b6eb-63b9-43d0-8700-3a01749c1279"
+          title="DMCA.com Protection Status"
+          className="dmca-badge"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Image
+            src="https://images.dmca.com/Badges/dmca_protected_sml_120m.png?ID=9083b6eb-63b9-43d0-8700-3a01749c1279"
+            alt="DMCA.com Protection Status"
+            width={120}
+            height={40}
+          />
+        </a>
+        <Script src="https://images.dmca.com/Badges/DMCABadgeHelper.min.js" strategy="lazyOnload" />
+      </div>
+      <div className="w-full max-w-7xl pt-8 mt-12 border-t border-emerald-100 flex flex-col md:flex-row justify-center items-center gap-4">
+        <div className="text-center md:text-left text-emerald-600/60 text-base font-normal font-sans leading-6">
           © {new Date().getFullYear()} OCOP IES Connect
         </div>
       </div>

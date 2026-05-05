@@ -192,6 +192,13 @@ const MENU_GROUPS: MenuGroup[] = [
         permissions: ['support.ticket.manage'],
       },
       {
+        label: 'Chính sách',
+        icon: FiCheckSquare,
+        href: '/admin/policies',
+        id: 'admin-policies',
+        roles: ['ADMIN', 'SUPER_ADMIN'],
+      },
+      {
         label: 'Banner',
         icon: FiBox,
         href: '/admin/banners',
@@ -258,7 +265,8 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
       group.items.some((item) => pathname === item.href),
     );
     if (activeGroup && !openGroups.includes(activeGroup.id)) {
-      setTimeout(() => setOpenGroups((prev) => [...prev, activeGroup.id]), 0);
+      const timer = setTimeout(() => setOpenGroups((prev) => [...prev, activeGroup.id]), 0);
+      return () => clearTimeout(timer);
     }
   }, [pathname, openGroups, filteredMenuGroups]);
 
