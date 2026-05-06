@@ -53,12 +53,12 @@ export const Modal = ({
       {/* Modal Dialog */}
       <div
         className={cn(
-          'relative z-10000 w-full bg-white rounded-3xl shadow-2xl transform transition-all animate-in fade-in zoom-in-95 duration-200',
+          'relative z-10000 w-full bg-white rounded-3xl shadow-2xl transform transition-all animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]',
           maxWidth,
         )}
       >
         {/* Header */}
-        <div className="px-6 py-4 border-b border-stone-100 flex items-center justify-between">
+        <div className="px-6 py-4 border-b border-stone-100 flex items-center justify-between shrink-0">
           <h3 className="text-xl font-black text-stone-900 tracking-tight">{title}</h3>
           {showClose && (
             <button
@@ -72,7 +72,7 @@ export const Modal = ({
         </div>
 
         {/* Content */}
-        <div className="p-6">{children}</div>
+        <div className="p-6 overflow-y-auto">{children}</div>
       </div>
     </div>
   );

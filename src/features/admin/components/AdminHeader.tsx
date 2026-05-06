@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { FiGrid, FiChevronRight, FiUser } from 'react-icons/fi';
+import { FiChevronRight, FiUser } from 'react-icons/fi';
 import { useAuth, useAuthProfile } from '@/features/auth/hooks/useAuth';
 import Image from 'next/image';
 import { LogOut } from 'lucide-react';
@@ -87,11 +87,6 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
       <div className="flex items-center gap-4">
         {/* Notifications */}
         <NotificationBell className="text-stone-600 hover:bg-stone-200/50 hover:text-stone-900" />
-
-        {/* Apps */}
-        <button className="w-10 h-10 flex items-center justify-center hover:bg-stone-200/50 rounded-full transition-all text-stone-600">
-          <FiGrid size={20} />
-        </button>
 
         {/* Admin Profile */}
         <div

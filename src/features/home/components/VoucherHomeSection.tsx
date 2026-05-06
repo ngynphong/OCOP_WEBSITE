@@ -6,8 +6,10 @@ import { motion } from 'framer-motion';
 import {
   usePublicFeaturedVouchers,
   useSaveVoucherMutations,
+  useSavedVouchers,
 } from '@/features/vouchers/hooks/useVouchers';
 import { useAppSelector } from '@/store/hooks';
+import { useMemo } from 'react';
 import toast from 'react-hot-toast';
 import { formatCurrencyVND } from '@/utils/format';
 import { Button } from '@/components/ui/AppButton';
@@ -17,7 +19,15 @@ export const VoucherHomeSection = memo(function VoucherHomeSection() {
   const { saveVoucher } = useSaveVoucherMutations();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
 
+  // Fetch saved vouchers to check status
+  const { data: savedResp } = useSavedVouchers(1, 50, isAuthenticated);
+
   const vouchers = vouchersResp?.data || [];
+
+  const savedIds = useMemo(() => {
+    const list = savedResp?.data?.content || [];
+    return new Set(list.map((v) => v.voucherId));
+  }, [savedResp]);
 
   const handleCollect = (id: number) => {
     if (!isAuthenticated) {
@@ -110,13 +120,17 @@ export const VoucherHomeSection = memo(function VoucherHomeSection() {
 
                 <Button
                   onClick={() => handleCollect(voucher.id)}
-                  disabled={!isAuthenticated}
+                  disabled={!isAuthenticated || savedIds.has(voucher.id)}
                   isLoading={saveVoucher.isPending && saveVoucher.variables === voucher.id}
-                  variant={isAuthenticated ? 'danger' : 'outline'}
+                  variant={
+                    savedIds.has(voucher.id) ? 'outline' : isAuthenticated ? 'danger' : 'outline'
+                  }
                   size="sm"
-                  className="w-full rounded-xl py-2 h-9 text-[11px] font-black uppercase tracking-widest"
+                  className={`w-full rounded-xl py-2 h-9 text-[11px] font-black uppercase tracking-widest ${
+                    savedIds.has(voucher.id) ? 'bg-stone-100 border-stone-200 text-stone-400' : ''
+                  }`}
                 >
-                  Lưu ngay
+                  {savedIds.has(voucher.id) ? 'Đã lưu' : 'Lưu ngay'}
                 </Button>
               </div>
             </motion.div>

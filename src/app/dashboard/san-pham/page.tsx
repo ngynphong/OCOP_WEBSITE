@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { FiPlus, FiEdit2, FiTrash2, FiSend, FiCopy, FiSlash } from 'react-icons/fi';
+import { RiStarFill } from 'react-icons/ri';
 import {
   useSellerProductsQuery,
   useSellerProductMutations,
@@ -97,7 +98,7 @@ export default function SellerProductsPage() {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab('PRODUCTS')}
-            className={`px-6 py-2 rounded-2xl text-xs font-black uppercase tracking-widest border transition-all ${
+            className={`px-6 py-2 rounded-2xl text-xs font-black uppercase tracking-widest border transition-all cursor-pointer ${
               activeTab === 'PRODUCTS'
                 ? 'bg-green-600 text-white border-green-600 shadow-lg shadow-green-600/20'
                 : 'bg-white text-stone-500 border-stone-200 hover:border-stone-400'
@@ -107,7 +108,7 @@ export default function SellerProductsPage() {
           </button>
           <button
             onClick={() => setActiveTab('FLASH_SALE')}
-            className={`px-6 py-2 rounded-2xl text-xs font-black uppercase tracking-widest border transition-all flex items-center gap-2 ${
+            className={`px-6 py-2 rounded-2xl text-xs font-black uppercase tracking-widest border transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'FLASH_SALE'
                 ? 'bg-red-600 text-white border-red-600 shadow-lg shadow-red-600/20'
                 : 'bg-white text-stone-500 border-stone-200 hover:border-red-400 hover:text-red-500'
@@ -123,7 +124,7 @@ export default function SellerProductsPage() {
             {selectedProducts.length > 0 && (
               <button
                 onClick={() => setIsFlashSaleDrawerOpen(true)}
-                className="flex items-center gap-2 px-6 py-2 bg-red-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-red-600/20 hover:bg-red-700 transition-all animate-in slide-in-from-right-4"
+                className="flex items-center gap-2 px-6 py-2 bg-red-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-red-600/20 hover:bg-red-700 transition-all animate-in slide-in-from-right-4 cursor-pointer"
               >
                 <FiZap className="fill-current" />
                 Flash Sale ({selectedProducts.length})
@@ -139,7 +140,7 @@ export default function SellerProductsPage() {
                 <button
                   key={s ?? 'all'}
                   onClick={() => setParams((p) => ({ ...p, status: s, page: 0 }))}
-                  className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider border transition-all ${
+                  className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider border transition-all cursor-pointer ${
                     params.status === s
                       ? 'bg-emerald-100 text-emerald-700 border-emerald-200 shadow-sm'
                       : 'bg-white text-stone-400 border-stone-100 hover:border-emerald-300'
@@ -276,7 +277,9 @@ export default function SellerProductsPage() {
                         {/* Stats */}
                         <div className="flex items-center gap-3 mt-1.5 text-xs text-stone-500 font-medium">
                           <span className="flex items-center gap-1" title="Đánh giá trung bình">
-                            <span className="text-amber-500">⭐</span>
+                            <span className="text-amber-500">
+                              <RiStarFill size={14} />
+                            </span>
                             {product.ratingAvg > 0 ? product.ratingAvg.toFixed(1) : 'Chưa có'}
                             {product.totalReviews > 0 && (
                               <span className="text-stone-400">({product.totalReviews})</span>
@@ -309,7 +312,7 @@ export default function SellerProductsPage() {
                               setIsFlashSaleDrawerOpen(true);
                             }}
                             title="Tham gia Flash Sale"
-                            className="p-2 rounded-lg text-red-500 hover:bg-red-50 hover:shadow-sm transition"
+                            className="p-2 rounded-lg text-red-500 hover:bg-red-50 hover:shadow-sm transition cursor-pointer"
                           >
                             <FiZap size={16} className="fill-current" />
                           </button>
@@ -318,7 +321,7 @@ export default function SellerProductsPage() {
                         <button
                           onClick={() => router.push(`/dashboard/san-pham/${product.id}`)}
                           title="Chỉnh sửa"
-                          className="p-2 rounded-lg text-stone-400 hover:bg-white hover:shadow-sm hover:text-emerald-600 transition"
+                          className="p-2 rounded-lg text-stone-400 hover:bg-white hover:shadow-sm hover:text-emerald-600 transition cursor-pointer"
                         >
                           <FiEdit2 size={16} />
                         </button>
@@ -328,7 +331,7 @@ export default function SellerProductsPage() {
                             onClick={() => submitProduct(product.id)}
                             disabled={isSubmitting}
                             title="Gửi duyệt"
-                            className="p-2 rounded-lg text-amber-500 hover:bg-white hover:shadow-sm transition disabled:opacity-30"
+                            className="p-2 rounded-lg text-amber-500 hover:bg-white hover:shadow-sm transition disabled:opacity-30 cursor-pointer"
                           >
                             <FiSend size={16} />
                           </button>
@@ -339,7 +342,7 @@ export default function SellerProductsPage() {
                             onClick={() => withdrawProduct(product.id)}
                             disabled={isWithdrawing}
                             title="Rút lại"
-                            className="p-2 rounded-lg text-stone-400 hover:bg-white hover:shadow-sm hover:text-stone-600 transition disabled:opacity-30"
+                            className="p-2 rounded-lg text-stone-400 hover:bg-white hover:shadow-sm hover:text-stone-600 transition disabled:opacity-30 cursor-pointer"
                           >
                             <FiSlash size={16} />
                           </button>
@@ -350,7 +353,7 @@ export default function SellerProductsPage() {
                             onClick={() => discontinueProduct(product.id)}
                             disabled={isDiscontinuing}
                             title="Ngừng kinh doanh"
-                            className="p-2 rounded-lg text-stone-400 hover:bg-white hover:shadow-sm hover:text-stone-600 transition disabled:opacity-30"
+                            className="p-2 rounded-lg text-stone-400 hover:bg-white hover:shadow-sm hover:text-stone-600 transition disabled:opacity-30 cursor-pointer"
                           >
                             <FiSlash size={16} />
                           </button>
@@ -360,7 +363,7 @@ export default function SellerProductsPage() {
                           onClick={() => duplicateProduct(product.id)}
                           disabled={isDuplicating}
                           title="Nhân bản"
-                          className="p-2 rounded-lg text-stone-400 hover:bg-white hover:shadow-sm hover:text-stone-600 transition disabled:opacity-30"
+                          className="p-2 rounded-lg text-stone-400 hover:bg-white hover:shadow-sm hover:text-stone-600 transition disabled:opacity-30 cursor-pointer"
                         >
                           <FiCopy size={16} />
                         </button>
@@ -373,7 +376,7 @@ export default function SellerProductsPage() {
                           <button
                             onClick={() => setConfirmDelete(product.id)}
                             title="Xóa"
-                            className="p-2 rounded-lg text-red-400 hover:bg-red-50 hover:text-red-500 transition"
+                            className="p-2 rounded-lg text-red-400 hover:bg-red-50 hover:text-red-500 transition cursor-pointer"
                           >
                             <FiTrash2 size={16} />
                           </button>

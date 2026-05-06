@@ -168,18 +168,6 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
             </Button>
           )}
 
-          {order.status === 'COMPLETED' && (
-            <Link href={`/dashboard/don-hang/${order.orderCode}`} className="flex-1 sm:flex-none">
-              <Button
-                variant="primary"
-                size="sm"
-                className="w-full text-xs font-black uppercase tracking-widest bg-green-600 hover:bg-green-700 border-none shadow-lg shadow-green-100 h-11 px-6 rounded-xl transition-all"
-              >
-                Đánh giá
-              </Button>
-            </Link>
-          )}
-
           {(order.status === 'DELIVERED' ||
             order.status === 'COMPLETED' ||
             order.status === 'CANCELLED') && (
