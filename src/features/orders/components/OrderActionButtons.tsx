@@ -88,7 +88,7 @@ export const OrderActionButtons: React.FC<OrderActionButtonsProps> = ({
           variant="outline"
           disabled={isRefunding}
           onClick={() => setIsRefundModalOpen(true)}
-          className="text-amber-700 border-amber-200 hover:bg-amber-50 font-bold px-5 py-2.5 whitespace-nowrap h-auto"
+          className="text-amber-700 border-amber-200 hover:bg-amber-50 font-bold px-5 py-2 whitespace-nowrap h-auto"
         >
           {isRefunding ? 'Đang gửi...' : 'Hoàn tiền / Trả hàng'}
         </Button>
@@ -99,7 +99,7 @@ export const OrderActionButtons: React.FC<OrderActionButtonsProps> = ({
           variant="primary"
           disabled={isConfirming}
           onClick={() => confirmReceived(orderCode)}
-          className="bg-emerald-600 hover:bg-emerald-700 text-white border-transparent font-bold px-5 py-2.5 whitespace-nowrap h-auto shadow-lg shadow-emerald-600/20"
+          className="bg-emerald-600 hover:bg-emerald-700 text-white border-transparent font-bold px-5 py-2 whitespace-nowrap h-auto shadow-lg shadow-emerald-600/20"
         >
           {isConfirming ? 'Đang xác nhận...' : 'Đã nhận được hàng'}
         </Button>

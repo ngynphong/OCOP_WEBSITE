@@ -178,14 +178,14 @@ const MENU_GROUPS: MenuGroup[] = [
     id: 'operations-legal',
     label: 'Vận hành & Pháp lý',
     icon: FiShield,
-    roles: ['SELLER'],
+    roles: ['USER', 'SELLER'],
     items: [
       {
         id: 'shop',
         label: 'Thông tin cửa hàng',
         icon: FiTag,
         href: '/dashboard/cua-hang',
-        roles: ['SELLER'],
+        roles: ['USER', 'SELLER'],
       },
       {
         id: 'shop-legality',
@@ -263,6 +263,7 @@ const DashboardSidebar = () => {
       .map((group) => ({
         ...group,
         items: group.items.filter((item) => {
+          if (!item.roles.includes(dashboardMode)) return false;
           if (item.permission && !profile?.permissions?.includes(item.permission)) return false;
           return true;
         }),

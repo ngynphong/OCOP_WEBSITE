@@ -14,14 +14,20 @@ export const GlobalPolicyConsentModal = () => {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const { data: pendingPolicies = [], isLoading } = usePendingPolicies(isAuthenticated);
   const { mutate: consentPolicy, isPending: isConsenting } = useConsentPolicy();
-  const currentPolicy = pendingPolicies[0];
+
+  // Đảm bảo modal chỉ hiện khi thực sự có chính sách chưa chấp nhận
+  const hasPendingPolicies = pendingPolicies && pendingPolicies.length > 0;
+  const currentPolicy = hasPendingPolicies ? pendingPolicies[0] : null;
 
   const handleAccept = () => {
+    if (!currentPolicy) return;
+
     consentPolicy(
       { id: currentPolicy.id, data: { accepted: true } },
       {
         onSuccess: () => {
           toast.success('Bạn đã xác nhận chính sách thành công!');
+          // Query sẽ tự động invalidate nhờ useConsentPolicy hook
         },
         onError: () => {
           toast.error('Có lỗi xảy ra khi xác nhận. Vui lòng thử lại!');
@@ -31,6 +37,8 @@ export const GlobalPolicyConsentModal = () => {
   };
 
   const handleDecline = () => {
+    if (!currentPolicy) return;
+
     consentPolicy(
       { id: currentPolicy.id, data: { accepted: false } },
       {
@@ -41,7 +49,6 @@ export const GlobalPolicyConsentModal = () => {
           handleClientLogout();
         },
         onError: () => {
-          // If 403 returned as requested
           toast.error('Bạn cần đồng ý với chính sách để tiếp tục sử dụng hệ thống.', {
             duration: 5000,
           });
@@ -52,69 +59,85 @@ export const GlobalPolicyConsentModal = () => {
   };
 
   return (
-    <AnimatePresence>
-      {isAuthenticated && !isLoading && currentPolicy && (
+    <AnimatePresence mode="wait">
+      {isAuthenticated && !isLoading && hasPendingPolicies && currentPolicy && (
         <motion.div
+          key={`policy-overlay-${currentPolicy.id}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-sm"
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-md"
         >
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            key={`policy-modal-${currentPolicy.id}`}
+            initial={{ opacity: 0, scale: 0.9, y: 30 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="bg-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-2xl flex flex-col max-h-[90vh]"
+            exit={{ opacity: 0, scale: 0.9, y: -30 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className="bg-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-2xl flex flex-col max-h-[90vh] border border-stone-100"
           >
             {/* Header */}
-            <div className="px-6 py-5 border-b border-stone-100 flex items-center gap-3 bg-stone-50/50">
-              <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
-                <FiAlertCircle className="text-xl" />
+            <div className="px-6 py-5 border-b border-stone-100 flex items-center gap-4 bg-stone-50/50">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 shadow-inner">
+                <FiAlertCircle className="text-2xl" />
               </div>
-              <div>
-                <h2 className="text-lg font-black text-stone-900 tracking-tight">
-                  Cập nhật Chính sách & Điều khoản
+              <div className="flex-1">
+                <h2 className="text-xl font-black text-stone-900 tracking-tight leading-none mb-1">
+                  Cập nhật Chính sách
                 </h2>
-                <p className="text-xs font-bold text-stone-500">
-                  Phiên bản {currentPolicy.version} • Hiệu lực từ {currentPolicy.effectiveDate}
-                </p>
+                <div className="flex items-center gap-2">
+                  <span className="bg-emerald-50 text-emerald-700 text-[10px] font-black px-2 py-0.5 rounded-full border border-emerald-100 uppercase tracking-wider">
+                    v{currentPolicy.version}
+                  </span>
+                  <span className="text-[11px] font-bold text-stone-400">
+                    Hiệu lực từ {currentPolicy.effectiveDate}
+                  </span>
+                </div>
               </div>
             </div>
 
             {/* Content */}
-            <div className="p-6 overflow-y-auto flex-1 custom-scrollbar bg-stone-50/30">
-              <h3 className="text-xl font-black text-emerald-900 mb-4">{currentPolicy.title}</h3>
+            <div className="p-8 overflow-y-auto flex-1 custom-scrollbar bg-white">
+              <h3 className="text-2xl font-black text-stone-900 mb-6 tracking-tight">
+                {currentPolicy.title}
+              </h3>
               <div
-                className="prose prose-sm prose-stone max-w-none font-medium text-emerald-800"
+                className="prose prose-sm prose-stone max-w-none font-medium text-stone-600 leading-relaxed"
                 dangerouslySetInnerHTML={{ __html: currentPolicy.content.replace(/\n/g, '<br/>') }}
               />
             </div>
 
             {/* Footer */}
-            <div className="px-6 py-5 border-t border-stone-100 bg-white flex flex-col sm:flex-row items-center justify-between gap-4">
-              <p className="text-xs font-bold text-stone-400">
-                Bạn cần đồng ý với chính sách này để tiếp tục sử dụng dịch vụ.
+            <div className="px-6 py-6 border-t border-stone-100 bg-stone-50/30 flex flex-col sm:flex-row items-center justify-between gap-6">
+              <div className="flex-1">
+                <p className="text-xs font-bold text-stone-400 leading-relaxed">
+                  Bằng cách nhấn &quot;Chấp nhận&quot;, bạn đồng ý với các điều khoản trên.
+                </p>
                 {pendingPolicies.length > 1 && (
-                  <span className="text-emerald-600 block mt-1">
-                    (Còn {pendingPolicies.length - 1} chính sách cần xác nhận)
-                  </span>
+                  <div className="inline-flex items-center gap-2 mt-1.5 px-3 py-1 bg-emerald-100 rounded-full border border-emerald-200">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+                    <span className="text-[10px] font-black text-emerald-600 uppercase tracking-wider">
+                      Còn {pendingPolicies.length - 1} chính sách tiếp theo
+                    </span>
+                  </div>
                 )}
-              </p>
-              <div className="flex gap-3 w-full sm:w-auto">
+              </div>
+
+              <div className="flex gap-3 w-full sm:w-auto shrink-0">
                 <Button
                   variant="outline"
-                  className="flex-1 sm:flex-none border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+                  className="flex-1 sm:flex-none border-stone-200 text-stone-500 hover:bg-stone-100 hover:text-stone-700 h-12 px-6 rounded-2xl"
                   onClick={handleDecline}
                   disabled={isConsenting}
                 >
-                  <FiX className="mr-1" /> Từ chối
+                  <FiX className="mr-2" /> Từ chối
                 </Button>
                 <Button
-                  className="flex-1 sm:flex-none"
+                  className="flex-1 sm:flex-none h-12 px-8 rounded-2xl shadow-brand"
                   onClick={handleAccept}
                   isLoading={isConsenting}
                 >
-                  <FiCheck className="mr-1" /> Chấp nhận
+                  <FiCheck className="mr-2" /> Chấp nhận & Tiếp tục
                 </Button>
               </div>
             </div>

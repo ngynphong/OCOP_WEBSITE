@@ -31,7 +31,7 @@ export function useWebSocket() {
 
       client.onConnect = (receipt) => {
         isConnecting = false;
-        console.log('[useWebSocket] Connected successfully');
+        // console.log('[useWebSocket] Connected successfully');
         notifyConnect(receipt);
       };
 

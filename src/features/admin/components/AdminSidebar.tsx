@@ -7,8 +7,6 @@ import { useAuth } from '@/features/auth/hooks/useAuth';
 import {
   FiGrid,
   FiCheckSquare,
-  FiSettings,
-  FiHelpCircle,
   FiBox,
   FiUsers,
   FiShoppingBag,
@@ -391,45 +389,6 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
           );
         })}
       </nav>
-
-      {/* Bottom Actions */}
-      <div
-        className={cn(
-          'mt-auto pt-6 border-t border-emerald-800/30 space-y-1',
-          isCollapsed ? 'items-center px-0' : 'px-2',
-        )}
-      >
-        {!isCollapsed ? (
-          <button className="w-full mb-3 py-2.5 px-4 bg-white text-emerald-900 rounded-xl font-bold text-xs shadow-lg shadow-black/10 hover:bg-emerald-50 active:scale-95 transition-all cursor-pointer">
-            Xuất báo cáo
-          </button>
-        ) : (
-          <div className="w-10 h-10 mx-auto rounded-xl bg-white flex items-center justify-center text-emerald-900 shadow-lg cursor-pointer hover:bg-emerald-50 mb-3 transition-all">
-            <FiCheckSquare size={18} />
-          </div>
-        )}
-
-        <Link
-          href="/admin/cai-dat"
-          className={cn(
-            'flex items-center gap-3 px-4 py-2 text-emerald-100/70 hover:text-white transition-colors text-[13px] font-medium',
-            isCollapsed && 'justify-center font-bold',
-          )}
-        >
-          <FiSettings className="text-lg opacity-50 shrink-0" />
-          {!isCollapsed && <span>Cài đặt</span>}
-        </Link>
-        <Link
-          href="/ho-tro"
-          className={cn(
-            'flex items-center gap-3 px-4 py-2 text-emerald-100/70 hover:text-white transition-colors text-[13px] font-medium',
-            isCollapsed && 'justify-center font-bold',
-          )}
-        >
-          <FiHelpCircle className="text-lg opacity-50 shrink-0" />
-          {!isCollapsed && <span>Hỗ trợ</span>}
-        </Link>
-      </div>
 
       <style jsx global>{`
         .custom-scrollbar::-webkit-scrollbar {

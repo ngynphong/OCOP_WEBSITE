@@ -25,6 +25,7 @@ export interface Voucher {
 
 export interface SavedVoucherResponse extends Voucher {
   savedId: number;
+  voucherId: number;
   savedAt: string;
   userUsedCount: number;
   isUsable: boolean;

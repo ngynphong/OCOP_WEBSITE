@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FiDownload, FiFilter } from 'react-icons/fi';
 import { useAdminDashboard } from '@/features/dashboard/hooks/useDashboard';
 
 // Import extracted components
@@ -58,15 +57,6 @@ const AdminOverview = () => {
             Giám sát tăng trưởng khu vực và chỉ số thị trường OCOP.
           </p>
         </motion.div>
-
-        <div className="flex gap-3">
-          <button className="flex items-center gap-2 px-5 py-2.5 bg-white text-stone-600 text-xs font-bold rounded-xl border border-stone-200 hover:bg-stone-50 transition-all shadow-sm">
-            <FiFilter /> Lọc chế độ xem
-          </button>
-          <button className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 text-white text-xs font-bold rounded-xl hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/20">
-            <FiDownload /> Xuất dữ liệu
-          </button>
-        </div>
       </div>
 
       {/* KPI Stats */}

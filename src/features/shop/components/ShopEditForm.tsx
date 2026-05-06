@@ -105,7 +105,6 @@ export const ShopEditForm = ({ shop, onCancel }: ShopEditFormProps) => {
   }, [wards.data, shop.wardName, districtId, currentWardId, setValue]);
 
   const onSubmit = async (data: UpdateShopFormData) => {
-    console.log('Submitting data:', data);
     setPendingData(data);
     setIsConfirmModalOpen(true);
   };

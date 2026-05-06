@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { FiCheck, FiX, FiStar, FiEye, FiBookOpen, FiEdit3 } from 'react-icons/fi';
+import { RiStarFill } from 'react-icons/ri';
 import { CiShop } from 'react-icons/ci';
 import {
   useAdminProductsQuery,
@@ -179,7 +180,7 @@ export const AdminProductsTable = () => {
                 onClick={() =>
                   setParams((p) => ({ ...p, status: p.status === s ? undefined : s, page: 0 }))
                 }
-                className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider border transition-all ${
+                className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider border transition-all cursor-pointer ${
                   params.status === s
                     ? 'bg-stone-900 text-white border-stone-900 shadow-sm'
                     : 'bg-white text-stone-400 border-stone-100 hover:border-emerald-300'
@@ -369,7 +370,7 @@ export const AdminProductsTable = () => {
                                   : 'bg-stone-50 text-stone-400 hover:bg-stone-100'
                               }`}
                             >
-                              <FiStar size={14} />
+                              {product.isFeatured ? <RiStarFill size={14} /> : <FiStar size={14} />}
                             </button>
                             <button
                               onClick={() => handleOpenStory(product)}

@@ -173,9 +173,9 @@ export const BannerFormModal = memo(function BannerFormModal({
       maxWidth="max-w-4xl"
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-5">
           {/* Thông tin cơ bản */}
-          <div className="space-y-1 lg:col-span-2">
+          <div className="space-y-1 md:col-span-2 lg:col-span-4">
             <label className="text-xs font-black text-stone-400 uppercase tracking-widest">
               Tiêu đề
             </label>
@@ -189,7 +189,7 @@ export const BannerFormModal = memo(function BannerFormModal({
             )}
           </div>
 
-          <div className="space-y-1">
+          <div className="space-y-1 md:col-span-1 lg:col-span-2">
             <label className="text-xs font-black text-stone-400 uppercase tracking-widest">
               Thứ tự hiển thị
             </label>
@@ -200,7 +200,7 @@ export const BannerFormModal = memo(function BannerFormModal({
             />
           </div>
 
-          <div className="space-y-1 lg:col-span-3">
+          <div className="space-y-1 md:col-span-2 lg:col-span-6">
             <label className="text-xs font-black text-stone-400 uppercase tracking-widest">
               Mô tả
             </label>
@@ -216,7 +216,7 @@ export const BannerFormModal = memo(function BannerFormModal({
           </div>
 
           {/* Cấu hình link và loại */}
-          <div className="space-y-1">
+          <div className="space-y-1 md:col-span-1 lg:col-span-2">
             <label className="text-xs font-black text-stone-400 uppercase tracking-widest">
               Loại Banner
             </label>
@@ -229,7 +229,7 @@ export const BannerFormModal = memo(function BannerFormModal({
             </select>
           </div>
 
-          <div className="space-y-1 lg:col-span-2">
+          <div className="space-y-1 md:col-span-1 lg:col-span-4">
             <label className="text-xs font-black text-stone-400 uppercase tracking-widest">
               Đường dẫn đích (Link)
             </label>
@@ -242,7 +242,7 @@ export const BannerFormModal = memo(function BannerFormModal({
           </div>
 
           {/* Hình ảnh */}
-          <div className="space-y-1 lg:col-span-1.5">
+          <div className="space-y-1 md:col-span-1 lg:col-span-3">
             <label className="text-xs font-black text-stone-400 uppercase tracking-widest">
               Ảnh Desktop
             </label>
@@ -301,7 +301,7 @@ export const BannerFormModal = memo(function BannerFormModal({
             )}
           </div>
 
-          <div className="space-y-1 lg:col-span-1.5">
+          <div className="space-y-1 md:col-span-1 lg:col-span-3">
             <label className="text-xs font-black text-stone-400 uppercase tracking-widest">
               Ảnh Mobile (Tùy chọn)
             </label>
@@ -364,7 +364,7 @@ export const BannerFormModal = memo(function BannerFormModal({
           </div>
 
           {/* Thời gian */}
-          <div className="space-y-1">
+          <div className="space-y-1 md:col-span-1 lg:col-span-3">
             <label className="text-xs font-black text-stone-400 uppercase tracking-widest">
               Ngày bắt đầu
             </label>
@@ -375,7 +375,7 @@ export const BannerFormModal = memo(function BannerFormModal({
             />
           </div>
 
-          <div className="space-y-1">
+          <div className="space-y-1 md:col-span-1 lg:col-span-3">
             <label className="text-xs font-black text-stone-400 uppercase tracking-widest">
               Ngày kết thúc
             </label>
