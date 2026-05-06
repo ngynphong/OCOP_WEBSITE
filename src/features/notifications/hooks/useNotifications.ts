@@ -43,13 +43,11 @@ export const useUnreadCountScope = () => {
     if (!client) return;
 
     const setupSubscriptions = () => {
-      const personalSub = client.subscribe('/user/queue/notifications', (message) => {
-        console.log('[WS] Personal notification:', message.body);
+      const personalSub = client.subscribe('/user/queue/notifications', () => {
         queryClient.invalidateQueries({ queryKey: NOTIFICATION_KEYS.all });
       });
 
-      const publicSub = client.subscribe('/topic/public-notifications', (message) => {
-        console.log('[WS] Public notification:', message.body);
+      const publicSub = client.subscribe('/topic/public-notifications', () => {
         queryClient.invalidateQueries({ queryKey: NOTIFICATION_KEYS.all });
       });
 
