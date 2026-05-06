@@ -64,7 +64,9 @@ export default async function ProductDetailPage({ params }: { params: { slug: st
           url: `${process.env.NEXT_PUBLIC_SITE_URL}/san-pham/${product.slug}`,
           priceCurrency: 'VND',
           price: product.minPrice,
-          availability: 'https://schema.org/InStock',
+          availability: product.inStock
+            ? 'https://schema.org/InStock'
+            : 'https://schema.org/OutOfStock',
         },
       }
     : null;

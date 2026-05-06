@@ -72,6 +72,7 @@ export function BestSellersSection() {
               slug={product.slug}
               id={product.id}
               isWishlisted={!!wishlistStatusMap[product.id]}
+              inStock={product.inStock}
             />
           ))}
         </div>

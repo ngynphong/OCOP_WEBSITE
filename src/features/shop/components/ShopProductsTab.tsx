@@ -87,6 +87,7 @@ export const ShopProductsTab = ({ shopSlug }: ShopProductsTabProps) => {
           categoryName={product.categoryName}
           soldCount={product.soldCount}
           isWishlisted={!!wishlistStatusMap[product.id]}
+          inStock={product.inStock}
         />
       ))}
     </div>

@@ -8,10 +8,16 @@ import { useAddToCart } from '@/features/cart/hooks/useCart';
 interface StickyBottomCTAProps {
   variantId: number;
   price: number;
+  inStock?: boolean;
   onBuyNow?: () => void;
 }
 
-export function StickyBottomCTA({ variantId, price, onBuyNow }: StickyBottomCTAProps) {
+export function StickyBottomCTA({
+  variantId,
+  price,
+  inStock = true,
+  onBuyNow,
+}: StickyBottomCTAProps) {
   const { mutate: addToCart, isPending } = useAddToCart();
 
   const handleAddToCart = useCallback(() => {
@@ -34,7 +40,7 @@ export function StickyBottomCTA({ variantId, price, onBuyNow }: StickyBottomCTAP
             variant="outline"
             className="flex-1 px-4 h-14 rounded-2xl border-stone-200 relative"
             onClick={handleAddToCart}
-            disabled={isPending}
+            disabled={isPending || inStock === false}
             aria-label="Thêm vào giỏ hàng"
           >
             {isPending ? (
@@ -45,8 +51,13 @@ export function StickyBottomCTA({ variantId, price, onBuyNow }: StickyBottomCTAP
           </Button>
 
           {/* Mua ngay */}
-          <Button variant="primary" className="flex-2 h-14 rounded-2xl" onClick={onBuyNow}>
-            Mua ngay
+          <Button
+            variant="primary"
+            className="flex-2 h-14 rounded-2xl"
+            onClick={onBuyNow}
+            disabled={inStock === false}
+          >
+            {inStock === false ? 'Hết hàng' : 'Mua ngay'}
           </Button>
         </div>
       </div>

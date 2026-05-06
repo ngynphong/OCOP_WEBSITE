@@ -65,6 +65,7 @@ export interface ProductVariant {
   dimensions: string;
   isDefault: boolean;
   isActive: boolean;
+  inStock: boolean;
   createdAt: string;
 }
 
@@ -156,6 +157,7 @@ export interface Product {
   productionArea: string;
   rejectionNote: string | null;
   approvedAt: string | null;
+  inStock: boolean;
   createdAt: string;
   updatedAt: string;
   // Flat API response properties for product lists

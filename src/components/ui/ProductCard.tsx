@@ -25,6 +25,7 @@ interface ProductCardProps {
   soldCount?: number;
   id: number;
   isWishlisted?: boolean;
+  inStock?: boolean;
 }
 
 export const ProductCard = memo(function ProductCard({
@@ -38,6 +39,7 @@ export const ProductCard = memo(function ProductCard({
   shopName,
   id,
   isWishlisted = false,
+  inStock = true,
 }: ProductCardProps) {
   const [isMounted, setIsMounted] = useState(false);
 
@@ -77,12 +79,20 @@ export const ProductCard = memo(function ProductCard({
             alt={name}
             fill
             sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-            className="object-cover transition-transform duration-700 group-hover:scale-110"
+            className={cn(
+              'object-cover transition-transform duration-700 group-hover:scale-110',
+              inStock === false && 'grayscale opacity-70',
+            )}
           />
 
-          {/* Discount badge */}
+          {/* Status badges */}
           <div className="absolute top-4 left-4 flex flex-col gap-2">
-            {discountPercent && (
+            {inStock === false && (
+              <div className="px-3 py-1.5 bg-red-600 text-white rounded-full shadow-lg shadow-red-600/20 z-10">
+                <span className="text-[10px] font-black tracking-widest uppercase">Hết hàng</span>
+              </div>
+            )}
+            {inStock && discountPercent && (
               <div className="px-3 py-1.5 bg-white/20 backdrop-blur-md rounded-full border border-white/10 shadow-sm overflow-hidden relative">
                 <div className="absolute inset-0 bg-black/10 mix-blend-overlay" />
                 <span className="relative z-10 text-white text-[11px] font-bold tracking-widest uppercase">

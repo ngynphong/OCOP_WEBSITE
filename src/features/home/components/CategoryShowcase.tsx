@@ -71,6 +71,7 @@ const CategorySection = memo(({ category, index }: { category: PublicCategory; i
               ocopStar={product.ocopStar}
               shopName={product.shopName}
               location={product.provinceName || 'Việt Nam'}
+              inStock={product.inStock}
             />
           ))}
         </div>
@@ -127,6 +128,7 @@ const CategorySection = memo(({ category, index }: { category: PublicCategory; i
                 ocopStar={product.ocopStar}
                 shopName={product.shopName}
                 location={product.provinceName || 'Việt Nam'}
+                inStock={product.inStock}
               />
             ))}
           </div>

@@ -386,6 +386,7 @@ export function ProductListClient() {
                           categoryName={product.categoryName}
                           soldCount={product.soldCount}
                           isWishlisted={!!wishlistStatusMap[product.id]}
+                          inStock={product.inStock}
                         />
                       ))}
                     </div>
