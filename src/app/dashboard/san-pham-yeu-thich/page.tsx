@@ -117,6 +117,7 @@ export default function WishlistPage() {
                     ? item.ocopStar
                     : parseInt(String(item.ocopStar))
                 }
+                inStock={item.inStock}
               />
             ))}
           </div>

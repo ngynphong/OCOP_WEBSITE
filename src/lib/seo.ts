@@ -14,10 +14,18 @@ export const defaultMetadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
-  keywords: ['OCOP', 'đặc sản', 'nông sản', 'thương mại điện tử', 'tinh hoa vùng miền'],
+  keywords: [
+    'OCOP',
+    'đặc sản',
+    'nông sản',
+    'thương mại điện tử',
+    'tinh hoa vùng miền',
+    'ies',
+    'connect',
+  ],
   authors: [
     {
-      name: 'OCOP Team',
+      name: 'OCOP IES Connect',
     },
   ],
   creator: 'OCOP',

@@ -179,46 +179,59 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
 
           {/* Purchase Actions (Desktop) */}
           <div className="hidden md:flex flex-col gap-3">
-            <div className="flex gap-2">
-              {/* Thêm vào giỏ */}
-              <Button
-                variant="outline"
-                size="lg"
-                className="flex-1 h-12 rounded-xl text-sm"
-                leftIcon={
-                  isAddingToCart ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <ShoppingCart className="w-4 h-4" />
-                  )
-                }
-                onClick={handleAddToCart}
-                disabled={isAddingToCart || !selectedVariant}
-              >
-                {isAddingToCart ? 'Đang thêm...' : 'Thêm vào giỏ'}
-              </Button>
+            {(selectedVariant ? selectedVariant.inStock === false : product.inStock === false) ? (
+              <div className="flex flex-col gap-3">
+                <div className="w-full py-4 bg-stone-100 text-stone-400 rounded-2xl font-black text-center text-sm border border-stone-200 uppercase tracking-widest">
+                  Sản phẩm hiện đang hết hàng
+                </div>
+                <p className="text-center text-stone-400 text-xs font-medium">
+                  Vui lòng quay lại sau hoặc chọn sản phẩm tương tự
+                </p>
+              </div>
+            ) : (
+              <>
+                <div className="flex gap-2">
+                  {/* Thêm vào giỏ */}
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="flex-1 h-12 rounded-xl text-sm"
+                    leftIcon={
+                      isAddingToCart ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <ShoppingCart className="w-4 h-4" />
+                      )
+                    }
+                    onClick={handleAddToCart}
+                    disabled={isAddingToCart || !selectedVariant}
+                  >
+                    {isAddingToCart ? 'Đang thêm...' : 'Thêm vào giỏ'}
+                  </Button>
 
-              {/* Mua ngay: thêm vào giỏ rồi navigate */}
-              <Button
-                variant="primary"
-                size="lg"
-                className="flex-1 h-12 rounded-xl text-sm"
-                leftIcon={
-                  isAddingToCart ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Zap className="w-4 h-4" />
-                  )
-                }
-                onClick={handleBuyNow}
-                disabled={isAddingToCart || !selectedVariant}
-              >
-                Mua ngay
-              </Button>
-            </div>
-            <p className="text-center text-stone-400 text-xs font-medium">
-              Thanh toán an toàn qua cổng OCOP Payment
-            </p>
+                  {/* Mua ngay: thêm vào giỏ rồi navigate */}
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    className="flex-1 h-12 rounded-xl text-sm"
+                    leftIcon={
+                      isAddingToCart ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Zap className="w-4 h-4" />
+                      )
+                    }
+                    onClick={handleBuyNow}
+                    disabled={isAddingToCart || !selectedVariant}
+                  >
+                    Mua ngay
+                  </Button>
+                </div>
+                <p className="text-center text-stone-400 text-xs font-medium">
+                  Thanh toán an toàn qua cổng OCOP Payment
+                </p>
+              </>
+            )}
           </div>
         </div>
 

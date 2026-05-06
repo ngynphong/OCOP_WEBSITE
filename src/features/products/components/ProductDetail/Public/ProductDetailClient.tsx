@@ -106,6 +106,7 @@ export function ProductDetailClient() {
       {/* Sticky Bottom Bar for Mobile */}
       <StickyBottomCTA
         variantId={product.variants.find((v) => v.isDefault)?.id || product.variants[0]?.id || 0}
+        inStock={product.inStock}
         price={
           product.variants.find((v) => v.isDefault)?.price ||
           product.variants[0]?.price ||
@@ -184,6 +185,7 @@ export function ProductDetailClient() {
                     categoryName={p.categoryName}
                     soldCount={p.soldCount}
                     isWishlisted={!!wishlistStatusMap[p.id]}
+                    inStock={p.inStock}
                   />
                 ))}
               </div>
@@ -233,6 +235,7 @@ export function ProductDetailClient() {
                       categoryName={p.categoryName}
                       soldCount={p.soldCount}
                       isWishlisted={!!wishlistStatusMap[p.id]}
+                      inStock={p.inStock}
                     />
                   ))}
               </div>
@@ -279,6 +282,7 @@ export function ProductDetailClient() {
                       categoryName={p.categoryName}
                       soldCount={p.soldCount}
                       isWishlisted={!!wishlistStatusMap[p.id]}
+                      inStock={p.inStock}
                     />
                   ))}
               </div>

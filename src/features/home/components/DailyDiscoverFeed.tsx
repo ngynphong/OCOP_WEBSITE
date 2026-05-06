@@ -144,6 +144,7 @@ export const DailyDiscoverFeed = memo(function DailyDiscoverFeed() {
                 soldCount={product.soldCount}
                 ocopStar={product.ocopStar}
                 shopName={product.shopName}
+                inStock={product.inStock}
               />
             ))}
           </div>

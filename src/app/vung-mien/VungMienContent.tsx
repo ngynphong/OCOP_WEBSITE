@@ -195,6 +195,7 @@ export default function VungMienContent() {
                     shopName={product.shopName}
                     categoryName={product.categoryName}
                     soldCount={product.soldCount}
+                    inStock={product.inStock}
                   />
                 ))}
               </div>

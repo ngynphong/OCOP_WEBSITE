@@ -17,7 +17,7 @@ interface StatusBadgeProps {
 
 const STATUS_BADGE_MAP: Record<CartIssueType, { label: string; className: string }> = {
   OUT_OF_STOCK: {
-    label: 'Hết hàng',
+    label: 'Hết hàng, chọn sản phẩm khác',
     className: 'bg-red-100 text-red-700',
   },
   VARIANT_INACTIVE: {
