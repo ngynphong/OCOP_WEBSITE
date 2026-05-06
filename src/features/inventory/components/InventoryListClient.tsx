@@ -21,6 +21,7 @@ import {
   useUpdateThresholdMutation,
 } from '@/features/inventory/hooks/useSellerInventory';
 import { InventoryItem, InventoryListParams } from '@/features/inventory/types/inventoryTypes';
+import { Pagination } from '@/components/ui/Pagination';
 
 // ─── Static config ─────────────────────────────────────────────────────────────
 
@@ -123,21 +124,21 @@ function ActionModal({ action, onClose }: { action: ActionState; onClose: () => 
                 placeholder="Số lượng nhập *"
                 value={qty}
                 onChange={(e) => setQty(e.target.value)}
-                className="w-full rounded-lg border border-stone-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+                className="w-full rounded-lg border text-gray-700 border-stone-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
               />
               <input
                 type="text"
                 placeholder="Mã phiếu nhập (tuỳ chọn)"
                 value={importRefId}
                 onChange={(e) => setImportRefId(e.target.value)}
-                className="w-full rounded-lg border border-stone-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+                className="w-full rounded-lg border text-gray-700 border-stone-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
               />
               <input
                 type="text"
                 placeholder="Ghi chú (tuỳ chọn)"
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
-                className="w-full rounded-lg border border-stone-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+                className="w-full rounded-lg border border-stone-200 text-gray-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
               />
             </>
           )}
@@ -150,7 +151,7 @@ function ActionModal({ action, onClose }: { action: ActionState; onClose: () => 
                 placeholder="Delta (dương=tăng, âm=giảm) *"
                 value={delta}
                 onChange={(e) => setDelta(e.target.value)}
-                className="w-full rounded-lg border border-stone-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+                className="w-full rounded-lg border border-stone-200 text-gray-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
               />
               <input
                 type="text"
@@ -158,7 +159,7 @@ function ActionModal({ action, onClose }: { action: ActionState; onClose: () => 
                 placeholder="Ghi chú *"
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
-                className="w-full rounded-lg border border-stone-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+                className="w-full rounded-lg border border-stone-200 text-gray-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
               />
             </>
           )}
@@ -172,7 +173,7 @@ function ActionModal({ action, onClose }: { action: ActionState; onClose: () => 
                 placeholder="Số lượng hỏng *"
                 value={qty}
                 onChange={(e) => setQty(e.target.value)}
-                className="w-full rounded-lg border border-stone-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+                className="w-full rounded-lg border border-stone-200 text-gray-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
               />
               <input
                 type="text"
@@ -180,7 +181,7 @@ function ActionModal({ action, onClose }: { action: ActionState; onClose: () => 
                 placeholder="Lý do *"
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
-                className="w-full rounded-lg border border-stone-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+                className="w-full rounded-lg border border-stone-200 text-gray-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
               />
             </>
           )}
@@ -193,7 +194,7 @@ function ActionModal({ action, onClose }: { action: ActionState; onClose: () => 
               placeholder="Ngưỡng cảnh báo (>= 0) *"
               value={threshold}
               onChange={(e) => setThreshold(e.target.value)}
-              className="w-full rounded-lg border border-stone-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+              className="w-full rounded-lg border border-stone-200 text-gray-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
             />
           )}
 
@@ -201,14 +202,14 @@ function ActionModal({ action, onClose }: { action: ActionState; onClose: () => 
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 rounded-lg border border-stone-200 px-4 py-2 text-sm text-stone-600 hover:bg-stone-50"
+              className="flex-1 rounded-lg border border-stone-200 text-gray-700 px-4 py-2 text-sm hover:bg-stone-50 cursor-pointer"
             >
               Huỷ
             </button>
             <button
               type="submit"
               disabled={isPending}
-              className="flex-1 rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600 disabled:opacity-60"
+              className="flex-1 rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600 disabled:opacity-60 cursor-pointer"
             >
               {isPending ? 'Đang xử lý...' : 'Xác nhận'}
             </button>
@@ -342,28 +343,28 @@ export default function InventoryListClient() {
                         <button
                           onClick={() => openAction('add', item)}
                           title="Nhập hàng"
-                          className="rounded-md p-1.5 text-stone-400 hover:bg-emerald-50 hover:text-emerald-600"
+                          className="rounded-md p-1.5 text-stone-400 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer"
                         >
                           <FiPlus className="size-4" />
                         </button>
                         <button
                           onClick={() => openAction('adjust', item)}
                           title="Điều chỉnh"
-                          className="rounded-md p-1.5 text-stone-400 hover:bg-blue-50 hover:text-blue-600"
+                          className="rounded-md p-1.5 text-stone-400 hover:bg-blue-50 hover:text-blue-600 cursor-pointer"
                         >
                           <FiMinus className="size-4" />
                         </button>
                         <button
                           onClick={() => openAction('damaged', item)}
                           title="Báo hỏng"
-                          className="rounded-md p-1.5 text-stone-400 hover:bg-red-50 hover:text-red-500"
+                          className="rounded-md p-1.5 text-stone-400 hover:bg-red-50 hover:text-red-500 cursor-pointer"
                         >
                           <FiAlertTriangle className="size-4" />
                         </button>
                         <button
                           onClick={() => openAction('threshold', item)}
                           title="Ngưỡng cảnh báo"
-                          className="rounded-md p-1.5 text-stone-400 hover:bg-amber-50 hover:text-amber-600"
+                          className="rounded-md p-1.5 text-stone-400 hover:bg-amber-50 hover:text-amber-600 cursor-pointer"
                         >
                           <FiSettings className="size-4" />
                         </button>
@@ -378,32 +379,15 @@ export default function InventoryListClient() {
       </div>
 
       {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between text-sm text-stone-500">
-          <span>
-            Hiển thị {items.length} / {total} biến thể
-          </span>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setPageNo((p) => Math.max(1, p - 1))}
-              disabled={pageNo === 1}
-              className="rounded-lg border border-stone-200 px-3 py-1.5 hover:bg-stone-50 disabled:opacity-40"
-            >
-              Trước
-            </button>
-            <span className="rounded-lg border border-stone-200 px-3 py-1.5 bg-stone-50 font-medium">
-              Trang {pageNo} / {totalPages}
-            </span>
-            <button
-              onClick={() => setPageNo((p) => Math.min(totalPages, p + 1))}
-              disabled={pageNo >= totalPages}
-              className="rounded-lg border border-stone-200 px-3 py-1.5 hover:bg-stone-50 disabled:opacity-40"
-            >
-              Sau
-            </button>
-          </div>
-        </div>
-      )}
+      <div className="mt-8 border-t border-stone-100 pt-6">
+        <Pagination
+          currentPage={pageNo}
+          totalPages={totalPages}
+          totalElements={total}
+          pageSize={PAGE_SIZE}
+          onPageChange={(page) => setPageNo(page)}
+        />
+      </div>
 
       {/* Action modal */}
       {action && <ActionModal action={action} onClose={() => setAction(null)} />}
