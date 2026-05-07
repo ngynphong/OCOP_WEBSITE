@@ -30,7 +30,7 @@ export const LoadingOverlay = memo(function LoadingOverlay() {
           {/* Center Logo */}
           <div className="absolute inset-0 flex items-center justify-center p-2.5 sm:p-3 z-10">
             <Image
-              src="/images/dNUEl-removebg-preview.png"
+              src="/images/logo.png"
               alt="OCOP IES CONNECT"
               width={100}
               height={30}

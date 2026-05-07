@@ -20,6 +20,7 @@ import {
   FiMail,
   FiTag,
   FiChevronDown,
+  FiSettings,
 } from 'react-icons/fi';
 import { FaWarehouse } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -208,6 +209,20 @@ const MENU_GROUPS: MenuGroup[] = [
         icon: FiGrid,
         href: '/admin/quick-links',
         id: 'quick-links',
+        roles: ['ADMIN', 'SUPER_ADMIN'],
+      },
+    ],
+  },
+  {
+    id: 'system',
+    label: 'Hệ thống',
+    icon: FiSettings,
+    items: [
+      {
+        label: 'Nhật ký hệ thống',
+        icon: FiSettings,
+        href: '/admin/logs',
+        id: 'audit-logs',
         roles: ['ADMIN', 'SUPER_ADMIN'],
       },
     ],
