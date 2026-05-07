@@ -19,6 +19,8 @@ import {
   BLOCKCHAIN_LABELS,
 } from '../../utils/ProductConstants';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
+import { FiX, FiPlus } from 'react-icons/fi';
+import Image from 'next/image';
 
 interface JournalsTabProps {
   productId: number;
@@ -43,14 +45,47 @@ export function JournalsTab({ productId }: JournalsTabProps) {
     defaultValues: { stepOrder: (journals.length ?? 0) + 1 },
   });
 
-  const onSubmit = async (formData: CreateJournalFormData) => {
-    // Auto-assign step order based on current list length
-    await createJournal({
-      ...formData,
-      stepOrder: journals.length + 1,
-    });
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+
+  const handleUploadImages = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    const newFiles = Array.from(files);
+    setSelectedFiles((prev) => [...prev, ...newFiles]);
+
+    const newUrls = newFiles.map((file) => URL.createObjectURL(file));
+    setPreviewUrls((prev) => [...prev, ...newUrls]);
+
+    e.target.value = '';
+  };
+
+  const removeImage = (index: number) => {
+    URL.revokeObjectURL(previewUrls[index]);
+    setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
+    setPreviewUrls((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const clearForm = () => {
+    previewUrls.forEach((url) => URL.revokeObjectURL(url));
+    setPreviewUrls([]);
+    setSelectedFiles([]);
     reset();
     setShowForm(false);
+  };
+
+  const onSubmit = async (formData: CreateJournalFormData) => {
+    // Auto-assign step order based on current list length
+    const { ...submitData } = formData;
+    await createJournal({
+      data: {
+        ...submitData,
+        stepOrder: journals.length + 1,
+      },
+      files: selectedFiles,
+    });
+    clearForm();
   };
 
   const handleDelete = async () => {
@@ -100,6 +135,18 @@ export function JournalsTab({ productId }: JournalsTabProps) {
                     <p className="text-xs text-stone-400 mt-0.5">
                       {new Date(j.activityDate).toLocaleDateString('vi-VN')}
                     </p>
+                  )}
+                  {j.images && j.images.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {j.images.map((img, idx) => (
+                        <div
+                          key={idx}
+                          className="relative w-16 h-16 rounded-xl overflow-hidden border border-stone-100 bg-stone-50"
+                        >
+                          <Image src={img} alt="" fill className="object-cover" />
+                        </div>
+                      ))}
+                    </div>
                   )}
                 </div>
                 {j.blockchainStatus === 'NOT_SUBMITTED' && (
@@ -197,15 +244,40 @@ export function JournalsTab({ productId }: JournalsTabProps) {
               className="w-full border border-stone-200 text-gray-700 rounded-xl px-3 py-2 text-sm outline-none focus:border-emerald-400 transition resize-none"
             />
           </div>
+
+          <div>
+            <label className="text-xs font-bold text-stone-500 block mb-2">Ảnh hoạt động</label>
+            <div className="flex flex-wrap gap-3">
+              {previewUrls.map((url, index) => (
+                <div
+                  key={index}
+                  className="relative w-20 h-20 rounded-2xl overflow-hidden border border-stone-200 group bg-white"
+                >
+                  <Image src={url} alt="" fill className="object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => removeImage(index)}
+                    className="absolute top-1 right-1 p-1 bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <FiX size={12} />
+                  </button>
+                </div>
+              ))}
+              <label className="w-20 h-20 rounded-2xl border-2 border-dashed border-stone-200 flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-emerald-300 hover:bg-emerald-50/30 transition text-stone-400 hover:text-emerald-600">
+                <FiPlus size={20} />
+                <span className="text-[10px] font-bold">Thêm ảnh</span>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleUploadImages}
+                />
+              </label>
+            </div>
+          </div>
           <div className="flex justify-end gap-3 pt-2">
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => {
-                setShowForm(false);
-                reset();
-              }}
-            >
+            <Button type="button" variant="ghost" onClick={clearForm}>
               Hủy
             </Button>
             <Button type="submit" variant="primary" isLoading={isCreating}>

@@ -188,7 +188,7 @@ export function FlashSaleFormDrawer({
               </div>
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-white rounded-full transition-colors text-stone-400 border border-transparent hover:border-stone-100 shadow-sm"
+                className="p-2 hover:bg-white rounded-full transition-colors text-stone-400 border border-transparent hover:border-stone-100 shadow-sm cursor-pointer"
               >
                 <FiX size={24} />
               </button>
@@ -420,7 +420,7 @@ export function FlashSaleFormDrawer({
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full py-4 bg-red-600 text-white rounded-2xl text-sm font-black shadow-lg shadow-red-600/20 flex items-center justify-center gap-2 hover:bg-red-700 active:scale-[0.98] transition-all disabled:opacity-50"
+                  className="w-full py-4 bg-red-600 text-white rounded-2xl text-sm font-black shadow-lg shadow-red-600/20 flex items-center justify-center gap-2 hover:bg-red-700 active:scale-[0.98] transition-all disabled:opacity-50 cursor-pointer"
                 >
                   {isLoading ? (
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

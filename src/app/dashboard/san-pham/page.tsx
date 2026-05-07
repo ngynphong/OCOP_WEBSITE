@@ -180,7 +180,7 @@ export default function SellerProductsPage() {
               <p className="text-stone-400 text-sm font-semibold">Chưa có sản phẩm nào</p>
               <Button
                 onClick={() => router.push('/dashboard/san-pham/tao-moi')}
-                variant="success"
+                variant="primary"
                 className="mt-4"
               >
                 Tạo sản phẩm đầu tiên

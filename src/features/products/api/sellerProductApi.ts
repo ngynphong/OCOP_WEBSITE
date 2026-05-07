@@ -140,8 +140,26 @@ export const sellerProductApi = {
   createJournal: (
     productId: number,
     data: CreateJournalRequest,
+    files?: File[],
   ): Promise<JournalDetailResponse> => {
-    return axiosClient.post(`/seller/products/${productId}/journals`, data);
+    const formData = new FormData();
+
+    // Append fields individually
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && key !== 'images') {
+        formData.append(key, value.toString());
+      }
+    });
+
+    if (files && files.length > 0) {
+      files.forEach((file) => {
+        formData.append('images', file);
+      });
+    }
+
+    return axiosClient.post(`/seller/products/${productId}/journals`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
   },
 
   updateJournal: (
