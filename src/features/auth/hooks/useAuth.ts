@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/store/hooks';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import Cookies from 'js-cookie';
 import { authApi } from '../api/authApi';
 import { setCredentials, logout as reduxLogout } from '@/store/features/authSlice';
 import {
@@ -59,7 +60,10 @@ export const useAuth = () => {
       if (accessToken) {
         localStorage.setItem('access_token', accessToken);
         if (refreshToken) localStorage.setItem('refresh_token', refreshToken);
-        if (roles) localStorage.setItem('user_roles', JSON.stringify(roles));
+        if (roles) {
+          localStorage.setItem('user_roles', JSON.stringify(roles));
+          Cookies.set('user_roles', JSON.stringify(roles), { expires: 7 });
+        }
 
         dispatch(setCredentials({ token: accessToken, roles: roles || [] }));
 
@@ -79,8 +83,11 @@ export const useAuth = () => {
 
         toast.success('Đăng nhập thành công');
 
-        const isAdmin = roles?.some((role: string) => role === 'ADMIN' || role === 'SUPER_ADMIN');
-        router.push(isAdmin ? '/admin' : '/');
+        // Mọi role không phải USER/SELLER → vào admin dashboard
+        // Tương thích với mọi role mới tạo trong hệ thống
+        const CUSTOMER_ONLY_ROLES = ['USER', 'SELLER'];
+        const isCustomerOnly = roles?.every((role: string) => CUSTOMER_ONLY_ROLES.includes(role));
+        router.push(isCustomerOnly ? '/' : '/admin');
       }
     },
   });
@@ -112,7 +119,10 @@ export const useAuth = () => {
       if (accessToken) {
         localStorage.setItem('access_token', accessToken);
         if (refreshToken) localStorage.setItem('refresh_token', refreshToken);
-        if (roles) localStorage.setItem('user_roles', JSON.stringify(roles));
+        if (roles) {
+          localStorage.setItem('user_roles', JSON.stringify(roles));
+          Cookies.set('user_roles', JSON.stringify(roles), { expires: 7 });
+        }
 
         dispatch(setCredentials({ token: accessToken, roles: roles || [] }));
 
@@ -131,8 +141,10 @@ export const useAuth = () => {
 
         toast.success('Xác thực thành công! Hệ thống đã tự động đăng nhập.');
 
-        const isAdmin = roles?.some((role: string) => role === 'ADMIN' || role === 'SUPER_ADMIN');
-        router.push(isAdmin ? '/admin' : '/');
+        // Mọi role không phải USER/SELLER → vào admin dashboard
+        const CUSTOMER_ONLY_ROLES = ['USER', 'SELLER'];
+        const isCustomerOnly = roles?.every((role: string) => CUSTOMER_ONLY_ROLES.includes(role));
+        router.push(isCustomerOnly ? '/' : '/admin');
       } else {
         toast.success('Xác thực thành công! Vui lòng đăng nhập.');
         router.push('/dang-nhap');
@@ -154,6 +166,9 @@ export const useAuth = () => {
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('user_roles');
     localStorage.removeItem('dashboard_mode');
+    Cookies.remove('access_token');
+    Cookies.remove('refresh_token');
+    Cookies.remove('user_roles');
     dispatch(reduxLogout());
     queryClient.removeQueries({ queryKey: ['profile'] });
     toast.success('Đăng xuất thành công');

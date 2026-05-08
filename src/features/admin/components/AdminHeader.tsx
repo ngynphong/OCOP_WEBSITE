@@ -7,7 +7,6 @@ import Image from 'next/image';
 import { LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
-import { NotificationBell } from '@/features/notifications/components/NotificationBell';
 
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -85,9 +84,6 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
       </div>
 
       <div className="flex items-center gap-4">
-        {/* Notifications */}
-        <NotificationBell className="text-stone-600 hover:bg-stone-200/50 hover:text-stone-900" />
-
         {/* Admin Profile */}
         <div
           className="relative ml-4 flex items-center gap-3 pl-4 border-l border-stone-200 cursor-pointer"

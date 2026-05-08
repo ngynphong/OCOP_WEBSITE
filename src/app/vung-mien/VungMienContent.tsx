@@ -19,10 +19,8 @@ export default function VungMienContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // Hydration state using standard React pattern to avoid cascading renders
   const isClient = useSyncExternalStore(emptySubscribe, getSnapshot, getServerSnapshot);
 
-  // Source of truth: URL Search Params
   const rawProvinceQuery = searchParams.get('province');
   const selectedProvince = useMemo(
     () =>
@@ -30,11 +28,9 @@ export default function VungMienContent() {
     [rawProvinceQuery],
   );
 
-  // Fetch provinces
   const { data: provincesRes } = usePublicProvincesQuery();
   const provinces = useMemo(() => provincesRes?.data || [], [provincesRes]);
 
-  // Determine provinceId based on selectedProvince
   const provinceId = useMemo(() => {
     if (selectedProvince && provinces.length > 0) {
       const matched = provinces.find(
@@ -47,7 +43,6 @@ export default function VungMienContent() {
     return undefined;
   }, [selectedProvince, provinces]);
 
-  // Fetch products using Infinite Query
   const {
     data: productsInfiniteRes,
     isFetching,
@@ -64,7 +59,6 @@ export default function VungMienContent() {
     },
   );
 
-  // Flattened products list
   const products = useMemo(
     () => productsInfiniteRes?.pages.flatMap((page) => page.data.items) || [],
     [productsInfiniteRes],

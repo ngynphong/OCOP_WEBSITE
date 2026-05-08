@@ -4,10 +4,13 @@ import React from 'react';
 import AdminSidebar from '@/features/admin/components/AdminSidebar';
 import AdminHeader from '@/features/admin/components/AdminHeader';
 import { useAuthProfile } from '@/features/auth/hooks/useAuth';
+import { usePermission } from '@/features/auth/hooks/usePermission';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { setLoading } from '@/store/features/uiSlice';
+
+const CUSTOMER_ONLY_ROLES = ['USER', 'SELLER'];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { profile, isLoadingProfile } = useAuthProfile();
@@ -16,14 +19,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     isInitialized,
     roles: storeRoles,
   } = useAppSelector((state) => state.auth);
+  const { isAdminUser } = usePermission();
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(false);
 
-  const ADMIN_ROLES = ['ADMIN', 'SUPER_ADMIN'];
-  const hasAdminRoleInStore = storeRoles.some((role) => ADMIN_ROLES.includes(role));
-  const hasAdminRoleInProfile = profile?.roles?.some((role) => ADMIN_ROLES.includes(role));
-  const hasAdminRole = hasAdminRoleInStore || hasAdminRoleInProfile;
+  // Quick-check tại store (chỉ có roles từ token) để redirect sớm
+  // trước khi profile load xong, tránh flash nội dung.
+  const hasAdminRoleInStore = storeRoles.some((role) => !CUSTOMER_ONLY_ROLES.includes(role));
 
   useEffect(() => {
     if (isInitialized) {
@@ -34,12 +37,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         return;
       }
 
-      // Only redirect if initialization is done AND profile is loaded AND user still doesn't have role
-      if (!isLoadingProfile && profile && !hasAdminRole) {
+      // Khi store chưa có role hợp lệ → redirect ngay
+      if (!hasAdminRoleInStore) {
+        router.push('/');
+        return;
+      }
+
+      // Sau khi profile load xong, kiểm tra lần cuối bằng usePermission
+      if (!isLoadingProfile && profile && !isAdminUser) {
         router.push('/');
       }
     }
-  }, [profile, isLoadingProfile, router, hasAdminRole, isInitialized]);
+  }, [profile, isLoadingProfile, router, isAdminUser, isInitialized, hasAdminRoleInStore]);
 
   useEffect(() => {
     if (!isInitialized || isLoadingProfile || (isAuthenticated && !profile)) {

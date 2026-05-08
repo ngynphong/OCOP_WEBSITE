@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { FiCheck, FiX, FiStar, FiEye, FiBookOpen, FiEdit3 } from 'react-icons/fi';
+import { FiCheck, FiX, FiStar, FiEye, FiBookOpen, FiEdit3, FiZap } from 'react-icons/fi';
 import { RiStarFill } from 'react-icons/ri';
 import { CiShop } from 'react-icons/ci';
 import {
@@ -18,7 +18,8 @@ import {
 } from '@/features/products/types/productTypes';
 import { formatCurrencyVND } from '@/utils/format';
 import { FlashSaleManagementTab } from '@/features/flash-sale/components/FlashSaleManagementTab';
-import { FiZap } from 'react-icons/fi';
+import { usePermission } from '@/features/auth/hooks/usePermission';
+import { PERMISSIONS } from '@/features/auth/constants/permissions';
 import { Button } from '@/components/ui/AppButton';
 import { Eye, ShoppingCart, Star } from 'lucide-react';
 
@@ -50,6 +51,11 @@ export const AdminProductsTable = () => {
     productId: null,
   });
   const [rejectNote, setRejectNote] = useState('');
+  const { hasAnyPermission } = usePermission();
+  const canViewFlashSale = hasAnyPermission([
+    PERMISSIONS.FLASH_SALE_VIEW,
+    PERMISSIONS.FLASH_SALE_MANAGE,
+  ]);
 
   const { data, isPending, isError } = useAdminProductsQuery(params);
   const {
@@ -159,7 +165,7 @@ export const AdminProductsTable = () => {
 
   return (
     <div className="space-y-4 animate-in fade-in duration-500">
-      {/* Category tabs */}
+      {/* Category tabs — chỉ hiện Flash Sale nếu có permission */}
       <div className="flex items-center gap-4 border-b border-stone-100 pb-1">
         <button
           onClick={() => setActiveTab('PRODUCTS')}
@@ -172,21 +178,23 @@ export const AdminProductsTable = () => {
             <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-600" />
           )}
         </button>
-        <button
-          onClick={() => setActiveTab('FLASH_SALE')}
-          className={`px-4 py-2 text-sm font-black uppercase tracking-widest transition-all relative flex items-center gap-2 cursor-pointer ${
-            activeTab === 'FLASH_SALE' ? 'text-red-600' : 'text-stone-400 hover:text-stone-600'
-          }`}
-        >
-          <FiZap />
-          Duyệt Flash Sale
-          {activeTab === 'FLASH_SALE' && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-600" />
-          )}
-        </button>
+        {canViewFlashSale && (
+          <button
+            onClick={() => setActiveTab('FLASH_SALE')}
+            className={`px-4 py-2 text-sm font-black uppercase tracking-widest transition-all relative flex items-center gap-2 cursor-pointer ${
+              activeTab === 'FLASH_SALE' ? 'text-red-600' : 'text-stone-400 hover:text-stone-600'
+            }`}
+          >
+            <FiZap />
+            Duyệt Flash Sale
+            {activeTab === 'FLASH_SALE' && (
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-600" />
+            )}
+          </button>
+        )}
       </div>
 
-      {activeTab === 'FLASH_SALE' ? (
+      {activeTab === 'FLASH_SALE' && canViewFlashSale ? (
         <FlashSaleManagementTab role="ADMIN" />
       ) : (
         <>
