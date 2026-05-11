@@ -2,12 +2,13 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { FiCheck, FiX, FiStar, FiEye, FiBookOpen, FiEdit3 } from 'react-icons/fi';
+import { FiCheck, FiX, FiStar, FiEye, FiBookOpen, FiEdit3, FiZap } from 'react-icons/fi';
 import { RiStarFill } from 'react-icons/ri';
 import { CiShop } from 'react-icons/ci';
 import {
   useAdminProductsQuery,
   useAdminProductMutations,
+  useAdminProductDetailQuery,
 } from '@/features/products/hooks/useAdminProducts';
 import {
   Product,
@@ -17,7 +18,8 @@ import {
 } from '@/features/products/types/productTypes';
 import { formatCurrencyVND } from '@/utils/format';
 import { FlashSaleManagementTab } from '@/features/flash-sale/components/FlashSaleManagementTab';
-import { FiZap } from 'react-icons/fi';
+import { usePermission } from '@/features/auth/hooks/usePermission';
+import { PERMISSIONS } from '@/features/auth/constants/permissions';
 import { Button } from '@/components/ui/AppButton';
 import { Eye, ShoppingCart, Star } from 'lucide-react';
 
@@ -49,6 +51,11 @@ export const AdminProductsTable = () => {
     productId: null,
   });
   const [rejectNote, setRejectNote] = useState('');
+  const { hasAnyPermission } = usePermission();
+  const canViewFlashSale = hasAnyPermission([
+    PERMISSIONS.FLASH_SALE_VIEW,
+    PERMISSIONS.FLASH_SALE_MANAGE,
+  ]);
 
   const { data, isPending, isError } = useAdminProductsQuery(params);
   const {
@@ -69,11 +76,28 @@ export const AdminProductsTable = () => {
     open: false,
     product: null,
   });
+
+  const { data: productDetail, isFetching: isFetchingDetail } = useAdminProductDetailQuery(
+    storyModal.open ? storyModal.product?.id : null,
+  );
+
   const [storyFormData, setStoryFormData] = useState<UpdateProductStoryRequest>({
     storyTitle: '',
     storyImage: '',
     impactStats: '',
   });
+
+  // Sync detailed data to form when fetched
+  React.useEffect(() => {
+    if (productDetail?.data && storyModal.open) {
+      const product = productDetail.data;
+      setStoryFormData({
+        storyTitle: product.storyTitle || '',
+        storyImage: product.storyImage || '',
+        impactStats: product.impactStats || '',
+      });
+    }
+  }, [productDetail, storyModal.open]);
 
   const products: Product[] = data?.data?.items ?? [];
   const total = data?.data?.totalElement ?? 0;
@@ -141,7 +165,7 @@ export const AdminProductsTable = () => {
 
   return (
     <div className="space-y-4 animate-in fade-in duration-500">
-      {/* Category tabs */}
+      {/* Category tabs — chỉ hiện Flash Sale nếu có permission */}
       <div className="flex items-center gap-4 border-b border-stone-100 pb-1">
         <button
           onClick={() => setActiveTab('PRODUCTS')}
@@ -154,21 +178,23 @@ export const AdminProductsTable = () => {
             <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-600" />
           )}
         </button>
-        <button
-          onClick={() => setActiveTab('FLASH_SALE')}
-          className={`px-4 py-2 text-sm font-black uppercase tracking-widest transition-all relative flex items-center gap-2 cursor-pointer ${
-            activeTab === 'FLASH_SALE' ? 'text-red-600' : 'text-stone-400 hover:text-stone-600'
-          }`}
-        >
-          <FiZap />
-          Duyệt Flash Sale
-          {activeTab === 'FLASH_SALE' && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-600" />
-          )}
-        </button>
+        {canViewFlashSale && (
+          <button
+            onClick={() => setActiveTab('FLASH_SALE')}
+            className={`px-4 py-2 text-sm font-black uppercase tracking-widest transition-all relative flex items-center gap-2 cursor-pointer ${
+              activeTab === 'FLASH_SALE' ? 'text-red-600' : 'text-stone-400 hover:text-stone-600'
+            }`}
+          >
+            <FiZap />
+            Duyệt Flash Sale
+            {activeTab === 'FLASH_SALE' && (
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-600" />
+            )}
+          </button>
+        )}
       </div>
 
-      {activeTab === 'FLASH_SALE' ? (
+      {activeTab === 'FLASH_SALE' && canViewFlashSale ? (
         <FlashSaleManagementTab role="ADMIN" />
       ) : (
         <>
@@ -471,7 +497,17 @@ export const AdminProductsTable = () => {
               </button>
             </div>
 
-            <div className="p-10 space-y-8 max-h-[60vh] overflow-y-auto custom-scrollbar">
+            <div className="p-10 space-y-8 max-h-[60vh] overflow-y-auto custom-scrollbar relative">
+              {isFetchingDetail && (
+                <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] z-10 flex items-center justify-center">
+                  <div className="flex flex-col items-center gap-3">
+                    <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+                    <p className="text-xs font-bold text-emerald-700 uppercase tracking-widest">
+                      Đang tải dữ liệu...
+                    </p>
+                  </div>
+                </div>
+              )}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">
@@ -484,7 +520,7 @@ export const AdminProductsTable = () => {
                       setStoryFormData({ ...storyFormData, storyTitle: e.target.value })
                     }
                     className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-6 py-4 text-sm font-bold text-stone-800 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 transition-all"
-                    placeholder="Vị ngọt từ tâm huyết người thợ..."
+                    placeholder="Mật ong rừng – Tinh túy ngọt lành từ đại ngàn..."
                   />
                 </div>
                 <div className="space-y-2">
@@ -498,7 +534,7 @@ export const AdminProductsTable = () => {
                       setStoryFormData({ ...storyFormData, storyImage: e.target.value })
                     }
                     className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-6 py-4 text-sm font-medium text-stone-600 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 transition-all"
-                    placeholder="https://..."
+                    placeholder="https://images.unsplash.com/photo-1586106901017-b2d588f9c458..."
                   />
                 </div>
               </div>

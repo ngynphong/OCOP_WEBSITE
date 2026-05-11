@@ -40,7 +40,8 @@ export const useSellerJournalMutations = (productId: number) => {
   };
 
   const createJournalMutation = useMutation({
-    mutationFn: (data: CreateJournalRequest) => sellerProductApi.createJournal(productId, data),
+    mutationFn: ({ data, files }: { data: CreateJournalRequest; files?: File[] }) =>
+      sellerProductApi.createJournal(productId, data, files),
     onSuccess: () => {
       toast.success('Tạo bước nhật ký thành công');
       invalidate();

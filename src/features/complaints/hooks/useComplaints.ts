@@ -40,10 +40,13 @@ export const useAdminComplaints = (params: {
   status?: string;
   type?: string;
   search?: string;
+  enabled?: boolean;
 }) => {
+  const { enabled = true, ...rest } = params;
   return useQuery({
-    queryKey: ['admin-complaints', params],
-    queryFn: () => complaintApi.getAllComplaints(params),
+    queryKey: ['admin-complaints', rest],
+    queryFn: () => complaintApi.getAllComplaints(rest),
+    enabled,
   });
 };
 

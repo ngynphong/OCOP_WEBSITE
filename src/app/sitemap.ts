@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next';
 import { Product } from '@/features/products/types/productTypes';
 import { Blog } from '@/features/blog/types/blogTypes';
+import { ShopInfo } from '@/features/shop/types/shopTypes';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.ocop.iesconnect.vn';
@@ -59,6 +60,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
       }));
       routes.push(...blogRoutes);
+    }
+
+    // Fetch shops
+    const shopsRes = await fetch(`${apiUrl}/shops?pageSize=100`, {
+      next: { revalidate: 3600 },
+    });
+    if (shopsRes.ok) {
+      const shopsData = await shopsRes.json();
+      const shops: ShopInfo[] = shopsData?.data?.items || [];
+      const shopRoutes: MetadataRoute.Sitemap = shops.map((shop) => ({
+        url: `${baseUrl}/cua-hang/${shop.slug}`,
+        lastModified: new Date(shop.createdAt),
+        changeFrequency: 'weekly',
+        priority: 0.7,
+      }));
+      routes.push(...shopRoutes);
     }
   } catch (error) {
     console.error('Error generating sitemap:', error);

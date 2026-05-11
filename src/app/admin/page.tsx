@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useAdminDashboard } from '@/features/dashboard/hooks/useDashboard';
+import { PermissionGuard } from '@/components/guards/PermissionGuard';
+import { PERMISSIONS } from '@/features/auth/constants/permissions';
 
 // Import extracted components
 import { AdminKPIStats } from '@/features/dashboard/components/admin/AdminKPIStats';
@@ -77,4 +79,10 @@ const AdminOverview = () => {
   );
 };
 
-export default AdminOverview;
+const AdminOverviewWrapper = () => (
+  <PermissionGuard permissions={[PERMISSIONS.ANALYTICS_VIEW]}>
+    <AdminOverview />
+  </PermissionGuard>
+);
+
+export default AdminOverviewWrapper;

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Send, Mail, CheckCircle2 } from 'lucide-react';
 import { useNewsletter } from '@/features/newsletter/hooks/useNewsletter';
@@ -8,10 +8,16 @@ import { useAppSelector } from '@/store/hooks';
 import { Button } from '@/components/ui/AppButton';
 
 export function NewsletterSection() {
+  const [isMounted, setIsMounted] = useState(false);
   const [email, setEmail] = useState('');
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const { subscribe, isSubscribing, subscribeMe, isSubscribingMe } = useNewsletter();
   const [isSuccess, setIsSuccess] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsMounted(true), 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -87,7 +93,9 @@ export function NewsletterSection() {
               viewport={{ once: true }}
               className="relative w-full"
             >
-              {isSuccess ? (
+              {!isMounted ? (
+                <div className="h-[200px] w-full bg-white/5 animate-pulse rounded-[28px]" />
+              ) : isSuccess ? (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}

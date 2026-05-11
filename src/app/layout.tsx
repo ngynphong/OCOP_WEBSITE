@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   ...defaultMetadata,
   icons: {
-    icon: '/images/dNUEl-removebg-preview.png',
+    icon: '/images/logo.png',
   },
 };
 

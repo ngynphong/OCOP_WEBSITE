@@ -32,10 +32,19 @@ import {
   AdminCategoryListResponse,
   AdminCategoryDetailResponse,
   CategoryCheckSlugResponse,
+  AdminAuditLogResponse,
+  GetAuditLogsParams,
 } from '../types/adminTypes';
 import { CategorySchemaType, CategoryFormSchemaType } from '../types/categorySchema';
 
 export const adminApi = {
+  getAuditLogs: (params: GetAuditLogsParams): Promise<AdminAuditLogResponse> => {
+    const filteredParams = Object.fromEntries(
+      Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== ''),
+    );
+    return axiosClient.get('/admin/audit-logs', { params: filteredParams });
+  },
+
   getUsers: (params: GetUsersParams): Promise<AdminUserListResponse> => {
     // Filter out undefined, null, or empty string values from params
     const filteredParams = Object.fromEntries(

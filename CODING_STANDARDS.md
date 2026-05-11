@@ -73,11 +73,15 @@ Lỗi Hydration xảy ra khi HTML server-rendered không khớp với DOM ban đ
 
 1. **Sử dụng `isMounted` pattern:** Đối với các Client Components có logic động hoặc sử dụng Browser APIs (`window`, `localStorage`, `matchMedia`...), bắt buộc bọc phần render nhạy cảm bằng trạng thái mount.
    `tsx
-   const [isMounted, setIsMounted] = useState(false);
-   useEffect(() => setIsMounted(true), []);
-   if (!isMounted) return <Skeleton />; // Hoặc null/placeholder cố định
-   return <DynamicContent />;
+const [isMounted, setIsMounted] = useState(false);
+useEffect(() => {
+  const timer = setTimeout(() => setIsMounted(true), 0);
+  return () => clearTimeout(timer);
+}, []);
+if (!isMounted) return <Skeleton />; // Hoặc null/placeholder cố định
+return <DynamicContent />;
 `
+   _Lưu ý: Sử dụng `setTimeout` để tránh lỗi lint "Calling setState synchronously within an effect"._
 2. **Hạn chế `suppressHydrationWarning`:** Chỉ dùng như lựa chọn cuối cùng cho các trường hợp không thể kiểm soát (ví dụ: timestamp từ thư viện bên thứ 3, browser extensions) và chỉ áp dụng ở mức độ thẻ HTML thấp nhất có thể.
 3. **Tuyệt đối không sử dụng `typeof window !== 'undefined'` trực tiếp trong block render**: Điều này gây ra mismatch HTML giữa server và client. Hãy chuyển logic đó vào `useEffect`.
 4. **HTML Nesting:** Tuân thủ đúng quy tắc lồng thẻ HTML (không lồng `<div>` trong `<p>`, `<a>` trong `<a>`...) để tránh việc trình duyệt tự ý sửa cấu trúc DOM gây lỗi Hydration.

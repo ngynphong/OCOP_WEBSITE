@@ -71,7 +71,7 @@ export default function ProductStoryPage() {
         <StoryOrigin
           title={product.storyTitle || 'Nguồn gốc & Di sản'}
           content={product.description}
-          subImage={product.thumbnailUrl || product.imageUrl || '/images/default-image.png'}
+          subImage={product.thumbnailUrl || product.images?.[0]?.url || '/images/default-image.png'}
         />
 
         {product.shop.ownerName && (

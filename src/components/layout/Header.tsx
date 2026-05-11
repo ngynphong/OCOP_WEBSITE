@@ -84,16 +84,14 @@ export function Header() {
               suppressHydrationWarning
               className="inline-flex flex-row justify-start items-center"
             >
-              <div className="bg-white/90 backdrop-blur-md rounded-2xl px-2 py-1 shadow-md border border-gray-100">
-                <Image
-                  src="/images/dNUEl-removebg-preview.png"
-                  alt="OCOP IES CONNECT"
-                  width={165}
-                  height={50}
-                  className="h-8 lg:h-12 w-auto object-contain scale-115"
-                  priority
-                />
-              </div>
+              <Image
+                src="/images/logo.png"
+                alt="OCOP IES CONNECT"
+                width={120}
+                height={120}
+                className="scale-135"
+                priority
+              />
             </Link>
             <nav className="hidden lg:flex justify-start items-center gap-6">
               <Link
@@ -253,7 +251,7 @@ export function Header() {
                         <button
                           onClick={handleLogoutClick}
                           disabled={isLoggingOut}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors group disabled:opacity-50"
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors group disabled:opacity-50 cursor-pointer"
                         >
                           <LogOut
                             className={`w-4 h-4 text-red-400 group-hover:text-red-600 ${isLoggingOut ? 'animate-spin' : ''}`}

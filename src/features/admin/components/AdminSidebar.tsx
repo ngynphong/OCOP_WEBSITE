@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { useState, useEffect, useSyncExternalStore, useMemo } from 'react';
-import { useAuth } from '@/features/auth/hooks/useAuth';
+import { usePermission } from '@/features/auth/hooks/usePermission';
 import {
   FiGrid,
   FiCheckSquare,
@@ -20,6 +20,9 @@ import {
   FiMail,
   FiTag,
   FiChevronDown,
+  FiSettings,
+  FiUserCheck,
+  FiKey,
 } from 'react-icons/fi';
 import { FaWarehouse } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -28,6 +31,7 @@ import { BiSupport } from 'react-icons/bi';
 import { CiShop } from 'react-icons/ci';
 import { SidebarLogo } from './SidebarLogo';
 import { cn } from '@/lib/utils';
+import { PERMISSIONS, PermissionValue } from '@/features/auth/constants/permissions';
 
 interface AdminSidebarProps {
   isCollapsed: boolean;
@@ -39,8 +43,8 @@ interface MenuItem {
   icon: React.ElementType;
   href: string;
   id: string;
-  roles?: string[];
-  permissions?: string[];
+  /** OR logic: chỉ cần có 1 permission trong danh sách là hiển thị menu item */
+  permissions?: PermissionValue[];
 }
 
 interface MenuGroup {
@@ -50,6 +54,7 @@ interface MenuGroup {
   items: MenuItem[];
 }
 
+// Hoisted ra ngoài component để tránh khởi tạo lại mỗi render
 const MENU_GROUPS: MenuGroup[] = [
   {
     id: 'commerce',
@@ -61,35 +66,49 @@ const MENU_GROUPS: MenuGroup[] = [
         icon: CiShop,
         href: '/admin/shops',
         id: 'shops',
-        permissions: ['shop.view', 'shop.manage'],
+        permissions: [
+          PERMISSIONS.SHOP_VIEW,
+          PERMISSIONS.SHOP_MANAGE,
+          PERMISSIONS.SHOP_VERIFY,
+          PERMISSIONS.SHOP_PLAN_OVERRIDE,
+        ],
       },
       {
         label: 'Đơn hàng',
         icon: FiShoppingBag,
         href: '/admin/orders',
         id: 'orders',
-        permissions: ['order.view', 'order.manage'],
+        permissions: [PERMISSIONS.ORDER_VIEW, PERMISSIONS.ORDER_MANAGE],
       },
       {
         label: 'Sản phẩm',
         icon: FiBox,
         href: '/admin/products',
         id: 'products',
-        permissions: ['product.view', 'product.manage'],
+        permissions: [
+          PERMISSIONS.PRODUCT_VIEW,
+          PERMISSIONS.PRODUCT_MANAGE,
+          PERMISSIONS.PRODUCT_FEATURE,
+          PERMISSIONS.PRODUCT_APPROVE,
+          PERMISSIONS.CATEGORY_MANAGE,
+          PERMISSIONS.FLASH_SALE_VIEW,
+          PERMISSIONS.FLASH_SALE_MANAGE,
+          PERMISSIONS.SELLER_PRODUCT_MANAGE,
+        ],
       },
       {
         label: 'Thương hiệu',
         icon: FiTag,
         href: '/admin/brands',
         id: 'brands',
-        permissions: ['brand.manage'],
+        permissions: [PERMISSIONS.BRAND_MANAGE],
       },
       {
         label: 'Kho hàng',
         icon: FaWarehouse,
         href: '/admin/inventory',
         id: 'inventory',
-        permissions: ['inventory.view', 'inventory.adjust'],
+        permissions: [PERMISSIONS.INVENTORY_VIEW, PERMISSIONS.INVENTORY_ADJUST],
       },
     ],
   },
@@ -103,28 +122,28 @@ const MENU_GROUPS: MenuGroup[] = [
         icon: FiMapPin,
         href: '/admin/locations',
         id: 'locations',
-        permissions: ['location.manage'],
+        permissions: [PERMISSIONS.LOCATION_MANAGE],
       },
       {
         label: 'Thanh toán',
         icon: FiCreditCard,
         href: '/admin/payment-gateways',
         id: 'payments',
-        permissions: ['payment.gateway.manage'],
+        permissions: [PERMISSIONS.PAYMENT_GATEWAY_MANAGE],
       },
       {
         label: 'Vận chuyển',
         icon: FiTruck,
         href: '/admin/shipping-providers',
         id: 'shipping',
-        permissions: ['shipping.provider.manage'],
+        permissions: [PERMISSIONS.SHIPPING_PROVIDER_MANAGE],
       },
       {
         label: 'Gói đăng ký',
         icon: FiCreditCard,
         href: '/admin/subscriptions',
         id: 'subscriptions',
-        permissions: ['subscription.plan.manage'],
+        permissions: [PERMISSIONS.SUBSCRIPTION_PLAN_MANAGE],
       },
     ],
   },
@@ -138,28 +157,28 @@ const MENU_GROUPS: MenuGroup[] = [
         icon: FiUsers,
         href: '/admin/users',
         id: 'users',
-        permissions: ['user.view', 'user.manage'],
+        permissions: [PERMISSIONS.USER_VIEW, PERMISSIONS.USER_MANAGE, PERMISSIONS.LOYALTY_MANAGE],
       },
       {
         label: 'Mã giảm giá',
         icon: IoTicket,
         href: '/admin/vouchers',
         id: 'vouchers',
-        permissions: ['voucher.view', 'voucher.manage'],
+        permissions: [PERMISSIONS.VOUCHER_VIEW, PERMISSIONS.VOUCHER_MANAGE],
       },
       {
         label: 'Affiliate',
         icon: FiTrendingUp,
         href: '/admin/affiliate',
         id: 'affiliate',
-        permissions: ['affiliate.manage'],
+        permissions: [PERMISSIONS.AFFILIATE_MANAGE],
       },
       {
         label: 'Bản tin',
         icon: FiMail,
         href: '/admin/newsletter',
         id: 'newsletter',
-        permissions: ['newsletter.manage'],
+        permissions: [PERMISSIONS.NEWSLETTER_MANAGE],
       },
     ],
   },
@@ -173,42 +192,70 @@ const MENU_GROUPS: MenuGroup[] = [
         icon: FiMessageSquare,
         href: '/admin/blogs',
         id: 'blogs',
-        permissions: ['blog.manage'],
+        permissions: [PERMISSIONS.BLOG_MANAGE],
       },
       {
         label: 'Kiểm duyệt',
         icon: FiCheckSquare,
         href: '/admin/reviews',
         id: 'admin-reviews',
-        permissions: ['review.manage'],
+        permissions: [PERMISSIONS.REVIEW_MANAGE, PERMISSIONS.COMPLAINT_MANAGE],
       },
       {
         label: 'Hỗ trợ',
         icon: BiSupport,
         href: '/admin/support-tickets',
         id: 'admin-support-tickets',
-        permissions: ['support.ticket.manage'],
+        permissions: [PERMISSIONS.SUPPORT_TICKET_MANAGE],
       },
       {
         label: 'Chính sách',
         icon: FiCheckSquare,
         href: '/admin/policies',
         id: 'admin-policies',
-        roles: ['ADMIN', 'SUPER_ADMIN'],
+        permissions: [PERMISSIONS.BLOG_MANAGE],
       },
       {
         label: 'Banner',
         icon: FiBox,
         href: '/admin/banners',
         id: 'banners',
-        roles: ['ADMIN', 'SUPER_ADMIN'],
+        permissions: [PERMISSIONS.BLOG_MANAGE],
       },
       {
         label: 'Liên kết nhanh',
         icon: FiGrid,
         href: '/admin/quick-links',
         id: 'quick-links',
-        roles: ['ADMIN', 'SUPER_ADMIN'],
+        permissions: [PERMISSIONS.BLOG_MANAGE],
+      },
+    ],
+  },
+  {
+    id: 'system',
+    label: 'Hệ thống',
+    icon: FiSettings,
+    items: [
+      {
+        label: 'Nhật ký hệ thống',
+        icon: FiSettings,
+        href: '/admin/logs',
+        id: 'audit-logs',
+        permissions: [PERMISSIONS.AUDIT_LOG_VIEW],
+      },
+      {
+        label: 'Phân quyền',
+        icon: FiKey,
+        href: '/admin/roles',
+        id: 'roles-manage',
+        permissions: [PERMISSIONS.PERMISSION_MANAGE],
+      },
+      {
+        label: 'Nhân viên',
+        icon: FiUserCheck,
+        href: '/admin/staff',
+        id: 'staff',
+        permissions: [PERMISSIONS.STAFF_VIEW, PERMISSIONS.STAFF_MANAGE],
       },
     ],
   },
@@ -216,7 +263,7 @@ const MENU_GROUPS: MenuGroup[] = [
 
 const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
   const pathname = usePathname();
-  const { profile } = useAuth();
+  const { permissions, isSuperAdmin } = usePermission();
 
   const mounted = useSyncExternalStore(
     () => () => {},
@@ -226,38 +273,22 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
   const [openGroups, setOpenGroups] = useState<string[]>([]);
 
   const filteredMenuGroups = useMemo(() => {
-    const userPermissions = profile?.permissions || [];
-    const userRoles = profile?.roles || [];
-    const isSuperAdmin = userRoles.includes('SUPER_ADMIN');
-
     return MENU_GROUPS.map((group) => {
       const filteredItems = group.items.filter((item) => {
         if (isSuperAdmin) return true;
 
-        let hasRole = true;
-        let hasPermission = true;
+        // Nếu item không khai báo permissions → hiển thị cho mọi admin user
+        if (!item.permissions?.length) return true;
 
-        if (item.roles && item.roles.length > 0) {
-          hasRole = item.roles.some((r) => userRoles.includes(r));
-        }
-
-        if (item.permissions && item.permissions.length > 0) {
-          hasPermission = item.permissions.some((p) => userPermissions.includes(p));
-        }
-
-        // If an item specifies neither roles nor permissions, it is accessible
-        if (!item.roles?.length && !item.permissions?.length) {
-          return true;
-        }
-
-        return hasRole && hasPermission;
+        // OR logic: chỉ cần có 1 permission là đủ
+        return item.permissions.some((p) => permissions.includes(p));
       });
 
       return { ...group, items: filteredItems };
     }).filter((group) => group.items.length > 0);
-  }, [profile]);
+  }, [permissions, isSuperAdmin]);
 
-  // Automatically open groups containing active path
+  // Tự động mở group chứa path đang active
   useEffect(() => {
     const activeGroup = filteredMenuGroups.find((group) =>
       group.items.some((item) => pathname === item.href),
@@ -300,7 +331,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto px-1 space-y-1 custom-scrollbar pr-1">
-        {/* Overview link always visible */}
+        {/* Tổng quan — luôn hiển thị, analytics.view = xem dashboard chính */}
         <Link
           href="/admin"
           className={cn(

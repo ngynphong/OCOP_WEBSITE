@@ -11,12 +11,9 @@ interface ShopPageProps {
 export async function generateMetadata({ params }: ShopPageProps): Promise<Metadata> {
   const { slug } = await params;
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1'}/shops/${slug}`,
-      {
-        next: { revalidate: 60 * 5 }, // 5 minutes cache
-      },
-    );
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/shops/${slug}`, {
+      next: { revalidate: 60 * 5 }, // 5 minutes cache
+    });
 
     if (res.ok) {
       const { data } = await res.json();

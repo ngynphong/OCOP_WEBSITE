@@ -382,3 +382,36 @@ export type AdminDashboardResponse = ResponseBase<IAdminDashboardRes>;
 export type AdminRefundListResponse = ResponseBase<IAdminRefundListRes>;
 export type AdminPayoutResponse = ResponseBase<IAdminPayoutRes>;
 export type AdminRefundActionResponse = ResponseBase<IAdminRefundListItem>;
+
+// ─── Audit Log Management Types ─────────────────────────────────────────────
+
+export interface AuditLog {
+  id: number;
+  actorEmail: string;
+  entityType: string;
+  entityId: string;
+  action: string;
+  beforeValue: unknown;
+  afterValue: unknown;
+  ipAddress: string;
+  userAgent: string;
+  createdAt: string;
+}
+
+export interface GetAuditLogsParams {
+  pageNo?: number;
+  pageSize?: number;
+  actorEmail?: string;
+  entityType?: string;
+  action?: string;
+}
+
+export interface AdminAuditLogListRes {
+  content: AuditLog[];
+  totalElements: number;
+  totalPages: number;
+  page: number;
+  size: number;
+}
+
+export type AdminAuditLogResponse = ResponseBase<AdminAuditLogListRes>;

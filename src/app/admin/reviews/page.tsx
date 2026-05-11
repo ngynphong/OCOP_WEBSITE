@@ -33,11 +33,15 @@ import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/AppButton';
 import { AdminFlagTable } from '@/features/reviews/components/AdminFlagTable';
 import { useDebounce } from '@/hooks/useDebounce';
+import { usePermission } from '@/features/auth/hooks/usePermission';
+import { PERMISSIONS } from '@/features/auth/constants/permissions';
 
 type TabType = 'REVIEWS' | 'FLAGS' | 'COMPLAINTS';
 
 export default function AdminReviewsPage() {
   const [activeTab, setActiveTab] = useState<TabType>('REVIEWS');
+  const { hasPermission } = usePermission();
+  const canViewComplaints = hasPermission(PERMISSIONS.COMPLAINT_MANAGE);
 
   // States for Reviews Tab
   const [reviewParams, setReviewParams] = useState<AdminReviewQueryParams>({
@@ -92,6 +96,7 @@ export default function AdminReviewsPage() {
     pageSize: complaintParams.pageSize,
     status: complaintParams.status === 'ALL' ? undefined : complaintParams.status,
     search: debouncedSearch,
+    enabled: canViewComplaints,
   });
   const { mutate: updateComplaint, isPending: isUpdatingComplaint } = useAdminUpdateComplaint();
 
@@ -175,19 +180,23 @@ export default function AdminReviewsPage() {
             <div className="absolute bottom-0 left-0 right-0 h-1 bg-emerald-800 rounded-t-full" />
           )}
         </button>
-        <button
-          onClick={() => setActiveTab('COMPLAINTS')}
-          className={cn(
-            'pb-4 px-2 text-sm font-black uppercase tracking-widest transition-all relative flex items-center gap-2 cursor-pointer',
-            activeTab === 'COMPLAINTS' ? 'text-emerald-800' : 'text-stone-400 hover:text-stone-600',
-          )}
-        >
-          <LifeBuoy size={16} />
-          Khiếu nại khách hàng
-          {activeTab === 'COMPLAINTS' && (
-            <div className="absolute bottom-0 left-0 right-0 h-1 bg-emerald-800 rounded-t-full" />
-          )}
-        </button>
+        {canViewComplaints && (
+          <button
+            onClick={() => setActiveTab('COMPLAINTS')}
+            className={cn(
+              'pb-4 px-2 text-sm font-black uppercase tracking-widest transition-all relative flex items-center gap-2 cursor-pointer',
+              activeTab === 'COMPLAINTS'
+                ? 'text-emerald-800'
+                : 'text-stone-400 hover:text-stone-600',
+            )}
+          >
+            <LifeBuoy size={16} />
+            Khiếu nại khách hàng
+            {activeTab === 'COMPLAINTS' && (
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-emerald-800 rounded-t-full" />
+            )}
+          </button>
+        )}
       </div>
 
       {activeTab === 'REVIEWS' ? (
@@ -304,7 +313,7 @@ export default function AdminReviewsPage() {
           setParams={setFlagParams}
           totalPages={flagTotalPages}
         />
-      ) : activeTab === 'COMPLAINTS' ? (
+      ) : activeTab === 'COMPLAINTS' && canViewComplaints ? (
         <div className="space-y-6">
           {/* Complaints Filters */}
           <div className="flex flex-wrap items-center gap-4 bg-white p-4 rounded-3xl border border-stone-100 shadow-sm">

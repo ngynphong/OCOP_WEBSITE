@@ -16,7 +16,7 @@ export const StoryHero = ({
   province: string;
   imageUrl: string;
 }) => (
-  <section className="relative h-[80vh] w-full overflow-hidden flex items-center justify-center">
+  <section className="relative h-[85vh] w-full overflow-hidden flex items-center justify-center">
     <motion.div
       initial={{ scale: 1.1 }}
       animate={{ scale: 1 }}
