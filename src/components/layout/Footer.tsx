@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { MapPin, Phone, Mail, Camera, Globe, Tv } from 'lucide-react';
+import { MapPin, Phone, Mail, Globe } from 'lucide-react';
+import { FaFacebook, FaInstagram } from 'react-icons/fa';
 import Script from 'next/script';
 import { usePublicCategoriesQuery } from '@/features/products/hooks/usePublicProducts';
 import Image from 'next/image';
@@ -39,13 +40,13 @@ export function Footer() {
               href="#"
               className="w-10 h-10 bg-green-900 rounded-full flex justify-center items-center hover:bg-green-800 transition-colors"
             >
-              <Tv className="w-4 h-4 text-white" />
+              <FaFacebook className="w-4 h-4 text-white" />
             </a>
             <a
               href="#"
               className="w-10 h-10 bg-green-900 rounded-full flex justify-center items-center hover:bg-green-800 transition-colors"
             >
-              <Camera className="w-4 h-4 text-white" />
+              <FaInstagram className="w-4 h-4 text-white" />
             </a>
           </div>
         </div>
@@ -109,6 +110,12 @@ export function Footer() {
               className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900"
             >
               Điều khoản dịch vụ
+            </Link>
+            <Link
+              href="/ho-tro"
+              className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900"
+            >
+              Trung tâm trợ giúp
             </Link>
           </div>
         </div>

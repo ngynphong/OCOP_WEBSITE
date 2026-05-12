@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight } from 'lucide-react';
 import { ReactNode } from 'react';
 
 interface AuthLayoutProps {
@@ -57,7 +56,7 @@ export function AuthLayout({
               href={linkHref}
               className="inline-flex items-center gap-1 text-stone-900 font-bold text-sm border-b-2 border-stone-900 pb-0.5 hover:text-green-700 hover:border-green-700 transition-colors"
             >
-              {linkActionText} <ArrowRight className="w-4 h-4" />
+              {linkActionText}
             </Link>
           </div>
         </div>

@@ -19,15 +19,17 @@ export const ContactForm = () => {
     resolver: zodResolver(supportFormSchema),
   });
 
-  const onSubmit = async (data: SupportFormData) => {
+  const onSubmit = async () => {
     setIsSubmitting(true);
     // Fake API call
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
       toast.success('Yêu cầu hỗ trợ đã được gửi thành công! Chúng tôi sẽ phản hồi sớm nhất.');
       reset();
-    } catch (error) {
-      toast.error('Có lỗi xảy ra, vui lòng thử lại sau.');
+    } catch (error: unknown) {
+      const err = error as { message?: string };
+      const errorMessage = err?.message || 'Có lỗi xảy ra, vui lòng thử lại sau.';
+      toast.error(errorMessage);
       console.error(error);
     } finally {
       setIsSubmitting(false);

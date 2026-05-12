@@ -26,6 +26,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { ForcedLogoutModal } from '@/components/layout/ForcedLogoutModal';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -38,7 +40,10 @@ export default function RootLayout({
       className={`${roboto.variable} ${openSans.variable} h-full antialiased`}
     >
       <body suppressHydrationWarning className="min-h-full flex flex-col">
-        <AppProvider>{children}</AppProvider>
+        <AppProvider>
+          {children}
+          <ForcedLogoutModal />
+        </AppProvider>
       </body>
     </html>
   );

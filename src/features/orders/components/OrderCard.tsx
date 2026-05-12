@@ -156,7 +156,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
             </Button>
           </Link>
 
-          {(order.status === 'SHIPPED' || order.status === 'DELIVERED') && (
+          {order.status === 'DELIVERED' && (
             <Button
               variant="primary"
               size="sm"

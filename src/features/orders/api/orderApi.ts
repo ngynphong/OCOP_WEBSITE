@@ -35,7 +35,23 @@ export const orderApi = {
   },
 
   refundOrder: async (orderCode: string, data: IRefundReq) => {
-    return axiosClient.post<unknown, { data: unknown }>(`/orders/${orderCode}/refund`, data);
+    const formData = new FormData();
+
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && key !== 'evidenceImages') {
+        formData.append(key, value.toString());
+      }
+    });
+
+    if (data.evidenceImages && data.evidenceImages.length > 0) {
+      data.evidenceImages.forEach((file) => {
+        formData.append('evidenceImages', file);
+      });
+    }
+
+    return axiosClient.post<unknown, { data: unknown }>(`/orders/${orderCode}/refund`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
   },
 
   confirmReceived: async (orderCode: string) => {

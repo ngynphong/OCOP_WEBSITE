@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/store/hooks';
@@ -5,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import Cookies from 'js-cookie';
 import { authApi } from '../api/authApi';
-import { setCredentials, logout as reduxLogout } from '@/store/features/authSlice';
+import { setCredentials, logout as reduxLogout, setForcedLogout } from '@/store/features/authSlice';
 import {
   ForgotPasswordRequest,
   LoginRequest,
@@ -21,20 +22,28 @@ import {
 import { cartApi } from '@/features/cart/api/cartApi';
 import { getSessionId, clearSessionId } from '@/features/cart/utils/cartSession';
 
-/**
- * Hook chuyên biệt chỉ dùng để lấy thông tin profile người dùng.
- * Tách biệt để tránh khởi tạo dư thừa các mutations khi chỉ cần xem profile (như trong layouts/headers).
- */
 export const useAuthProfile = () => {
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { isAuthenticated, roles: reduxRoles } = useAppSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
   const profileQuery = useQuery({
     queryKey: ['profile'],
     queryFn: () => authApi.getProfile(),
-    enabled: isAuthenticated, // Chỉ fetch nếu đã login (có token)
-    staleTime: 5 * 60 * 1000, // 5 phút cache
-    retry: 1,
+    enabled: isAuthenticated,
+    staleTime: 5 * 60 * 1000,
   });
+
+  useEffect(() => {
+    if (profileQuery.isSuccess && profileQuery.data?.data?.roles) {
+      const serverRoles = profileQuery.data.data.roles;
+      const hasSellerOnServer = serverRoles.includes('SELLER');
+      const hasSellerOnClient = reduxRoles.includes('SELLER');
+
+      if (hasSellerOnServer && !hasSellerOnClient) {
+        dispatch(setForcedLogout(true));
+      }
+    }
+  }, [profileQuery.isSuccess, profileQuery.data, reduxRoles, dispatch]);
 
   return {
     profile: profileQuery.data?.data,
@@ -44,9 +53,6 @@ export const useAuthProfile = () => {
   };
 };
 
-/**
- * Hook quản lý các hành động xác thực (Login, Logout, Register, etc.)
- */
 export const useAuth = () => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -67,13 +73,11 @@ export const useAuth = () => {
 
         dispatch(setCredentials({ token: accessToken, roles: roles || [] }));
 
-        // 🚀 Thực hiện Merge giỏ hàng khách vào user sau khi login
         const sessionId = getSessionId();
         if (sessionId) {
           try {
             await cartApi.mergeCart({ sessionId });
             clearSessionId();
-            // Invalidate giỏ hàng để fetch lại dữ liệu mới đã merge
             queryClient.invalidateQueries({ queryKey: ['cart'] });
             queryClient.invalidateQueries({ queryKey: ['cart-count'] });
           } catch (error) {
@@ -83,8 +87,6 @@ export const useAuth = () => {
 
         toast.success('Đăng nhập thành công');
 
-        // Mọi role không phải USER/SELLER → vào admin dashboard
-        // Tương thích với mọi role mới tạo trong hệ thống
         const CUSTOMER_ONLY_ROLES = ['USER', 'SELLER'];
         const isCustomerOnly = roles?.every((role: string) => CUSTOMER_ONLY_ROLES.includes(role));
         router.push(isCustomerOnly ? '/' : '/admin');
@@ -126,7 +128,6 @@ export const useAuth = () => {
 
         dispatch(setCredentials({ token: accessToken, roles: roles || [] }));
 
-        // 🚀 Thực hiện Merge giỏ hàng khách vào user sau khi auto-login từ xác thực email
         const sessionId = getSessionId();
         if (sessionId) {
           try {
@@ -141,7 +142,6 @@ export const useAuth = () => {
 
         toast.success('Xác thực thành công! Hệ thống đã tự động đăng nhập.');
 
-        // Mọi role không phải USER/SELLER → vào admin dashboard
         const CUSTOMER_ONLY_ROLES = ['USER', 'SELLER'];
         const isCustomerOnly = roles?.every((role: string) => CUSTOMER_ONLY_ROLES.includes(role));
         router.push(isCustomerOnly ? '/' : '/admin');
@@ -172,7 +172,7 @@ export const useAuth = () => {
     dispatch(reduxLogout());
     queryClient.removeQueries({ queryKey: ['profile'] });
     toast.success('Đăng xuất thành công');
-    router.push('/dang-nhap');
+    router.replace('/dang-nhap');
   };
 
   const forgotPasswordMutation = useMutation({
@@ -235,7 +235,6 @@ export const useAuth = () => {
     onSuccess: () => toast.success('Mã xác thực mới đã được gửi'),
   });
 
-  // Tương thích ngược với các components cũ đang dùng profile từ useAuth
   const { profile, isLoadingProfile, isErrorProfile, refetchProfile } = useAuthProfile();
 
   return {
