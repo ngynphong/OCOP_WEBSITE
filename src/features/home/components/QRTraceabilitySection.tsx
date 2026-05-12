@@ -63,9 +63,6 @@ export function QRTraceabilitySection() {
               </div>
             </div>
           </div>
-          <p className="text-stone-600 text-xs md:text-sm font-bold font-sans uppercase tracking-[4px] mt-2">
-            Quét để khám phá
-          </p>
         </div>
       </div>
     </section>

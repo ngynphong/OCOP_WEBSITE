@@ -90,7 +90,7 @@ export interface IBuyNowRes {
 export interface IRefundReq {
   refundType: string; // FULL, PARTIAL
   reason: string;
-  evidenceImages: string[];
+  evidenceImages?: File[];
 }
 
 export interface IOrderDetailsItem {

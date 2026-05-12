@@ -14,10 +14,10 @@ export default function VerifyOtpPage() {
       }
     >
       <AuthLayout
-        subtitle="Chưa nhận được mã?"
-        linkText="Gửi lại mã"
-        linkActionText="Gửi lại mã"
-        linkHref="/quen-mat-khau"
+        subtitle=""
+        linkText=""
+        linkActionText=""
+        linkHref=""
         rightPanelLine1="XÁC THỰC DANH TÍNH"
         rightPanelLine2="Đảm bảo an toàn"
       >

@@ -4,24 +4,13 @@ import React from 'react';
 import Link from 'next/link';
 import { ShoppingCart, ArrowRight, Sparkles, Package, Tag } from 'lucide-react';
 
-// -------------------- Suggestion chips --------------------
-
-const SUGGESTED_CATEGORIES = [
-  { label: '🍯 Mật ong', href: '/san-pham?keyword=mật+ong' },
-  { label: '🫚 Tinh dầu', href: '/san-pham?keyword=tinh+dầu' },
-  { label: '🌿 Trà thảo mộc', href: '/san-pham?keyword=trà' },
-  { label: '🥜 Hạt dinh dưỡng', href: '/san-pham?keyword=hạt' },
-  { label: '🍄 Nấm khô', href: '/san-pham?keyword=nấm' },
-  { label: '🌶 Gia vị OCOP', href: '/san-pham?keyword=gia+vị' },
-];
-
 // -------------------- Benefit cards --------------------
 
 const BENEFITS = [
   {
     icon: Package,
-    title: 'Freeship đơn từ 200K',
-    desc: 'Giao hàng toàn quốc miễn phí',
+    title: 'Giao hàng tận nơi',
+    desc: 'Giao hàng toàn quốc',
   },
   {
     icon: Sparkles,
@@ -103,24 +92,6 @@ export function CartEmptyState({ isGuest = false }: CartEmptyStateProps) {
           </Link>
         </>
       )}
-
-      {/* ---- Suggestion categories ---- */}
-      <div className="w-full max-w-lg mb-10">
-        <p className="text-[10px] font-black uppercase tracking-widest text-stone-400 text-center mb-4">
-          Gợi ý tìm kiếm
-        </p>
-        <div className="flex flex-wrap justify-center gap-2">
-          {SUGGESTED_CATEGORIES.map((cat) => (
-            <Link
-              key={cat.href}
-              href={cat.href}
-              className="inline-flex items-center px-4 py-2 rounded-full bg-white border border-stone-200 hover:border-green-400 hover:bg-green-50 hover:text-green-700 text-sm font-semibold text-stone-600 transition-all duration-150 shadow-sm hover:shadow"
-            >
-              {cat.label}
-            </Link>
-          ))}
-        </div>
-      </div>
 
       {/* ---- Benefits strip ---- */}
       <div className="w-full max-w-lg grid grid-cols-3 gap-3">

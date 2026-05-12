@@ -7,6 +7,7 @@ import {
   useReorder,
 } from '@/features/orders/hooks/useOrders';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
+import { RefundRequestModal } from './RefundRequestModal';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
@@ -43,14 +44,18 @@ export const OrderActionButtons: React.FC<OrderActionButtonsProps> = ({
     );
   };
 
-  const handleRefundConfirm = () => {
+  const handleRefundSubmit = (data: {
+    reason: string;
+    refundType: string;
+    evidenceImages: File[];
+  }) => {
     refundOrder(
       {
         orderCode,
         data: {
-          refundType: 'FULL',
-          reason: 'Yêu cầu hoàn trả từ người dùng',
-          evidenceImages: [],
+          refundType: data.refundType === 'EXCHANGE' ? 'FULL' : data.refundType,
+          reason: data.reason,
+          evidenceImages: data.evidenceImages,
         },
       },
       {
@@ -68,7 +73,7 @@ export const OrderActionButtons: React.FC<OrderActionButtonsProps> = ({
     });
   };
 
-  const showConfirmReceive = orderStatus === 'SHIPPED' || orderStatus === 'DELIVERED';
+  const showConfirmReceive = orderStatus === 'DELIVERED';
 
   return (
     <div className="flex flex-wrap items-center justify-end gap-3">
@@ -105,7 +110,7 @@ export const OrderActionButtons: React.FC<OrderActionButtonsProps> = ({
         </Button>
       )}
 
-      {canReorder && (
+      {canReorder && orderStatus === 'DELIVERED' && (
         <Button
           variant="primary"
           disabled={isReordering}
@@ -128,15 +133,10 @@ export const OrderActionButtons: React.FC<OrderActionButtonsProps> = ({
         isLoading={isCanceling}
       />
 
-      <ConfirmModal
+      <RefundRequestModal
         isOpen={isRefundModalOpen}
-        title="Yêu cầu hoàn tiền"
-        message="Bạn có chắc chắn muốn gửi yêu cầu trả hàng/hoàn tiền cho đơn hàng này? Chúng tôi sẽ xử lý và phản hồi sớm nhất."
-        confirmText="Xác nhận gửi"
-        cancelText="Để sau"
-        type="warning"
-        onConfirm={handleRefundConfirm}
-        onCancel={() => setIsRefundModalOpen(false)}
+        onClose={() => setIsRefundModalOpen(false)}
+        onSubmit={handleRefundSubmit}
         isLoading={isRefunding}
       />
     </div>

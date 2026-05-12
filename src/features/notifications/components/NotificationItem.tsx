@@ -107,7 +107,7 @@ export const NotificationItem = React.memo<{
               read ? 'text-stone-600 font-medium' : 'text-stone-900 font-bold',
             )}
           >
-            <span className="text-stone-950">{actorName}</span>{' '}
+            <span className="text-stone-950">{actorName}: </span>{' '}
             {payload?.message || 'đã thực hiện một hành động.'}
           </div>
         </div>

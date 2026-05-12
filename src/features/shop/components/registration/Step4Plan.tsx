@@ -133,7 +133,7 @@ const Step4Plan: React.FC<Step4PlanProps> = memo(({ register, errors, control, s
                       <div
                         className={cn(
                           'mt-1 w-4 h-4 rounded-full flex items-center justify-center shrink-0',
-                          i < 3 ? 'bg-green-100 text-green-600' : 'bg-stone-100 text-stone-400',
+                          i < 100 ? 'bg-green-100 text-green-600' : 'bg-stone-100 text-stone-400',
                         )}
                       >
                         <FiCheck size={10} strokeWidth={4} />

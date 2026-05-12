@@ -68,7 +68,6 @@ const onRequest = (config: InternalAxiosRequestConfig) => {
   if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`;
   } else if (config.headers) {
-    // Nếu không có token, đính kèm X-Session-Id để hỗ trợ Guest Cart
     config.headers['X-Session-Id'] = getOrCreateSessionId();
   }
 
@@ -76,8 +75,6 @@ const onRequest = (config: InternalAxiosRequestConfig) => {
 };
 
 const onRequestError = (error: AxiosError) => {
-  // Note: onRequestError usually happens before config is fully set,
-  // but if we have the silent flag, we should avoid decrementing what wasn't incremented.
   const isSilent = error.config?.headers?.['X-Silent-Loading'] === 'true';
   if (!isSilent) {
     updateLoadingState(-1);
@@ -130,13 +127,15 @@ const onResponseError = async (error: AxiosError) => {
     error.message ||
     'Có lỗi xảy ra, vui lòng thử lại sau';
 
-  // 3. Xử lý Token hết hạn (Code 1009 theo spec)
+  // 3. Xử lý Token hết hạn (Code 1009 hoặc HTTP 401)
   if (
-    code === 1009 &&
+    (code === 1009 || status === 401 || code === 401) &&
     originalRequest &&
     !originalRequest._retry &&
     originalRequest.headers.Authorization
   ) {
+    originalRequest._retry = true;
+
     if (isRefreshing) {
       return new Promise((resolve, reject) => {
         failedQueue.push({ resolve, reject });
@@ -150,7 +149,6 @@ const onResponseError = async (error: AxiosError) => {
         .catch((err) => Promise.reject(err));
     }
 
-    originalRequest._retry = true;
     isRefreshing = true;
 
     try {

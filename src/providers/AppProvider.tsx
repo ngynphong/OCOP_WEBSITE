@@ -71,7 +71,18 @@ export default function AppProvider({ children }: { children: React.ReactNode })
           queries: {
             staleTime: 60 * 1000,
             refetchOnWindowFocus: false,
-            retry: 1,
+            retry: (failureCount, error: unknown) => {
+              const err = error as {
+                response?: { status?: number };
+                code?: number | string;
+                statusCode?: number;
+              };
+              const statusCode = err?.response?.status || err?.code || err?.statusCode;
+              if (statusCode === 401 || statusCode === 1009 || statusCode === 403) {
+                return false;
+              }
+              return failureCount < 1;
+            },
           },
         },
       }),

@@ -15,6 +15,7 @@ import { useSellerShop } from '@/features/shop/hooks/useSellerShop';
 import { ShopDocumentType } from '@/features/shop/types/shopTypes';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 const REQUIRED_DOCS = [
   {
@@ -65,7 +66,9 @@ const Step5Documents = () => {
 
   const onFinish = () => {
     router.push('/dashboard/cua-hang');
-    router.refresh();
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
   };
 
   if (isLoading) {
@@ -111,7 +114,8 @@ const Step5Documents = () => {
       {/* Document grid */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {REQUIRED_DOCS.map((doc) => {
-          const isUploaded = existingDocs.some((d) => d.docType === doc.type);
+          const uploadedDoc = existingDocs.find((d) => d.docType === doc.type);
+          const isUploaded = !!uploadedDoc;
 
           return (
             <div
@@ -123,16 +127,28 @@ const Step5Documents = () => {
                   : 'bg-white border-stone-100 hover:border-green-200',
               )}
             >
-              <div
-                className={cn(
-                  'w-10 h-10 rounded-xl flex items-center justify-center mb-4 transition-colors',
-                  isUploaded
-                    ? 'bg-green-100 text-green-600'
-                    : 'bg-stone-50 text-stone-400 group-hover:bg-green-50',
-                )}
-              >
-                <doc.icon size={20} />
-              </div>
+              {isUploaded && uploadedDoc?.fileUrl ? (
+                <div className="w-full h-32 mb-4 rounded-xl overflow-hidden bg-stone-50 border border-stone-100 relative">
+                  <Image
+                    src={uploadedDoc.fileUrl}
+                    alt={doc.label}
+                    fill
+                    unoptimized
+                    className="object-contain group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+              ) : (
+                <div
+                  className={cn(
+                    'w-10 h-10 rounded-xl flex items-center justify-center mb-4 transition-colors shrink-0',
+                    isUploaded
+                      ? 'bg-green-100 text-green-600'
+                      : 'bg-stone-50 text-stone-400 group-hover:bg-green-50',
+                  )}
+                >
+                  <doc.icon size={20} />
+                </div>
+              )}
 
               <h4 className="font-bold text-stone-900 text-sm mb-1">{doc.label}</h4>
               <p className="text-[10px] text-stone-400 font-medium leading-tight mb-6">
