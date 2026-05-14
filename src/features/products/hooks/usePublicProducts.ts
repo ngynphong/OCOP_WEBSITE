@@ -1,9 +1,12 @@
 'use client';
 
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useInfiniteQuery, UseQueryOptions } from '@tanstack/react-query';
 import { publicProductApi } from '@/features/products/api/publicProductApi';
 import { brandApi } from '@/features/products/api/brandApi';
-import { PublicProductListParams } from '@/features/products/types/productTypes';
+import {
+  TraceDetailResponse,
+  PublicProductListParams,
+} from '@/features/products/types/productTypes';
 
 export const usePublicCategoriesQuery = () => {
   return useQuery({
@@ -55,8 +58,6 @@ export const usePublicProductsInfiniteQuery = (
     ...options,
   });
 };
-
-import { useInfiniteQuery } from '@tanstack/react-query';
 
 export const useInfiniteDiscoveryProductsQuery = (
   params?: { pageSize?: number; sort?: string },
@@ -149,12 +150,16 @@ export const usePublicBrandDetailQuery = (slug: string | null | undefined) => {
   });
 };
 
-export const useTraceDetailQuery = (qrCode: string | null | undefined) => {
+export const useTraceDetailQuery = (
+  qrCode: string | null | undefined,
+  options?: Partial<UseQueryOptions<TraceDetailResponse, Error>>,
+) => {
   return useQuery({
     queryKey: ['trace-detail', qrCode],
     queryFn: () => publicProductApi.traceQrDetail(qrCode!),
     enabled: !!qrCode,
     staleTime: 60 * 1000,
+    ...options,
   });
 };
 

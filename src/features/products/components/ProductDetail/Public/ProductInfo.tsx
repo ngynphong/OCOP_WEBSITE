@@ -273,9 +273,17 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
           <div className="absolute inset-0 bg-linear-to-r from-emerald-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
           <div className="flex items-center gap-5 relative z-10">
             <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-white shadow-inner">
-              {product.shop.logoUrl && (
+              {product.shop.logoUrl ? (
                 <Image
                   src={product.shop.logoUrl}
+                  alt={product.shop.name}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover"
+                />
+              ) : (
+                <Image
+                  src="/images/shop-default.jpg"
                   alt={product.shop.name}
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"

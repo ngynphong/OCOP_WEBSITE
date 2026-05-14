@@ -2,14 +2,13 @@
 
 import React, { useState } from 'react';
 import { Search } from 'lucide-react';
+import { Button } from '@/components/ui/AppButton';
 
 export const SupportHero = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // Logic tìm kiếm FAQ có thể thêm sau
-    console.log('Searching for:', searchQuery);
   };
 
   return (
@@ -34,17 +33,19 @@ export const SupportHero = () => {
           </div>
           <input
             type="text"
-            className="block w-full pl-12 pr-4 py-4 rounded-full border-0 text-stone-900 bg-white shadow-xl focus:ring-4 focus:ring-[#D4AF37]/30 placeholder:text-stone-400 sm:text-lg transition-shadow"
-            placeholder="Nhập câu hỏi, ví dụ: 'Thời gian giao hàng'..."
+            className="block w-full pl-12 pr-4 py-4 rounded-full focus:outline-none border-0 text-stone-900 bg-white shadow-xl placeholder:text-stone-400 sm:text-lg transition-shadow"
+            placeholder="Nhập câu hỏi, ví dụ: 'Thời gian giao hàng'"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <button
+          <Button
             type="submit"
-            className="absolute inset-y-2 right-2 flex items-center px-6 py-2 bg-gradient-to-r from-[#D4AF37] to-[#C2A052] text-[#113B28] font-bold rounded-full hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#D4AF37] transition-all shadow-md active:scale-95 cursor-pointer"
+            className="absolute inset-y-2 right-2 flex items-center px-6 py-2 text-white font-bold rounded-full transition-all shadow-md active:scale-95 cursor-pointer"
+            size="sm"
+            color="primary"
           >
             Tìm kiếm
-          </button>
+          </Button>
         </form>
       </div>
     </div>

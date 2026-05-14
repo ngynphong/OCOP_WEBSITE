@@ -18,7 +18,7 @@ export const ContactInfo = () => {
             </div>
             <div>
               <p className="text-sm text-green-200 mb-1">Hotline Hỗ Trợ (Miễn phí)</p>
-              <p className="text-lg font-semibold">1900 123 456</p>
+              <p className="text-lg font-semibold">+84 96 524 8115</p>
             </div>
           </div>
 
@@ -28,7 +28,7 @@ export const ContactInfo = () => {
             </div>
             <div>
               <p className="text-sm text-green-200 mb-1">Email Hỗ Trợ</p>
-              <p className="text-lg font-semibold">hotro@ocop.vn</p>
+              <p className="text-lg font-semibold">infovienies@gmail.com</p>
             </div>
           </div>
 
@@ -39,9 +39,7 @@ export const ContactInfo = () => {
             <div>
               <p className="text-sm text-green-200 mb-1">Trụ sở chính</p>
               <p className="text-base font-medium leading-relaxed">
-                Số 1 Đại Cồ Việt, Phường Bách Khoa,
-                <br />
-                Quận Hai Bà Trưng, TP. Hà Nội
+                Số 3 Công Trường Quốc Tế, Phường Xuân Hoà, Thành phố Hồ Chí Minh.
               </p>
             </div>
           </div>
@@ -53,9 +51,9 @@ export const ContactInfo = () => {
             <div>
               <p className="text-sm text-green-200 mb-1">Thời gian làm việc</p>
               <p className="text-base font-medium">
-                Thứ 2 - Thứ 6: 08:00 - 18:00
+                Thứ 2 - Thứ 6: 08:30 - 17:00
                 <br />
-                Thứ 7, CN: 08:00 - 12:00
+                Thứ 7, CN: 08:30 - 11:30
               </p>
             </div>
           </div>

@@ -77,11 +77,11 @@ export const OcopMallSection = memo(function OcopMallSection() {
                 <div className="absolute -top-10 left-6 w-20 h-20 bg-white rounded-2xl p-2 shadow-xl border border-stone-100 group-hover:scale-105 transition-transform duration-500">
                   <div className="relative w-full h-full rounded-xl overflow-hidden">
                     <Image
-                      src={shop.logoUrl || '/images/logo-ocop-rm.jpg'}
+                      src={shop.logoUrl || '/images/logo.png'}
                       alt={shop.name}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-contain"
+                      className="object-contain scale-130"
                     />
                   </div>
                 </div>
@@ -124,7 +124,7 @@ export const OcopMallSection = memo(function OcopMallSection() {
                         </div>
                       ))}
                     </div>
-                    <span className="text-[10px] text-stone-400 font-bold ml-1">+12 SP</span>
+                    <span className="text-[10px] text-stone-400 font-bold ml-1">+4 SP</span>
                   </div>
 
                   <Link
