@@ -94,6 +94,10 @@ export default function SellerShopPage() {
     );
   }
 
+  // Check for registration draft
+  const hasDraft =
+    typeof window !== 'undefined' && !!localStorage.getItem('shop_registration_draft');
+
   if (!profile?.isOwnerShop || isError || !shopData?.data) {
     return (
       <motion.div
@@ -105,10 +109,13 @@ export default function SellerShopPage() {
           <FiTag size={40} className="text-green-400" />
         </div>
         <div>
-          <h2 className="text-xl font-extrabold text-stone-900">Bạn chưa có cửa hàng</h2>
+          <h2 className="text-xl font-extrabold text-stone-900">
+            {hasDraft ? 'Bạn đang trong quá trình đăng ký shop' : 'Bạn chưa có cửa hàng'}
+          </h2>
           <p className="text-sm text-stone-500 mt-2 leading-relaxed">
-            Trở thành Nhà bán hàng OCOP để tiếp cận hàng triệu khách hàng yêu thích sản phẩm đặc sản
-            Việt Nam.
+            {hasDraft
+              ? 'Hệ thống nhận thấy bạn đang thực hiện quy trình đăng ký shop. Hãy tiếp tục để sớm đưa sản phẩm lên OCOP!'
+              : 'Trở thành Nhà bán hàng OCOP để tiếp cận hàng triệu khách hàng yêu thích sản phẩm đặc sản Việt Nam.'}
           </p>
         </div>
         <div className="flex flex-col gap-3 w-full">
@@ -116,7 +123,15 @@ export default function SellerShopPage() {
             href="/dashboard/cua-hang/dang-ky"
             className="flex items-center justify-center gap-2 px-8 py-3.5 bg-green-600 text-white rounded-2xl font-bold hover:bg-green-700 shadow-xl shadow-green-500/25 transition-all hover:-translate-y-0.5"
           >
-            <FiPlus size={18} /> Đăng ký mở shop ngay
+            {hasDraft ? (
+              <>
+                <FiEdit2 size={18} /> Tiếp tục đăng ký
+              </>
+            ) : (
+              <>
+                <FiPlus size={18} /> Đăng ký mở shop ngay
+              </>
+            )}
           </Link>
           <p className="text-xs text-stone-400">Xét duyệt trong vòng 1-3 ngày làm việc</p>
         </div>

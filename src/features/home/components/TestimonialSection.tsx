@@ -89,7 +89,7 @@ export function TestimonialSection() {
         </div>
 
         {/* Brand Logos */}
-        <div className="w-full py-8 border-t border-stone-200/50 flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
+        {/* <div className="w-full py-8 border-t border-stone-200/50 flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
           <div className="flex justify-start items-center gap-2">
             <div className="w-4 h-4 rounded-sm bg-green-900" />
             <span className="text-stone-900 text-xl font-black font-sans leading-8 uppercase tracking-widest">
@@ -117,7 +117,7 @@ export function TestimonialSection() {
               ORGANIC-CERT
             </span>
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );

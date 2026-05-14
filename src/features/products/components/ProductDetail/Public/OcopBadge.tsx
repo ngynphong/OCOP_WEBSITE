@@ -21,11 +21,11 @@ export function OcopBadge({ stars, className }: OcopBadgeProps) {
     >
       <div className="relative w-8 h-8 shrink-0">
         <Image
-          src="/images/logo-ocop-rm.jpg"
+          src="/images/logo.png"
           alt="OCOP Certification"
           fill
           sizes="(max-width: 768px) 100vw, 50vw"
-          className="object-contain"
+          className="object-contain scale-130"
         />
       </div>
       <div className="flex flex-col">

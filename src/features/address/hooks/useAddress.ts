@@ -1,13 +1,17 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
 import { addressApi } from '../api/addressApi';
-import { ICreateAddressRequest, IUpdateAddressRequest } from '../types';
+import { ICreateAddressRequest, IUpdateAddressRequest, IUserAddress } from '../types';
+import { ResponseBase } from '@/features/auth/types';
 import toast from 'react-hot-toast';
 
-export const useUserAddresses = () => {
+export const useUserAddresses = (
+  options?: Partial<UseQueryOptions<ResponseBase<IUserAddress[]>, Error, IUserAddress[]>>,
+) => {
   return useQuery({
     queryKey: ['user-addresses'],
     queryFn: () => addressApi.getAddresses(),
     select: (res) => res.data,
+    ...options,
   });
 };
 

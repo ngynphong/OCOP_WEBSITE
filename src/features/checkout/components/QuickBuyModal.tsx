@@ -11,6 +11,7 @@ import { useBuyNow } from '@/features/orders/hooks/useOrders';
 import { usePaymentMethods } from '@/features/payment/hooks/usePaymentMethods';
 import { useUserAddresses } from '@/features/address/hooks/useAddress';
 import { useEstimateShippingFee } from '@/features/shipping/hooks/useShipping';
+import { useAppSelector } from '@/store/hooks';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -27,13 +28,14 @@ interface QuickBuyModalProps {
 }
 
 export function QuickBuyModal({ isOpen, onClose, product, selectedVariant }: QuickBuyModalProps) {
-  const { data: addresses } = useUserAddresses();
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { data: addresses } = useUserAddresses({ enabled: isOpen && isAuthenticated });
   const [selectedAddress, setSelectedAddress] = useState<Address | undefined>(undefined);
   const [selectedShipping, setSelectedShipping] = useState<ShippingProvider | undefined>(undefined);
   const [selectedPayment, setSelectedPayment] = useState<PaymentMethod | undefined>(undefined);
   const [qty, setQty] = useState(1);
   const { mutate: buyNow, isPending: isSubmitting } = useBuyNow();
-  const { data: paymentMethods } = usePaymentMethods();
+  const { data: paymentMethods } = usePaymentMethods({ enabled: isOpen && isAuthenticated });
   const { mutateAsync: estimateFee } = useEstimateShippingFee();
 
   const [shippingFee, setShippingFee] = useState<number>(0);

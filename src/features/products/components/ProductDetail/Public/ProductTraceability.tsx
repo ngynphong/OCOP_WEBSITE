@@ -3,13 +3,14 @@
 import React from 'react';
 import Image from 'next/image';
 import QRCode from 'react-qr-code';
-import { CheckCircle2, ShieldCheck, Calendar, MapPin, QrCode, Award, FileText } from 'lucide-react';
+import { CheckCircle2, ShieldCheck, Calendar, MapPin, QrCode } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ProductJournal, ProductQrCode } from '@/features/products/types/productTypes';
 import {
   useRecordScanMutation,
   useTraceDetailQuery,
 } from '@/features/products/hooks/usePublicProducts';
+import { useAppSelector } from '@/store/hooks';
 
 interface ProductTraceabilityProps {
   journals: ProductJournal[];
@@ -20,15 +21,19 @@ export function ProductTraceability({ journals = [], qrCode }: ProductTraceabili
   const sortedJournals = [...journals].sort((a, b) => a.stepOrder - b.stepOrder);
   const code = qrCode?.qrCode;
 
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+
   // Track scan
   const { mutate: recordScan } = useRecordScanMutation();
-  const { data: traceData } = useTraceDetailQuery(code);
+  const { data: traceData } = useTraceDetailQuery(code, {
+    enabled: !!code && isAuthenticated,
+  });
 
   React.useEffect(() => {
-    if (code) {
+    if (code && isAuthenticated) {
       recordScan(code);
     }
-  }, [code, recordScan]);
+  }, [code, recordScan, isAuthenticated]);
 
   const scanCount = traceData?.data?.scanCount ?? qrCode?.scanCount ?? 0;
 
@@ -47,12 +52,12 @@ export function ProductTraceability({ journals = [], qrCode }: ProductTraceabili
               </h2>
             </div>
             <p className="text-stone-500 font-medium text-sm leading-relaxed">
-              Minh bạch hành trình trang trại đến bàn ăn thông qua công nghệ Blockchain.
+              Minh bạch hành trình trang trại đến bàn ăn thông qua mã QR.
             </p>
           </div>
 
           {/* Certification Badges */}
-          <div className="flex flex-wrap gap-3">
+          {/* <div className="flex flex-wrap gap-3">
             <div className="flex items-center gap-2 px-3 py-1.5 bg-stone-50 rounded-lg border border-stone-100">
               <Award className="w-4 h-4 text-amber-500" />
               <span className="text-[10px] font-black text-stone-900 uppercase tracking-wider">
@@ -71,7 +76,7 @@ export function ProductTraceability({ journals = [], qrCode }: ProductTraceabili
                 GlobalGAP
               </span>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* QR Scanner Mock UI */}

@@ -9,13 +9,11 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 interface ProductGalleryProps {
   images?: ProductImage[];
   name: string;
-  videoUrl?: string;
 }
 
 export const ProductGallery = memo(function ProductGallery({
   images = [],
   name,
-  videoUrl = 'https://assets.mixkit.co/videos/preview/mixkit-farmer-walking-through-a-field-of-wheat-4428-large.mp4',
 }: ProductGalleryProps) {
   const sortedImages = useMemo(
     () => [...images].sort((a, b) => a.sortOrder - b.sortOrder),
@@ -23,10 +21,7 @@ export const ProductGallery = memo(function ProductGallery({
   );
 
   const mediaList = useMemo(() => {
-    const list: { type: 'IMAGE' | 'VIDEO'; url: string; id?: number | string }[] = [];
-    if (videoUrl) {
-      list.push({ type: 'VIDEO', url: videoUrl, id: 'video' });
-    }
+    const list: { type: 'IMAGE'; url: string; id?: number | string }[] = [];
     sortedImages.forEach((img) => {
       list.push({ type: 'IMAGE', url: img.url, id: img.id });
     });
@@ -34,10 +29,10 @@ export const ProductGallery = memo(function ProductGallery({
       list.push({ type: 'IMAGE', url: '/images/fresh-green-produce.jpg', id: 'fallback' });
     }
     return list;
-  }, [sortedImages, videoUrl]);
+  }, [sortedImages]);
 
   const [activeMedia, setActiveMedia] = useState<{
-    type: 'IMAGE' | 'VIDEO';
+    type: 'IMAGE';
     url: string;
     id?: number | string;
   }>(mediaList[0]);
@@ -70,7 +65,7 @@ export const ProductGallery = memo(function ProductGallery({
     [currentIndex, mediaList],
   );
 
-  if (!images.length && !videoUrl) {
+  if (!images.length) {
     return (
       <div className="w-full aspect-square bg-stone-100 rounded-3xl flex items-center justify-center">
         <span className="text-stone-400">Không có hình ảnh</span>
@@ -82,25 +77,14 @@ export const ProductGallery = memo(function ProductGallery({
     <div className="flex flex-col gap-4">
       {/* Main Display */}
       <div className="w-full max-h-[500px] aspect-square relative rounded-3xl overflow-hidden bg-stone-50 border border-stone-100 shadow-sm group">
-        {activeMedia.type === 'VIDEO' ? (
-          <video
-            src={activeMedia.url}
-            controls
-            autoPlay
-            muted
-            loop
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <Image
-            src={activeMedia.url}
-            alt={name}
-            fill
-            priority
-            sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-contain scale-105 p-4 group-hover:scale-110 transition-transform duration-1000 ease-out"
-          />
-        )}
+        <Image
+          src={activeMedia.url}
+          alt={name}
+          fill
+          priority
+          sizes="(max-width: 768px) 100vw, 50vw"
+          className="object-contain scale-105 p-4 group-hover:scale-110 transition-transform duration-1000 ease-out"
+        />
 
         {/* Navigation Arrows */}
         {mediaList.length > 1 && (
@@ -125,26 +109,6 @@ export const ProductGallery = memo(function ProductGallery({
 
       {/* Thumbnails Row */}
       <div className="flex flex-wrap gap-4 px-2">
-        {/* Video Thumbnail (Always first if exists) */}
-        {videoUrl && (
-          <button
-            onClick={() => setActiveMedia({ type: 'VIDEO', url: videoUrl, id: 'video' })}
-            className={cn(
-              'relative w-14 h-14 rounded-xl overflow-hidden border-2 transition-all duration-300 group',
-              activeMedia.type === 'VIDEO'
-                ? 'border-green-600 ring-4 ring-green-50 shadow-md'
-                : 'border-transparent bg-stone-100 hover:border-stone-200',
-            )}
-          >
-            <div className="absolute inset-0 flex items-center justify-center bg-stone-900/20 group-hover:bg-stone-900/10 z-10">
-              <div className="w-8 h-8 bg-white/90 rounded-full flex items-center justify-center shadow-sm">
-                <div className="w-0 h-0 border-t-[5px] border-t-transparent border-l-8 border-l-green-700 border-b-[5px] border-b-transparent ml-0.5" />
-              </div>
-            </div>
-            <video src={videoUrl} className="w-full h-full object-cover grayscale-[0.5]" />
-          </button>
-        )}
-
         {/* Image Thumbnails */}
         {sortedImages.map((image) => (
           <button

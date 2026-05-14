@@ -25,7 +25,7 @@ export const AmbientBackground = memo(function AmbientBackground() {
             {/* Desktop Background */}
             <div className="hidden md:block absolute inset-0">
               <Image
-                src={activeBanner?.imageUrl || '/images/fresh-green-produce.jpg'}
+                src={activeBanner?.imageUrl || '/images/background.jpg'}
                 alt="Event Background"
                 fill
                 priority
@@ -37,9 +37,7 @@ export const AmbientBackground = memo(function AmbientBackground() {
             <div className="block md:hidden absolute inset-0">
               <Image
                 src={
-                  activeBanner?.imageMobileUrl ||
-                  activeBanner?.imageUrl ||
-                  '/images/fresh-green-produce.jpg'
+                  activeBanner?.imageMobileUrl || activeBanner?.imageUrl || '/images/background.jpg'
                 }
                 alt="Event Background Mobile"
                 fill
