@@ -32,6 +32,16 @@ export const createVariantSchema = z.object({
   dimensions: z.string().max(100).nullable().optional(),
   optionValues: z.string().optional(),
   isDefault: z.boolean().optional(),
+  isWholesaleEnabled: z.boolean().optional(),
+  minQuantity: z.number().int().min(1, 'Số lượng tối thiểu ít nhất là 1').optional(),
+  wholesalePrices: z
+    .array(
+      z.object({
+        minQuantity: z.number().int().min(1),
+        price: z.number().positive(),
+      }),
+    )
+    .optional(),
 });
 
 export type CreateVariantFormData = z.infer<typeof createVariantSchema>;

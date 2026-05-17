@@ -61,6 +61,13 @@ const MENU_GROUPS: MenuGroup[] = [
         roles: ['USER'],
       },
       {
+        id: 'quotations-user',
+        label: 'Yêu cầu báo giá',
+        icon: FiMessageSquare,
+        href: '/dashboard/bao-gia',
+        roles: ['USER'],
+      },
+      {
         id: 'loyalty',
         label: 'Điểm thưởng',
         icon: FiAward,
@@ -145,6 +152,14 @@ const MENU_GROUPS: MenuGroup[] = [
         label: 'Đơn hàng',
         icon: FiShoppingBag,
         href: '/dashboard/cua-hang/don-hang',
+        roles: ['SELLER'],
+        permission: 'seller.shop.manage',
+      },
+      {
+        id: 'seller-quotations',
+        label: 'Báo giá B2B',
+        icon: FiMessageSquare,
+        href: '/dashboard/cua-hang/bao-gia',
         roles: ['SELLER'],
         permission: 'seller.shop.manage',
       },

@@ -12,15 +12,27 @@ import toast from 'react-hot-toast';
 import { ComplaintFormModal } from '@/features/complaints/components/ComplaintFormModal';
 import { AlertCircle } from 'lucide-react';
 
-interface OrderCardProps {
-  order: IOrderItemList;
+interface IExtendedOrderItemList extends IOrderItemList {
+  productName?: string;
+  variantName?: string;
+  quantity?: number;
 }
 
-export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
+interface OrderCardProps {
+  order: IOrderItemList;
+  isB2B?: boolean;
+}
+
+export const OrderCard: React.FC<OrderCardProps> = ({ order, isB2B = false }) => {
   const [isCancelModalOpen, setIsCancelModalOpen] = React.useState(false);
   const [isComplaintModalOpen, setIsComplaintModalOpen] = React.useState(false);
   const { mutate: cancelOrder, isPending: isCancelling } = useCancelOrder();
   const { mutate: confirmReceived, isPending: isConfirming } = useConfirmReceived();
+
+  const extendedOrder = order as IExtendedOrderItemList;
+  const productName = isB2B ? extendedOrder.productName : order.firstItemName;
+  const variantName = isB2B ? extendedOrder.variantName : order.firstItemVariantName;
+  const quantity = isB2B ? extendedOrder.quantity : order.itemCount;
 
   const handleConfirmReceived = () => {
     confirmReceived(order.orderCode, {
@@ -55,7 +67,10 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
               </div>
             )}
           </div>
-          <Link href={`/cua-hang/${order.shopSlug}`} className="group/shop flex items-center gap-1">
+          <Link
+            href={order.shopSlug ? `/cua-hang/${order.shopSlug}` : '#'}
+            className="group/shop flex items-center gap-1"
+          >
             <span className="font-bold text-stone-900 group-hover/shop:text-green-700 transition-colors uppercase text-xs tracking-tight">
               {order.shopName}
             </span>
@@ -80,12 +95,12 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
           {order.thumbnail ? (
             <Image
               src={order.thumbnail}
-              alt={order.firstItemName}
+              alt={productName || 'Hình ảnh sản phẩm'}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-500"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-stone-300">
+            <div className="w-full h-full flex items-center justify-center text-stone-300 bg-stone-100">
               <Store size={24} />
             </div>
           )}
@@ -94,13 +109,9 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
         <div className="flex-1 flex flex-col pt-0.5">
           <div className="flex justify-between items-start gap-4">
             <div>
-              <h3 className="font-bold text-stone-900 text-base line-clamp-1">
-                {order.firstItemName}
-              </h3>
-              {order.firstItemVariantName && (
-                <p className="text-xs font-medium text-stone-400 mt-1">
-                  Phân loại: {order.firstItemVariantName}
-                </p>
+              <h3 className="font-bold text-stone-900 text-base line-clamp-1">{productName}</h3>
+              {variantName && (
+                <p className="text-xs font-medium text-stone-400 mt-1">Phân loại: {variantName}</p>
               )}
             </div>
             <div className="text-right">
@@ -115,9 +126,9 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
 
           <div className="mt-2 flex items-center gap-3">
             <span className="text-xs font-bold text-stone-500 bg-stone-50 px-2 py-1 rounded-lg">
-              Số lượng: {order.itemCount}
+              Số lượng: {quantity}
             </span>
-            {order.itemCount > 1 && (
+            {!isB2B && order.itemCount > 1 && (
               <span className="text-xs font-medium text-stone-400 italic">
                 (Và {order.itemCount - 1} sản phẩm khác)
               </span>
@@ -146,7 +157,10 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
         </div>
 
         <div className="flex items-center gap-3">
-          <Link href={`/dashboard/don-hang/${order.orderCode}`} className="flex-1 sm:flex-none">
+          <Link
+            href={`/dashboard/don-hang/${isB2B ? order.id : order.orderCode}${isB2B ? '?b2b=true' : ''}`}
+            className="flex-1 sm:flex-none"
+          >
             <Button
               variant="outline"
               size="sm"

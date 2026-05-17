@@ -15,7 +15,14 @@ import {
   RefundsTable,
   PayoutsTable,
 } from '@/features/seller-orders/components/SellerFinanceTables';
-import { ISellerOrderItem } from '@/features/seller-orders/types/sellerOrderTypes';
+import {
+  ISellerOrderItem,
+  IRevenueRes,
+  IRefundListRes,
+  IPayoutListRes,
+  IRefundItem,
+  IPayoutItem,
+} from '@/features/seller-orders/types/sellerOrderTypes';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/AppButton';
@@ -30,9 +37,9 @@ const STATUS_TABS = [
   { value: 'CANCELLED', label: 'Đã hủy' },
 ];
 
-function RevenueSummary() {
-  const { data, isLoading } = useSellerRevenueQuery({ period: 'month' });
-  const rev = data?.data;
+function RevenueSummary({ isB2B = false }: { isB2B?: boolean }) {
+  const { data, isLoading } = useSellerRevenueQuery({ period: 'month' }, isB2B);
+  const rev = data?.data as unknown as IRevenueRes;
 
   if (isLoading) return null;
   if (!rev) return null;
@@ -70,10 +77,9 @@ function OrdersManagementContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // Tabs lớn: Orders | Refunds | Payouts
   const [activeMainTab, setActiveMainTab] = useState<'orders' | 'refunds' | 'payouts'>('orders');
+  const [isB2B, setIsB2B] = useState<boolean>(false);
 
-  // Quản lý status Orders
   const currentStatus = searchParams.get('status') || 'ALL';
   const pageNo = parseInt(searchParams.get('page') || '1');
 
@@ -84,26 +90,50 @@ function OrdersManagementContent() {
     isFetchingNextPage,
     isLoading: isOrdersLoading,
     isError: isOrdersError,
-  } = useInfiniteSellerOrders({
-    status: currentStatus === 'ALL' ? undefined : currentStatus,
-    pageSize: 10,
-  });
+  } = useInfiniteSellerOrders(
+    {
+      status: currentStatus === 'ALL' ? undefined : currentStatus,
+      pageSize: 10,
+    },
+    isB2B,
+  );
 
-  // Gỡ bỏ auto-fetch scroll
+  const orders =
+    ordersData?.pages.flatMap((page) => {
+      if (!page?.data) return [];
+      const d = page.data as unknown as Record<string, unknown> | unknown[];
+      if (Array.isArray(d)) return d;
+      if (d && typeof d === 'object') {
+        const obj = d as Record<string, unknown>;
+        if (Array.isArray(obj.content)) return obj.content;
+        if (Array.isArray(obj.items)) return obj.items;
+      }
+      return [];
+    }) || [];
 
-  const orders = ordersData?.pages.flatMap((page) => page.data.content) || [];
+  const { data: refundsData, isLoading: isRefundsLoading } = useSellerRefundsQuery(
+    {
+      pageNo,
+      pageSize: 10,
+    },
+    isB2B,
+  );
+  const { data: payoutsData, isLoading: isPayoutsLoading } = useSellerPayoutsQuery(
+    {
+      pageNo,
+      pageSize: 10,
+    },
+    isB2B,
+  );
 
-  const { data: refundsData, isLoading: isRefundsLoading } = useSellerRefundsQuery({
-    pageNo,
-    pageSize: 10,
-  });
-  const { data: payoutsData, isLoading: isPayoutsLoading } = useSellerPayoutsQuery({
-    pageNo,
-    pageSize: 10,
-  });
-
-  const refunds = refundsData?.data?.content || [];
-  const payouts = payoutsData?.data?.content || [];
+  const refunds = ((refundsData?.data as unknown as IRefundListRes & { items?: IRefundItem[] })
+    ?.content ||
+    (refundsData?.data as unknown as IRefundListRes & { items?: IRefundItem[] })?.items ||
+    []) as IRefundItem[];
+  const payouts = ((payoutsData?.data as unknown as IPayoutListRes & { items?: IPayoutItem[] })
+    ?.content ||
+    (payoutsData?.data as unknown as IPayoutListRes & { items?: IPayoutItem[] })?.items ||
+    []) as IPayoutItem[];
 
   const handleStatusChange = (status: string) => {
     if (status === 'ALL') {
@@ -115,7 +145,33 @@ function OrdersManagementContent() {
 
   return (
     <div className="space-y-6">
-      <RevenueSummary />
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        {/* Switcher Mua lẻ / Mua sỉ B2B */}
+        <div className="flex bg-stone-100/80 p-1.5 rounded-2xl w-fit border border-stone-200/50">
+          <button
+            onClick={() => setIsB2B(false)}
+            className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-300 ${
+              !isB2B
+                ? 'bg-white text-green-700 shadow-md shadow-stone-200/50 scale-100'
+                : 'text-stone-500 hover:text-stone-800'
+            }`}
+          >
+            Đơn bán lẻ
+          </button>
+          <button
+            onClick={() => setIsB2B(true)}
+            className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-300 ${
+              isB2B
+                ? 'bg-white text-green-700 shadow-md shadow-stone-200/50 scale-100'
+                : 'text-stone-500 hover:text-stone-800'
+            }`}
+          >
+            Đơn bán sỉ B2B
+          </button>
+        </div>
+      </div>
+
+      <RevenueSummary isB2B={isB2B} />
 
       <div className="bg-white rounded-3xl border border-stone-100 shadow-sm overflow-hidden">
         {/* Main Tabs */}

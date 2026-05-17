@@ -67,4 +67,75 @@ export const orderApi = {
       `/orders/${orderCode}/shipment`,
     );
   },
+
+  uploadPaymentProof: async (orderCode: string, file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return axiosClient.post<unknown, { data: unknown }>(
+      `/orders/${orderCode}/payment-proof`,
+      formData,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      },
+    );
+  },
+
+  createB2BOrder: async (data: import('../types/orderTypes').ICreateB2BOrderReq) => {
+    return axiosClient.post<unknown, { data: IBuyNowRes }>('/orders/b2b', data);
+  },
+
+  getB2BOrders: async (params: IOrderListReq, headers?: Record<string, string>) => {
+    return axiosClient.get<unknown, { data: IOrderListRes }>('/my/orders/b2b', { params, headers });
+  },
+
+  getB2BOrderById: async (id: string) => {
+    return axiosClient.get<unknown, { data: IOrderDetailsRes }>(`/my/orders/b2b/${id}`);
+  },
+
+  uploadB2BPaymentProof: async (id: string, file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return axiosClient.post<unknown, { data: unknown }>(
+      `/my/orders/b2b/${id}/payment-proof`,
+      formData,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      },
+    );
+  },
+
+  cancelB2BOrder: async (id: string, data: { reason: string }) => {
+    return axiosClient.post<unknown, { data: unknown }>(`/my/orders/b2b/${id}/cancel`, data);
+  },
+
+  confirmB2BReceived: async (id: string) => {
+    return axiosClient.post<unknown, { data: unknown }>(`/my/orders/b2b/${id}/confirm-received`);
+  },
+
+  refundB2BOrder: async (
+    id: string,
+    data: { refundType: string; reason: string; amount: number; evidenceImages?: File[] },
+  ) => {
+    const formData = new FormData();
+    formData.append('refundType', data.refundType);
+    formData.append('reason', data.reason);
+    formData.append('amount', data.amount.toString());
+    if (data.evidenceImages && data.evidenceImages.length > 0) {
+      data.evidenceImages.forEach((file) => formData.append('evidenceImages', file));
+    }
+    return axiosClient.post<unknown, { data: unknown }>(`/my/orders/b2b/${id}/refund`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
+
+  getB2BShipmentTracking: async (id: string) => {
+    return axiosClient.get<unknown, { data: unknown }>(`/my/orders/b2b/${id}/shipment`);
+  },
+
+  reviewB2BOrder: async (
+    id: string,
+    data: { rating: number; comment: string; images?: string[] },
+  ) => {
+    return axiosClient.post<unknown, { data: unknown }>(`/my/orders/b2b/${id}/reviews`, data);
+  },
 };

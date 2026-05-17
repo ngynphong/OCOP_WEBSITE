@@ -22,10 +22,14 @@ import { Product } from '@/features/products/types/productTypes';
 import { useWishlistStatus } from '@/features/wishlist/hooks/useWishlist';
 import { useAppSelector } from '@/store/hooks';
 import { ReviewList } from '@/features/reviews/components/ReviewList';
+import { QuickBuyModal } from '@/features/checkout/components/QuickBuyModal';
+import { useState, useCallback } from 'react';
+import toast from 'react-hot-toast';
 
 export function ProductDetailClient() {
   const { slug } = useParams() as { slug: string };
   const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const [isQuickBuyModalOpen, setIsQuickBuyModalOpen] = useState(false);
 
   const { data: productResp, isLoading } = usePublicProductDetailQuery(slug);
   const product = productResp?.data;
@@ -60,6 +64,14 @@ export function ProductDetailClient() {
     isAuthenticated ? [...new Set(allVisibleProductIds)] : [],
   );
   const wishlistStatusMap = wishlistStatusData?.data || {};
+
+  const handleBuyNow = useCallback(() => {
+    if (!isAuthenticated) {
+      toast.error('Vui lòng đăng nhập để sử dụng tính năng Mua ngay');
+      return;
+    }
+    setIsQuickBuyModalOpen(true);
+  }, [isAuthenticated]);
 
   if (isLoading) {
     return null;
@@ -112,6 +124,7 @@ export function ProductDetailClient() {
           product.variants[0]?.price ||
           product.minPrice
         }
+        onBuyNow={handleBuyNow}
       />
 
       <main className="max-w-7xl mx-auto px-6 py-6 md:py-8">
@@ -186,6 +199,7 @@ export function ProductDetailClient() {
                     soldCount={p.soldCount}
                     isWishlisted={!!wishlistStatusMap[p.id]}
                     inStock={p.inStock}
+                    isWholesale={p.variants?.some((v) => v.isWholesaleEnabled)}
                   />
                 ))}
               </div>
@@ -233,9 +247,9 @@ export function ProductDetailClient() {
                       location={p.provinceName || ''}
                       shopName={p.shopName}
                       categoryName={p.categoryName}
-                      soldCount={p.soldCount}
                       isWishlisted={!!wishlistStatusMap[p.id]}
                       inStock={p.inStock}
+                      isWholesale={p.variants?.some((v) => v.isWholesaleEnabled)}
                     />
                   ))}
               </div>
@@ -280,9 +294,9 @@ export function ProductDetailClient() {
                       location={p.provinceName || ''}
                       shopName={p.shopName}
                       categoryName={p.categoryName}
-                      soldCount={p.soldCount}
                       isWishlisted={!!wishlistStatusMap[p.id]}
                       inStock={p.inStock}
+                      isWholesale={p.variants?.some((v) => v.isWholesaleEnabled)}
                     />
                   ))}
               </div>
@@ -292,6 +306,15 @@ export function ProductDetailClient() {
       </main>
 
       <Footer />
+
+      {product && (
+        <QuickBuyModal
+          isOpen={isQuickBuyModalOpen}
+          onClose={() => setIsQuickBuyModalOpen(false)}
+          product={product}
+          selectedVariant={product.variants.find((v) => v.isDefault) || product.variants[0]}
+        />
+      )}
     </div>
   );
 }

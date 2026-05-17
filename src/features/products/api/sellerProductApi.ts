@@ -23,6 +23,8 @@ import {
   AttributeListResponse,
   AttributeTemplateListResponse,
   UpdateAttributesRequest,
+  ResponseBase,
+  WholesalePrice,
 } from '@/features/products/types/productTypes';
 
 export const sellerProductApi = {
@@ -200,5 +202,26 @@ export const sellerProductApi = {
 
   getAttributeTemplates: (categoryId?: number): Promise<AttributeTemplateListResponse> => {
     return axiosClient.get('/attribute-templates', { params: { categoryId } });
+  },
+
+  // ─── Tier Prices ──────────────────────────────────────────────────────────
+  getTierPrices: (
+    productId: number,
+    variantId?: number,
+  ): Promise<ResponseBase<WholesalePrice[]>> => {
+    return axiosClient.get(`/seller/products/${productId}/tier-prices`, { params: { variantId } });
+  },
+
+  updateTierPrices: (
+    productId: number,
+    data: { variantId: number | null; tiers: WholesalePrice[] },
+  ): Promise<ResponseBase<WholesalePrice[]>> => {
+    return axiosClient.put(`/seller/products/${productId}/tier-prices`, data);
+  },
+
+  deleteTierPrices: (productId: number, variantId?: number): Promise<void> => {
+    return axiosClient.delete(`/seller/products/${productId}/tier-prices`, {
+      params: { variantId },
+    });
   },
 };

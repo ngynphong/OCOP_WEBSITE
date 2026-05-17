@@ -14,6 +14,8 @@ import { useAppSelector } from '@/store/hooks';
 import toast from 'react-hot-toast';
 import { CiShop } from 'react-icons/ci';
 import { QuickBuyModal } from '@/features/checkout/components/QuickBuyModal';
+import { RFQModal } from '@/features/quotations/components/RFQModal';
+import { MessageSquareQuote } from 'lucide-react';
 
 interface ProductInfoProps {
   product: Product;
@@ -25,6 +27,7 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
     product.variants.find((v) => v.isDefault) || product.variants[0] || null,
   );
   const [isQuickBuyModalOpen, setIsQuickBuyModalOpen] = useState(false);
+  const [isRFQModalOpen, setIsRFQModalOpen] = useState(false);
 
   const price = selectedVariant?.price ?? product.maxPrice;
   const oldPrice = selectedVariant?.comparePrice ?? null;
@@ -147,10 +150,49 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
                 </span>
               )}
             </div>
-            <p className="text-stone-400 text-sm font-bold tracking-wide">
-              Giá niêm yết từ Chủ thể OCOP
-            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="text-stone-400 text-sm font-bold tracking-wide">
+                Giá niêm yết từ Chủ thể OCOP
+              </p>
+              {selectedVariant?.minQuantity && selectedVariant.minQuantity > 1 && (
+                <div className="px-2 py-0.5 bg-green-50 text-green-700 rounded-md border border-green-100 text-[10px] font-black uppercase tracking-wider">
+                  Bán buôn tối thiểu {selectedVariant.minQuantity} {product.unit || 'sản phẩm'}
+                </div>
+              )}
+            </div>
           </div>
+
+          {/* Wholesale Prices Table */}
+          {selectedVariant?.isWholesaleEnabled &&
+            selectedVariant.wholesalePrices &&
+            selectedVariant.wholesalePrices.length > 0 && (
+              <div className="bg-amber-50 rounded-2xl p-4 border border-amber-100 animate-in fade-in slide-in-from-top-2">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-1.5 h-4 bg-amber-500 rounded-full" />
+                  <h4 className="text-[10px] font-black text-amber-800 uppercase tracking-widest">
+                    Bảng giá sỉ ưu đãi
+                  </h4>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {selectedVariant.wholesalePrices.map((wp, idx) => (
+                    <div
+                      key={idx}
+                      className="flex flex-col bg-white/60 p-3 rounded-xl border border-amber-200/50 hover:bg-white transition-colors"
+                    >
+                      <span className="text-[10px] text-amber-600 font-bold uppercase mb-0.5">
+                        Từ {wp.minQuantity} {product.unit || 'sản phẩm'}
+                      </span>
+                      <span className="text-sm font-black text-amber-900">
+                        {wp.price.toLocaleString('vi-VN')}₫
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-[10px] text-amber-600/70 font-medium mt-3 italic">
+                  * Giá sỉ được áp dụng tự động khi mua đủ số lượng
+                </p>
+              </div>
+            )}
 
           {/* Variants */}
           {product.variants.length > 1 && (
@@ -227,8 +269,27 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
                     Mua ngay
                   </Button>
                 </div>
-                <p className="text-center text-stone-400 text-xs font-medium">
-                  Thanh toán an toàn qua cổng OCOP Payment
+
+                {/* RFQ Action */}
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="w-full h-12 rounded-xl text-sm border-stone-200 text-stone-600 hover:bg-stone-50"
+                  leftIcon={<MessageSquareQuote className="w-4 h-4" />}
+                  onClick={() => {
+                    if (!isAuthenticated) {
+                      toast.error('Vui lòng đăng nhập để gửi yêu cầu báo giá');
+                      return;
+                    }
+                    setIsRFQModalOpen(true);
+                  }}
+                >
+                  Yêu cầu báo giá sỉ
+                </Button>
+
+                <p className="text-center text-stone-400 text-[10px] font-medium">
+                  Đơn hàng sỉ từ {selectedVariant?.minQuantity || 10} sản phẩm, thỏa thuận giá & vận
+                  chuyển trực tiếp với Shop.
                 </p>
               </>
             )}
@@ -305,12 +366,20 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
       </div>
 
       {selectedVariant && (
-        <QuickBuyModal
-          isOpen={isQuickBuyModalOpen}
-          onClose={() => setIsQuickBuyModalOpen(false)}
-          product={product}
-          selectedVariant={selectedVariant}
-        />
+        <>
+          <QuickBuyModal
+            isOpen={isQuickBuyModalOpen}
+            onClose={() => setIsQuickBuyModalOpen(false)}
+            product={product}
+            selectedVariant={selectedVariant}
+          />
+          <RFQModal
+            isOpen={isRFQModalOpen}
+            onClose={() => setIsRFQModalOpen(false)}
+            product={product}
+            selectedVariant={selectedVariant}
+          />
+        </>
       )}
     </>
   );
