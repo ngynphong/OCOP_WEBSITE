@@ -154,7 +154,7 @@ export function Footer() {
           rel="noopener noreferrer"
         >
           <Image
-            src="https://images.dmca.com/Badges/dmca_protected_sml_120m.png?ID=9083b6eb-63b9-43d0-8700-3a01749c1279"
+            src="https://www.dmca.com/r/9e5z4w8"
             alt="DMCA.com Protection Status"
             width={120}
             height={40}
