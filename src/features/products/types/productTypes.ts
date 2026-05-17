@@ -49,6 +49,11 @@ export interface ProductProvince {
   code: string;
 }
 
+export interface WholesalePrice {
+  minQuantity: number;
+  price: number;
+}
+
 export interface ProductVariant {
   id: number;
   sku: string;
@@ -66,6 +71,9 @@ export interface ProductVariant {
   isDefault: boolean;
   isActive: boolean;
   inStock: boolean;
+  isWholesaleEnabled: boolean;
+  minQuantity: number;
+  wholesalePrices: WholesalePrice[];
   createdAt: string;
 }
 
@@ -227,6 +235,9 @@ export interface CreateVariantRequest {
   weightGram?: number;
   dimensions?: string | null;
   isDefault?: boolean;
+  isWholesaleEnabled?: boolean;
+  minQuantity?: number;
+  wholesalePrices?: WholesalePrice[];
 }
 
 export interface UpdateVariantRequest {
@@ -239,6 +250,9 @@ export interface UpdateVariantRequest {
   weightGram?: number;
   dimensions?: string;
   isActive?: boolean;
+  isWholesaleEnabled?: boolean;
+  minQuantity?: number;
+  wholesalePrices?: WholesalePrice[];
 }
 
 export interface UpdateStockRequest {

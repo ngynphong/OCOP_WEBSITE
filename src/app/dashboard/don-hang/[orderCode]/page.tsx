@@ -1,70 +1,124 @@
 'use client';
 
-import React, { use } from 'react';
-import { useOrderDetails, useOrderShipment } from '@/features/orders/hooks/useOrders';
+import React, { use, Suspense, useState } from 'react';
+import {
+  useOrderDetails,
+  useOrderShipment,
+  useB2BShipmentTracking,
+  useCancelB2BOrder,
+  useConfirmB2BReceived,
+  useRefundB2BOrder,
+  useReviewB2BOrder,
+  useUploadPaymentProof,
+} from '@/features/orders/hooks/useOrders';
 import { OrderStatusBadge } from '@/features/orders/components/OrderStatusBadge';
 import { OrderActionButtons } from '@/features/orders/components/OrderActionButtons';
-import { ChevronLeft, Store, Package, Truck, MapPin, CheckCircle } from 'lucide-react';
+import { ChevronLeft, Store, Package, MapPin } from 'lucide-react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { formatCurrencyVND } from '@/utils/format';
-import { MessageSquare, AlertCircle } from 'lucide-react';
-import { IOrderDetailsItem } from '@/features/orders/types/orderTypes';
+import { MessageSquare } from 'lucide-react';
+import { IOrderDetailsItem, IOrderDetailsRes } from '@/features/orders/types/orderTypes';
 import { ComplaintFormModal } from '@/features/complaints/components/ComplaintFormModal';
 import { ReviewFormModal } from '@/features/reviews/components/ReviewFormModal';
+import { Button } from '@/components/ui/AppButton';
 
-const translateStatus = (status: string) => {
-  const map: Record<string, string> = {
-    PENDING_PAYMENT: 'Chờ thanh toán',
-    PENDING_CONFIRM: 'Chờ xác nhận',
-    CONFIRMED: 'Đã xác nhận',
-    PROCESSING: 'Đang chuẩn bị hàng',
-    SHIPPED: 'Đã bàn giao vận chuyển',
-    DELIVERED: 'Giao hàng thành công',
-    COMPLETED: 'Hoàn thành',
-    CANCELLED: 'Đã hủy',
-    REFUNDING: 'Yêu cầu hoàn trả',
-    REFUNDED: 'Đã hoàn tiền',
-  };
-  return map[status] || status;
-};
+// Imported modular subcomponents
+import {
+  B2BCancelModal,
+  B2BRefundModal,
+  B2BReviewModal,
+} from '@/features/orders/components/B2BOrderModals';
+import { B2BShipmentProgress } from '@/features/orders/components/B2BShipmentProgress';
+import { B2BOrderSummary } from '@/features/orders/components/B2BOrderSummary';
+import { B2BPaymentProof } from '@/features/orders/components/B2BPaymentProof';
 
-const translateShipmentStatus = (status: string) => {
-  const map: Record<string, string> = {
-    AWAITING_PICKUP: 'Chờ lấy hàng',
-    PICKED_UP: 'Đã lấy hàng',
-    IN_TRANSIT: 'Đang luân chuyển',
-    OUT_FOR_DELIVERY: 'Đang đi phát',
-    DELIVERED: 'Giao thành công',
-    FAILED: 'Giao thất bại',
-    RETURNED: 'Hoàn trả',
-  };
-  return map[status] || status;
-};
+interface IExtendedOrderDetailsRes extends Omit<IOrderDetailsRes, 'shippingAddress'> {
+  shopName?: string;
+  shopId?: number;
+  shopLogoUrl?: string;
+  variantId?: number;
+  productName?: string;
+  variantName?: string;
+  productImage?: string;
+  thumbnail?: string;
+  unitPrice?: number;
+  quantity?: number;
+  isReviewed?: boolean;
+  shippingAddress?: string | IOrderDetailsRes['shippingAddress'];
+}
+
+interface IShipmentData {
+  status: string;
+  trackingNumber: string;
+  carrierName?: string;
+  driverName?: string;
+  driverPhone?: string;
+  licensePlate?: string;
+  note?: string;
+  timeline: {
+    status: string;
+    location: string;
+    description: string;
+    loggedAt: string;
+  }[];
+}
 
 interface PageProps {
   params: Promise<{ orderCode: string }>;
 }
 
-export default function OrderDetailsPage({ params }: PageProps) {
+function OrderDetailsContent({ params }: PageProps) {
   const { orderCode } = use(params);
-  const { data, isLoading, isError } = useOrderDetails(orderCode);
-  const order = data?.data;
+  const searchParams = useSearchParams();
+  const isNumeric = /^\d+$/.test(orderCode);
+  const isB2B =
+    searchParams.get('b2b') === 'true' || orderCode.toUpperCase().includes('B2B') || isNumeric;
+
+  const { data, isLoading, isError } = useOrderDetails(orderCode, isB2B);
+  const { mutate: uploadProof, isPending: isUploading } = useUploadPaymentProof(isB2B);
+  const order = data?.data as unknown as IExtendedOrderDetailsRes;
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && orderCode) {
+      uploadProof({ orderCode, file });
+    }
+  };
 
   const shouldSkipShipment =
     !order ||
     order.status === 'PENDING_CONFIRM' ||
     order.status === 'PENDING_PAYMENT' ||
     order.status === 'CANCELLED';
-  const { data: shipmentData, isLoading: isShipmentLoading } = useOrderShipment(
+
+  const { data: b2bShipmentData, isLoading: isB2BShipmentLoading } = useB2BShipmentTracking(
     orderCode,
-    shouldSkipShipment,
+    isB2B && !shouldSkipShipment,
+  );
+  const { data: retailShipmentData, isLoading: isRetailShipmentLoading } = useOrderShipment(
+    orderCode,
+    isB2B || shouldSkipShipment,
   );
 
-  const shipment = shipmentData?.data;
+  const shipment = (isB2B ? b2bShipmentData?.data : retailShipmentData?.data) as
+    | IShipmentData
+    | undefined;
+  const isShipmentLoading = isB2B ? isB2BShipmentLoading : isRetailShipmentLoading;
 
   const [reviewingItem, setReviewingItem] = React.useState<IOrderDetailsItem | null>(null);
   const [isComplaintModalOpen, setIsComplaintModalOpen] = React.useState(false);
+
+  // B2B States & Mutations
+  const [showB2BCancelModal, setShowB2BCancelModal] = useState(false);
+  const [showB2BRefundModal, setShowB2BRefundModal] = useState(false);
+  const [showB2BReviewModal, setShowB2BReviewModal] = useState(false);
+
+  const { mutate: cancelB2B, isPending: isCancelingB2B } = useCancelB2BOrder();
+  const { mutate: confirmB2BReceivedMut, isPending: isConfirmingB2B } = useConfirmB2BReceived();
+  const { mutate: refundB2B, isPending: isRefundingB2B } = useRefundB2BOrder();
+  const { mutate: reviewB2B, isPending: isReviewingB2B } = useReviewB2BOrder();
 
   const isPageLoading = isLoading || (isShipmentLoading && !shouldSkipShipment);
 
@@ -78,312 +132,317 @@ export default function OrderDetailsPage({ params }: PageProps) {
     );
   }
 
+  // Safely map B2B shop & items dynamically
+  const shopName = isB2B ? order.shopName || 'Nhà cung cấp sỉ' : order.shop?.name || '';
+  const shopId = isB2B ? order.shopId : order.shop?.id;
+  const shopSlug = isB2B ? `shop-${order.shopId || ''}` : order.shop?.slug || '';
+
+  const orderItems = isB2B
+    ? [
+        {
+          id: order.id,
+          variantId: order.variantId || 0,
+          productName: order.productName || '',
+          variantName: order.variantName || '',
+          productImage: order.productImage || order.thumbnail || '',
+          unitPrice: order.unitPrice || order.totalAmount,
+          qty: order.quantity || 1,
+          totalPrice: order.totalAmount,
+          isReviewed: order.isReviewed || false,
+        },
+      ]
+    : order.items || [];
+
+  const rawAddr = order.shippingAddress;
+  let shippingAddress = {
+    recipient: '',
+    phone: '',
+    address: '',
+    ward: '',
+    district: '',
+    province: '',
+  };
+  if (rawAddr) {
+    if (typeof rawAddr === 'string') {
+      try {
+        const parsed = JSON.parse(rawAddr);
+        shippingAddress = {
+          recipient: parsed.recipient || '',
+          phone: parsed.phone || '',
+          address: parsed.addressLine || parsed.address || '',
+          ward: parsed.ward || '',
+          district: parsed.district || '',
+          province: parsed.province || '',
+        };
+      } catch {
+        shippingAddress.address = rawAddr;
+      }
+    } else {
+      shippingAddress = {
+        recipient: rawAddr.recipient || '',
+        phone: rawAddr.phone || '',
+        address: rawAddr.address || '',
+        ward: rawAddr.ward || '',
+        district: rawAddr.district || '',
+        province: rawAddr.province || '',
+      };
+    }
+  }
+
   return (
-    <div className="max-w-6xl mx-auto space-y-6 pb-20">
+    <div className="max-w-7xl mx-auto p-4 md:p-6 lg:p-8 space-y-8 animate-in fade-in slide-in-from-bottom-3 duration-500">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-stone-100">
         <div className="flex items-center gap-4">
           <Link
             href="/dashboard/don-hang"
-            className="p-2.5 bg-white border border-stone-200 rounded-2xl hover:bg-stone-50 transition-all shadow-sm group"
+            className="w-10 h-10 rounded-2xl bg-stone-50 border border-stone-100 flex items-center justify-center text-stone-500 hover:text-stone-900 hover:bg-stone-100 hover:scale-105 active:scale-95 transition-all shadow-sm"
           >
-            <ChevronLeft
-              size={20}
-              className="text-stone-600 group-hover:-translate-x-0.5 transition-transform"
-            />
+            <ChevronLeft size={20} />
           </Link>
           <div>
-            <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-black text-stone-900 tracking-tight">
-                Chi tiết đơn hàng
-              </h1>
-              <OrderStatusBadge status={order.status} />
-            </div>
-            <p className="text-stone-400 text-sm font-bold mt-1 tracking-wider uppercase">
-              Mã đơn: {order.orderCode}
+            <h1 className="text-xl md:text-2xl font-black text-stone-900 tracking-tight flex items-center gap-2.5">
+              Chi tiết đơn hàng
+              <span className="text-stone-300 font-light">#</span>
+              <span className="font-extrabold letter-spacing-1">{order.orderCode}</span>
+            </h1>
+            <p className="text-xs text-stone-400 font-bold mt-1">
+              Đặt ngày {new Date(order.createdAt).toLocaleString('vi-VN')}
             </p>
           </div>
         </div>
-
-        <div className="hidden md:flex items-center gap-3">
-          {(order.status === 'DELIVERED' || order.status === 'COMPLETED') && (
-            <button
-              onClick={() => setIsComplaintModalOpen(true)}
-              className="flex items-center gap-2 px-6 py-2.5 bg-white border border-amber-100 text-amber-600 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-amber-50 transition-all shadow-sm cursor-pointer"
-            >
-              <AlertCircle size={16} />
-              Khiếu nại đơn hàng
-            </button>
-          )}
-          <OrderActionButtons
-            orderCode={order.orderCode}
-            orderStatus={order.status}
-            canCancel={order.canCancel}
-            canRefund={order.canRefund}
-            canReorder={order.canReorder}
-            canReview={order.canReview}
-          />
+        <div className="flex items-center gap-3">
+          <span className="text-xs font-black uppercase text-stone-400 tracking-widest hidden md:inline">
+            Trạng thái:
+          </span>
+          <OrderStatusBadge status={order.status} />
         </div>
       </div>
 
-      <div className="space-y-6">
-        {/* ROW 1: Tiến độ vận chuyển (Full width - Vị trí cũ) */}
-        {shipment && shipment.timeline && shipment.timeline.length > 0 && (
-          <div className="bg-white rounded-4xl p-8 border border-stone-100 shadow-sm overflow-hidden">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center shadow-inner">
-                  <Truck size={24} className="text-green-600" />
+      {/* Main Grid Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Left Columns (Full width on small, 2/3 width on large) */}
+        <div className="lg:col-span-2 space-y-8">
+          {/* Row 1: Shipping Progress timeline */}
+          <B2BShipmentProgress shipment={shipment} isB2B={isB2B} />
+
+          {/* Row 2: Store / Vendor Metadata */}
+          <div className="bg-white rounded-4xl p-8 border border-stone-100 shadow-sm relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform">
+              <Store size={80} className="text-stone-900" />
+            </div>
+            <div className="flex items-center justify-between pb-6 border-b border-stone-100 relative z-10">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 bg-stone-50 rounded-2xl flex items-center justify-center border border-stone-100 shadow-inner">
+                  <Store size={28} className="text-stone-600" />
                 </div>
                 <div>
-                  <h3 className="font-black text-stone-900 text-lg">Tiến độ vận chuyển</h3>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                    <p className="text-xs text-green-700 font-black uppercase tracking-wider">
-                      {translateShipmentStatus(shipment.status)}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-stone-50 p-4 rounded-2xl border border-stone-100 flex items-center gap-4">
-                <div className="text-right border-r border-stone-200 pr-4">
-                  <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest block mb-1">
-                    Mã vận đơn
-                  </span>
-                  <span className="text-sm font-black text-stone-900 letter-spacing-1">
-                    {shipment.trackingNumber}
-                  </span>
-                </div>
-                <Package size={16} className="text-stone-400" />
-              </div>
-            </div>
-
-            <div className="flex w-full items-start mt-4 mb-2 scrollbar-hide overflow-x-auto pb-6">
-              {[...shipment.timeline]
-                .sort((a, b) => new Date(a.loggedAt).getTime() - new Date(b.loggedAt).getTime())
-                .map((event, idx, arr) => {
-                  const isLast = idx === arr.length - 1;
-                  return (
-                    <div
-                      key={idx}
-                      className="relative flex-1 flex flex-col items-center text-center shrink-0 min-w-[160px]"
-                    >
-                      {!isLast && (
-                        <div className="absolute top-[20px] left-1/2 w-full h-[3px] bg-stone-100 z-0 rounded-full" />
-                      )}
-                      <div
-                        className={`w-10 h-10 relative z-10 rounded-full flex items-center justify-center border-4 border-white shadow-xl ${isLast ? 'bg-green-500 text-white scale-110' : 'bg-white text-stone-300'}`}
-                      >
-                        {isLast ? (
-                          <CheckCircle size={20} />
-                        ) : (
-                          <div className="w-2.5 h-2.5 rounded-full bg-current" />
-                        )}
-                      </div>
-                      <p
-                        className={`text-xs mt-5 px-2 ${isLast ? 'font-black text-green-700' : 'font-bold text-stone-400'}`}
-                      >
-                        {translateShipmentStatus(event.status)}
-                      </p>
-                      <p className="text-[10px] text-stone-300 mt-1.5 font-black">
-                        {new Date(event.loggedAt).toLocaleTimeString('vi-VN', {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}{' '}
-                        • {new Date(event.loggedAt).toLocaleDateString('vi-VN')}
-                      </p>
-                    </div>
-                  );
-                })}
-            </div>
-          </div>
-        )}
-
-        {/* Layout Grid mới */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-          {/* CỘT TRÁI (md:col-span-4): Trạng thái đơn hàng */}
-          <div className="md:col-span-5 space-y-6">
-            <div className="bg-white rounded-4xl p-8 border border-stone-100 shadow-sm">
-              <h3 className="font-bold text-stone-900 flex items-center gap-2 mb-8">
-                <Package size={20} className="text-stone-400" /> Trạng thái đơn hàng
-              </h3>
-              <div className="space-y-4">
-                {order.statusTimeline?.map((timeline, idx: number) => (
-                  <div
-                    key={idx}
-                    className="flex gap-4 items-start bg-stone-50/50 p-4 rounded-2xl border border-stone-100/50"
+                  <h3 className="font-black text-stone-900 text-lg leading-tight">{shopName}</h3>
+                  <Link
+                    href={`/cua-hang/${shopSlug}`}
+                    className="text-xs text-green-600 font-extrabold hover:text-green-700 mt-1 inline-block"
                   >
-                    <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-sm border border-stone-100">
-                      <CheckCircle size={18} className="text-green-500" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-bold text-stone-900">
-                        {translateStatus(timeline.status)}
-                      </p>
-                      <p className="text-[10px] text-stone-400 font-bold mt-1">
-                        {new Date(timeline.at).toLocaleTimeString('vi-VN')} •{' '}
-                        {new Date(timeline.at).toLocaleDateString('vi-VN')}
-                      </p>
-                      {timeline.note && (
-                        <div className="mt-3 bg-white px-3 py-2 rounded-xl border border-stone-100/50">
-                          <p className="text-[11px] text-stone-500 italic leading-relaxed">
-                            &quot;{timeline.note}&quot;
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* CỘT PHẢI (md:col-span-8): Chi tiết SP | Thông tin nhận hàng | Thanh toán */}
-          <div className="md:col-span-7 space-y-6">
-            {/* Chi tiết sản phẩm (Thông tin shop & Sản phẩm) */}
-            <div className="bg-white rounded-4xl border border-stone-100 shadow-sm overflow-hidden flex flex-col">
-              <div className="p-6 border-b border-stone-50 flex items-center justify-between bg-stone-50/50">
-                <div className="flex items-center gap-3">
-                  <Store size={18} className="text-stone-400" />
-                  <h3 className="font-bold text-stone-800">{order.shop.name}</h3>
+                    Xem thông tin cửa hàng →
+                  </Link>
                 </div>
-                <Link
-                  href={`/cua-hang/${order.shop.slug}`}
-                  className="text-xs font-bold text-green-600 hover:text-green-700"
-                >
-                  Xem shop
-                </Link>
               </div>
-              <div className="p-6 space-y-4">
-                {order.items.map((item) => (
-                  <div key={item.id} className="flex gap-4 group">
-                    <div className="relative w-24 h-24 rounded-2xl overflow-hidden shrink-0 border border-stone-100">
+              <button className="bg-stone-50 text-stone-600 font-black text-xs px-4 py-2.5 rounded-xl border border-stone-100 hover:bg-stone-100 active:scale-95 transition-all shadow-sm flex items-center gap-2">
+                💬 Chat ngay
+              </button>
+            </div>
+
+            {/* Items List */}
+            <div className="pt-6 space-y-6 relative z-10">
+              {orderItems.map((item: IOrderDetailsItem, idx: number) => (
+                <div key={idx} className="flex gap-5 group/item">
+                  <div className="relative w-24 h-24 rounded-2xl overflow-hidden bg-stone-50 border border-stone-100 shrink-0 shadow-sm">
+                    {item.productImage ? (
                       <Image
                         src={item.productImage}
                         alt={item.productName}
                         fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-500"
+                        className="object-cover group-hover/item:scale-105 transition-transform duration-500"
                       />
-                    </div>
-                    <div className="flex-1 flex flex-col justify-center py-1">
-                      <div className="flex justify-between items-start gap-2">
-                        <h4 className="font-bold text-stone-900 group-hover:text-green-700 transition-colors line-clamp-1">
-                          {item.productName}
-                        </h4>
-                        {order.canReview && !item.isReviewed && (
-                          <button
-                            onClick={() => setReviewingItem(item)}
-                            className="flex items-center gap-1.5 text-[10px] font-black text-green-600 uppercase tracking-tighter hover:text-green-700 whitespace-nowrap cursor-pointer"
-                          >
-                            <MessageSquare size={12} />
-                            Đánh giá ngay
-                          </button>
-                        )}
-                        {item.isReviewed && (
-                          <span className="text-[10px] font-black text-stone-400 uppercase tracking-tighter">
-                            Đã đánh giá
-                          </span>
-                        )}
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-stone-300">
+                        <Package size={24} />
                       </div>
-                      <p className="text-xs font-medium text-stone-400 mt-1">{item.variantName}</p>
-                      <div className="flex justify-between items-end mt-3">
-                        <div className="bg-stone-100 px-2 py-1 rounded-lg">
-                          <span className="text-[10px] font-bold text-stone-400 uppercase mr-1">
-                            SL:
-                          </span>
-                          <span className="text-xs font-bold text-stone-900">x{item.qty}</span>
-                        </div>
-                        <p className="font-black text-stone-900 text-lg">
-                          {formatCurrencyVND(item.unitPrice)}
-                        </p>
+                    )}
+                  </div>
+                  <div className="flex-1 flex flex-col justify-center py-1">
+                    <div className="flex justify-between items-start gap-2">
+                      <h4 className="font-bold text-stone-900 group-hover/item:text-green-700 transition-colors line-clamp-1">
+                        {item.productName}
+                      </h4>
+                      {order.canReview && !item.isReviewed && (
+                        <button
+                          onClick={() => setReviewingItem(item)}
+                          className="flex items-center gap-1.5 text-[10px] font-black text-green-600 uppercase tracking-tighter hover:text-green-700 whitespace-nowrap cursor-pointer"
+                        >
+                          <MessageSquare size={12} />
+                          Đánh giá ngay
+                        </button>
+                      )}
+                      {item.isReviewed && (
+                        <span className="text-[10px] font-black text-stone-400 uppercase tracking-tighter">
+                          Đã đánh giá
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs font-medium text-stone-400 mt-1">{item.variantName}</p>
+                    <div className="flex justify-between items-end mt-3">
+                      <div className="bg-stone-100 px-2 py-1 rounded-lg">
+                        <span className="text-[10px] font-bold text-stone-400 uppercase mr-1">
+                          SL:
+                        </span>
+                        <span className="text-xs font-bold text-stone-900">x{item.qty}</span>
                       </div>
+                      <p className="font-black text-stone-900 text-lg">
+                        {formatCurrencyVND(item.unitPrice)}
+                      </p>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
+          </div>
 
-            {/* Thông tin nhận hàng */}
-            <div className="bg-white rounded-4xl p-8 border border-stone-100 shadow-sm relative overflow-hidden group">
-              <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform">
-                <MapPin size={80} className="text-stone-900" />
+          {/* Action Buttons for Desktop / Tablet */}
+          <div className="hidden md:block">
+            {isB2B ? (
+              <div className="flex flex-wrap gap-4">
+                {(order.status === 'PENDING' || order.status === 'PENDING_DEPOSIT') && (
+                  <Button
+                    onClick={() => setShowB2BCancelModal(true)}
+                    variant="outline"
+                    className="px-6 py-3 border-2 border-red-200 text-red-600 rounded-2xl hover:bg-red-50 text-xs font-black uppercase tracking-widest transition-all shadow-sm"
+                  >
+                    Hủy đơn hàng sỉ
+                  </Button>
+                )}
+                {(order.status === 'SHIPPING' || order.status === 'DELIVERED') && (
+                  <Button
+                    onClick={() => confirmB2BReceivedMut(order.id.toString())}
+                    isLoading={isConfirmingB2B}
+                    className="px-6 py-3 bg-green-600 text-white rounded-2xl hover:bg-green-700 text-xs font-black uppercase tracking-widest transition-all shadow-sm"
+                  >
+                    Xác nhận đã nhận hàng
+                  </Button>
+                )}
+                {(order.status === 'DELIVERED' || order.status === 'COMPLETED') && (
+                  <Button
+                    onClick={() => {
+                      setShowB2BRefundModal(true);
+                    }}
+                    variant="outline"
+                    className="px-6 py-3 border-2 border-amber-200 text-amber-600 rounded-2xl hover:bg-amber-50 text-xs font-black uppercase tracking-widest transition-all shadow-sm"
+                  >
+                    Khiếu nại / Hoàn tiền
+                  </Button>
+                )}
+                {order.status === 'COMPLETED' && (
+                  <Button
+                    onClick={() => setShowB2BReviewModal(true)}
+                    className="px-6 py-3 bg-green-600 text-white rounded-2xl hover:bg-green-700 text-xs font-black uppercase tracking-widest transition-all shadow-sm"
+                  >
+                    Đánh giá đơn sỉ
+                  </Button>
+                )}
               </div>
-              <h3 className="font-bold text-stone-900 flex items-center gap-2 mb-6">
-                <MapPin size={18} className="text-green-600" /> Thông tin nhận hàng
-              </h3>
-              <div className="relative z-10">
-                <p className="font-black text-stone-900 mb-1 flex items-center gap-2">
-                  {order.shippingAddress.recipient}
-                  <span className="w-1 h-1 bg-stone-300 rounded-full" />
-                  <span className="text-stone-500 font-bold">{order.shippingAddress.phone}</span>
-                </p>
-                <p className="text-stone-400 text-sm font-medium leading-relaxed mt-3">
-                  {order.shippingAddress.address}, {order.shippingAddress.ward},{' '}
-                  {order.shippingAddress.district}, {order.shippingAddress.province}
-                </p>
-              </div>
-            </div>
-
-            {/* Chi tiết thanh toán */}
-            <div className="bg-green-700 rounded-4xl p-8 text-white shadow-xl shadow-stone-200">
-              <h3 className="font-bold text-white flex items-center gap-2 mb-8 uppercase text-[10px] tracking-widest">
-                Thông tin thanh toán
-              </h3>
-              <div className="space-y-6">
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-white font-medium">
-                      Tạm tính ({order.items.length} SP)
-                    </span>
-                    <span className="font-bold">{formatCurrencyVND(order.subtotal)}</span>
-                  </div>
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-white font-medium">Phí vận chuyển</span>
-                    <span className="font-bold">{formatCurrencyVND(order.shippingFee)}</span>
-                  </div>
-                  {(order.shipDiscount > 0 || order.voucherDiscount > 0) && (
-                    <div className="flex justify-between items-center text-sm text-green-400">
-                      <span className="font-medium">Giảm giá</span>
-                      <span className="font-bold">
-                        -{formatCurrencyVND(order.shipDiscount + order.voucherDiscount)}
-                      </span>
-                    </div>
-                  )}
-                </div>
-                <div className="h-px bg-white" />
-                <div className="flex justify-between items-end">
-                  <span className="text-white font-bold text-xs uppercase mb-1">
-                    Tổng thanh toán
-                  </span>
-                  <span className="text-4xl font-black text-white tracking-tighter">
-                    {formatCurrencyVND(order.totalAmount)}
-                  </span>
-                </div>
-                <div className="pt-2">
-                  <div className="bg-stone-800/50 rounded-2xl p-4 flex items-center justify-between">
-                    <span className="text-xs text-white font-bold uppercase">
-                      Phương thức thanh toán
-                    </span>
-                    <span className="text-xs font-black">
-                      {order.paymentMethod || 'Tiền mặt (COD)'}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            ) : (
+              <OrderActionButtons
+                orderCode={order.orderCode}
+                orderStatus={order.status}
+                canCancel={order.canCancel}
+                canRefund={order.canRefund}
+                canReorder={order.canReorder}
+                canReview={order.canReview}
+              />
+            )}
           </div>
         </div>
 
-        {/* Action Buttons for Mobile */}
-        <div className="md:hidden pt-4">
-          <OrderActionButtons
-            orderCode={order.orderCode}
-            orderStatus={order.status}
-            canCancel={order.canCancel}
-            canRefund={order.canRefund}
-            canReorder={order.canReorder}
-            canReview={order.canReview}
-          />
+        {/* Right Columns (Sidebar - 1/3 width) */}
+        <div className="space-y-8">
+          {/* Customer Address Details */}
+          <div className="bg-white rounded-4xl p-8 border border-stone-100 shadow-sm relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform">
+              <MapPin size={80} className="text-stone-900" />
+            </div>
+            <h3 className="font-bold text-stone-900 flex items-center gap-2 mb-6">
+              <MapPin size={18} className="text-green-600" /> Thông tin nhận hàng
+            </h3>
+            <div className="relative z-10">
+              <p className="font-black text-stone-900 mb-1 flex items-center gap-2">
+                {shippingAddress.recipient}
+                <span className="w-1 h-1 bg-stone-300 rounded-full" />
+                <span className="text-stone-500 font-bold">{shippingAddress.phone}</span>
+              </p>
+              <p className="text-stone-400 text-sm font-medium leading-relaxed mt-3">
+                {shippingAddress.address}, {shippingAddress.ward}, {shippingAddress.district},{' '}
+                {shippingAddress.province}
+              </p>
+            </div>
+          </div>
+
+          {/* Financial cost summary and Payment Proof upload */}
+          <B2BOrderSummary order={order} isB2B={isB2B} itemCount={orderItems.length}>
+            <B2BPaymentProof order={order} isUploading={isUploading} onUpload={handleFileUpload} />
+          </B2BOrderSummary>
+
+          {/* Action Buttons for Mobile */}
+          <div className="md:hidden pt-4">
+            {isB2B ? (
+              <div className="flex flex-col gap-3">
+                {(order.status === 'PENDING' || order.status === 'PENDING_DEPOSIT') && (
+                  <Button
+                    onClick={() => setShowB2BCancelModal(true)}
+                    variant="outline"
+                    className="w-full py-3 border-2 border-red-200 text-red-600 rounded-2xl hover:bg-red-50 text-xs font-black uppercase tracking-widest transition-all shadow-sm"
+                  >
+                    Hủy đơn hàng sỉ
+                  </Button>
+                )}
+                {(order.status === 'SHIPPING' || order.status === 'DELIVERED') && (
+                  <Button
+                    onClick={() => confirmB2BReceivedMut(order.id.toString())}
+                    isLoading={isConfirmingB2B}
+                    className="w-full py-3 bg-green-600 text-white rounded-2xl hover:bg-green-700 text-xs font-black uppercase tracking-widest transition-all shadow-sm"
+                  >
+                    Xác nhận đã nhận hàng
+                  </Button>
+                )}
+                {(order.status === 'DELIVERED' || order.status === 'COMPLETED') && (
+                  <Button
+                    onClick={() => {
+                      setShowB2BRefundModal(true);
+                    }}
+                    variant="outline"
+                    className="w-full py-3 border-2 border-amber-200 text-amber-600 rounded-2xl hover:bg-amber-50 text-xs font-black uppercase tracking-widest transition-all shadow-sm"
+                  >
+                    Khiếu nại / Hoàn tiền
+                  </Button>
+                )}
+                {order.status === 'COMPLETED' && (
+                  <Button
+                    onClick={() => setShowB2BReviewModal(true)}
+                    className="w-full py-3 bg-green-600 text-white rounded-2xl hover:bg-green-700 text-xs font-black uppercase tracking-widest transition-all shadow-sm"
+                  >
+                    Đánh giá đơn sỉ
+                  </Button>
+                )}
+              </div>
+            ) : (
+              <OrderActionButtons
+                orderCode={order.orderCode}
+                orderStatus={order.status}
+                canCancel={order.canCancel}
+                canRefund={order.canRefund}
+                canReorder={order.canReorder}
+                canReview={order.canReview}
+              />
+            )}
+          </div>
         </div>
       </div>
 
@@ -394,7 +453,6 @@ export default function OrderDetailsPage({ params }: PageProps) {
           orderItemId={reviewingItem.id}
           productName={reviewingItem.productName}
           productImage={reviewingItem.productImage}
-          // productSlug={reviewingItem.productSlug} // We might need to add productSlug to IOrderDetailsItem if available
         />
       )}
 
@@ -403,8 +461,80 @@ export default function OrderDetailsPage({ params }: PageProps) {
         onClose={() => setIsComplaintModalOpen(false)}
         initialType="PRODUCT_QUALITY"
         orderId={order.id}
-        shopId={order.shop.id}
+        shopId={shopId || 0}
+      />
+
+      {/* B2B Modals */}
+      <B2BCancelModal
+        isOpen={showB2BCancelModal}
+        onClose={() => setShowB2BCancelModal(false)}
+        isLoading={isCancelingB2B}
+        onConfirm={(reason) => {
+          cancelB2B(
+            { id: order.id.toString(), reason },
+            {
+              onSuccess: () => {
+                setShowB2BCancelModal(false);
+              },
+            },
+          );
+        }}
+      />
+
+      <B2BRefundModal
+        isOpen={showB2BRefundModal}
+        onClose={() => setShowB2BRefundModal(false)}
+        isLoading={isRefundingB2B}
+        totalAmount={order.totalAmount}
+        onConfirm={(data) => {
+          refundB2B(
+            {
+              id: order.id.toString(),
+              refundType: data.refundType,
+              reason: data.reason,
+              amount: data.amount,
+              evidenceImages: data.evidenceImages,
+            },
+            {
+              onSuccess: () => {
+                setShowB2BRefundModal(false);
+              },
+            },
+          );
+        }}
+      />
+
+      <B2BReviewModal
+        isOpen={showB2BReviewModal}
+        onClose={() => setShowB2BReviewModal(false)}
+        isLoading={isReviewingB2B}
+        onConfirm={(data) => {
+          reviewB2B(
+            {
+              id: order.id.toString(),
+              rating: data.rating,
+              comment: data.comment,
+            },
+            {
+              onSuccess: () => {
+                setShowB2BReviewModal(false);
+              },
+            },
+          );
+        }}
       />
     </div>
+  );
+}
+
+export default function OrderDetailsPage({ params }: PageProps) {
+  return (
+    <Suspense
+      fallback={
+        <div className="p-10 text-center text-stone-500">Đang tải chi tiết đơn hàng...</div>
+      }
+    >
+      <OrderDetailsContent params={params} />
+    </Suspense>
   );
 }

@@ -42,10 +42,13 @@ export interface IBatchOrderReq {
   shops: IShopOrderRequest[];
   addressId: number;
   shippingProviderId: string;
-  paymentMethod: string; // COD, VNPAY, MOMO, ZALOPAY
+  paymentMethod: string; // COD, VNPAY, MOMO, ZALOPAY, BANK_TRANSFER
   shippingFee?: number;
   usePoints?: number;
   affiliateCode?: string;
+  /** B2B / RFQ Token */
+  rfqToken?: string;
+  customShippingFee?: number;
 }
 
 export interface IBatchOrderResponseData {
@@ -74,9 +77,14 @@ export interface IBuyNowReq {
   affiliateCode?: string;
   usePoints?: number;
   note?: string;
+  /** B2B / RFQ Fields */
+  rfqToken?: string;
+  customShippingFee?: number;
+  isWholesale?: boolean;
 }
 
 export interface IBuyNowRes {
+  id?: number;
   orderId: number;
   orderCode: string;
   totalAmount: number;
@@ -108,7 +116,7 @@ export interface IOrderDetailsItem {
 export interface IOrderDetailsRes {
   id: number;
   orderCode: string;
-  status: string;
+  status: string; // PENDING, PAID, PENDING_DEPOSIT, PARTIALLY_PAID, ...
   paymentStatus: string;
   shop: {
     id: number;
@@ -123,6 +131,9 @@ export interface IOrderDetailsRes {
   voucherDiscount: number;
   pointDiscount: number;
   totalAmount: number;
+  depositAmount?: number;
+  depositPaid?: boolean;
+  remainingAmount?: number;
   shippingAddress: {
     recipient: string;
     phone: string;
@@ -135,6 +146,14 @@ export interface IOrderDetailsRes {
   voucherCode: string;
   affiliateCode: string;
   note: string;
+  /** B2B Proof of Payment */
+  paymentProofUrl?: string;
+  isB2B?: boolean;
+  invoiceInfo?: {
+    taxCode: string;
+    companyName: string;
+    companyAddress: string;
+  };
   statusTimeline: {
     status: string;
     at: string;
@@ -211,4 +230,18 @@ export interface IShipmentTrackingRes {
   shippedAt: string;
   deliveredAt: string;
   timeline: ITrackingTimelineEvent[];
+}
+
+export interface IInvoiceInfo {
+  taxCode: string;
+  companyName: string;
+  companyAddress: string;
+}
+
+export interface ICreateB2BOrderReq {
+  checkoutToken: string;
+  addressId: number;
+  paymentMethod: string;
+  note?: string;
+  invoiceInfo?: IInvoiceInfo;
 }

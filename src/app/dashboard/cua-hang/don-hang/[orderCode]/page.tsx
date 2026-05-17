@@ -1,17 +1,20 @@
 'use client';
 
-import React, { use, useState } from 'react';
-import { ChevronLeft, MapPin, Package, Truck, DollarSign, StickyNote } from 'lucide-react';
+import React, { use, useState, Suspense } from 'react';
+import { ChevronLeft, MapPin, Package, Truck, StickyNote, FileText } from 'lucide-react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { formatCurrencyVND } from '@/utils/format';
 import {
   useSellerOrderDetailsQuery,
   useConfirmOrderMutation,
   useRejectOrderMutation,
+  useConfirmB2BPaymentMutation,
+  useUpdateB2BOrderStatusMutation,
+  useUpdateB2BShippingInfoMutation,
 } from '@/features/seller-orders/hooks/useSellerOrders';
 import { OrderStatusBadge } from '@/features/orders/components/OrderStatusBadge';
-import { Button } from '@/components/ui/AppButton';
 
 import {
   RejectOrderModal,
@@ -23,6 +26,33 @@ import { useUpdateTrackingMutation } from '@/features/seller-orders/hooks/useSel
 import { sellerShipmentApi } from '@/features/seller-orders/api/sellerShipmentApi';
 import toast from 'react-hot-toast';
 import { ISellerOrderDetailsRes } from '@/features/seller-orders/types/sellerOrderTypes';
+
+// Imported modular subcomponents
+import { B2BShippingModal } from '@/features/seller-orders/components/B2BShippingModal';
+import { SellerPaymentProofBox } from '@/features/seller-orders/components/SellerPaymentProofBox';
+import { SellerActionButtons } from '@/features/seller-orders/components/SellerActionButtons';
+import { SellerRevenueSummaryBox } from '@/features/seller-orders/components/SellerRevenueSummaryBox';
+
+interface IExtendedSellerOrder extends Omit<
+  ISellerOrderDetailsRes,
+  'shippingAddress' | 'tracking'
+> {
+  shippingAddress?: string | ISellerOrderDetailsRes['shippingAddress'];
+  variantId?: number;
+  productName?: string;
+  variantName?: string;
+  productImage?: string;
+  thumbnail?: string;
+  unitPrice?: number;
+  quantity?: number;
+  tracking?: ISellerOrderDetailsRes['tracking'] & {
+    carrierName?: string;
+    driverName?: string;
+    driverPhone?: string;
+    licensePlate?: string;
+    note?: string;
+  };
+}
 
 const translateStatus = (status: string) => {
   const map: Record<string, string> = {
@@ -44,13 +74,39 @@ interface PageProps {
   params: Promise<{ orderCode: string }>;
 }
 
-export default function SellerOrderDetailsPage({ params }: PageProps) {
+function SellerOrderDetailsContent({ params }: PageProps) {
   const { orderCode } = use(params);
-  const { data, isLoading } = useSellerOrderDetailsQuery(orderCode);
+  const searchParams = useSearchParams();
+  const isNumeric = /^\d+$/.test(orderCode);
+  const isB2B =
+    searchParams.get('b2b') === 'true' || orderCode.toUpperCase().includes('B2B') || isNumeric;
+  const { data, isLoading } = useSellerOrderDetailsQuery(orderCode, isB2B);
 
   const { mutate: confirmOrder, isPending: isConfirming } = useConfirmOrderMutation();
   const { mutate: rejectOrder, isPending: isRejecting } = useRejectOrderMutation();
   const { mutate: updateTracking, isPending: isUpdatingTracking } = useUpdateTrackingMutation();
+  const { mutate: confirmB2BPayment, isPending: isConfirmingB2B } = useConfirmB2BPaymentMutation();
+  const { mutate: updateB2BStatus, isPending: isUpdatingB2BStatus } =
+    useUpdateB2BOrderStatusMutation();
+  const { mutate: updateB2BShipping, isPending: isUpdatingB2BShipping } =
+    useUpdateB2BShippingInfoMutation();
+
+  const handleConfirmB2BPayment = (type: 'DEPOSIT' | 'FINAL') => {
+    confirmB2BPayment({
+      orderCode,
+      data: { type },
+    });
+  };
+
+  const handleUpdateB2BStatus = (
+    status: 'PROCESSING' | 'SHIPPING' | 'COMPLETED' | 'CANCELLED',
+    reason?: string,
+  ) => {
+    updateB2BStatus({
+      orderCode,
+      data: { status, reason },
+    });
+  };
 
   const [isRejectModalOpen, setRejectModalOpen] = useState(false);
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
@@ -58,11 +114,94 @@ export default function SellerOrderDetailsPage({ params }: PageProps) {
   const [isCreateTrackingModalOpen, setCreateTrackingModalOpen] = useState(false);
   const [isCreatingTracking, setIsCreatingTracking] = useState(false);
 
-  const order = data?.data as ISellerOrderDetailsRes;
+  // B2B Shipping States
+  const [isB2BShippingModalOpen, setB2BShippingModalOpen] = useState(false);
 
-  if (isLoading) {
+  const order = data?.data as unknown as IExtendedSellerOrder;
+  if (isLoading || !order) {
     return <div className="p-10 text-center text-stone-500">Đang tải chi tiết đơn hàng...</div>;
   }
+
+  const rawAddr = order.shippingAddress;
+  let shippingAddress = {
+    recipient: '',
+    phone: '',
+    address: '',
+    ward: '',
+    district: '',
+    province: '',
+  };
+  if (rawAddr) {
+    if (typeof rawAddr === 'string') {
+      try {
+        const parsed = JSON.parse(rawAddr);
+        shippingAddress = {
+          recipient: parsed.recipient || '',
+          phone: parsed.phone || '',
+          address: parsed.addressLine || parsed.address || '',
+          ward: parsed.ward || '',
+          district: parsed.district || '',
+          province: parsed.province || '',
+        };
+      } catch {
+        shippingAddress.address = rawAddr;
+      }
+    } else {
+      shippingAddress = {
+        recipient: rawAddr.recipient || '',
+        phone: rawAddr.phone || '',
+        address: rawAddr.address || '',
+        ward: rawAddr.ward || '',
+        district: rawAddr.district || '',
+        province: rawAddr.province || '',
+      };
+    }
+  }
+
+  const orderItems = isB2B
+    ? [
+        {
+          id: order.id,
+          variantId: order.variantId || 0,
+          productName: order.productName || '',
+          variantName: order.variantName || '',
+          productImage: order.productImage || order.thumbnail || '',
+          unitPrice: order.unitPrice || order.totalAmount,
+          qty: order.quantity || 1,
+          totalPrice: order.totalAmount,
+        },
+      ]
+    : order.items || [];
+
+  const getPaymentStatusLabel = (status: string) => {
+    const map: Record<string, string> = {
+      UNPAID: 'Chưa thanh toán',
+      PENDING: 'Chờ thanh toán',
+      PENDING_VERIFICATION: 'Chờ xác nhận minh chứng',
+      PENDING_DEPOSIT: 'Chờ cọc',
+      PARTIALLY_PAID: 'Đã cọc',
+      PAID: 'Đã thanh toán',
+      REFUNDED: 'Đã hoàn tiền',
+    };
+    return map[status] || status;
+  };
+
+  const getPaymentStatusStyles = (status: string) => {
+    const styles: Record<string, { bg: string; text: string }> = {
+      UNPAID: { bg: 'bg-red-50', text: 'text-red-600' },
+      PENDING: { bg: 'bg-amber-50', text: 'text-amber-600' },
+      PENDING_VERIFICATION: {
+        bg: 'bg-indigo-50 border border-indigo-100 animate-pulse',
+        text: 'text-indigo-600 font-extrabold',
+      },
+      PENDING_DEPOSIT: { bg: 'bg-amber-50', text: 'text-amber-600' },
+      PARTIALLY_PAID: { bg: 'bg-blue-50', text: 'text-blue-600' },
+      PAID: { bg: 'bg-green-50', text: 'text-green-600' },
+      REFUNDED: { bg: 'bg-stone-50', text: 'text-stone-600' },
+    };
+    const match = styles[status] || { bg: 'bg-stone-50', text: 'text-stone-600' };
+    return `${match.bg} ${match.text}`;
+  };
 
   const handleConfirmOrder = (
     note: string,
@@ -149,19 +288,21 @@ export default function SellerOrderDetailsPage({ params }: PageProps) {
             <div className="flex justify-between items-center mb-6">
               <h3 className="font-bold text-stone-900 flex items-center gap-2">
                 <Package size={18} className="text-stone-500" /> Sản phẩm cần đóng gói (
-                {order.items?.length || 0})
+                {orderItems.length})
               </h3>
-              <span className="text-sm font-bold bg-stone-100 text-stone-600 px-3 py-1 rounded-xl uppercase">
-                {order.paymentStatus === 'UNPAID' ? 'Chưa thanh toán' : 'Đã thanh toán'}
+              <span
+                className={`text-xs font-bold px-3 py-1.5 rounded-xl uppercase tracking-wider ${getPaymentStatusStyles(order.paymentStatus)}`}
+              >
+                {getPaymentStatusLabel(order.paymentStatus)}
               </span>
             </div>
 
             <div className="space-y-4">
-              {order.items?.map((item) => (
+              {orderItems.map((item) => (
                 <div key={item.id} className="flex gap-4 p-4 bg-stone-50 rounded-2xl">
                   <div className="relative w-20 h-20 rounded-xl overflow-hidden shrink-0">
                     <Image
-                      src={item.productImage || ''}
+                      src={item.productImage || '/images/default-image.png'}
                       alt={item.productName}
                       fill
                       className="object-cover"
@@ -196,89 +337,89 @@ export default function SellerOrderDetailsPage({ params }: PageProps) {
             </div>
           )}
 
-          <div className="bg-white rounded-3xl p-6 border border-stone-100 shadow-sm">
-            <h3 className="font-bold text-stone-900 flex items-center gap-2 mb-4">
-              <DollarSign size={18} className="text-stone-500" /> Tổng kết doanh thu dự kiến
-            </h3>
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between">
-                <span className="text-stone-500">Phí vận chuyển:</span>
-                <span className="text-stone-900 font-bold">
-                  {formatCurrencyVND(order.shippingFee)}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-stone-500">
-                  Tạm tính ({order.items?.length || 0} sản phẩm)
-                </span>
-                <span className="font-bold text-stone-900">
-                  {formatCurrencyVND(order.subtotal || order.totalAmount)}
-                </span>
-              </div>
-              <div className="border-t border-stone-100 pt-3 flex justify-between items-end mt-3">
-                <span className="text-stone-900 font-bold">Thành tiền (Khách trả)</span>
-                <span className="text-2xl font-black text-green-700">
-                  {formatCurrencyVND(order.totalAmount)}
-                </span>
+          {/* Hóa đơn VAT (nếu có) */}
+          {order.invoiceInfo && (
+            <div className="bg-white rounded-3xl p-6 border border-stone-100 shadow-sm animate-in fade-in slide-in-from-bottom-2">
+              <h3 className="font-bold text-stone-900 flex items-center gap-2 mb-4">
+                <FileText size={18} className="text-blue-600" /> Yêu cầu xuất hóa đơn VAT
+              </h3>
+              <div className="space-y-3 bg-stone-50 p-4 rounded-2xl border border-stone-100/50">
+                <div>
+                  <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest block mb-0.5">
+                    Tên công ty / đơn vị
+                  </span>
+                  <span className="text-sm font-bold text-stone-850">
+                    {order.invoiceInfo.companyName}
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest block mb-0.5">
+                      Mã số thuế
+                    </span>
+                    <span className="text-sm font-bold text-stone-850 font-mono">
+                      {order.invoiceInfo.taxCode}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest block mb-0.5">
+                      Địa chỉ đăng ký
+                    </span>
+                    <span className="text-sm font-bold text-stone-850">
+                      {order.invoiceInfo.companyAddress}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          )}
+
+          {/* Minh chứng thanh toán (B2B) */}
+          {isB2B && (
+            <SellerPaymentProofBox
+              order={order}
+              isConfirmingB2B={isConfirmingB2B}
+              onConfirmB2BPayment={handleConfirmB2BPayment}
+            />
+          )}
+
+          <SellerRevenueSummaryBox
+            order={order}
+            isB2B={isB2B}
+            orderItemsCount={orderItems.length}
+          />
         </div>
 
         {/* Sidebar (Phải) */}
         <div className="lg:col-span-1 space-y-6">
           {/* Action Priorities */}
-          <div className="bg-green-50 rounded-3xl p-6 border border-green-200 shadow-sm flex flex-col gap-3">
-            <h3 className="font-black text-green-900">Thao tác xử lý</h3>
-            {order.status === 'CONFIRMED' && (
-              <p className="text-gray-700 font-bold">Đã duyệt đơn hàng</p>
-            )}
-            {order.status === 'PENDING_CONFIRM' && (
-              <>
-                <Button
-                  variant="primary"
-                  disabled={isConfirming}
-                  onClick={() => setConfirmModalOpen(true)}
-                  className="w-full"
-                >
-                  Duyệt & Chuẩn bị lô hàng
-                </Button>
-                <Button
-                  variant="outline"
-                  disabled={isRejecting}
-                  onClick={() => setRejectModalOpen(true)}
-                  className="w-full text-red-600 border-red-200 hover:bg-red-50"
-                >
-                  Từ chối đơn hàng
-                </Button>
-              </>
-            )}
-
-            {['SHIPPED', 'DELIVERED', 'COMPLETED', 'CANCELLED', 'REFUNDED'].includes(
-              order.status,
-            ) && (
-              <div className="p-4 bg-white rounded-xl border border-green-100 text-center text-sm font-bold text-green-700">
-                Đơn hàng đã được xử lý (Trạng thái: {order.status})
-              </div>
-            )}
-          </div>
+          <SellerActionButtons
+            order={order}
+            isB2B={isB2B}
+            isUpdatingB2BStatus={isUpdatingB2BStatus}
+            isConfirming={isConfirming}
+            isRejecting={isRejecting}
+            onUpdateB2BStatus={handleUpdateB2BStatus}
+            onOpenConfirmModal={() => setConfirmModalOpen(true)}
+            onOpenRejectModal={() => setRejectModalOpen(true)}
+          />
 
           <div className="bg-white rounded-3xl p-6 border border-stone-100 shadow-sm">
             <h3 className="font-bold text-stone-900 flex items-center gap-2 mb-4">
               <MapPin size={18} className="text-stone-500" /> Thông tin khách hàng
             </h3>
-            {order.shippingAddress ? (
+            {shippingAddress.recipient ? (
               <div>
                 <p className="font-bold text-stone-900 mb-1">
-                  {order.shippingAddress.recipient} • {order.shippingAddress.phone}
+                  {shippingAddress.recipient} • {shippingAddress.phone}
                 </p>
                 <p className="text-stone-500 text-sm leading-relaxed">
-                  {order.shippingAddress.address}, {order.shippingAddress.ward},{' '}
-                  {order.shippingAddress.district}, {order.shippingAddress.province}
+                  {shippingAddress.address}, {shippingAddress.ward}, {shippingAddress.district},{' '}
+                  {shippingAddress.province}
                 </p>
               </div>
             ) : (
-              <p className="text-sm text-stone-500">Chưa có thông tin (Lấy từ API Seller)</p>
+              <p className="text-sm text-stone-500">Chưa có thông tin nhận hàng</p>
             )}
           </div>
 
@@ -287,23 +428,35 @@ export default function SellerOrderDetailsPage({ params }: PageProps) {
               <h3 className="font-bold text-stone-900 flex items-center gap-2">
                 <Truck size={18} className="text-stone-500" /> Tiến trình đơn hàng
               </h3>
-              {order.status !== 'DELIVERED' &&
-                order.status !== 'COMPLETED' &&
-                order.status !== 'CANCELLED' &&
-                order.status !== 'REFUNDED' && (
-                  <button
-                    onClick={() => {
-                      if (order.tracking && !order.tracking.trackingNumber) {
-                        setCreateTrackingModalOpen(true);
-                      } else if (order.tracking?.trackingNumber) {
-                        setTrackingModalOpen(true);
-                      }
-                    }}
-                    className="text-xs font-bold text-green-600 bg-green-50 px-3 py-1.5 rounded-lg hover:bg-green-100 transition-colors"
-                  >
-                    {order.tracking?.trackingNumber ? '+ Ghi nhận di chuyển' : '+ Tạo tracking'}
-                  </button>
-                )}
+              {isB2B
+                ? order.status !== 'COMPLETED' &&
+                  order.status !== 'CANCELLED' && (
+                    <button
+                      onClick={() => setB2BShippingModalOpen(true)}
+                      className="text-xs font-bold text-green-600 bg-green-50 px-3 py-1.5 rounded-lg hover:bg-green-100 transition-colors"
+                    >
+                      {order.tracking?.trackingNumber
+                        ? '+ Sửa xe giao hàng sỉ'
+                        : '+ Thiết lập xe giao sỉ'}
+                    </button>
+                  )
+                : order.status !== 'DELIVERED' &&
+                  order.status !== 'COMPLETED' &&
+                  order.status !== 'CANCELLED' &&
+                  order.status !== 'REFUNDED' && (
+                    <button
+                      onClick={() => {
+                        if (order.tracking && !order.tracking.trackingNumber) {
+                          setCreateTrackingModalOpen(true);
+                        } else if (order.tracking?.trackingNumber) {
+                          setTrackingModalOpen(true);
+                        }
+                      }}
+                      className="text-xs font-bold text-green-600 bg-green-50 px-3 py-1.5 rounded-lg hover:bg-green-100 transition-colors"
+                    >
+                      {order.tracking?.trackingNumber ? '+ Ghi nhận di chuyển' : '+ Tạo tracking'}
+                    </button>
+                  )}
             </div>
             <div className="relative border-l-2 border-stone-100 ml-3 space-y-6">
               {order.statusTimeline?.map((timeline, idx: number) => (
@@ -359,6 +512,39 @@ export default function SellerOrderDetailsPage({ params }: PageProps) {
         onConfirm={handleCreateTrackingNumber}
         isLoading={isCreatingTracking}
       />
+
+      {/* B2B Shipping Setup Modal */}
+      <B2BShippingModal
+        isOpen={isB2BShippingModalOpen}
+        onClose={() => setB2BShippingModalOpen(false)}
+        isLoading={isUpdatingB2BShipping}
+        initialData={order.tracking}
+        onConfirm={(shippingData) => {
+          updateB2BShipping(
+            {
+              id: order.id.toString(),
+              data: shippingData,
+            },
+            {
+              onSuccess: () => {
+                setB2BShippingModalOpen(false);
+              },
+            },
+          );
+        }}
+      />
     </div>
+  );
+}
+
+export default function SellerOrderDetailsPage({ params }: PageProps) {
+  return (
+    <Suspense
+      fallback={
+        <div className="p-10 text-center text-stone-500">Đang tải chi tiết đơn hàng...</div>
+      }
+    >
+      <SellerOrderDetailsContent params={params} />
+    </Suspense>
   );
 }

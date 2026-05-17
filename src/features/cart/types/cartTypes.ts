@@ -39,6 +39,10 @@ export interface CartItem {
   active: boolean;
   ocopStar: number;
   affiliateCode: string | null;
+  /** B2B / Wholesale Fields */
+  isWholesale?: boolean;
+  retailPrice?: number;
+  wholesaleMinQty?: number;
 }
 
 // -------------------- Cart Response ---------------------
@@ -98,6 +102,7 @@ export interface AddToCartRequest {
   variantId: number;
   qty: number;
   affiliateCode?: string;
+  isWholesale?: boolean;
 }
 
 export interface UpdateCartItemRequest {

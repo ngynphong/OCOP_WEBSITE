@@ -114,3 +114,56 @@ export const useSellerVariantMutations = (productId: number) => {
     isSettingDefault: setDefaultVariantMutation.isPending,
   };
 };
+
+// ─── Tier Price Hooks ──────────────────────────────────────────────────────────
+
+export const useSellerTierPricesQuery = (productId: number, variantId?: number) => {
+  return useQuery({
+    queryKey: ['seller-tier-prices', productId, variantId],
+    queryFn: () => sellerProductApi.getTierPrices(productId, variantId),
+    enabled: !!productId,
+    staleTime: 30 * 1000,
+  });
+};
+
+export const useSellerTierPriceMutations = (productId: number) => {
+  const queryClient = useQueryClient();
+
+  const invalidate = (variantId?: number) => {
+    queryClient.invalidateQueries({ queryKey: ['seller-tier-prices', productId, variantId] });
+    queryClient.invalidateQueries({ queryKey: ['seller-variants', productId] });
+    queryClient.invalidateQueries({ queryKey: ['public-tier-prices', productId] });
+  };
+
+  const updateTierPricesMutation = useMutation({
+    mutationFn: (data: {
+      variantId: number | null;
+      tiers: import('@/features/products/types/productTypes').WholesalePrice[];
+    }) => sellerProductApi.updateTierPrices(productId, data),
+    onSuccess: (_, variables) => {
+      toast.success('Cập nhật bảng giá sỉ thành công');
+      invalidate(variables.variantId || undefined);
+    },
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data?.message || 'Có lỗi khi cập nhật bảng giá sỉ');
+    },
+  });
+
+  const deleteTierPricesMutation = useMutation({
+    mutationFn: (variantId?: number) => sellerProductApi.deleteTierPrices(productId, variantId),
+    onSuccess: (_, variantId) => {
+      toast.success('Đã xóa bảng giá sỉ');
+      invalidate(variantId);
+    },
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data?.message || 'Có lỗi khi xóa bảng giá sỉ');
+    },
+  });
+
+  return {
+    updateTierPrices: updateTierPricesMutation.mutateAsync,
+    isUpdating: updateTierPricesMutation.isPending,
+    deleteTierPrices: deleteTierPricesMutation.mutateAsync,
+    isDeleting: deleteTierPricesMutation.isPending,
+  };
+};

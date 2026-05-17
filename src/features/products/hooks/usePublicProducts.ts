@@ -168,3 +168,12 @@ export const useRecordScanMutation = () => {
     mutationFn: (qrCode: string) => publicProductApi.recordQrScan(qrCode),
   });
 };
+
+export const usePublicTierPricesQuery = (productId: number, variantId?: number) => {
+  return useQuery({
+    queryKey: ['public-tier-prices', productId, variantId],
+    queryFn: () => publicProductApi.getTierPrices(productId, variantId),
+    enabled: !!productId,
+    staleTime: 5 * 60 * 1000,
+  });
+};

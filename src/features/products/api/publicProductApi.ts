@@ -8,6 +8,7 @@ import {
   PublicCategoryDetailResponse,
   TraceDetailResponse,
   ResponseBase,
+  WholesalePrice,
 } from '@/features/products/types/productTypes';
 
 export const publicProductApi = {
@@ -60,5 +61,12 @@ export const publicProductApi = {
     sort?: string;
   }): Promise<ProductListResponse> => {
     return publicAxiosClient.get('/products/discovery', { params });
+  },
+
+  getTierPrices: (
+    productId: number,
+    variantId?: number,
+  ): Promise<ResponseBase<WholesalePrice[]>> => {
+    return publicAxiosClient.get(`/products/${productId}/tier-prices`, { params: { variantId } });
   },
 };

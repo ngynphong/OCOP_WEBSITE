@@ -24,27 +24,75 @@ function OrderListContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const currentStatus = searchParams.get('status') || 'ALL';
+  const currentType = searchParams.get('type') || 'retail';
+  const isB2B = currentType === 'b2b';
 
   const handleTabChange = (status: string) => {
+    const params = new URLSearchParams(searchParams);
     if (status === 'ALL') {
-      router.push('/dashboard/don-hang');
+      params.delete('status');
     } else {
-      router.push(`/dashboard/don-hang?status=${status}`);
+      params.set('status', status);
     }
+    router.push(`/dashboard/don-hang?${params.toString()}`);
+  };
+
+  const handleTypeChange = (type: 'retail' | 'b2b') => {
+    const params = new URLSearchParams();
+    if (type === 'b2b') {
+      params.set('type', 'b2b');
+    }
+    router.push(`/dashboard/don-hang?${params.toString()}`);
   };
 
   const statusParam = currentStatus === 'ALL' ? undefined : currentStatus;
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError } =
-    useInfiniteOrders({
-      status: statusParam,
-      pageSize: 10,
-    });
+    useInfiniteOrders(
+      {
+        status: statusParam,
+        pageSize: 10,
+      },
+      isB2B,
+    );
 
-  const orders = data?.pages.flatMap((page) => page.data.content) || [];
+  const orders =
+    data?.pages.flatMap((page) => {
+      if (!page?.data) return [];
+      const d = page.data as unknown as Record<string, unknown> | unknown[];
+      if (Array.isArray(d)) return d;
+      if (d && typeof d === 'object') {
+        const obj = d as Record<string, unknown>;
+        if (Array.isArray(obj.content)) return obj.content;
+        if (Array.isArray(obj.items)) return obj.items;
+      }
+      return [];
+    }) || [];
 
   return (
     <div className="space-y-6">
+      {/* Switcher Mua lẻ / Mua sỉ B2B */}
+      <div className="flex gap-4 p-1.5 bg-stone-100/80 border border-stone-200/50 rounded-2xl w-fit">
+        <button
+          onClick={() => handleTypeChange('retail')}
+          className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
+            !isB2B ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500 hover:text-stone-900'
+          }`}
+        >
+          Đơn mua lẻ
+        </button>
+        <button
+          onClick={() => handleTypeChange('b2b')}
+          className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
+            isB2B
+              ? 'bg-green-700 text-white shadow-md shadow-green-700/10'
+              : 'text-stone-500 hover:text-stone-900'
+          }`}
+        >
+          Đơn mua sỉ B2B
+        </button>
+      </div>
+
       <div className="mb-6 border-b border-stone-200">
         <ul className="flex flex-nowrap overflow-x-auto gap-6 -mb-px px-2 no-scrollbar">
           {STATUS_TABS.map((tab) => (
@@ -74,7 +122,7 @@ function OrderListContent() {
       ) : orders.length > 0 ? (
         <div className="space-y-6">
           {orders.map((order: IOrderItemList, idx: number) => (
-            <OrderCard key={`${order.id}-${idx}`} order={order} />
+            <OrderCard key={`${order.id}-${idx}`} order={order} isB2B={isB2B} />
           ))}
 
           {/* Load more trigger - Switched to Button for stability */}

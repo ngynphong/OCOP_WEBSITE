@@ -26,6 +26,7 @@ interface ProductCardProps {
   id: number;
   isWishlisted?: boolean;
   inStock?: boolean;
+  isWholesale?: boolean;
 }
 
 export const ProductCard = memo(function ProductCard({
@@ -40,6 +41,7 @@ export const ProductCard = memo(function ProductCard({
   id,
   isWishlisted = false,
   inStock = true,
+  isWholesale = false,
 }: ProductCardProps) {
   const [isMounted, setIsMounted] = useState(false);
 
@@ -98,6 +100,11 @@ export const ProductCard = memo(function ProductCard({
                 <span className="relative z-10 text-white text-[11px] font-bold tracking-widest uppercase">
                   {discountPercent}% OFF
                 </span>
+              </div>
+            )}
+            {inStock && isWholesale && (
+              <div className="px-3 py-1.5 bg-amber-500 text-white rounded-full shadow-lg shadow-amber-500/20 z-10">
+                <span className="text-[10px] font-black tracking-widest uppercase">Giá sỉ</span>
               </div>
             )}
           </div>

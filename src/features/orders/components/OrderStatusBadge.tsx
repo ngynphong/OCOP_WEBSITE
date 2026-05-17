@@ -25,6 +25,10 @@ export const OrderStatusBadge: React.FC<OrderStatusBadgeProps> = ({ status }) =>
       case 'REFUNDING':
       case 'REFUNDED':
         return { label: 'Trả hàng/Hoàn tiền', color: 'bg-purple-100 text-purple-700' };
+      case 'PENDING_DEPOSIT':
+        return { label: 'Chờ cọc', color: 'bg-orange-100 text-orange-700' };
+      case 'PARTIALLY_PAID':
+        return { label: 'Đã cọc một phần', color: 'bg-green-50 text-green-600' };
       default:
         return { label: status, color: 'bg-stone-100 text-stone-700' };
     }

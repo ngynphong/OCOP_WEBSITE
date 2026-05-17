@@ -41,10 +41,11 @@ export interface FlashSaleBuyRequest {
   shippingProviderId: string;
   paymentMethod: PaymentMethod;
   qty: number;
-  voucherCode?: string;
-  usePoints?: number;
-  note?: string;
-  affiliateCode?: string;
+  shippingFee: number;
+  voucherCode: string;
+  usePoints: number;
+  note: string;
+  affiliateCode: string;
 }
 
 export interface OrderCreateResponse {

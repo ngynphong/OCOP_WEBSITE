@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { FiPlus, FiEdit2, FiTrash2, FiSend, FiCopy, FiSlash } from 'react-icons/fi';
+import { FiPlus, FiTrash2, FiSend, FiCopy, FiSlash } from 'react-icons/fi';
 import { RiStarFill } from 'react-icons/ri';
 import {
   useSellerProductsQuery,
@@ -16,6 +16,7 @@ import { FlashSaleManagementTab } from '@/features/flash-sale/components/FlashSa
 import { FlashSaleFormDrawer } from '@/features/flash-sale/components/FlashSaleFormDrawer';
 import { FiZap } from 'react-icons/fi';
 import { cn } from '@/lib/utils';
+import { Eye } from 'lucide-react';
 
 // ─── Status config ────────────────────────────────────────────────────────────
 
@@ -320,10 +321,10 @@ export default function SellerProductsPage() {
 
                         <button
                           onClick={() => router.push(`/dashboard/san-pham/${product.id}`)}
-                          title="Chỉnh sửa"
+                          title="Xem chi tiết"
                           className="p-2 rounded-lg text-stone-400 hover:bg-white hover:shadow-sm hover:text-emerald-600 transition cursor-pointer"
                         >
-                          <FiEdit2 size={16} />
+                          <Eye size={16} />
                         </button>
 
                         {(product.status === 'DRAFT' || product.status === 'REJECTED') && (

@@ -252,6 +252,15 @@ export const CartItemCard = React.memo(function CartItemCard({
           >
             <CiShop size={18} className="text-green-700" /> {item.shopName}
           </Link>
+
+          {/* Wholesale Info */}
+          {item.isWholesale && (
+            <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-amber-50 text-amber-700 rounded-lg border border-amber-100">
+              <span className="text-[10px] font-black uppercase tracking-widest">Giá sỉ</span>
+              <span className="w-1 h-1 rounded-full bg-amber-300" />
+              <span className="text-[10px] font-bold">Min: {item.wholesaleMinQty}</span>
+            </div>
+          )}
         </div>
 
         {/* Quantity + Price */}
@@ -279,6 +288,11 @@ export const CartItemCard = React.memo(function CartItemCard({
             {item.priceChanged && (
               <div className="text-[10px] text-amber-600 line-through mt-0.5">
                 Cũ: {item.currentPrice.toLocaleString('vi-VN')}₫
+              </div>
+            )}
+            {item.isWholesale && item.retailPrice && item.retailPrice > item.priceSnapshot && (
+              <div className="text-[10px] text-stone-400 line-through mt-0.5">
+                Lẻ: {item.retailPrice.toLocaleString('vi-VN')}₫
               </div>
             )}
           </div>

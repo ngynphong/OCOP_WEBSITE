@@ -11,6 +11,8 @@ import { FlashSaleItem } from '../types';
 import { useBuyFlashSaleItem } from '../hooks/useFlashSales';
 import { usePaymentMethods } from '@/features/payment/hooks/usePaymentMethods';
 import { useUserAddresses } from '@/features/address/hooks/useAddress';
+import { useEstimateShippingFee } from '@/features/shipping/hooks/useShipping';
+import { usePublicProductDetailQuery } from '@/features/products/hooks/usePublicProducts';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
@@ -30,6 +32,13 @@ export function FlashSaleQuickBuyModal({ isOpen, onClose, item }: FlashSaleQuick
   const [qty, setQty] = useState(1);
   const { mutate: buyFlashSaleItem, isPending: isSubmitting } = useBuyFlashSaleItem();
   const { data: paymentMethods } = usePaymentMethods();
+
+  const { data: productDetail } = usePublicProductDetailQuery(item.productId);
+  const product = productDetail?.data;
+  const { mutateAsync: estimateFee } = useEstimateShippingFee();
+
+  const [shippingFee, setShippingFee] = useState<number>(0);
+  const [isCalculating, setIsCalculating] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 0);
@@ -54,8 +63,53 @@ export function FlashSaleQuickBuyModal({ isOpen, onClose, item }: FlashSaleQuick
   const defaultPayment = paymentMethods?.[0]?.code;
   const activePayment = selectedPayment || defaultPayment;
 
+  useEffect(() => {
+    const calculateFee = async () => {
+      if (!activeAddress || !selectedShipping || !product?.shop?.id) {
+        setShippingFee(0);
+        return;
+      }
+      setIsCalculating(true);
+      try {
+        const selectedVariant = product?.variants?.find((v) => v.id === item.variantId);
+        const weight = (selectedVariant?.weightGram || product?.weightGram || 500) * qty;
+        const res = await estimateFee({
+          providerId: selectedShipping.id,
+          shopId: product.shop.id,
+          toDistrictId: activeAddress.districtId,
+          toWardCode: activeAddress.wardId.toString(),
+          weightGram: weight,
+          insuranceValue: 0,
+          height: 0,
+          length: 0,
+          width: 0,
+        });
+
+        if (res.data.services && res.data.services.length > 0) {
+          setShippingFee(res.data.services[0].fee);
+        } else {
+          setShippingFee(0);
+        }
+      } catch (error) {
+        console.error('Failed to estimate shipping fee:', error);
+        setShippingFee(0);
+      } finally {
+        setIsCalculating(false);
+      }
+    };
+    calculateFee();
+  }, [
+    activeAddress,
+    selectedShipping,
+    product?.shop?.id,
+    product?.weightGram,
+    product?.variants,
+    item.variantId,
+    qty,
+    estimateFee,
+  ]);
+
   const subtotal = item.salePrice * qty;
-  const shippingFee = selectedShipping?.baseFee || 0;
   const total = subtotal + shippingFee;
 
   const handleBuy = () => {
@@ -76,6 +130,11 @@ export function FlashSaleQuickBuyModal({ isOpen, onClose, item }: FlashSaleQuick
           shippingProviderId: selectedShipping.id,
           paymentMethod: activePayment!,
           qty,
+          shippingFee,
+          voucherCode: '',
+          usePoints: 0,
+          note: '',
+          affiliateCode: '',
         },
       },
       {
@@ -165,7 +224,7 @@ export function FlashSaleQuickBuyModal({ isOpen, onClose, item }: FlashSaleQuick
             <div className="flex justify-between items-center text-stone-500 text-sm">
               <span>Phí vận chuyển</span>
               <span className="font-bold text-stone-700">
-                {shippingFee === 0 ? 'Chưa chọn' : `${shippingFee.toLocaleString('vi-VN')}₫`}
+                {shippingFee === 0 ? '0đ' : `${shippingFee.toLocaleString('vi-VN')}₫`}
               </span>
             </div>
             <div className="pt-4 border-t border-dashed border-stone-200">
@@ -183,16 +242,31 @@ export function FlashSaleQuickBuyModal({ isOpen, onClose, item }: FlashSaleQuick
 
         {/* Right Side: Selectors */}
         <div className="flex-1 p-8 overflow-y-auto custom-scrollbar">
-          <div className="space-y-0">
+          <div className="space-y-6">
             <AddressSelector selectedId={activeAddress?.id} onSelect={setSelectedAddress} />
-            <ShippingSelector selectedId={selectedShipping?.id} onSelect={setSelectedShipping} />
+            <div className="relative">
+              {isCalculating && (
+                <div className="absolute inset-0 z-10 bg-white/50 backdrop-blur-[1px] rounded-2xl flex items-center justify-center">
+                  <div className="flex items-center gap-2 text-red-600 font-bold bg-white px-4 py-2 rounded-full shadow-md shadow-red-600/5">
+                    <Loader2 className="w-4 h-4 animate-spin text-red-600" />
+                    <span className="text-stone-700 text-xs">Đang tính phí...</span>
+                  </div>
+                </div>
+              )}
+              <ShippingSelector
+                selectedId={selectedShipping?.id}
+                onSelect={setSelectedShipping}
+                providerFees={selectedShipping ? { [selectedShipping.id]: shippingFee } : {}}
+                isCalculating={isCalculating}
+              />
+            </div>
             <PaymentMethodSelector selectedId={activePayment} onSelect={setSelectedPayment} />
           </div>
 
           <div className="mt-8">
             <button
               onClick={handleBuy}
-              disabled={isSubmitting}
+              disabled={isSubmitting || isCalculating}
               className="w-full py-2 bg-red-600 hover:bg-red-700 disabled:bg-stone-200 disabled:text-stone-400 text-white rounded-2xl font-black text-md transition-all shadow-xl shadow-red-600/20 active:scale-[0.98] flex items-center justify-center gap-3 cursor-pointer"
             >
               {isSubmitting ? (
