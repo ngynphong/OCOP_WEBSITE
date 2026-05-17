@@ -44,6 +44,8 @@ export function FlashSaleSection() {
             src={activeFlashSale?.bannerUrl || '/images/flash-sale-banner-v2.png'}
             alt={activeFlashSale?.name || 'Flash Sale Banner'}
             fill
+            sizes="(max-width: 768px) 100vw, 100vw"
+            priority
             className="object-cover opacity-20"
           />
           <div className="absolute inset-0 bg-linear-to-r from-red-100/90 via-red-50/80 to-transparent" />
