@@ -11,6 +11,9 @@ import {
   IShipmentTrackingRes,
   IBuyNowReq,
   IBuyNowRes,
+  ICreateB2BOrderReq,
+  IRefundB2BOrderReq,
+  IReviewB2BOrderReq,
 } from '../types/orderTypes';
 
 export const orderApi = {
@@ -80,7 +83,7 @@ export const orderApi = {
     );
   },
 
-  createB2BOrder: async (data: import('../types/orderTypes').ICreateB2BOrderReq) => {
+  createB2BOrder: async (data: ICreateB2BOrderReq) => {
     return axiosClient.post<unknown, { data: IBuyNowRes }>('/orders/b2b', data);
   },
 
@@ -104,7 +107,7 @@ export const orderApi = {
     );
   },
 
-  cancelB2BOrder: async (id: string, data: { reason: string }) => {
+  cancelB2BOrder: async (id: string, data: ICancelOrderReq) => {
     return axiosClient.post<unknown, { data: unknown }>(`/my/orders/b2b/${id}/cancel`, data);
   },
 
@@ -112,10 +115,7 @@ export const orderApi = {
     return axiosClient.post<unknown, { data: unknown }>(`/my/orders/b2b/${id}/confirm-received`);
   },
 
-  refundB2BOrder: async (
-    id: string,
-    data: { refundType: string; reason: string; amount: number; evidenceImages?: File[] },
-  ) => {
+  refundB2BOrder: async (id: string, data: IRefundB2BOrderReq) => {
     const formData = new FormData();
     formData.append('refundType', data.refundType);
     formData.append('reason', data.reason);
@@ -132,10 +132,7 @@ export const orderApi = {
     return axiosClient.get<unknown, { data: unknown }>(`/my/orders/b2b/${id}/shipment`);
   },
 
-  reviewB2BOrder: async (
-    id: string,
-    data: { rating: number; comment: string; images?: string[] },
-  ) => {
+  reviewB2BOrder: async (id: string, data: IReviewB2BOrderReq) => {
     return axiosClient.post<unknown, { data: unknown }>(`/my/orders/b2b/${id}/reviews`, data);
   },
 };

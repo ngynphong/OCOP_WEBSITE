@@ -20,9 +20,11 @@ import { useAuth } from '@/features/auth/hooks/useAuth';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { useCart } from '@/features/cart/hooks/useCart';
-import { QRScannerModal } from '@/components/ui/QRScannerModal';
 import { NotificationBell } from '@/features/notifications/components/NotificationBell';
 import { SearchBox } from '@/features/products/components/SearchBox';
+import dynamic from 'next/dynamic';
+
+const QRScannerModal = dynamic(() => import('@/components/ui/QRScannerModal'), { ssr: false });
 
 export function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -91,6 +93,7 @@ export function Header() {
                 height={120}
                 className="scale-135"
                 priority
+                sizes="(max-width: 768px) 100vw, 100vw"
               />
             </Link>
             <nav className="hidden lg:flex justify-start items-center gap-6">

@@ -158,6 +158,7 @@ export function Footer() {
             alt="DMCA.com Protection Status"
             width={120}
             height={40}
+            sizes="(max-width: 768px) 100vw, 100vw"
           />
         </a>
         <Script src="https://images.dmca.com/Badges/DMCABadgeHelper.min.js" strategy="lazyOnload" />

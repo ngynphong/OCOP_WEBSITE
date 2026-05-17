@@ -12,7 +12,7 @@ interface QRScannerModalProps {
   onClose: () => void;
 }
 
-export const QRScannerModal = ({ isOpen, onClose }: QRScannerModalProps) => {
+const QRScannerModal = ({ isOpen, onClose }: QRScannerModalProps) => {
   const router = useRouter();
   const [isScanning, setIsScanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -169,3 +169,5 @@ export const QRScannerModal = ({ isOpen, onClose }: QRScannerModalProps) => {
     </Modal>
   );
 };
+
+export default QRScannerModal;

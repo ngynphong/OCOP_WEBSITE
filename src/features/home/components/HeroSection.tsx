@@ -203,7 +203,7 @@ export const HeroSection = memo(function HeroSection() {
                               fill
                               sizes="(max-width: 768px) 100vw, 400px"
                               className="object-contain drop-shadow-2xl"
-                              priority={currentIndex === 0}
+                              priority={idx === 0}
                             />
                           </div>
                         </div>

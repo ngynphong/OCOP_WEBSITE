@@ -1,6 +1,15 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { orderApi } from '../api/orderApi';
-import { IBatchOrderReq, ICancelOrderReq, IOrderListReq, IRefundReq } from '../types/orderTypes';
+import {
+  IBatchOrderReq,
+  ICancelOrderReq,
+  IOrderListReq,
+  IRefundReq,
+  IBuyNowReq,
+  ICreateB2BOrderReq,
+  IRefundB2BOrderReq,
+  IReviewB2BOrderReq,
+} from '../types/orderTypes';
 import toast from 'react-hot-toast';
 
 export const orderKeys = {
@@ -25,7 +34,7 @@ export const useCreateBatchOrders = () => {
 export const useBuyNow = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: import('../types/orderTypes').IBuyNowReq) => orderApi.buyNow(data),
+    mutationFn: (data: IBuyNowReq) => orderApi.buyNow(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: orderKeys.lists() });
     },
@@ -137,20 +146,13 @@ export const useUploadPaymentProof = (isB2B = false) => {
         queryKey: [...orderKeys.detail(variables.orderCode), isB2B],
       });
     },
-    onError: (error: unknown) => {
-      toast.error(
-        (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-          'Có lỗi khi tải lên minh chứng',
-      );
-    },
   });
 };
 
 export const useCreateB2BOrder = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: import('../types/orderTypes').ICreateB2BOrderReq) =>
-      orderApi.createB2BOrder(data),
+    mutationFn: (data: ICreateB2BOrderReq) => orderApi.createB2BOrder(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: orderKeys.lists() });
     },
@@ -167,12 +169,6 @@ export const useCancelB2BOrder = () => {
       queryClient.invalidateQueries({ queryKey: [...orderKeys.detail(variables.id), true] });
       queryClient.invalidateQueries({ queryKey: orderKeys.lists() });
     },
-    onError: (error: unknown) => {
-      toast.error(
-        (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-          'Có lỗi xảy ra',
-      );
-    },
   });
 };
 
@@ -184,12 +180,6 @@ export const useConfirmB2BReceived = () => {
       toast.success('Xác nhận đã nhận hàng sỉ thành công');
       queryClient.invalidateQueries({ queryKey: [...orderKeys.detail(variables), true] });
       queryClient.invalidateQueries({ queryKey: orderKeys.lists() });
-    },
-    onError: (error: unknown) => {
-      toast.error(
-        (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-          'Có lỗi xảy ra',
-      );
     },
   });
 };
@@ -214,12 +204,6 @@ export const useRefundB2BOrder = () => {
       toast.success('Gửi yêu cầu trả hàng/hoàn tiền sỉ thành công');
       queryClient.invalidateQueries({ queryKey: [...orderKeys.detail(variables.id), true] });
       queryClient.invalidateQueries({ queryKey: orderKeys.lists() });
-    },
-    onError: (error: unknown) => {
-      toast.error(
-        (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-          'Có lỗi xảy ra',
-      );
     },
   });
 };
@@ -251,12 +235,6 @@ export const useReviewB2BOrder = () => {
       toast.success('Đánh giá đơn hàng sỉ thành công');
       queryClient.invalidateQueries({ queryKey: [...orderKeys.detail(variables.id), true] });
       queryClient.invalidateQueries({ queryKey: orderKeys.lists() });
-    },
-    onError: (error: unknown) => {
-      toast.error(
-        (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-          'Có lỗi xảy ra',
-      );
     },
   });
 };
