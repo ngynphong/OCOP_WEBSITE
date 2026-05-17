@@ -147,14 +147,14 @@ export function Footer() {
       </div>
       <div className="w-full max-w-7xl flex items-center justify-start mt-6">
         <a
-          href="//www.dmca.com/Protection/Status.aspx?ID=9083b6eb-63b9-43d0-8700-3a01749c1279"
+          href="https://www.dmca.com/r/9e5z4w8"
           title="DMCA.com Protection Status"
           className="dmca-badge"
           target="_blank"
           rel="noopener noreferrer"
         >
           <Image
-            src="https://www.dmca.com/r/9e5z4w8"
+            src="https://images.dmca.com/Badges/dmca_protected_sml_120m.png?ID=9083b6eb-63b9-43d0-8700-3a01749c1279"
             alt="DMCA.com Protection Status"
             width={120}
             height={40}
