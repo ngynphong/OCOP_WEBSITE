@@ -30,7 +30,7 @@ export const AmbientBackground = memo(function AmbientBackground() {
                 fill
                 priority
                 className="object-cover blur-[3px] saturate-[1.5] brightness-90"
-                sizes="100vw"
+                sizes="(max-width: 768px) 100vw, 100vw"
               />
             </div>
             {/* Mobile Background */}
@@ -43,7 +43,7 @@ export const AmbientBackground = memo(function AmbientBackground() {
                 fill
                 priority
                 className="object-cover blur-[3px] saturate-[1.5] brightness-90"
-                sizes="100vw"
+                sizes="(max-width: 768px) 100vw, 100vw"
               />
             </div>
           </div>

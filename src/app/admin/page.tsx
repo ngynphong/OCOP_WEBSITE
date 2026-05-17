@@ -6,11 +6,20 @@ import { useAdminDashboard } from '@/features/dashboard/hooks/useDashboard';
 import { PermissionGuard } from '@/components/guards/PermissionGuard';
 import { PERMISSIONS } from '@/features/auth/constants/permissions';
 
+import dynamic from 'next/dynamic';
+
 // Import extracted components
 import { AdminKPIStats } from '@/features/dashboard/components/admin/AdminKPIStats';
-import { AdminRevenueChart } from '@/features/dashboard/components/admin/AdminRevenueChart';
 import { AdminSidePanel } from '@/features/dashboard/components/admin/AdminSidePanel';
 import { AdminTopCategoriesTable } from '@/features/dashboard/components/admin/AdminTopCategoriesTable';
+
+const AdminRevenueChart = dynamic(
+  () =>
+    import('@/features/dashboard/components/admin/AdminRevenueChart').then(
+      (mod) => mod.AdminRevenueChart,
+    ),
+  { ssr: false },
+);
 
 const AdminOverview = () => {
   const [isMounted, setIsMounted] = useState(false);

@@ -245,3 +245,16 @@ export interface ICreateB2BOrderReq {
   note?: string;
   invoiceInfo?: IInvoiceInfo;
 }
+
+export interface IRefundB2BOrderReq {
+  refundType: string;
+  reason: string;
+  amount: number;
+  evidenceImages?: File[];
+}
+
+export interface IReviewB2BOrderReq {
+  rating: number;
+  comment: string;
+  images?: string[];
+}
