@@ -13,9 +13,16 @@ interface ChatListProps {
   activeRoomId?: number;
   onRoomSelect: (room: ChatRoom) => void;
   isLoading?: boolean;
+  role?: 'USER' | 'SELLER';
 }
 
-export const ChatList = ({ rooms, activeRoomId, onRoomSelect, isLoading }: ChatListProps) => {
+export const ChatList = ({
+  rooms,
+  activeRoomId,
+  onRoomSelect,
+  isLoading,
+  role = 'USER',
+}: ChatListProps) => {
   return (
     <div className="w-full md:w-80 lg:w-96 flex flex-col border-r border-stone-100 bg-white">
       {/* Title & Search */}
@@ -67,7 +74,9 @@ export const ChatList = ({ rooms, activeRoomId, onRoomSelect, isLoading }: ChatL
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-emerald-600 font-bold text-xl">
-                    {room.shopName.charAt(0)}
+                    {role === 'SELLER'
+                      ? room.buyerEmail.charAt(0).toUpperCase()
+                      : room.shopName.charAt(0).toUpperCase()}
                   </div>
                 )}
               </div>
@@ -77,7 +86,7 @@ export const ChatList = ({ rooms, activeRoomId, onRoomSelect, isLoading }: ChatL
             <div className="flex-1 min-w-0 text-left">
               <div className="flex items-center justify-between gap-2 mb-1">
                 <span className="font-bold text-stone-900 truncate tracking-tight">
-                  {room.shopName}
+                  {role === 'SELLER' ? room.buyerEmail : room.shopName}
                 </span>
                 {room.lastMessageAt && (
                   <span className="text-[10px] font-semibold text-stone-400 uppercase">

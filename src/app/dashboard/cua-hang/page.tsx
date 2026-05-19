@@ -17,6 +17,7 @@ import {
   FiImage,
   FiUpload,
   FiTag,
+  FiAward,
 } from 'react-icons/fi';
 import { useSellerShop } from '@/features/shop/hooks/useSellerShop';
 import { useAuthProfile } from '@/features/auth/hooks/useAuth';
@@ -73,6 +74,7 @@ const InfoRow = ({ label, value }: { label: string; value: React.ReactNode }) =>
 export default function SellerShopPage() {
   const {
     useMyShopQuery,
+    useCurrentSubscriptionQuery,
     uploadLogo,
     uploadBanner,
     isUploadingLogo,
@@ -83,6 +85,7 @@ export default function SellerShopPage() {
 
   const { profile, isLoadingProfile } = useAuthProfile();
   const { data: shopData, isPending, isError } = useMyShopQuery();
+  const { data: subData } = useCurrentSubscriptionQuery();
   const [isEditing, setIsEditing] = useState(false);
 
   if (isLoadingProfile || (isPending && profile?.isOwnerShop)) {
@@ -160,6 +163,7 @@ export default function SellerShopPage() {
   }
 
   const { shopResponse: shop, missingRequiredDocuments, missingFields } = shopData.data;
+  const currentSub = subData?.data;
 
   // ─── Has shop ──────────────────────────────────────────────────────────────
   return (
@@ -245,7 +249,12 @@ export default function SellerShopPage() {
             </div>
             <p className="text-sm text-stone-500 mt-1 flex items-center gap-1.5 italic">
               URL cửa hàng:{' '}
-              <span className="text-green-600">ocop.iesconnect.vn/cua-hang/{shop.slug}</span>
+              <Link
+                href={`/cua-hang/${shop.slug}`}
+                className="text-green-600 hover:text-green-700 underline hover:no-underline"
+              >
+                ocop.iesconnect.vn/cua-hang/{shop.slug}
+              </Link>
             </p>
           </div>
           <button
@@ -373,7 +382,10 @@ export default function SellerShopPage() {
             <h3 className="text-sm font-bold text-stone-700 mb-3 flex items-center gap-2">
               <FiShoppingBag size={15} className="text-green-600" /> Hoạt động
             </h3>
-            <InfoRow label="Gói dịch vụ" value={shop.planName} />
+            <InfoRow
+              label="Gói dịch vụ"
+              value={currentSub?.planName || shop.planName || 'Chưa đăng ký'}
+            />
             <InfoRow label="Đánh giá TB" value={`${(shop?.ratingAvg ?? 0).toFixed(1)} / 5`} />
             <InfoRow label="Tổng đánh giá" value={`${shop.totalReviews} lượt`} />
             <InfoRow
@@ -388,6 +400,50 @@ export default function SellerShopPage() {
               label="Tạo ngày"
               value={new Date(shop.createdAt).toLocaleDateString('vi-VN')}
             />
+          </div>
+        </div>
+      )}
+      {/* Current Subscription Card */}
+      {!isEditing && currentSub && (
+        <div className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden">
+          <div className="p-5 border-b border-stone-50 bg-stone-50/50 flex justify-between items-center">
+            <h3 className="text-sm font-bold text-stone-700 flex items-center gap-2">
+              <FiAward size={16} className="text-amber-500" /> Gói dịch vụ hiện tại
+            </h3>
+            <span
+              className={cn(
+                'px-3 py-1 rounded-full text-xs font-bold',
+                currentSub.active ? 'bg-green-100 text-green-700' : 'bg-rose-100 text-rose-700',
+              )}
+            >
+              {currentSub.active ? 'Đang kích hoạt' : 'Đã hết hạn'}
+            </span>
+          </div>
+          <div className="p-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <div>
+              <p className="text-xs text-stone-500 mb-1">Tên gói</p>
+              <p className="text-sm font-bold text-stone-800">{currentSub.planName}</p>
+            </div>
+            <div>
+              <p className="text-xs text-stone-500 mb-1">Ngày bắt đầu</p>
+              <p className="text-sm font-bold text-stone-800">
+                {new Date(currentSub.startedAt).toLocaleDateString('vi-VN')}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-stone-500 mb-1">Ngày hết hạn</p>
+              <p className="text-sm font-bold text-stone-800">
+                {new Date(currentSub.expiredAt).toLocaleDateString('vi-VN')}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-stone-500 mb-1">Số tiền thanh toán</p>
+              <p className="text-sm font-bold text-stone-800">
+                {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(
+                  currentSub.amountPaid,
+                )}
+              </p>
+            </div>
           </div>
         </div>
       )}

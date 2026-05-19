@@ -362,6 +362,12 @@ export interface IRefundApproveReq {
   rejectReason?: string;
 }
 
+export interface IAdminPayoutBankAccount {
+  bankCode: string;
+  accountNumber: string;
+  accountName: string;
+}
+
 export interface IAdminPayoutRes {
   id: number;
   periodStart: string;
@@ -375,12 +381,30 @@ export interface IAdminPayoutRes {
   scheduledPayoutDate: string;
   paidAt: string;
   paymentRef: string;
+  bankAccount?: IAdminPayoutBankAccount | null;
+}
+
+export interface IAdminPayoutParams {
+  pageNo?: number;
+  pageSize?: number;
+  shopId?: string | number;
+  status?: string;
+}
+
+export interface IAdminPayoutListRes {
+  content: IAdminPayoutRes[];
+  totalElements: number;
+  totalPages: number;
+  page: number;
+  size: number;
 }
 
 export type AdminOrderListResponse = ResponseBase<IAdminOrderListRes>;
 export type AdminDashboardResponse = ResponseBase<IAdminDashboardRes>;
 export type AdminRefundListResponse = ResponseBase<IAdminRefundListRes>;
 export type AdminPayoutResponse = ResponseBase<IAdminPayoutRes>;
+export type AdminPayoutListResponse = ResponseBase<IAdminPayoutListRes>;
+export type AdminPayoutGenerateResponse = ResponseBase<string>;
 export type AdminRefundActionResponse = ResponseBase<IAdminRefundListItem>;
 
 // ─── Audit Log Management Types ─────────────────────────────────────────────

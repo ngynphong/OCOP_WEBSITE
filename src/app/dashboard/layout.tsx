@@ -51,11 +51,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     if (pathname.includes('/cua-hang/chat')) return 'Tin nhắn cửa hàng';
     if (pathname.includes('/cua-hang/dang-ky')) return 'Đăng ký mở shop';
     if (pathname.includes('/cua-hang/ho-so-phap-ly')) return 'Hồ sơ pháp lý';
+    if (pathname.includes('/cua-hang/tai-khoan-ngan-hang')) return 'Tài khoản ngân hàng';
     if (pathname.includes('/cua-hang')) return 'Cửa hàng của tôi';
     if (pathname.match(/\/san-pham\/\d+/)) return 'Chi tiết sản phẩm';
     if (pathname.includes('/san-pham/tao-moi')) return 'Tạo sản phẩm mới';
     if (pathname.includes('/san-pham')) return 'Sản phẩm của tôi';
     if (pathname.includes('/chat')) return 'Tin nhắn';
+    if (pathname.includes('/thong-bao')) return 'Thông báo';
     return 'Tổng quan';
   };
 

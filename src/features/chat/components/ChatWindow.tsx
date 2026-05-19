@@ -12,9 +12,10 @@ import Image from 'next/image';
 interface ChatWindowProps {
   room: ChatRoom | null;
   isLoading?: boolean;
+  role?: 'USER' | 'SELLER';
 }
 
-export const ChatWindow = ({ room, isLoading: isRoomLoading }: ChatWindowProps) => {
+export const ChatWindow = ({ room, isLoading: isRoomLoading, role = 'USER' }: ChatWindowProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { data: historyResp, isLoading: isHistoryLoading } = useChatHistory(room?.id);
   const { sendMessage, sendAttachment } = useChat(room?.id);
@@ -71,12 +72,16 @@ export const ChatWindow = ({ room, isLoading: isRoomLoading }: ChatWindowProps) 
               <Image src={room.shopLogoUrl} alt={room.shopName} fill className="object-cover" />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-emerald-600 font-bold bg-emerald-50 text-xl">
-                {room.shopName.charAt(0)}
+                {role === 'SELLER'
+                  ? room.buyerEmail.charAt(0).toUpperCase()
+                  : room.shopName.charAt(0).toUpperCase()}
               </div>
             )}
           </div>
           <div>
-            <h3 className="font-bold text-stone-900 leading-tight">{room.shopName}</h3>
+            <h3 className="font-bold text-stone-900 leading-tight">
+              {role === 'SELLER' ? room.buyerEmail : room.shopName}
+            </h3>
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span className="text-xs text-stone-500 font-medium tracking-wide">

@@ -12,6 +12,8 @@ import {
   ShopSubscriptionResponse,
   ShopSubscriptionListResponse,
   ShopDocumentType,
+  BankAccount,
+  BankAccountResponse,
 } from '../types/shopTypes';
 
 export const sellerApi = {
@@ -82,5 +84,13 @@ export const sellerApi = {
 
   createSubscription: (data: CreateSubscriptionRequest): Promise<ShopSubscriptionResponse> => {
     return axiosClient.post('/seller/shop/subscriptions', data);
+  },
+
+  getBankAccount: (): Promise<BankAccountResponse> => {
+    return axiosClient.get('/seller/shop/bank-account');
+  },
+
+  updateBankAccount: (data: BankAccount): Promise<BankAccountResponse> => {
+    return axiosClient.put('/seller/shop/bank-account', data);
   },
 };

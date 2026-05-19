@@ -170,6 +170,13 @@ export type ShopDocumentDeleteResponse = ResponseBase<string>;
 export type ShopSubscriptionResponse = ResponseBase<ShopSubscription>;
 export type ShopSubscriptionListResponse = ResponseBase<ShopSubscription[]>;
 
+export interface BankAccount {
+  bankCode: string;
+  accountNumber: string;
+  accountName: string;
+}
+export type BankAccountResponse = ResponseBase<BankAccount>;
+
 // ─── Zod Schemas (Form Validation) ────────────────────────────────────────────
 
 export const createShopSchema = z.object({

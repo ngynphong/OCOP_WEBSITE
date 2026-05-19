@@ -244,6 +244,12 @@ const MENU_GROUPS: MenuGroup[] = [
         permissions: [PERMISSIONS.AUDIT_LOG_VIEW],
       },
       {
+        label: 'Hồ sơ của tôi',
+        icon: FiUserCheck,
+        href: '/admin/profile',
+        id: 'my-profile',
+      },
+      {
         label: 'Phân quyền',
         icon: FiKey,
         href: '/admin/roles',
