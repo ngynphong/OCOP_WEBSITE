@@ -90,6 +90,10 @@ export const adminApi = {
     return axiosClient.put(`/admin/users/${userId}/staff-profile`, data);
   },
 
+  getStaffMyProfile: (): Promise<ResponseBase<StaffProfile>> => {
+    return axiosClient.get('/staff/me/profile');
+  },
+
   // ─── Shop Management ─────────────────────────────────────────────────────
 
   getShops: (params: GetShopsParams): Promise<AdminShopListResponse> => {
