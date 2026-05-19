@@ -8,6 +8,7 @@ import {
   UpdateShopPolicyRequest,
   CreateSubscriptionRequest,
   ShopDocumentType,
+  BankAccount,
 } from '../types/shopTypes';
 
 export const useSellerShop = () => {
@@ -49,6 +50,13 @@ export const useSellerShop = () => {
     return useQuery({
       queryKey: ['seller-subscription-history'],
       queryFn: () => sellerApi.getSubscriptionHistory(),
+    });
+  };
+
+  const useBankAccountQuery = () => {
+    return useQuery({
+      queryKey: ['seller-bank-account'],
+      queryFn: () => sellerApi.getBankAccount(),
     });
   };
 
@@ -162,12 +170,25 @@ export const useSellerShop = () => {
     },
   });
 
+  const updateBankAccountMutation = useMutation({
+    mutationFn: (data: BankAccount) => sellerApi.updateBankAccount(data),
+    onSuccess: () => {
+      toast.success('Cập nhật tài khoản ngân hàng thành công');
+      queryClient.invalidateQueries({ queryKey: ['seller-bank-account'] });
+    },
+    onError: (error: unknown) => {
+      // @ts-expect-error - Axios error structure
+      toast.error(error?.response?.data?.message || 'Có lỗi khi cập nhật tài khoản ngân hàng');
+    },
+  });
+
   return {
     useMyShopQuery,
     useDocumentsQuery,
     useMyPolicyQuery,
     useCurrentSubscriptionQuery,
     useSubscriptionHistoryQuery,
+    useBankAccountQuery,
 
     createShop: createShopMutation.mutateAsync,
     isCreatingShop: createShopMutation.isPending,
@@ -191,5 +212,8 @@ export const useSellerShop = () => {
 
     createSubscription: createSubscriptionMutation.mutateAsync,
     isCreatingSubscription: createSubscriptionMutation.isPending,
+
+    updateBankAccount: updateBankAccountMutation.mutateAsync,
+    isUpdatingBankAccount: updateBankAccountMutation.isPending,
   };
 };

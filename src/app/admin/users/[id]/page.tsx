@@ -24,8 +24,15 @@ const UserDetailPage = () => {
   const { id } = useParams();
   const router = useRouter();
 
-  const { updateUserStatus, updateUserRoles, grantPermissions, revokePermissions, deleteUser } =
-    useAdminUserMutations();
+  const {
+    updateUserStatus,
+    updateUserRoles,
+    grantPermissions,
+    revokePermissions,
+    deleteUser,
+    updateStaffProfile,
+    isUpdatingStaffProfile,
+  } = useAdminUserMutations();
 
   const { data: userRes, isLoading: isLoadingUser } = useUserDetailQuery(id as string);
   const { data: permRes, isLoading: isLoadingPerms } = useUserPermissionsQuery(id as string);
@@ -67,8 +74,17 @@ const UserDetailPage = () => {
       />
 
       <div className="grid grid-cols-12 gap-8">
-        <UserDetailSidebar user={user} />
-
+        <div className="col-span-12 space-y-6 lg:col-span-4">
+          <UserDetailSidebar user={user} />
+          <UserStaffProfile
+            userId={user.id}
+            staffProfile={user.staffProfile}
+            onUpdate={async (data) => {
+              await updateStaffProfile({ userId: user.id, data });
+            }}
+            isUpdating={isUpdatingStaffProfile}
+          />
+        </div>
         <div className="col-span-12 lg:col-span-8 space-y-8">
           <UserLoyaltyPoints id={id as string} />
           <UserRoleManagement
@@ -97,8 +113,6 @@ const UserDetailPage = () => {
               await grantPermissions({ userId: user.id, permissions: perms });
             }}
           />
-
-          {user.staffProfile && <UserStaffProfile staffProfile={user.staffProfile} />}
         </div>
       </div>
 

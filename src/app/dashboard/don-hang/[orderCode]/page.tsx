@@ -15,7 +15,8 @@ import { OrderStatusBadge } from '@/features/orders/components/OrderStatusBadge'
 import { OrderActionButtons } from '@/features/orders/components/OrderActionButtons';
 import { ChevronLeft, Store, Package, MapPin } from 'lucide-react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useChatMutations } from '@/features/chat/hooks/useChatRooms';
 import Image from 'next/image';
 import { formatCurrencyVND } from '@/utils/format';
 import { MessageSquare } from 'lucide-react';
@@ -72,6 +73,7 @@ interface PageProps {
 function OrderDetailsContent({ params }: PageProps) {
   const { orderCode } = use(params);
   const searchParams = useSearchParams();
+  const router = useRouter();
   const isNumeric = /^\d+$/.test(orderCode);
   const isB2B =
     searchParams.get('b2b') === 'true' || orderCode.toUpperCase().includes('B2B') || isNumeric;
@@ -119,6 +121,19 @@ function OrderDetailsContent({ params }: PageProps) {
   const { mutate: confirmB2BReceivedMut, isPending: isConfirmingB2B } = useConfirmB2BReceived();
   const { mutate: refundB2B, isPending: isRefundingB2B } = useRefundB2BOrder();
   const { mutate: reviewB2B, isPending: isReviewingB2B } = useReviewB2BOrder();
+  const { createRoom, isCreatingRoom } = useChatMutations();
+
+  const handleChat = async () => {
+    if (!shopId) return;
+    try {
+      const res = await createRoom(shopId);
+      if (res?.data?.id) {
+        router.push(`/dashboard/chat?roomId=${res.data.id}`);
+      }
+    } catch (error) {
+      console.error('Failed to create chat room:', error);
+    }
+  };
 
   const isPageLoading = isLoading || (isShipmentLoading && !shouldSkipShipment);
 
@@ -246,8 +261,17 @@ function OrderDetailsContent({ params }: PageProps) {
                   </Link>
                 </div>
               </div>
-              <button className="bg-stone-50 text-stone-600 font-black text-xs px-4 py-2.5 rounded-xl border border-stone-100 hover:bg-stone-100 active:scale-95 transition-all shadow-sm flex items-center gap-2">
-                💬 Chat ngay
+              <button
+                onClick={handleChat}
+                disabled={isCreatingRoom}
+                className="bg-stone-50 text-stone-600 font-black text-xs px-4 py-2.5 rounded-xl border border-stone-100 hover:bg-stone-100 active:scale-95 transition-all shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isCreatingRoom ? (
+                  <div className="w-4 h-4 border-2 border-stone-300 border-t-stone-600 rounded-full animate-spin" />
+                ) : (
+                  '💬'
+                )}
+                {isCreatingRoom ? 'Đang mở chat...' : 'Chat ngay'}
               </button>
             </div>
 

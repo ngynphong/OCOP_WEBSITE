@@ -53,8 +53,9 @@ export default function SellerChatPage() {
         activeRoomId={selectedRoom?.id}
         onRoomSelect={handleRoomSelect}
         isLoading={isLoading}
+        role="SELLER"
       />
-      <ChatWindow room={selectedRoom} isLoading={isLoading} />
+      <ChatWindow room={selectedRoom} isLoading={isLoading} role="SELLER" />
     </div>
   );
 }

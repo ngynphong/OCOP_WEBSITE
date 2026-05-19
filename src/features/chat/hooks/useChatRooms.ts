@@ -5,12 +5,19 @@ import { chatApi } from '../api/chatApi';
 import { CHAT_QUERY_KEYS } from './useChat';
 import toast from 'react-hot-toast';
 
-export const useChatRooms = (role: 'BUYER' | 'SELLER' = 'BUYER') => {
+export const useChatRooms = (role: 'USER' | 'SELLER', enabled = true) => {
   return useQuery({
-    queryKey: role === 'BUYER' ? CHAT_QUERY_KEYS.rooms() : CHAT_QUERY_KEYS.sellerRooms(),
-    queryFn: () => (role === 'BUYER' ? chatApi.getRooms() : chatApi.getSellerRooms()),
+    queryKey: role === 'USER' ? CHAT_QUERY_KEYS.rooms() : CHAT_QUERY_KEYS.sellerRooms(),
+    queryFn: () => (role === 'USER' ? chatApi.getRooms() : chatApi.getSellerRooms()),
     staleTime: 30000,
+    enabled,
   });
+};
+
+export const useUnreadChatCount = (role: 'USER' | 'SELLER', enabled = true) => {
+  const { data } = useChatRooms(role, enabled);
+  const count = data?.data?.items?.reduce((sum, room) => sum + (room.unreadCount || 0), 0) || 0;
+  return count;
 };
 
 export const useChatHistory = (roomId: number | string | undefined) => {

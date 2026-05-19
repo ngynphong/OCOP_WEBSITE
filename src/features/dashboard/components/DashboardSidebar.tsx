@@ -17,6 +17,7 @@ import {
   FiTrendingUp,
   FiLifeBuoy,
   FiChevronDown,
+  FiBell,
 } from 'react-icons/fi';
 import { BiSupport } from 'react-icons/bi';
 import { FaWarehouse } from 'react-icons/fa';
@@ -24,6 +25,8 @@ import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useAppSelector } from '@/store/hooks';
 import { useDispatch } from 'react-redux';
 import { setDashboardMode } from '@/store/features/authSlice';
+import { useUnreadCountScope } from '@/features/notifications/hooks/useNotifications';
+import { useUnreadChatCount } from '@/features/chat/hooks/useChatRooms';
 import Image from 'next/image';
 import { IoTicket } from 'react-icons/io5';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -36,6 +39,7 @@ interface MenuItem {
   href: string;
   roles: string[];
   permission?: string;
+  exact?: boolean;
 }
 
 interface MenuGroup {
@@ -201,12 +205,21 @@ const MENU_GROUPS: MenuGroup[] = [
         icon: FiTag,
         href: '/dashboard/cua-hang',
         roles: ['USER', 'SELLER'],
+        exact: true,
       },
       {
         id: 'shop-legality',
         label: 'Hồ sơ pháp lý',
         icon: FiShield,
         href: '/dashboard/cua-hang/ho-so-phap-ly',
+        roles: ['SELLER'],
+        permission: 'seller.shop.manage',
+      },
+      {
+        id: 'shop-bank',
+        label: 'Tài khoản ngân hàng',
+        icon: FiShield,
+        href: '/dashboard/cua-hang/tai-khoan-ngan-hang',
         roles: ['SELLER'],
         permission: 'seller.shop.manage',
       },
@@ -251,6 +264,13 @@ const COMMON_ITEMS: MenuItem[] = [
     href: '/dashboard/bao-mat',
     roles: ['USER', 'SELLER'],
   },
+  {
+    id: 'notifications',
+    label: 'Thông báo',
+    icon: FiBell,
+    href: '/dashboard/thong-bao',
+    roles: ['USER', 'SELLER'],
+  },
 ];
 
 const DashboardSidebar = () => {
@@ -264,6 +284,8 @@ const DashboardSidebar = () => {
     () => false,
   );
   const [openGroups, setOpenGroups] = useState<string[]>([]);
+  const { count: unreadNotificationCount } = useUnreadCountScope();
+  const unreadChatCount = useUnreadChatCount(dashboardMode);
 
   // Persistence and hydration fix
   useEffect(() => {
@@ -340,6 +362,7 @@ const DashboardSidebar = () => {
         {/* Common Items */}
         {filteredCommon.map((item) => {
           const isActive = pathname === item.href;
+          const unreadCount = item.id === 'notifications' ? unreadNotificationCount : 0;
           return (
             <Link
               key={item.id}
@@ -356,6 +379,16 @@ const DashboardSidebar = () => {
                 className={isActive ? 'text-white' : 'text-stone-400 group-hover:text-green-600'}
               />
               <span className="font-semibold text-sm">{item.label}</span>
+              {unreadCount > 0 && (
+                <div
+                  className={cn(
+                    'ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full',
+                    isActive ? 'bg-white text-green-600' : 'bg-red-500 text-white',
+                  )}
+                >
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </div>
+              )}
             </Link>
           );
         })}
@@ -405,9 +438,14 @@ const DashboardSidebar = () => {
                     className="overflow-hidden flex flex-col gap-1 ml-4 pl-4 border-l border-stone-100"
                   >
                     {group.items.map((item) => {
-                      const isActive =
-                        pathname === item.href ||
-                        (item.href !== '/dashboard' && pathname.startsWith(`${item.href}/`));
+                      const isActive = item.exact
+                        ? pathname === item.href
+                        : pathname === item.href ||
+                          (item.href !== '/dashboard' && pathname.startsWith(`${item.href}/`));
+
+                      const unreadCount =
+                        item.id === 'chat-user' || item.id === 'seller-chat' ? unreadChatCount : 0;
+
                       return (
                         <Link
                           key={item.id}
@@ -419,9 +457,21 @@ const DashboardSidebar = () => {
                               : 'text-stone-500 hover:text-stone-900 hover:bg-stone-50',
                           )}
                         >
-                          <span className="text-sm">{item.label}</span>
-                          {isActive && (
-                            <div className="ml-auto w-1.5 h-1.5 rounded-full bg-green-600" />
+                          <span className="text-sm flex-1">{item.label}</span>
+                          {unreadCount > 0 && (
+                            <div
+                              className={cn(
+                                'text-[10px] font-bold px-2 py-0.5 rounded-full',
+                                isActive
+                                  ? 'bg-white text-green-600 border border-green-200'
+                                  : 'bg-red-500 text-white',
+                              )}
+                            >
+                              {unreadCount > 99 ? '99+' : unreadCount}
+                            </div>
+                          )}
+                          {isActive && unreadCount === 0 && (
+                            <div className="w-1.5 h-1.5 rounded-full bg-green-600" />
                           )}
                         </Link>
                       );

@@ -7,8 +7,6 @@ import {
   IRefundReq,
   IBuyNowReq,
   ICreateB2BOrderReq,
-  IRefundB2BOrderReq,
-  IReviewB2BOrderReq,
 } from '../types/orderTypes';
 import toast from 'react-hot-toast';
 
