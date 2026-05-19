@@ -3,8 +3,9 @@
 import React from 'react';
 import { FiEye } from 'react-icons/fi';
 import { formatCurrencyVND } from '@/utils/format';
-import { IAdminRefundListItem, IAdminRefundParams } from '../types/adminTypes';
+import { IAdminRefundListItem, IAdminRefundParams, IRefundApproveReq } from '../types/adminTypes';
 import { Pagination } from '@/components/ui/Pagination';
+import { Button } from '@/components/ui/AppButton';
 
 interface AdminRefundTableProps {
   refunds: IAdminRefundListItem[];
@@ -13,10 +14,13 @@ interface AdminRefundTableProps {
   totalElement: number;
   params: IAdminRefundParams;
   setParams: (params: IAdminRefundParams) => void;
+  onApproveRefund?: (data: { refundId: number; data: IRefundApproveReq }) => Promise<unknown>;
+  isApproving?: boolean;
 }
 
 const statusMap: Record<string, { label: string; color: string }> = {
-  PENDING: { label: 'Chờ duyệt', color: 'bg-amber-100 text-amber-600' },
+  REQUESTED: { label: 'Chờ duyệt', color: 'bg-amber-100 text-amber-600' },
+  PENDING: { label: 'Đang xử lý', color: 'bg-blue-100 text-blue-600' },
   APPROVED: { label: 'Đã duyệt', color: 'bg-emerald-100 text-emerald-600' },
   REJECTED: { label: 'Đã từ chối', color: 'bg-red-100 text-red-600' },
   COMPLETED: { label: 'Hoàn thành', color: 'bg-green-100 text-green-600' },
@@ -29,7 +33,34 @@ export const AdminRefundTable = ({
   totalElement,
   params,
   setParams,
+  onApproveRefund,
+  isApproving,
 }: AdminRefundTableProps) => {
+  const [selectedRefund, setSelectedRefund] = React.useState<IAdminRefundListItem | null>(null);
+  const [actionType, setActionType] = React.useState<'APPROVE' | 'REJECT'>('APPROVE');
+  const [note, setNote] = React.useState('');
+  const [refundAmount, setRefundAmount] = React.useState<number | ''>('');
+  const [rejectReason, setRejectReason] = React.useState('');
+
+  const handleProcess = async () => {
+    if (!selectedRefund || !onApproveRefund) return;
+
+    await onApproveRefund({
+      refundId: selectedRefund.refundId,
+      data: {
+        action: actionType,
+        note,
+        refundAmount:
+          actionType === 'APPROVE' && refundAmount !== '' ? Number(refundAmount) : undefined,
+        rejectReason: actionType === 'REJECT' ? rejectReason : undefined,
+      },
+    });
+
+    setSelectedRefund(null);
+    setNote('');
+    setRefundAmount('');
+    setRejectReason('');
+  };
   return (
     <div className="bg-white rounded-3xl shadow-sm border border-stone-100 overflow-hidden mt-8">
       <div className="p-6 border-b border-stone-50 flex justify-between items-center">
@@ -109,9 +140,18 @@ export const AdminRefundTable = ({
                     </span>
                   </td>
                   <td className="py-5 px-8 text-right">
-                    <button className="p-2 hover:bg-white rounded-lg transition-colors text-rose-600 shadow-sm border border-transparent hover:border-stone-100">
-                      <FiEye size={18} />
-                    </button>
+                    {refund.status === 'REQUESTED' || refund.status === 'PENDING' ? (
+                      <button
+                        onClick={() => setSelectedRefund(refund)}
+                        className="px-4 py-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                      >
+                        Xử lý
+                      </button>
+                    ) : (
+                      <button className="p-2 hover:bg-white rounded-lg transition-colors text-stone-400 shadow-sm border border-transparent hover:border-stone-100">
+                        <FiEye size={18} />
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))
@@ -130,6 +170,119 @@ export const AdminRefundTable = ({
           onPageSizeChange={(size) => setParams({ ...params, pageSize: size, pageNo: 1 })}
         />
       </div>
+
+      {/* Modal */}
+      {selectedRefund && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl">
+            <h3 className="text-xl font-black text-[#00490E] mb-2">Xử lý yêu cầu hoàn tiền</h3>
+            <p className="text-sm text-stone-500 mb-6">
+              Yêu cầu #{selectedRefund.refundId} - Số tiền:{' '}
+              <span className="font-bold text-rose-600">
+                {formatCurrencyVND(selectedRefund.amount)}
+              </span>
+            </p>
+
+            <div className="flex gap-2 mb-6">
+              <button
+                onClick={() => setActionType('APPROVE')}
+                className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                  actionType === 'APPROVE'
+                    ? 'bg-emerald-100 text-emerald-700 ring-2 ring-emerald-500/20'
+                    : 'bg-stone-50 text-stone-500 hover:bg-stone-100'
+                }`}
+              >
+                Đồng ý hoàn tiền
+              </button>
+              <button
+                onClick={() => setActionType('REJECT')}
+                className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                  actionType === 'REJECT'
+                    ? 'bg-red-100 text-red-700 ring-2 ring-red-500/20'
+                    : 'bg-stone-50 text-stone-500 hover:bg-stone-100'
+                }`}
+              >
+                Từ chối
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-stone-500 uppercase mb-1.5 ml-1">
+                  Ghi chú nội bộ
+                </label>
+                <textarea
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                  className="w-full bg-stone-50 border text-gray-700 border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all"
+                  placeholder="Ghi chú về quyết định này..."
+                  rows={2}
+                />
+              </div>
+
+              {actionType === 'APPROVE' ? (
+                <div>
+                  <label className="block text-xs font-bold text-stone-500 uppercase mb-1.5 ml-1">
+                    Số tiền thực hoàn
+                  </label>
+                  <input
+                    type="text"
+                    value={refundAmount !== '' ? formatCurrencyVND(refundAmount) : ''}
+                    onChange={(e) => {
+                      const rawValue = e.target.value.replace(/\D/g, '');
+                      setRefundAmount(rawValue ? Number(rawValue) : '');
+                    }}
+                    className="w-full bg-stone-50 border text-gray-700 border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all"
+                    placeholder={`Gợi ý: ${formatCurrencyVND(selectedRefund.amount)}`}
+                  />
+                  <p className="text-[10px] text-stone-400 mt-1.5 ml-1">
+                    Bỏ trống để hoàn toàn bộ số tiền yêu cầu
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  <label className="block text-xs font-bold text-stone-500 uppercase mb-1.5 ml-1">
+                    Lý do từ chối
+                  </label>
+                  <textarea
+                    value={rejectReason}
+                    onChange={(e) => setRejectReason(e.target.value)}
+                    className="w-full bg-stone-50 border text-gray-700 border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all"
+                    placeholder="Lý do từ chối để thông báo cho khách hàng..."
+                    rows={2}
+                  />
+                </div>
+              )}
+            </div>
+
+            <div className="flex gap-3 mt-8">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setSelectedRefund(null);
+                  setNote('');
+                  setRefundAmount('');
+                  setRejectReason('');
+                }}
+                className="flex-1 px-4 py-3 bg-stone-100 hover:bg-stone-200 text-stone-600 rounded-xl font-bold text-sm transition-colors"
+              >
+                Hủy
+              </Button>
+              <Button
+                onClick={handleProcess}
+                disabled={isApproving}
+                className={`flex-1 px-4 py-3 rounded-xl font-bold text-sm transition-colors text-white ${
+                  actionType === 'APPROVE'
+                    ? 'bg-emerald-600 hover:bg-emerald-700'
+                    : 'bg-red-600 hover:bg-red-700'
+                } disabled:opacity-50`}
+              >
+                {isApproving ? 'Đang xử lý...' : 'Xác nhận'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

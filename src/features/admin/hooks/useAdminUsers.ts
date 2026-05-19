@@ -22,6 +22,14 @@ export const useUserDetailQuery = (userId: string | null | undefined) => {
   });
 };
 
+export const useStaffMyProfileQuery = () => {
+  return useQuery({
+    queryKey: ['admin-staff-my-profile'],
+    queryFn: () => adminApi.getStaffMyProfile(),
+    staleTime: 60 * 1000,
+  });
+};
+
 export const useUserPermissionsQuery = (userId: string | null | undefined) => {
   return useQuery({
     queryKey: ['admin-user-permissions', userId],

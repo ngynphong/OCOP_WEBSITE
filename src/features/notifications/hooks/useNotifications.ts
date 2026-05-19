@@ -1,7 +1,9 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { notificationApi } from '../api/notificationApi';
 import { useWebSocket } from '@/hooks/useWebSocket';
-import { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 export const NOTIFICATION_KEYS = {
   all: ['notifications'] as const,
@@ -32,6 +34,7 @@ export const useInfiniteNotifications = (pageSize = 10) => {
 export const useUnreadCountScope = () => {
   const queryClient = useQueryClient();
   const { client, addConnectListener } = useWebSocket();
+  const router = useRouter();
 
   const query = useQuery({
     queryKey: NOTIFICATION_KEYS.count(),
@@ -45,10 +48,40 @@ export const useUnreadCountScope = () => {
     const setupSubscriptions = () => {
       const personalSub = client.subscribe('/user/queue/notifications', () => {
         queryClient.invalidateQueries({ queryKey: NOTIFICATION_KEYS.all });
+        toast.success(
+          (t) =>
+            React.createElement(
+              'div',
+              {
+                className: 'cursor-pointer',
+                onClick: () => {
+                  toast.dismiss(t.id);
+                  router.push('/dashboard/thong-bao');
+                },
+              },
+              'Bạn có 1 thông báo mới',
+            ),
+          { duration: 4000 },
+        );
       });
 
       const publicSub = client.subscribe('/topic/public-notifications', () => {
         queryClient.invalidateQueries({ queryKey: NOTIFICATION_KEYS.all });
+        toast.success(
+          (t) =>
+            React.createElement(
+              'div',
+              {
+                className: 'cursor-pointer',
+                onClick: () => {
+                  toast.dismiss(t.id);
+                  router.push('/dashboard/thong-bao');
+                },
+              },
+              'Bạn có 1 thông báo mới',
+            ),
+          { duration: 4000 },
+        );
       });
 
       return () => {
@@ -76,7 +109,7 @@ export const useUnreadCountScope = () => {
     return () => {
       subscriptionCleanup?.();
     };
-  }, [client, queryClient, addConnectListener]);
+  }, [client, queryClient, addConnectListener, router]);
 
   return {
     count: query.data?.data ?? 0,

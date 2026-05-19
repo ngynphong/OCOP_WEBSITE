@@ -109,7 +109,7 @@ export function LoginForm() {
         </h2>
         <p className="text-stone-400 text-xs mt-1 font-medium">
           {phase === 'IDENTIFY'
-            ? 'Nhập email hoặc số điện thoại để tiếp tục'
+            ? 'Chào mừng bạn, Đăng nhập hoặc tạo tài khoản trong 1 bước'
             : accountExists
               ? 'Vui lòng nhập mật khẩu để đăng nhập'
               : 'Hoàn thành thông tin để bắt đầu'}

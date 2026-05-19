@@ -11,19 +11,17 @@ export default function ChatPage() {
   const searchParams = useSearchParams();
   const initialRoomId = searchParams.get('roomId');
 
-  const { data: roomsResp, isLoading } = useChatRooms('BUYER');
+  const { data: roomsResp, isLoading } = useChatRooms('USER');
   const { markRead } = useChatMutations();
   const [selectedRoom, setSelectedRoom] = useState<ChatRoom | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
 
   const rooms = React.useMemo(() => roomsResp?.data?.items || [], [roomsResp]);
 
-  // Handle initial room from query param
   useEffect(() => {
     if (!isInitialized && initialRoomId && rooms.length > 0) {
       const room = rooms.find((r) => String(r.id) === initialRoomId);
       if (room) {
-        // Wrap in setTimeout to avoid synchronous state update during effect
         const timer = setTimeout(() => {
           setSelectedRoom(room);
           setIsInitialized(true);

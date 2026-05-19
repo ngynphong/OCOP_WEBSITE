@@ -4,9 +4,12 @@ import {
   AdminDashboardResponse,
   AdminRefundListResponse,
   AdminPayoutResponse,
+  AdminPayoutListResponse,
+  AdminPayoutGenerateResponse,
   AdminRefundActionResponse,
   IPayoutProcessReq,
   IRefundApproveReq,
+  IAdminPayoutParams,
 } from '../types/adminTypes';
 
 export const adminOrderApi = {
@@ -51,5 +54,22 @@ export const adminOrderApi = {
     data: IRefundApproveReq,
   ): Promise<AdminRefundActionResponse> => {
     return axiosClient.post(`/admin/refunds/${refundId}/approve`, data);
+  },
+
+  getPayouts: (params: IAdminPayoutParams): Promise<AdminPayoutListResponse> => {
+    const filteredParams = Object.fromEntries(
+      Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== ''),
+    );
+    return axiosClient.get('/admin/payouts', { params: filteredParams });
+  },
+
+  generatePayouts: (
+    shopId: number | string,
+    periodStart: string,
+    periodEnd: string,
+  ): Promise<AdminPayoutGenerateResponse> => {
+    return axiosClient.post(`/admin/payouts/generate`, undefined, {
+      params: { shopId, periodStart, periodEnd },
+    });
   },
 };

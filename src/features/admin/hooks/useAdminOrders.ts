@@ -6,6 +6,7 @@ import {
   IAdminRefundParams,
   IPayoutProcessReq,
   IRefundApproveReq,
+  IAdminPayoutParams,
 } from '../types/adminTypes';
 
 export const adminOrderKeys = {
@@ -15,6 +16,8 @@ export const adminOrderKeys = {
   dashboard: () => [...adminOrderKeys.all, 'dashboard'] as const,
   refunds: () => [...adminOrderKeys.all, 'refunds'] as const,
   refundList: (params: IAdminRefundParams) => [...adminOrderKeys.refunds(), params] as const,
+  payouts: () => [...adminOrderKeys.all, 'payouts'] as const,
+  payoutList: (params: IAdminPayoutParams) => [...adminOrderKeys.payouts(), params] as const,
 };
 
 export const useAdminOrdersQuery = (params: IAdminOrderParams) => {
@@ -38,6 +41,13 @@ export const useAdminRefundsQuery = (params: IAdminRefundParams) => {
   });
 };
 
+export const useAdminPayoutsQuery = (params: IAdminPayoutParams) => {
+  return useQuery({
+    queryKey: adminOrderKeys.payoutList(params),
+    queryFn: () => adminOrderApi.getPayouts(params),
+  });
+};
+
 export const useAdminOrderMutations = () => {
   const queryClient = useQueryClient();
 
@@ -47,6 +57,22 @@ export const useAdminOrderMutations = () => {
     onSuccess: () => {
       toast.success('Xử lý chi trả thành công');
       queryClient.invalidateQueries({ queryKey: adminOrderKeys.all });
+    },
+  });
+
+  const generatePayouts = useMutation({
+    mutationFn: ({
+      shopId,
+      periodStart,
+      periodEnd,
+    }: {
+      shopId: number | string;
+      periodStart: string;
+      periodEnd: string;
+    }) => adminOrderApi.generatePayouts(shopId, periodStart, periodEnd),
+    onSuccess: () => {
+      toast.success('Tạo đối soát thành công');
+      queryClient.invalidateQueries({ queryKey: adminOrderKeys.payouts() });
     },
   });
 
@@ -62,6 +88,8 @@ export const useAdminOrderMutations = () => {
   return {
     processPayout: processPayout.mutateAsync,
     isProcessingPayout: processPayout.isPending,
+    generatePayouts: generatePayouts.mutateAsync,
+    isGeneratingPayouts: generatePayouts.isPending,
     approveRefund: approveRefund.mutateAsync,
     isApprovingRefund: approveRefund.isPending,
   };

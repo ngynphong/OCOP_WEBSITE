@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
-import { FiEye, FiSearch } from 'react-icons/fi';
+import { FiSearch } from 'react-icons/fi';
 import { formatCurrencyVND } from '@/utils/format';
 import { IAdminOrderListItem, IAdminOrderParams } from '../types/adminTypes';
 import { Pagination } from '@/components/ui/Pagination';
@@ -129,7 +129,6 @@ export const AdminOrderTable = ({
               <th className="py-4 px-8">Phương thức</th>
               <th className="py-4 px-8 text-center">Trạng thái</th>
               <th className="py-4 px-8">Ngày tạo</th>
-              <th className="py-4 px-8 text-right">Thao tác</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-stone-50">
@@ -203,11 +202,6 @@ export const AdminOrderTable = ({
                     <div className="text-[11px] text-stone-500 font-bold">
                       {format(new Date(order.createdAt), 'dd/MM/yyyy HH:mm', { locale: vi })}
                     </div>
-                  </td>
-                  <td className="py-5 px-8 text-right">
-                    <button className="p-2 hover:bg-white rounded-lg transition-colors text-[#00490E] shadow-sm border border-transparent hover:border-stone-100">
-                      <FiEye size={18} />
-                    </button>
                   </td>
                 </tr>
               ))

@@ -5,15 +5,22 @@ import {
   useAdminOrdersQuery,
   useAdminDashboardQuery,
   useAdminRefundsQuery,
+  useAdminOrderMutations,
+  useAdminPayoutsQuery,
 } from '@/features/admin/hooks/useAdminOrders';
 import { AdminOrderTable } from '@/features/admin/components/AdminOrderTable';
 import { AdminOrderStats } from '@/features/admin/components/AdminOrderStats';
 import { AdminRefundTable } from '@/features/admin/components/AdminRefundTable';
-import { IAdminOrderParams, IAdminRefundParams } from '@/features/admin/types/adminTypes';
+import { AdminPayoutTable } from '@/features/admin/components/AdminPayoutTable';
+import {
+  IAdminOrderParams,
+  IAdminRefundParams,
+  IAdminPayoutParams,
+} from '@/features/admin/types/adminTypes';
 import { cn } from '@/lib/utils';
 
 const AdminOrdersPage = () => {
-  const [activeTab, setActiveTab] = useState<'orders' | 'refunds'>('orders');
+  const [activeTab, setActiveTab] = useState<'orders' | 'refunds' | 'payouts'>('orders');
 
   const [orderParams, setOrderParams] = useState<IAdminOrderParams>({
     pageNo: 1,
@@ -28,9 +35,24 @@ const AdminOrdersPage = () => {
     status: undefined,
   });
 
+  const [payoutParams, setPayoutParams] = useState<IAdminPayoutParams>({
+    pageNo: 1,
+    pageSize: 10,
+    status: undefined,
+  });
+
   const { data: dashboardData, isLoading: isDashboardLoading } = useAdminDashboardQuery();
   const { data: ordersData, isLoading: isOrdersLoading } = useAdminOrdersQuery(orderParams);
   const { data: refundsData, isLoading: isRefundsLoading } = useAdminRefundsQuery(refundParams);
+  const { data: payoutsData, isLoading: isPayoutsLoading } = useAdminPayoutsQuery(payoutParams);
+  const {
+    approveRefund,
+    isApprovingRefund,
+    processPayout,
+    isProcessingPayout,
+    generatePayouts,
+    isGeneratingPayouts,
+  } = useAdminOrderMutations();
 
   return (
     <div className="space-y-8 pb-20">
@@ -69,6 +91,17 @@ const AdminOrdersPage = () => {
           >
             Hoàn tiền
           </button>
+          <button
+            onClick={() => setActiveTab('payouts')}
+            className={cn(
+              'px-6 py-2 rounded-xl text-sm font-black transition-all duration-300',
+              activeTab === 'payouts'
+                ? 'bg-white text-indigo-600 shadow-sm'
+                : 'text-stone-400 hover:text-stone-600',
+            )}
+          >
+            Đối soát
+          </button>
         </div>
       </div>
 
@@ -76,7 +109,7 @@ const AdminOrdersPage = () => {
       <AdminOrderStats data={dashboardData?.data} isLoading={isDashboardLoading} />
 
       {/* Content Section */}
-      {activeTab === 'orders' ? (
+      {activeTab === 'orders' && (
         <AdminOrderTable
           orders={ordersData?.data?.content || []}
           isLoading={isOrdersLoading}
@@ -85,7 +118,9 @@ const AdminOrdersPage = () => {
           params={orderParams}
           setParams={setOrderParams}
         />
-      ) : (
+      )}
+
+      {activeTab === 'refunds' && (
         <AdminRefundTable
           refunds={refundsData?.data?.content || []}
           isLoading={isRefundsLoading}
@@ -93,6 +128,23 @@ const AdminOrdersPage = () => {
           totalElement={refundsData?.data?.totalElements || 0}
           params={refundParams}
           setParams={setRefundParams}
+          onApproveRefund={approveRefund}
+          isApproving={isApprovingRefund}
+        />
+      )}
+
+      {activeTab === 'payouts' && (
+        <AdminPayoutTable
+          payouts={payoutsData?.data?.content || []}
+          isLoading={isPayoutsLoading}
+          totalPage={payoutsData?.data?.totalPages || 0}
+          totalElement={payoutsData?.data?.totalElements || 0}
+          params={payoutParams}
+          setParams={setPayoutParams}
+          onProcessPayout={processPayout}
+          isProcessing={isProcessingPayout}
+          onGeneratePayouts={generatePayouts}
+          isGenerating={isGeneratingPayouts}
         />
       )}
     </div>

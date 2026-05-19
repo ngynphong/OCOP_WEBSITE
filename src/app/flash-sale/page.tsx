@@ -85,7 +85,7 @@ export default function FlashSalePage() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2 }}
-                className="bg-white/95 backdrop-blur-xl p-8 md:p-10 rounded-[40px] shadow-2xl shadow-red-900/20 border border-white"
+                className="bg-white/95 backdrop-blur-xl min-w-sm p-8 md:p-10 rounded-[40px] shadow-2xl shadow-red-900/20 border border-white"
               >
                 <div className="flex flex-col items-center gap-4">
                   <div className="flex items-center gap-2 text-red-600 font-bold uppercase tracking-[0.3em] text-[10px] md:text-xs">

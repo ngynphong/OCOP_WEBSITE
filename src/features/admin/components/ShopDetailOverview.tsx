@@ -11,31 +11,26 @@ interface ShopDetailOverviewProps {
 }
 
 const ShopDetailOverview: React.FC<ShopDetailOverviewProps> = React.memo(({ shop }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState<UpdateShopOwnerRequest>({
+  const getOwnerFormData = (): UpdateShopOwnerRequest => ({
     ownerName: shop.ownerName || '',
-    ownerRole: '', // Backend response in cau-chuyen.md shows ownerRole
-    ownerQuote: '',
-    ownerImageUrl: '',
+    ownerRole: shop.ownerRole || '',
+    ownerQuote: shop.ownerQuote || '',
+    ownerImageUrl: shop.ownerImageUrl || '',
   });
 
-  const { updateShopOwner, isUpdatingOwner } = useAdminShopMutations();
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState<UpdateShopOwnerRequest>(getOwnerFormData);
 
-  // Update formData when shop data changes or when starting to edit
-  React.useEffect(() => {
-    if (shop) {
-      setFormData({
-        ownerName: shop.ownerName || '',
-        ownerRole: shop.ownerRole || '',
-        ownerQuote: shop.ownerQuote || '',
-        ownerImageUrl: shop.ownerImageUrl || '',
-      });
-    }
-  }, [shop]);
+  const { updateShopOwner, isUpdatingOwner } = useAdminShopMutations();
 
   const handleSave = async () => {
     await updateShopOwner({ shopId: shop.id, data: formData });
     setIsEditing(false);
+  };
+
+  const handleStartEditing = () => {
+    setFormData(getOwnerFormData());
+    setIsEditing(true);
   };
 
   return (
@@ -60,7 +55,7 @@ const ShopDetailOverview: React.FC<ShopDetailOverviewProps> = React.memo(({ shop
           </h4>
           {!isEditing ? (
             <button
-              onClick={() => setIsEditing(true)}
+              onClick={handleStartEditing}
               className="flex items-center gap-2 px-4 py-2 bg-white border border-stone-200 rounded-xl text-xs font-bold text-stone-600 hover:text-emerald-600 hover:border-emerald-200 transition-all shadow-sm active:scale-95"
             >
               <FiEdit3 /> Chỉnh sửa
@@ -176,7 +171,7 @@ const ShopDetailOverview: React.FC<ShopDetailOverviewProps> = React.memo(({ shop
           </div>
           <div>
             <p className="text-[10px] text-stone-400 font-black uppercase">Loại hình</p>
-            <p className="text-sm font-bold text-stone-800">Cơ sở sản xuất OCOP</p>
+            <p className="text-sm font-bold text-stone-800">Sản phẩm OCOP</p>
           </div>
         </div>
         <div className="bg-white p-6 rounded-3xl border border-stone-100 flex items-center gap-5">
