@@ -1,4 +1,5 @@
 import { axiosClient, publicAxiosClient } from '@/lib/axios';
+import { API_ENDPOINTS } from '@/lib/api-endpoints';
 import {
   ReviewListResponse,
   ReviewDetailResponse,
@@ -20,43 +21,45 @@ export const reviewApi = {
     productSlug: string,
     params?: ReviewQueryParams,
   ): Promise<ReviewListResponse> => {
-    return publicAxiosClient.get(`/products/${productSlug}/reviews`, { params });
+    return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.PRODUCTS}/${productSlug}/reviews`, {
+      params,
+    });
   },
 
   /** Gửi đánh giá sản phẩm mới (Multipart/FormData kèm ảnh) */
   submitReview: (formData: FormData): Promise<ReviewDetailResponse> => {
-    return axiosClient.post('/reviews/product', formData, {
+    return axiosClient.post(API_ENDPOINTS.REVIEWS, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
 
   /** Báo cáo vi phạm đánh giá */
   flagReview: (reviewId: number, data: FlagReviewPayload): Promise<ResponseBase<string>> => {
-    return axiosClient.post(`/reviews/${reviewId}/flag`, data);
+    return axiosClient.post(`${API_ENDPOINTS.REVIEWS}/${reviewId}/flag`, data);
   },
 
   /** Đánh dấu đánh giá là hữu ích */
   markHelpful: (reviewId: number): Promise<ResponseBase<string>> => {
-    return axiosClient.post(`/reviews/${reviewId}/helpful`);
+    return axiosClient.post(`${API_ENDPOINTS.REVIEWS}/${reviewId}/helpful`);
   },
 
   // ─── Seller API ────────────────────────────────────────────────────────────
 
   /** Seller xem danh sách đánh giá của shop */
   getSellerReviews: (params?: SellerReviewQueryParams): Promise<ReviewListResponse> => {
-    return axiosClient.get('/seller/reviews', { params });
+    return axiosClient.get(API_ENDPOINTS.SELLER.REVIEWS, { params });
   },
 
   /** Seller phản hồi đánh giá */
   replyToReview: (reviewId: number, data: SellerReplyPayload): Promise<ReviewDetailResponse> => {
-    return axiosClient.patch(`/seller/reviews/${reviewId}/reply`, data);
+    return axiosClient.patch(`${API_ENDPOINTS.SELLER.REVIEWS}/${reviewId}/reply`, data);
   },
 
   // ─── Admin API ─────────────────────────────────────────────────────────────
 
   /** Admin danh sách đánh giá đang chờ duyệt */
   getPendingReviews: (params?: AdminReviewQueryParams): Promise<ReviewListResponse> => {
-    return axiosClient.get('/admin/reviews/pending', { params });
+    return axiosClient.get(`${API_ENDPOINTS.ADMIN.REVIEWS}/pending`, { params });
   },
 
   /** Admin phê duyệt đánh giá */
@@ -64,17 +67,17 @@ export const reviewApi = {
     reviewId: number,
     data: AdminModerationPayload,
   ): Promise<ReviewDetailResponse> => {
-    return axiosClient.post(`/admin/reviews/${reviewId}/approve`, data);
+    return axiosClient.post(`${API_ENDPOINTS.ADMIN.REVIEWS}/${reviewId}/approve`, data);
   },
 
   /** Admin từ chối đánh giá */
   rejectReview: (reviewId: number, data: AdminModerationPayload): Promise<ReviewDetailResponse> => {
-    return axiosClient.post(`/admin/reviews/${reviewId}/reject`, data);
+    return axiosClient.post(`${API_ENDPOINTS.ADMIN.REVIEWS}/${reviewId}/reject`, data);
   },
 
   /** Admin ẩn đánh giá */
   hideReview: (reviewId: number, data: AdminModerationPayload): Promise<ReviewDetailResponse> => {
-    return axiosClient.post(`/admin/reviews/${reviewId}/hide`, data);
+    return axiosClient.post(`${API_ENDPOINTS.ADMIN.REVIEWS}/${reviewId}/hide`, data);
   },
 
   /** Admin danh sách các báo cáo vi phạm nội dung */
@@ -83,12 +86,12 @@ export const reviewApi = {
     pageNo?: number;
     pageSize?: number;
   }): Promise<ContentFlagListResponse> => {
-    return axiosClient.get('/admin/content-flags', { params });
+    return axiosClient.get(API_ENDPOINTS.ADMIN.CONTENT_FLAGS, { params });
   },
 
   /** Admin xử lý báo cáo vi phạm sản phẩm/đánh giá */
   resolveContentFlag: (flagId: number, action: string): Promise<ResponseBase<string>> => {
-    return axiosClient.post(`/admin/content-flags/${flagId}/resolve`, null, {
+    return axiosClient.post(`${API_ENDPOINTS.ADMIN.CONTENT_FLAGS}/${flagId}/resolve`, null, {
       params: { action },
     });
   },

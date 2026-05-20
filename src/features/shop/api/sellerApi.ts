@@ -1,4 +1,5 @@
 import { axiosClient } from '@/lib/axios';
+import { API_ENDPOINTS } from '@/lib/api-endpoints';
 import {
   CreateShopRequest,
   UpdateShopRequest,
@@ -18,25 +19,25 @@ import {
 
 export const sellerApi = {
   createShop: (data: CreateShopRequest): Promise<ShopDetailResponse> => {
-    return axiosClient.post('/seller/shop', data);
+    return axiosClient.post(API_ENDPOINTS.SELLER.SHOP, data);
   },
 
   getMyShop: (): Promise<ShopDetailResponse> => {
-    return axiosClient.get('/seller/shop');
+    return axiosClient.get(API_ENDPOINTS.SELLER.SHOP);
   },
 
   resubmitShop: (): Promise<ShopDetailResponse> => {
-    return axiosClient.post('/seller/shop/resubmit');
+    return axiosClient.post(API_ENDPOINTS.SELLER.SHOP_RESUBMIT);
   },
 
   updateShop: (data: UpdateShopRequest): Promise<ShopDetailResponse> => {
-    return axiosClient.put('/seller/shop', data);
+    return axiosClient.put(API_ENDPOINTS.SELLER.SHOP, data);
   },
 
   uploadLogo: (file: File): Promise<ShopDetailResponse> => {
     const formData = new FormData();
     formData.append('file', file);
-    return axiosClient.post('/seller/shop/logo', formData, {
+    return axiosClient.post(API_ENDPOINTS.SELLER.SHOP_LOGO, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
@@ -44,53 +45,53 @@ export const sellerApi = {
   uploadBanner: (file: File): Promise<ShopDetailResponse> => {
     const formData = new FormData();
     formData.append('file', file);
-    return axiosClient.post('/seller/shop/banner', formData, {
+    return axiosClient.post(API_ENDPOINTS.SELLER.SHOP_BANNER, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
 
   getDocuments: (): Promise<ShopDocumentListResponse> => {
-    return axiosClient.get('/seller/shop/documents');
+    return axiosClient.get(API_ENDPOINTS.SELLER.SHOP_DOCUMENTS);
   },
 
   uploadDocument: (docType: ShopDocumentType, file: File): Promise<ShopDocumentResponse> => {
     const formData = new FormData();
     formData.append('docType', docType);
     formData.append('file', file);
-    return axiosClient.post('/seller/shop/documents', formData, {
+    return axiosClient.post(API_ENDPOINTS.SELLER.SHOP_DOCUMENTS, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
 
   deleteDocument: (documentId: number | string): Promise<ShopDocumentDeleteResponse> => {
-    return axiosClient.delete(`/seller/shop/documents/${documentId}`);
+    return axiosClient.delete(`${API_ENDPOINTS.SELLER.SHOP_DOCUMENTS}/${documentId}`);
   },
 
   getMyShopPolicy: (): Promise<ShopPolicyResponse> => {
-    return axiosClient.get('/seller/shop/policy');
+    return axiosClient.get(API_ENDPOINTS.SELLER.SHOP_POLICY);
   },
 
   updatePolicy: (data: UpdateShopPolicyRequest): Promise<ShopPolicyResponse> => {
-    return axiosClient.put('/seller/shop/policy', data);
+    return axiosClient.put(API_ENDPOINTS.SELLER.SHOP_POLICY, data);
   },
 
   getCurrentSubscription: (): Promise<ShopSubscriptionResponse> => {
-    return axiosClient.get('/seller/shop/subscription');
+    return axiosClient.get(API_ENDPOINTS.SELLER.SHOP_SUBSCRIPTION);
   },
 
   getSubscriptionHistory: (): Promise<ShopSubscriptionListResponse> => {
-    return axiosClient.get('/seller/shop/subscriptions');
+    return axiosClient.get(API_ENDPOINTS.SELLER.SHOP_SUBSCRIPTION_HISTORY);
   },
 
   createSubscription: (data: CreateSubscriptionRequest): Promise<ShopSubscriptionResponse> => {
-    return axiosClient.post('/seller/shop/subscriptions', data);
+    return axiosClient.post(API_ENDPOINTS.SELLER.SHOP_SUBSCRIPTION_HISTORY, data);
   },
 
   getBankAccount: (): Promise<BankAccountResponse> => {
-    return axiosClient.get('/seller/shop/bank-account');
+    return axiosClient.get(API_ENDPOINTS.SELLER.SHOP_BANK_ACCOUNT);
   },
 
   updateBankAccount: (data: BankAccount): Promise<BankAccountResponse> => {
-    return axiosClient.put('/seller/shop/bank-account', data);
+    return axiosClient.put(API_ENDPOINTS.SELLER.SHOP_BANK_ACCOUNT, data);
   },
 };

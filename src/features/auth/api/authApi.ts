@@ -1,4 +1,5 @@
 import { axiosClient, publicAxiosClient } from '@/lib/axios';
+import { API_ENDPOINTS } from '@/lib/api-endpoints';
 import {
   LoginRequest,
   LoginResponse,
@@ -27,67 +28,69 @@ import {
 
 export const authApi = {
   login: (data: LoginRequest): Promise<LoginResponse> => {
-    return publicAxiosClient.post('/auth/login', data);
+    return publicAxiosClient.post(API_ENDPOINTS.AUTH.LOGIN, data);
   },
 
   register: (data: RegisterRequest): Promise<RegisterResponse> => {
-    return publicAxiosClient.post('/auth/register', data);
+    return publicAxiosClient.post(API_ENDPOINTS.AUTH.REGISTER, data);
   },
 
   verifyAccount: (identity: string): Promise<VerifyAccountResponse> => {
-    return publicAxiosClient.get(`/auth/verify-account?identity=${encodeURIComponent(identity)}`);
+    return publicAxiosClient.get(
+      `${API_ENDPOINTS.AUTH.VERIFY_ACCOUNT}?identity=${encodeURIComponent(identity)}`,
+    );
   },
 
   simpleRegister: (data: SimpleRegisterRequest): Promise<RegisterResponse> => {
-    return publicAxiosClient.post('/auth/simple-register', data);
+    return publicAxiosClient.post(API_ENDPOINTS.AUTH.SIMPLE_REGISTER, data);
   },
 
   logout: (data: LogoutRequest): Promise<LogoutResponse> => {
-    return axiosClient.post('/auth/logout', data);
+    return axiosClient.post(API_ENDPOINTS.AUTH.LOGOUT, data);
   },
 
   verifyEmail: (data: VerifyEmailRequest): Promise<VerifyEmailResponse> => {
-    return publicAxiosClient.post('/auth/simple-verify', data);
+    return publicAxiosClient.post(API_ENDPOINTS.AUTH.VERIFY_EMAIL, data);
   },
 
   refreshToken: (data: RefreshTokenRequest): Promise<RefreshTokenResponse> => {
-    return publicAxiosClient.post('/auth/refresh-token', data);
+    return publicAxiosClient.post(API_ENDPOINTS.AUTH.REFRESH_TOKEN, data);
   },
 
   forgotPassword: (data: ForgotPasswordRequest): Promise<ForgotPasswordResponse> => {
-    return publicAxiosClient.post('/auth/forgot-password', data);
+    return publicAxiosClient.post(API_ENDPOINTS.AUTH.FORGOT_PASSWORD, data);
   },
 
   verifyOtp: (data: VerifyOtpRequest): Promise<VerifyOtpResponse> => {
-    return publicAxiosClient.post('/auth/verify-otp', data);
+    return publicAxiosClient.post(API_ENDPOINTS.AUTH.VERIFY_OTP, data);
   },
 
   resendOtp: (data: ResendOtpRequest): Promise<VerifyOtpResponse> => {
-    return publicAxiosClient.post('/auth/resend-otp', data);
+    return publicAxiosClient.post(API_ENDPOINTS.AUTH.RESEND_OTP, data);
   },
 
   resetPassword: (data: ResetPasswordRequest): Promise<ResetPasswordResponse> => {
-    return publicAxiosClient.post('/auth/reset-password', data);
+    return publicAxiosClient.post(API_ENDPOINTS.AUTH.RESET_PASSWORD, data);
   },
   getProfile: (): Promise<UserProfileResponse> => {
-    return axiosClient.get('/users/me');
+    return axiosClient.get(API_ENDPOINTS.USERS.ME);
   },
   updateProfile: (data: UpdateProfileRequest): Promise<UserProfileResponse> => {
-    return axiosClient.put('/users/me', data);
+    return axiosClient.put(API_ENDPOINTS.USERS.ME, data);
   },
   updateAvatar: (file: File): Promise<UserProfileResponse> => {
     const formData = new FormData();
     formData.append('file', file);
-    return axiosClient.post('/users/me/avatar', formData, {
+    return axiosClient.post(API_ENDPOINTS.USERS.AVATAR, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
   },
   deleteAvatar: (): Promise<UserProfileResponse> => {
-    return axiosClient.delete('/users/me/avatar');
+    return axiosClient.delete(API_ENDPOINTS.USERS.AVATAR);
   },
   changePassword: (data: ChangePasswordRequest): Promise<ChangePasswordResponse> => {
-    return axiosClient.post('/auth/change-password', data);
+    return axiosClient.post(API_ENDPOINTS.AUTH.CHANGE_PASSWORD, data);
   },
 };

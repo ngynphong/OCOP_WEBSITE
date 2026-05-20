@@ -1,4 +1,5 @@
 import { publicAxiosClient } from '@/lib/axios';
+import { API_ENDPOINTS } from '@/lib/api-endpoints';
 
 export interface CustomCheckoutInfo {
   quotationId: string;
@@ -17,6 +18,6 @@ export interface CustomCheckoutInfo {
 
 export const customCheckoutApi = {
   getCheckoutInfo: (token: string): Promise<{ code: number; data: CustomCheckoutInfo }> => {
-    return publicAxiosClient.get(`/checkout/custom/${token}`);
+    return publicAxiosClient.get(`${API_ENDPOINTS.CHECKOUT.CUSTOM}/${token}`);
   },
 };

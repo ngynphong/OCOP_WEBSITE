@@ -1,4 +1,5 @@
 import { axiosClient } from '@/lib/axios';
+import { API_ENDPOINTS } from '@/lib/api-endpoints';
 import { NotificationResponse } from '@/features/notifications/types/notificationTypes';
 
 export const notificationApi = {
@@ -11,41 +12,41 @@ export const notificationApi = {
     isRead?: boolean;
     sorts?: string;
   }) => {
-    return axiosClient.get<NotificationResponse>('/notifications', { params });
+    return axiosClient.get<NotificationResponse>(API_ENDPOINTS.NOTIFICATIONS, { params });
   },
 
   /**
    * Lấy số lượng thông báo chưa đọc
    */
   getUnreadCount: () => {
-    return axiosClient.get<number>('/notifications/unread-count');
+    return axiosClient.get<number>(`${API_ENDPOINTS.NOTIFICATIONS}/unread-count`);
   },
 
   /**
    * Đánh dấu một thông báo là đã đọc
    */
   markAsRead: (notificationId: string) => {
-    return axiosClient.patch<string>(`/notifications/${notificationId}/read`);
+    return axiosClient.patch<string>(`${API_ENDPOINTS.NOTIFICATIONS}/${notificationId}/read`);
   },
 
   /**
    * Đánh dấu tất cả thông báo là đã đọc
    */
   markAllAsRead: () => {
-    return axiosClient.patch<string>('/notifications/read-all');
+    return axiosClient.patch<string>(`${API_ENDPOINTS.NOTIFICATIONS}/read-all`);
   },
 
   /**
    * Xóa một thông báo
    */
   deleteNotification: (notificationId: string) => {
-    return axiosClient.delete<string>(`/notifications/${notificationId}`);
+    return axiosClient.delete<string>(`${API_ENDPOINTS.NOTIFICATIONS}/${notificationId}`);
   },
 
   /**
    * Xóa nhiều thông báo (batch delete)
    */
   deleteNotifications: (notificationIds: string[]) => {
-    return axiosClient.delete<string>('/notifications', { data: notificationIds });
+    return axiosClient.delete<string>(API_ENDPOINTS.NOTIFICATIONS, { data: notificationIds });
   },
 };

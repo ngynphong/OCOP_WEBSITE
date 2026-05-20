@@ -1,4 +1,5 @@
 import { axiosClient } from '@/lib/axios';
+import { API_ENDPOINTS } from '@/lib/api-endpoints';
 import { ChatRoom, ChatMessage, ChatUploadResponse } from '../types/chatTypes';
 
 export interface ApiResponse<T> {
@@ -18,24 +19,27 @@ export interface PaginatedResponse<T> {
 export const chatApi = {
   // Buyer: Create or get a chat room with a shop
   createRoom: (shopId: number | string) =>
-    axiosClient.post<never, ApiResponse<ChatRoom>>(`/chat/rooms/${shopId}`),
+    axiosClient.post<never, ApiResponse<ChatRoom>>(`${API_ENDPOINTS.CHAT.ROOMS}/${shopId}`),
 
   // Buyer: Get list of chat rooms
   getRooms: (pageNo = 1, pageSize = 20) =>
-    axiosClient.get<never, ApiResponse<PaginatedResponse<ChatRoom>>>(`/chat/rooms`, {
+    axiosClient.get<never, ApiResponse<PaginatedResponse<ChatRoom>>>(API_ENDPOINTS.CHAT.ROOMS, {
       params: { pageNo, pageSize },
     }),
 
   // Seller: Get list of chat rooms
   getSellerRooms: (pageNo = 1, pageSize = 20) =>
-    axiosClient.get<never, ApiResponse<PaginatedResponse<ChatRoom>>>(`/seller/chat/rooms`, {
-      params: { pageNo, pageSize },
-    }),
+    axiosClient.get<never, ApiResponse<PaginatedResponse<ChatRoom>>>(
+      API_ENDPOINTS.SELLER.CHAT_ROOMS,
+      {
+        params: { pageNo, pageSize },
+      },
+    ),
 
   // Get message history for a room
   getMessages: (roomId: number | string, pageNo = 1, pageSize = 30) =>
     axiosClient.get<never, ApiResponse<PaginatedResponse<ChatMessage>>>(
-      `/chat/rooms/${roomId}/messages`,
+      `${API_ENDPOINTS.CHAT.ROOMS}/${roomId}/messages`,
       {
         params: { pageNo, pageSize },
       },
@@ -43,14 +47,14 @@ export const chatApi = {
 
   // Mark all messages in a room as read
   markAsRead: (roomId: number | string) =>
-    axiosClient.patch<never, ApiResponse<string>>(`/chat/rooms/${roomId}/read`),
+    axiosClient.patch<never, ApiResponse<string>>(`${API_ENDPOINTS.CHAT.ROOMS}/${roomId}/read`),
 
   // Upload attachment
   uploadAttachment: (roomId: number | string, file: File) => {
     const formData = new FormData();
     formData.append('file', file);
     return axiosClient.post<FormData, ApiResponse<ChatUploadResponse>>(
-      `/chat/rooms/${roomId}/upload`,
+      `${API_ENDPOINTS.CHAT.ROOMS}/${roomId}/upload`,
       formData,
       {
         headers: {

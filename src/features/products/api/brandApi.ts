@@ -1,4 +1,5 @@
 import { axiosClient, publicAxiosClient } from '@/lib/axios';
+import { API_ENDPOINTS } from '@/lib/api-endpoints';
 import {
   PublicBrandListResponse,
   PublicBrandDetailResponse,
@@ -17,14 +18,14 @@ export const brandApi = {
    * Get all active brands for the public storefront.
    */
   getBrands: (): Promise<PublicBrandListResponse> => {
-    return publicAxiosClient.get('/brands');
+    return publicAxiosClient.get(API_ENDPOINTS.PUBLIC.BRANDS);
   },
 
   /**
    * Get brand details by slug for the public storefront.
    */
   getBrandBySlug: (slug: string): Promise<PublicBrandDetailResponse> => {
-    return publicAxiosClient.get(`/brands/${slug}`);
+    return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.BRANDS}/${slug}`);
   },
 
   // ─── Admin APIs ────────────────────────────────────────────────────────────
@@ -33,7 +34,7 @@ export const brandApi = {
    * Create a new brand (Admin only).
    */
   createBrand: (data: CreateBrandRequest): Promise<PublicBrandDetailResponse> => {
-    return axiosClient.post('/admin/brands', data);
+    return axiosClient.post(API_ENDPOINTS.ADMIN.BRANDS, data);
   },
 
   /**
@@ -43,6 +44,6 @@ export const brandApi = {
     id: number | string,
     data: UpdateBrandRequest,
   ): Promise<PublicBrandDetailResponse> => {
-    return axiosClient.put(`/admin/brands/${id}`, data);
+    return axiosClient.put(`${API_ENDPOINTS.ADMIN.BRANDS}/${id}`, data);
   },
 };

@@ -1,24 +1,26 @@
 import { axiosClient } from '@/lib/axios';
+import { API_ENDPOINTS } from '@/lib/api-endpoints';
 import { IUserAddress, ICreateAddressRequest, IUpdateAddressRequest, ApiResponse } from '../types';
 
 export const addressApi = {
-  getAddresses: (): Promise<ApiResponse<IUserAddress[]>> => axiosClient.get('/users/addresses'),
+  getAddresses: (): Promise<ApiResponse<IUserAddress[]>> =>
+    axiosClient.get(API_ENDPOINTS.USERS.ADDRESSES),
 
   getAddressById: (id: number): Promise<ApiResponse<IUserAddress>> =>
-    axiosClient.get(`/users/addresses/${id}`),
+    axiosClient.get(`${API_ENDPOINTS.USERS.ADDRESSES}/${id}`),
 
   getDefaultAddress: (): Promise<ApiResponse<IUserAddress>> =>
-    axiosClient.get('/users/addresses/default'),
+    axiosClient.get(`${API_ENDPOINTS.USERS.ADDRESSES}/default`),
 
   createAddress: (data: ICreateAddressRequest): Promise<ApiResponse<IUserAddress>> =>
-    axiosClient.post('/users/addresses', data),
+    axiosClient.post(API_ENDPOINTS.USERS.ADDRESSES, data),
 
   updateAddress: (id: number, data: IUpdateAddressRequest): Promise<ApiResponse<IUserAddress>> =>
-    axiosClient.put(`/users/addresses/${id}`, data),
+    axiosClient.put(`${API_ENDPOINTS.USERS.ADDRESSES}/${id}`, data),
 
   setDefaultAddress: (id: number): Promise<ApiResponse<IUserAddress>> =>
-    axiosClient.patch(`/users/addresses/${id}/default`),
+    axiosClient.patch(`${API_ENDPOINTS.USERS.ADDRESSES}/${id}/default`),
 
   deleteAddress: (id: number): Promise<ApiResponse<string>> =>
-    axiosClient.delete(`/users/addresses/${id}`),
+    axiosClient.delete(`${API_ENDPOINTS.USERS.ADDRESSES}/${id}`),
 };

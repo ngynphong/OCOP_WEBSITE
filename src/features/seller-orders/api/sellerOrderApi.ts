@@ -1,4 +1,5 @@
 import { axiosClient } from '@/lib/axios';
+import { API_ENDPOINTS } from '@/lib/api-endpoints';
 import {
   IConfirmOrderReq,
   IRejectOrderReq,
@@ -13,7 +14,7 @@ import {
 
 export const sellerOrderApi = {
   getOrders: async (params: ISellerOrderListReq, headers?: Record<string, string>) => {
-    return axiosClient.get<unknown, { data: ISellerOrderListRes }>('/seller/orders', {
+    return axiosClient.get<unknown, { data: ISellerOrderListRes }>(API_ENDPOINTS.SELLER.ORDERS, {
       params,
       headers,
     });
@@ -21,31 +22,40 @@ export const sellerOrderApi = {
 
   getOrderByCode: async (orderCode: string) => {
     return axiosClient.get<unknown, { data: ISellerOrderDetailsRes }>(
-      `/seller/orders/${orderCode}`,
+      `${API_ENDPOINTS.SELLER.ORDERS}/${orderCode}`,
     );
   },
 
   confirmOrder: async (orderCode: string, data: IConfirmOrderReq) => {
     return axiosClient.post<unknown, { data: unknown }>(
-      `/seller/orders/${orderCode}/confirm`,
+      `${API_ENDPOINTS.SELLER.ORDERS}/${orderCode}/confirm`,
       data,
     );
   },
 
   rejectOrder: async (orderCode: string, data: IRejectOrderReq) => {
-    return axiosClient.post<unknown, { data: unknown }>(`/seller/orders/${orderCode}/reject`, data);
+    return axiosClient.post<unknown, { data: unknown }>(
+      `${API_ENDPOINTS.SELLER.ORDERS}/${orderCode}/reject`,
+      data,
+    );
   },
 
   getRevenue: async (params: IRevenueReq) => {
-    return axiosClient.get<unknown, { data: IRevenueRes }>('/seller/orders/revenue', { params });
+    return axiosClient.get<unknown, { data: IRevenueRes }>(API_ENDPOINTS.SELLER.ORDERS_REVENUE, {
+      params,
+    });
   },
 
   getRefunds: async (params: { pageNo?: number; pageSize?: number; status?: string }) => {
-    return axiosClient.get<unknown, { data: IRefundListRes }>('/seller/orders/refunds', { params });
+    return axiosClient.get<unknown, { data: IRefundListRes }>(API_ENDPOINTS.SELLER.ORDERS_REFUNDS, {
+      params,
+    });
   },
 
   getPayouts: async (params: { pageNo?: number; pageSize?: number }) => {
-    return axiosClient.get<unknown, { data: IPayoutListRes }>('/seller/orders/payouts', { params });
+    return axiosClient.get<unknown, { data: IPayoutListRes }>(API_ENDPOINTS.SELLER.ORDERS_PAYOUTS, {
+      params,
+    });
   },
 
   updateShippingStatus: async (
@@ -53,14 +63,14 @@ export const sellerOrderApi = {
     data: { status: 'SHIPPING' | 'DELIVERED'; note?: string; trackingNumber?: string },
   ) => {
     return axiosClient.patch<unknown, { data: unknown }>(
-      `/seller/orders/${orderCode}/shipping-status`,
+      `${API_ENDPOINTS.SELLER.ORDERS}/${orderCode}/shipping-status`,
       data,
     );
   },
 
   getB2BOrderByCode: async (orderCode: string) => {
     return axiosClient.get<unknown, { data: ISellerOrderDetailsRes }>(
-      `/seller/orders/b2b/${orderCode}`,
+      `${API_ENDPOINTS.SELLER.ORDERS_B2B}/${orderCode}`,
     );
   },
 
@@ -69,7 +79,7 @@ export const sellerOrderApi = {
     data: { type: 'DEPOSIT' | 'FINAL'; note?: string },
   ) => {
     return axiosClient.patch<unknown, { data: unknown }>(
-      `/seller/orders/b2b/${orderCode}/confirm-payment`,
+      `${API_ENDPOINTS.SELLER.ORDERS_B2B}/${orderCode}/confirm-payment`,
       data,
     );
   },
@@ -79,13 +89,13 @@ export const sellerOrderApi = {
     data: { status: 'PROCESSING' | 'SHIPPING' | 'COMPLETED' | 'CANCELLED'; reason?: string },
   ) => {
     return axiosClient.patch<unknown, { data: unknown }>(
-      `/seller/orders/b2b/${orderCode}/status`,
+      `${API_ENDPOINTS.SELLER.ORDERS_B2B}/${orderCode}/status`,
       data,
     );
   },
 
   getB2BOrders: async (params: { status?: string; pageNo?: number; pageSize?: number }) => {
-    return axiosClient.get<unknown, { data: unknown }>('/seller/orders/b2b', { params });
+    return axiosClient.get<unknown, { data: unknown }>(API_ENDPOINTS.SELLER.ORDERS_B2B, { params });
   },
 
   updateB2BShippingInfo: async (
@@ -100,13 +110,15 @@ export const sellerOrderApi = {
     },
   ) => {
     return axiosClient.post<unknown, { data: unknown }>(
-      `/seller/orders/b2b/${id}/shipping-info`,
+      `${API_ENDPOINTS.SELLER.ORDERS_B2B}/${id}/shipping-info`,
       data,
     );
   },
 
   getB2BRefunds: async (params: { pageNo?: number; pageSize?: number; status?: string }) => {
-    return axiosClient.get<unknown, { data: unknown }>('/seller/orders/b2b/refunds', { params });
+    return axiosClient.get<unknown, { data: unknown }>(API_ENDPOINTS.SELLER.ORDERS_B2B_REFUNDS, {
+      params,
+    });
   },
 
   updateB2BRefundStatus: async (
@@ -114,16 +126,20 @@ export const sellerOrderApi = {
     data: { status: 'APPROVED' | 'REJECTED'; actionNote?: string },
   ) => {
     return axiosClient.patch<unknown, { data: unknown }>(
-      `/seller/orders/b2b/refunds/${refundId}/status`,
+      `${API_ENDPOINTS.SELLER.ORDERS_B2B_REFUNDS}/${refundId}/status`,
       data,
     );
   },
 
   getB2BRevenue: async (params: { period?: string }) => {
-    return axiosClient.get<unknown, { data: unknown }>('/seller/orders/b2b/revenue', { params });
+    return axiosClient.get<unknown, { data: unknown }>(API_ENDPOINTS.SELLER.ORDERS_B2B_REVENUE, {
+      params,
+    });
   },
 
   getB2BPayouts: async (params: { pageNo?: number; pageSize?: number }) => {
-    return axiosClient.get<unknown, { data: unknown }>('/seller/orders/b2b/payouts', { params });
+    return axiosClient.get<unknown, { data: unknown }>(API_ENDPOINTS.SELLER.ORDERS_B2B_PAYOUTS, {
+      params,
+    });
   },
 };

@@ -1,4 +1,5 @@
 import { publicAxiosClient } from '@/lib/axios';
+import { API_ENDPOINTS } from '@/lib/api-endpoints';
 import { ResponseBase } from '@/features/auth/types';
 
 export interface Banner {
@@ -22,12 +23,12 @@ export interface QuickLink {
 
 export const homeApi = {
   getBanners: () =>
-    publicAxiosClient.get<ResponseBase<Banner[]>>('/banners') as unknown as Promise<
-      ResponseBase<Banner[]>
-    >,
+    publicAxiosClient.get<ResponseBase<Banner[]>>(
+      API_ENDPOINTS.PUBLIC.BANNERS,
+    ) as unknown as Promise<ResponseBase<Banner[]>>,
 
   getQuickLinks: () =>
-    publicAxiosClient.get<ResponseBase<QuickLink[]>>('/home/quick-links') as unknown as Promise<
-      ResponseBase<QuickLink[]>
-    >,
+    publicAxiosClient.get<ResponseBase<QuickLink[]>>(
+      API_ENDPOINTS.PUBLIC.QUICK_LINKS,
+    ) as unknown as Promise<ResponseBase<QuickLink[]>>,
 };
