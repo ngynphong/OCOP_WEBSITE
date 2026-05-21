@@ -40,16 +40,22 @@ export const useSellerShop = () => {
   };
 
   const useCurrentSubscriptionQuery = () => {
+    const { profile } = useAuthProfile();
+
     return useQuery({
       queryKey: ['seller-subscription-current'],
       queryFn: () => sellerApi.getCurrentSubscription(),
+      enabled: !!profile?.isOwnerShop,
     });
   };
 
   const useSubscriptionHistoryQuery = () => {
+    const { profile } = useAuthProfile();
+
     return useQuery({
       queryKey: ['seller-subscription-history'],
       queryFn: () => sellerApi.getSubscriptionHistory(),
+      enabled: !!profile?.isOwnerShop,
     });
   };
 
