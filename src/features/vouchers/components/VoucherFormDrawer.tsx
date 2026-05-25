@@ -99,7 +99,7 @@ export function VoucherFormDrawer({
   if (!isOpen || !mounted) return null;
 
   const drawerContent = (
-    <div className="fixed inset-0 z-9999 flex justify-end overflow-hidden">
+    <div className="fixed inset-0 z-[9999] flex justify-end overflow-hidden">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-stone-900/60 backdrop-blur-sm transition-opacity animate-in fade-in duration-500 cursor-pointer"

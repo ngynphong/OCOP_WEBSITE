@@ -73,7 +73,7 @@ export function ConfirmModal({
   const currentConfig = config[type];
 
   const modalContent = (
-    <div className="fixed inset-0 z-9999 flex items-center justify-center overflow-x-hidden overflow-y-auto px-4 outline-none focus:outline-none">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center overflow-x-hidden overflow-y-auto px-4 outline-none focus:outline-none">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
@@ -82,7 +82,7 @@ export function ConfirmModal({
       />
 
       {/* Modal Dialog */}
-      <div className="relative z-10000 w-full max-w-md bg-white rounded-2xl shadow-2xl transform transition-all animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative z-[10000] w-full max-w-md bg-white rounded-2xl shadow-2xl transform transition-all animate-in fade-in zoom-in-95 duration-200">
         {/* Close button top right */}
         <button
           onClick={onCancel}

@@ -169,7 +169,7 @@ export function FlashSaleFormDrawer({
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed right-0 top-0 w-full max-w-xl bg-white h-full shadow-2xl z-60 flex flex-col"
+            className="fixed right-0 top-0 w-full max-w-xl bg-white h-full shadow-2xl z-[60] flex flex-col"
           >
             {/* Header */}
             <div className="p-6 border-b border-stone-100 flex justify-between items-center bg-red-50/30">
