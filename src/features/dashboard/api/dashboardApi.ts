@@ -1,4 +1,5 @@
 import { axiosClient } from '@/lib/axios';
+import { API_ENDPOINTS } from '@/lib/api-endpoints';
 import {
   IAdminDashboard,
   IDashboardApiResponse,
@@ -9,21 +10,21 @@ import {
 export const dashboardApi = {
   getAdminDashboard: async (): Promise<IAdminDashboard> => {
     const response = (await axiosClient.get(
-      '/admin/dashboard',
+      API_ENDPOINTS.ADMIN.DASHBOARD,
     )) as IDashboardApiResponse<IAdminDashboard>;
     return response.data;
   },
 
   getSellerDashboard: async (): Promise<ISellerDashboard> => {
     const response = (await axiosClient.get(
-      '/seller/dashboard',
+      API_ENDPOINTS.SELLER.DASHBOARD,
     )) as IDashboardApiResponse<ISellerDashboard>;
     return response.data;
   },
 
   getUserDashboard: async (): Promise<IUserDashboard> => {
     const response = (await axiosClient.get(
-      '/users/dashboard',
+      API_ENDPOINTS.USERS.DASHBOARD,
     )) as IDashboardApiResponse<IUserDashboard>;
     return response.data;
   },

@@ -1,4 +1,5 @@
 import { axiosClient } from '@/lib/axios';
+import { API_ENDPOINTS } from '@/lib/api-endpoints';
 import {
   IBatchOrderReq,
   IBatchOrderResponseData,
@@ -18,23 +19,34 @@ import {
 
 export const orderApi = {
   buyNow: async (data: IBuyNowReq) => {
-    return axiosClient.post<unknown, { data: IBuyNowRes }>('/orders/buy-now', data);
+    return axiosClient.post<unknown, { data: IBuyNowRes }>(`${API_ENDPOINTS.ORDERS}/buy-now`, data);
   },
 
   createBatchOrders: async (data: IBatchOrderReq) => {
-    return axiosClient.post<unknown, { data: IBatchOrderResponseData }>('/orders/batch', data);
+    return axiosClient.post<unknown, { data: IBatchOrderResponseData }>(
+      `${API_ENDPOINTS.ORDERS}/batch`,
+      data,
+    );
   },
 
   getOrders: async (params: IOrderListReq, headers?: Record<string, string>) => {
-    return axiosClient.get<unknown, { data: IOrderListRes }>('/orders', { params, headers });
+    return axiosClient.get<unknown, { data: IOrderListRes }>(API_ENDPOINTS.ORDERS, {
+      params,
+      headers,
+    });
   },
 
   getOrderByCode: async (orderCode: string) => {
-    return axiosClient.get<unknown, { data: IOrderDetailsRes }>(`/orders/${orderCode}`);
+    return axiosClient.get<unknown, { data: IOrderDetailsRes }>(
+      `${API_ENDPOINTS.ORDERS}/${orderCode}`,
+    );
   },
 
   cancelOrder: async (orderCode: string, data: ICancelOrderReq) => {
-    return axiosClient.post<unknown, { data: unknown }>(`/orders/${orderCode}/cancel`, data);
+    return axiosClient.post<unknown, { data: unknown }>(
+      `${API_ENDPOINTS.ORDERS}/${orderCode}/cancel`,
+      data,
+    );
   },
 
   refundOrder: async (orderCode: string, data: IRefundReq) => {
@@ -52,22 +64,30 @@ export const orderApi = {
       });
     }
 
-    return axiosClient.post<unknown, { data: unknown }>(`/orders/${orderCode}/refund`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    return axiosClient.post<unknown, { data: unknown }>(
+      `${API_ENDPOINTS.ORDERS}/${orderCode}/refund`,
+      formData,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      },
+    );
   },
 
   confirmReceived: async (orderCode: string) => {
-    return axiosClient.post<unknown, { data: unknown }>(`/orders/${orderCode}/confirm-received`);
+    return axiosClient.post<unknown, { data: unknown }>(
+      `${API_ENDPOINTS.ORDERS}/${orderCode}/confirm-received`,
+    );
   },
 
   reorder: async (orderCode: string) => {
-    return axiosClient.post<unknown, { data: IReorderRes }>(`/orders/${orderCode}/reorder`);
+    return axiosClient.post<unknown, { data: IReorderRes }>(
+      `${API_ENDPOINTS.ORDERS}/${orderCode}/reorder`,
+    );
   },
 
   getShipmentTracking: async (orderCode: string) => {
     return axiosClient.get<unknown, { data: IShipmentTrackingRes }>(
-      `/orders/${orderCode}/shipment`,
+      `${API_ENDPOINTS.ORDERS}/${orderCode}/shipment`,
     );
   },
 
@@ -75,7 +95,7 @@ export const orderApi = {
     const formData = new FormData();
     formData.append('file', file);
     return axiosClient.post<unknown, { data: unknown }>(
-      `/orders/${orderCode}/payment-proof`,
+      `${API_ENDPOINTS.ORDERS}/${orderCode}/payment-proof`,
       formData,
       {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -84,22 +104,27 @@ export const orderApi = {
   },
 
   createB2BOrder: async (data: ICreateB2BOrderReq) => {
-    return axiosClient.post<unknown, { data: IBuyNowRes }>('/orders/b2b', data);
+    return axiosClient.post<unknown, { data: IBuyNowRes }>(`${API_ENDPOINTS.ORDERS}/b2b`, data);
   },
 
   getB2BOrders: async (params: IOrderListReq, headers?: Record<string, string>) => {
-    return axiosClient.get<unknown, { data: IOrderListRes }>('/my/orders/b2b', { params, headers });
+    return axiosClient.get<unknown, { data: IOrderListRes }>(API_ENDPOINTS.ORDERS_B2B, {
+      params,
+      headers,
+    });
   },
 
   getB2BOrderById: async (id: string) => {
-    return axiosClient.get<unknown, { data: IOrderDetailsRes }>(`/my/orders/b2b/${id}`);
+    return axiosClient.get<unknown, { data: IOrderDetailsRes }>(
+      `${API_ENDPOINTS.ORDERS_B2B}/${id}`,
+    );
   },
 
   uploadB2BPaymentProof: async (id: string, file: File) => {
     const formData = new FormData();
     formData.append('file', file);
     return axiosClient.post<unknown, { data: unknown }>(
-      `/my/orders/b2b/${id}/payment-proof`,
+      `${API_ENDPOINTS.ORDERS_B2B}/${id}/payment-proof`,
       formData,
       {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -108,11 +133,16 @@ export const orderApi = {
   },
 
   cancelB2BOrder: async (id: string, data: ICancelOrderReq) => {
-    return axiosClient.post<unknown, { data: unknown }>(`/my/orders/b2b/${id}/cancel`, data);
+    return axiosClient.post<unknown, { data: unknown }>(
+      `${API_ENDPOINTS.ORDERS_B2B}/${id}/cancel`,
+      data,
+    );
   },
 
   confirmB2BReceived: async (id: string) => {
-    return axiosClient.post<unknown, { data: unknown }>(`/my/orders/b2b/${id}/confirm-received`);
+    return axiosClient.post<unknown, { data: unknown }>(
+      `${API_ENDPOINTS.ORDERS_B2B}/${id}/confirm-received`,
+    );
   },
 
   refundB2BOrder: async (id: string, data: IRefundB2BOrderReq) => {
@@ -123,16 +153,25 @@ export const orderApi = {
     if (data.evidenceImages && data.evidenceImages.length > 0) {
       data.evidenceImages.forEach((file) => formData.append('evidenceImages', file));
     }
-    return axiosClient.post<unknown, { data: unknown }>(`/my/orders/b2b/${id}/refund`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    return axiosClient.post<unknown, { data: unknown }>(
+      `${API_ENDPOINTS.ORDERS_B2B}/${id}/refund`,
+      formData,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      },
+    );
   },
 
   getB2BShipmentTracking: async (id: string) => {
-    return axiosClient.get<unknown, { data: unknown }>(`/my/orders/b2b/${id}/shipment`);
+    return axiosClient.get<unknown, { data: unknown }>(
+      `${API_ENDPOINTS.ORDERS_B2B}/${id}/shipment`,
+    );
   },
 
   reviewB2BOrder: async (id: string, data: IReviewB2BOrderReq) => {
-    return axiosClient.post<unknown, { data: unknown }>(`/my/orders/b2b/${id}/reviews`, data);
+    return axiosClient.post<unknown, { data: unknown }>(
+      `${API_ENDPOINTS.ORDERS_B2B}/${id}/reviews`,
+      data,
+    );
   },
 };

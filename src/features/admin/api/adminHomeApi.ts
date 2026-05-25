@@ -1,4 +1,5 @@
 import { axiosClient } from '@/lib/axios';
+import { API_ENDPOINTS } from '@/lib/api-endpoints';
 import {
   AdminBanner,
   AdminBannerDetailResponse,
@@ -15,57 +16,57 @@ export const adminHomeApi = {
   // ─── Banner Management ─────────────────────────────────────────────────────
 
   getBanners: (): Promise<AdminBannerListResponse> => {
-    return axiosClient.get('/admin/banners');
+    return axiosClient.get(API_ENDPOINTS.ADMIN.BANNERS);
   },
 
   getBannerById: (id: number): Promise<AdminBannerDetailResponse> => {
-    return axiosClient.get(`/admin/banners/${id}`);
+    return axiosClient.get(`${API_ENDPOINTS.ADMIN.BANNERS}/${id}`);
   },
 
   createBanner: (formData: FormData): Promise<AdminBannerDetailResponse> => {
-    return axiosClient.post('/admin/banners', formData);
+    return axiosClient.post(API_ENDPOINTS.ADMIN.BANNERS, formData);
   },
 
   updateBanner: (id: number, formData: FormData): Promise<AdminBannerDetailResponse> => {
-    return axiosClient.put(`/admin/banners/${id}`, formData, {
+    return axiosClient.put(`${API_ENDPOINTS.ADMIN.BANNERS}/${id}`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
 
   deleteBanner: (id: number): Promise<ResponseBase<string>> => {
-    return axiosClient.delete(`/admin/banners/${id}`);
+    return axiosClient.delete(`${API_ENDPOINTS.ADMIN.BANNERS}/${id}`);
   },
 
   toggleBannerStatus: (id: number): Promise<ResponseBase<AdminBanner>> => {
-    return axiosClient.post(`/admin/banners/${id}/toggle`);
+    return axiosClient.post(`${API_ENDPOINTS.ADMIN.BANNERS}/${id}/toggle`);
   },
 
   // ─── Quick Link Management ─────────────────────────────────────────────────
 
   getQuickLinks: (): Promise<AdminQuickLinkListResponse> => {
-    return axiosClient.get('/admin/quick-links');
+    return axiosClient.get(API_ENDPOINTS.ADMIN.QUICK_LINKS);
   },
 
   getQuickLinkById: (id: number): Promise<AdminQuickLinkDetailResponse> => {
-    return axiosClient.get(`/admin/quick-links/${id}`);
+    return axiosClient.get(`${API_ENDPOINTS.ADMIN.QUICK_LINKS}/${id}`);
   },
 
   createQuickLink: (data: CreateQuickLinkRequest): Promise<AdminQuickLinkDetailResponse> => {
-    return axiosClient.post('/admin/quick-links', data);
+    return axiosClient.post(API_ENDPOINTS.ADMIN.QUICK_LINKS, data);
   },
 
   updateQuickLink: (
     id: number,
     data: UpdateQuickLinkRequest,
   ): Promise<AdminQuickLinkDetailResponse> => {
-    return axiosClient.put(`/admin/quick-links/${id}`, data);
+    return axiosClient.put(`${API_ENDPOINTS.ADMIN.QUICK_LINKS}/${id}`, data);
   },
 
   deleteQuickLink: (id: number): Promise<ResponseBase<string>> => {
-    return axiosClient.delete(`/admin/quick-links/${id}`);
+    return axiosClient.delete(`${API_ENDPOINTS.ADMIN.QUICK_LINKS}/${id}`);
   },
 
   toggleQuickLinkStatus: (id: number): Promise<ResponseBase<AdminQuickLink>> => {
-    return axiosClient.post(`/admin/quick-links/${id}/toggle`);
+    return axiosClient.post(`${API_ENDPOINTS.ADMIN.QUICK_LINKS}/${id}/toggle`);
   },
 };

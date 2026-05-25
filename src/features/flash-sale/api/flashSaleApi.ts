@@ -1,4 +1,5 @@
 import { axiosClient, publicAxiosClient } from '@/lib/axios';
+import { API_ENDPOINTS } from '@/lib/api-endpoints';
 import {
   FlashSaleListResponse,
   FlashSaleAdminListResponse,
@@ -12,44 +13,48 @@ import { FlashSaleBuyRequest } from '@/features/checkout/types/checkoutTypes';
 export const flashSaleApi = {
   // ─── Public API ────────────────────────────────────────────────────────────
   getActiveFlashSales: (categoryId?: number): Promise<FlashSaleListResponse> =>
-    publicAxiosClient.get('/flash-sales/active', { params: { categoryId } }),
+    publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.FLASH_SALES}/active`, { params: { categoryId } }),
 
   getUpcomingFlashSales: (categoryId?: number): Promise<FlashSaleListResponse> =>
-    publicAxiosClient.get('/flash-sales/upcoming', { params: { categoryId } }),
+    publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.FLASH_SALES}/upcoming`, {
+      params: { categoryId },
+    }),
 
   getFlashSaleDetail: (id: number): Promise<FlashSaleDetailResponse> =>
-    publicAxiosClient.get(`/flash-sales/${id}`),
+    publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.FLASH_SALES}/${id}`),
 
   buyFlashSaleItem: (
     flashSaleItemId: number,
     data: FlashSaleBuyRequest,
-  ): Promise<BuyFlashSaleResponse> => axiosClient.post(`/flash-sales/${flashSaleItemId}/buy`, data),
+  ): Promise<BuyFlashSaleResponse> =>
+    axiosClient.post(`${API_ENDPOINTS.PUBLIC.FLASH_SALES}/${flashSaleItemId}/buy`, data),
 
   // ─── Seller API ────────────────────────────────────────────────────────────
-  getSellerFlashSales: (): Promise<FlashSaleListResponse> => axiosClient.get('/seller/flash-sales'),
+  getSellerFlashSales: (): Promise<FlashSaleListResponse> =>
+    axiosClient.get(API_ENDPOINTS.SELLER.FLASH_SALES),
 
   createFlashSale: (data: CreateFlashSaleRequest): Promise<FlashSaleDetailResponse> =>
-    axiosClient.post('/seller/flash-sales', data),
+    axiosClient.post(API_ENDPOINTS.SELLER.FLASH_SALES, data),
 
   updateFlashSale: (id: number, data: UpdateFlashSaleRequest): Promise<FlashSaleDetailResponse> =>
-    axiosClient.put(`/seller/flash-sales/${id}`, data),
+    axiosClient.put(`${API_ENDPOINTS.SELLER.FLASH_SALES}/${id}`, data),
 
   cancelSellerFlashSale: (id: number): Promise<FlashSaleDetailResponse> =>
-    axiosClient.post(`/seller/flash-sales/${id}/cancel`),
+    axiosClient.post(`${API_ENDPOINTS.SELLER.FLASH_SALES}/${id}/cancel`),
 
   activateSellerFlashSale: (id: number): Promise<FlashSaleDetailResponse> =>
-    axiosClient.post(`/seller/flash-sales/${id}/activate`),
+    axiosClient.post(`${API_ENDPOINTS.SELLER.FLASH_SALES}/${id}/activate`),
 
   // ─── Admin API ─────────────────────────────────────────────────────────────
   getAdminFlashSales: (params?: Record<string, unknown>): Promise<FlashSaleAdminListResponse> =>
-    axiosClient.get('/admin/flash-sales', { params }),
+    axiosClient.get(API_ENDPOINTS.ADMIN.FLASH_SALES, { params }),
 
   getAdminFlashSaleDetail: (id: number): Promise<FlashSaleDetailResponse> =>
-    axiosClient.get(`/admin/flash-sales/${id}`),
+    axiosClient.get(`${API_ENDPOINTS.ADMIN.FLASH_SALES}/${id}`),
 
   cancelAdminFlashSale: (id: number): Promise<FlashSaleDetailResponse> =>
-    axiosClient.post(`/admin/flash-sales/${id}/cancel`),
+    axiosClient.post(`${API_ENDPOINTS.ADMIN.FLASH_SALES}/${id}/cancel`),
 
   approveAdminFlashSale: (id: number): Promise<FlashSaleDetailResponse> =>
-    axiosClient.post(`/admin/flash-sales/${id}/approve`),
+    axiosClient.post(`${API_ENDPOINTS.ADMIN.FLASH_SALES}/${id}/approve`),
 };

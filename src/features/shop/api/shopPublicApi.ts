@@ -1,4 +1,5 @@
 import { publicAxiosClient } from '@/lib/axios';
+import { API_ENDPOINTS } from '@/lib/api-endpoints';
 import {
   ResponseBase,
   GetShopsPublicParams,
@@ -16,22 +17,22 @@ export const shopPublicApi = {
           Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== ''),
         )
       : {};
-    return publicAxiosClient.get('/shops', { params: filteredParams });
+    return publicAxiosClient.get(API_ENDPOINTS.PUBLIC.SHOPS, { params: filteredParams });
   },
 
   getShopBySlug: (slug: string): Promise<ShopPublicDetailResponse> => {
-    return publicAxiosClient.get(`/shops/${slug}`);
+    return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.SHOPS}/${slug}`);
   },
 
   getShopPolicy: (slug: string): Promise<ShopPolicyResponse> => {
-    return publicAxiosClient.get(`/shops/${slug}/policy`);
+    return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.SHOPS}/${slug}/policy`);
   },
 
   getSubscriptionPlans: (): Promise<SubscriptionPlanListResponse> => {
-    return publicAxiosClient.get('/shops/subscription-plans');
+    return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.SHOPS}/subscription-plans`);
   },
 
   getFeaturedShops: (limit = 6): Promise<ResponseBase<ShopInfo[]>> => {
-    return publicAxiosClient.get('/shops/featured', { params: { limit } });
+    return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.SHOPS}/featured`, { params: { limit } });
   },
 };

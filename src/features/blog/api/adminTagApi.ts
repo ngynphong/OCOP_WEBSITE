@@ -1,4 +1,5 @@
 import { axiosClient } from '@/lib/axios';
+import { API_ENDPOINTS } from '@/lib/api-endpoints';
 import {
   BlogTagListResponse,
   BlogTagDetailResponse,
@@ -6,7 +7,7 @@ import {
   UpdateTagRequest,
 } from '../types/blogTypes';
 
-const ADMIN_TAG_API_URL = '/admin/blog/tags';
+const ADMIN_TAG_API_URL = API_ENDPOINTS.ADMIN.TAGS;
 
 export const adminTagApi = {
   getTags: async (): Promise<BlogTagListResponse> => {

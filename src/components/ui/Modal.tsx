@@ -42,7 +42,7 @@ export const Modal = ({
   if (!isOpen || !mounted) return null;
 
   const modalContent = (
-    <div className="fixed inset-0 z-9999 flex items-center justify-center overflow-x-hidden overflow-y-auto px-4 outline-none focus:outline-none">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center overflow-x-hidden overflow-y-auto px-4 outline-none focus:outline-none">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
@@ -53,7 +53,7 @@ export const Modal = ({
       {/* Modal Dialog */}
       <div
         className={cn(
-          'relative z-10000 w-full bg-white rounded-3xl shadow-2xl transform transition-all animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]',
+          'relative z-[10000] w-full bg-white rounded-3xl shadow-2xl transform transition-all animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]',
           maxWidth,
         )}
       >

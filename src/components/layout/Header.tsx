@@ -89,9 +89,9 @@ export function Header() {
               <Image
                 src="/images/logo.png"
                 alt="OCOP IES CONNECT"
-                width={120}
-                height={120}
-                className="scale-135"
+                width={140}
+                height={140}
+                className="scale-155"
                 priority
                 sizes="(max-width: 768px) 100vw, 100vw"
               />

@@ -1,4 +1,5 @@
 import { axiosClient } from '@/lib/axios';
+import { API_ENDPOINTS } from '@/lib/api-endpoints';
 import {
   BlogListParams,
   BlogListResponse,
@@ -7,7 +8,7 @@ import {
   UpdateBlogRequest,
 } from '../types/blogTypes';
 
-const ADMIN_BLOG_API_URL = '/admin/blog';
+const ADMIN_BLOG_API_URL = API_ENDPOINTS.ADMIN.BLOG;
 
 export const adminBlogApi = {
   getBlogs: async (params?: BlogListParams): Promise<BlogListResponse> => {

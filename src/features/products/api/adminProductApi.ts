@@ -1,4 +1,5 @@
 import { axiosClient } from '@/lib/axios';
+import { API_ENDPOINTS } from '@/lib/api-endpoints';
 import {
   AdminProductListParams,
   ProductDetailResponse,
@@ -9,39 +10,41 @@ import {
 
 export const adminProductApi = {
   getProducts: (params?: AdminProductListParams): Promise<ProductListResponse> => {
-    return axiosClient.get('/admin/products', { params });
+    return axiosClient.get(API_ENDPOINTS.ADMIN.PRODUCTS, { params });
   },
 
   getProduct: (id: number): Promise<ProductDetailResponse> => {
-    return axiosClient.get(`/admin/products/${id}`);
+    return axiosClient.get(`${API_ENDPOINTS.ADMIN.PRODUCTS}/${id}`);
   },
 
   approveProduct: (id: number, note?: string): Promise<AdminApproveProductResponse> => {
-    return axiosClient.post(`/admin/products/${id}/approve`, { note });
+    return axiosClient.post(`${API_ENDPOINTS.ADMIN.PRODUCTS}/${id}/approve`, { note });
   },
 
   rejectProduct: (id: number, note: string): Promise<ProductDetailResponse> => {
-    return axiosClient.post(`/admin/products/${id}/reject`, { note });
+    return axiosClient.post(`${API_ENDPOINTS.ADMIN.PRODUCTS}/${id}/reject`, { note });
   },
 
   setFeatured: (id: number, featured: boolean): Promise<ProductDetailResponse> => {
-    return axiosClient.patch(`/admin/products/${id}/feature`, null, { params: { featured } });
+    return axiosClient.patch(`${API_ENDPOINTS.ADMIN.PRODUCTS}/${id}/feature`, null, {
+      params: { featured },
+    });
   },
 
   setFeaturedStory: (id: number, featuredStory: boolean): Promise<ProductDetailResponse> => {
-    return axiosClient.patch(`/admin/products/${id}/feature-story`, null, {
+    return axiosClient.patch(`${API_ENDPOINTS.ADMIN.PRODUCTS}/${id}/feature-story`, null, {
       params: { featuredStory },
     });
   },
 
   hideProduct: (id: number): Promise<ProductDetailResponse> => {
-    return axiosClient.patch(`/admin/products/${id}/hide`);
+    return axiosClient.patch(`${API_ENDPOINTS.ADMIN.PRODUCTS}/${id}/hide`);
   },
 
   updateProductStory: (
     id: number,
     data: UpdateProductStoryRequest,
   ): Promise<ProductDetailResponse> => {
-    return axiosClient.patch(`/admin/products/${id}/story`, data);
+    return axiosClient.patch(`${API_ENDPOINTS.ADMIN.PRODUCTS}/${id}/story`, data);
   },
 };
