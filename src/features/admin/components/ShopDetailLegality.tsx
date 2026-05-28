@@ -64,10 +64,14 @@ const ShopDetailLegality: React.FC<ShopDetailLegalityProps> = React.memo(
                     <span
                       className={cn(
                         'text-[9px] font-bold uppercase',
-                        doc.isVerified ? 'text-emerald-500' : 'text-amber-500',
+                        doc.isVerified
+                          ? 'text-emerald-500'
+                          : doc.note
+                            ? 'text-red-600'
+                            : 'text-amber-500',
                       )}
                     >
-                      {doc.isVerified ? 'Đã duyệt' : 'Chờ xác minh'}
+                      {doc.isVerified ? 'Đã duyệt' : doc.note ? 'Đã từ chối' : 'Chờ xác minh'}
                     </span>
                   </div>
                 </div>
@@ -133,7 +137,7 @@ const ShopDetailLegality: React.FC<ShopDetailLegalityProps> = React.memo(
                   </div>
                 )}
               </div>
-              {!activeDoc.isVerified && (
+              {!activeDoc.isVerified && !activeDoc.note && (
                 <div className="mt-6 flex gap-3">
                   <Button
                     onClick={() => onVerifyDoc(activeDoc.id)}

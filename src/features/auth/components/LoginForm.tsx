@@ -107,7 +107,7 @@ export function LoginForm() {
               ? 'Chào mừng trở lại'
               : 'Tạo tài khoản mới'}
         </h2>
-        <p className="text-stone-400 text-xs mt-1 font-medium">
+        <p className="text-stone-400 text-center text-xs mt-1 font-medium">
           {phase === 'IDENTIFY'
             ? 'Chào mừng bạn, Đăng nhập hoặc tạo tài khoản trong 1 bước'
             : accountExists

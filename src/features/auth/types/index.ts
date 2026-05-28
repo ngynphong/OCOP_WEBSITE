@@ -115,8 +115,17 @@ export interface RefreshTokenRequest {
   refreshToken: string;
 }
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const phoneRegex = /^(0|\+84)[3|5|7|8|9][0-9]{8}$/;
+
 export const loginSchema = z.object({
-  identity: z.string().min(1, 'Vui lòng nhập Email hoặc Số điện thoại'),
+  identity: z
+    .string()
+    .min(1, 'Vui lòng nhập Email hoặc Số điện thoại')
+    .refine(
+      (val) => emailRegex.test(val) || phoneRegex.test(val),
+      'Email hoặc Số điện thoại không đúng định dạng',
+    ),
   password: z.string().min(6, 'Mật khẩu phải có ít nhất 6 ký tự'),
   remember: z.boolean().optional(),
 });
@@ -125,7 +134,13 @@ export type LoginFormData = z.infer<typeof loginSchema>;
 
 export const simpleRegisterSchema = z
   .object({
-    identity: z.string().min(1, 'Vui lòng nhập Email hoặc Số điện thoại'),
+    identity: z
+      .string()
+      .min(1, 'Vui lòng nhập Email hoặc Số điện thoại')
+      .refine(
+        (val) => emailRegex.test(val) || phoneRegex.test(val),
+        'Email hoặc Số điện thoại không đúng định dạng',
+      ),
     password: z.string().min(6, 'Mật khẩu phải có ít nhất 6 ký tự'),
     confirmPassword: z.string().min(1, 'Vui lòng xác nhận mật khẩu'),
   })
