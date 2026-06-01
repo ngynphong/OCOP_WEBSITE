@@ -10,6 +10,7 @@ import { useState, useMemo } from 'react';
 import { Eye, EyeOff, ArrowRight, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/AppButton';
 import toast from 'react-hot-toast';
+import { FcGoogle } from 'react-icons/fc';
 
 type FormPhase = 'IDENTIFY' | 'AUTHENTICATE';
 
@@ -27,6 +28,39 @@ export function LoginForm() {
   const [accountExists, setAccountExists] = useState<boolean | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const handleGoogleLogin = () => {
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+    if (!clientId) {
+      toast.error('Chưa cấu hình Google Client ID trong hệ thống.');
+      return;
+    }
+
+    const state =
+      Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    sessionStorage.setItem('oauth_state', state);
+
+    const currentPath = window.location.pathname + window.location.search;
+    sessionStorage.setItem('oauth_redirect_path', currentPath);
+
+    const redirectUri =
+      process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI ||
+      `${window.location.origin}/auth/google/callback`;
+
+    const scope = 'openid email profile';
+    const responseType = 'code';
+
+    const googleOAuthUrl =
+      `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${encodeURIComponent(clientId)}&` +
+      `redirect_uri=${encodeURIComponent(redirectUri)}&` +
+      `response_type=${encodeURIComponent(responseType)}&` +
+      `scope=${encodeURIComponent(scope)}&` +
+      `state=${encodeURIComponent(state)}&` +
+      `prompt=select_account`;
+
+    window.location.href = googleOAuthUrl;
+  };
 
   const currentSchema = useMemo(() => {
     if (phase === 'IDENTIFY') return loginSchema.pick({ identity: true });
@@ -281,6 +315,26 @@ export function LoginForm() {
           </div>
         )}
       </form>
+
+      {/* Divider */}
+      <div className="relative my-4 flex items-center justify-center">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-stone-100"></div>
+        </div>
+        <span className="relative px-3 bg-white text-[10px] text-stone-400 font-bold uppercase tracking-wider">
+          Hoặc
+        </span>
+      </div>
+
+      {/* Google Login Button */}
+      <button
+        type="button"
+        onClick={handleGoogleLogin}
+        className="w-full flex items-center justify-center gap-3 py-2.5 px-4 rounded-xl border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 hover:text-stone-900 font-semibold text-sm transition-all duration-300 shadow-xs hover:shadow-sm active:scale-[0.98] cursor-pointer"
+      >
+        <FcGoogle className="w-5 h-5 shrink-0" />
+        <span>Tiếp tục với Google</span>
+      </button>
 
       {/* Embedded Image Inside Card */}
       <div className="mt-8 relative w-full h-16 sm:h-20 rounded-2xl overflow-hidden group cursor-pointer border border-stone-50 shadow-inner">

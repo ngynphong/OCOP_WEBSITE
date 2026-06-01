@@ -10,6 +10,7 @@ import { setCredentials, logout as reduxLogout, setForcedLogout } from '@/store/
 import {
   ForgotPasswordRequest,
   LoginRequest,
+  LoginResponse,
   LogoutRequest,
   RegisterRequest,
   ResetPasswordRequest,
@@ -58,40 +59,47 @@ export const useAuth = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
+  const handleAuthSuccess = async (res: LoginResponse, successMessage = 'Đăng nhập thành công') => {
+    const { accessToken, refreshToken, roles } = res.data;
+
+    if (accessToken) {
+      localStorage.setItem('access_token', accessToken);
+      if (refreshToken) localStorage.setItem('refresh_token', refreshToken);
+      if (roles) {
+        localStorage.setItem('user_roles', JSON.stringify(roles));
+        Cookies.set('user_roles', JSON.stringify(roles), { expires: 7 });
+      }
+
+      dispatch(setCredentials({ token: accessToken, roles: roles || [] }));
+
+      const sessionId = getSessionId();
+      if (sessionId) {
+        try {
+          await cartApi.mergeCart({ sessionId });
+          clearSessionId();
+          queryClient.invalidateQueries({ queryKey: ['cart'] });
+          queryClient.invalidateQueries({ queryKey: ['cart-count'] });
+        } catch (error) {
+          console.error('Lỗi khi merge giỏ hàng:', error);
+        }
+      }
+
+      toast.success(successMessage);
+
+      const CUSTOMER_ONLY_ROLES = ['USER', 'SELLER'];
+      const isCustomerOnly = roles?.every((role: string) => CUSTOMER_ONLY_ROLES.includes(role));
+      router.push(isCustomerOnly ? '/' : '/admin');
+    }
+  };
+
   const loginMutation = useMutation({
     mutationFn: (data: LoginRequest) => authApi.login(data),
-    onSuccess: async (res) => {
-      const { accessToken, refreshToken, roles } = res.data;
+    onSuccess: (res) => handleAuthSuccess(res),
+  });
 
-      if (accessToken) {
-        localStorage.setItem('access_token', accessToken);
-        if (refreshToken) localStorage.setItem('refresh_token', refreshToken);
-        if (roles) {
-          localStorage.setItem('user_roles', JSON.stringify(roles));
-          Cookies.set('user_roles', JSON.stringify(roles), { expires: 7 });
-        }
-
-        dispatch(setCredentials({ token: accessToken, roles: roles || [] }));
-
-        const sessionId = getSessionId();
-        if (sessionId) {
-          try {
-            await cartApi.mergeCart({ sessionId });
-            clearSessionId();
-            queryClient.invalidateQueries({ queryKey: ['cart'] });
-            queryClient.invalidateQueries({ queryKey: ['cart-count'] });
-          } catch (error) {
-            console.error('Lỗi khi merge giỏ hàng:', error);
-          }
-        }
-
-        toast.success('Đăng nhập thành công');
-
-        const CUSTOMER_ONLY_ROLES = ['USER', 'SELLER'];
-        const isCustomerOnly = roles?.every((role: string) => CUSTOMER_ONLY_ROLES.includes(role));
-        router.push(isCustomerOnly ? '/' : '/admin');
-      }
-    },
+  const googleLoginMutation = useMutation({
+    mutationFn: (code: string) => authApi.googleLogin(code),
+    onSuccess: (res) => handleAuthSuccess(res, 'Đăng nhập bằng Google thành công'),
   });
 
   const registerMutation = useMutation({
@@ -271,6 +279,8 @@ export const useAuth = () => {
     isChangingPassword: changePasswordMutation.isPending,
     resendOtp: resendOtpMutation.mutateAsync,
     isResendingOtp: resendOtpMutation.isPending,
+    googleLogin: googleLoginMutation.mutateAsync,
+    isGoogleLoggingIn: googleLoginMutation.isPending,
     handleClientLogout,
   };
 };

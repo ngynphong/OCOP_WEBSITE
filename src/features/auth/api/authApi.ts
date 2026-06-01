@@ -93,4 +93,9 @@ export const authApi = {
   changePassword: (data: ChangePasswordRequest): Promise<ChangePasswordResponse> => {
     return axiosClient.post(API_ENDPOINTS.AUTH.CHANGE_PASSWORD, data);
   },
+  googleLogin: (code: string): Promise<LoginResponse> => {
+    return publicAxiosClient.post(
+      `${API_ENDPOINTS.AUTH.OUTBOUND_AUTHENTICATION}?code=${encodeURIComponent(code)}`,
+    );
+  },
 };
