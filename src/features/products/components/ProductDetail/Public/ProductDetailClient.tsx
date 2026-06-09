@@ -127,7 +127,7 @@ export function ProductDetailClient() {
         onBuyNow={handleBuyNow}
       />
 
-      <main className="max-w-7xl mx-auto px-6 py-6 md:py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 md:py-8 overflow-hidden">
         <div className="mb-8">
           <Breadcrumb items={breadcrumbItems} />
         </div>
@@ -181,7 +181,7 @@ export function ProductDetailClient() {
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
                 </Link>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
                 {relatedProducts.slice(0, 4).map((p) => (
                   <ProductCard
                     key={p.id}
@@ -229,7 +229,7 @@ export function ProductDetailClient() {
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
                 </Link>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
                 {(sameShopResp?.data?.items || [])
                   ?.filter((p) => p.id !== product.id)
                   .slice(0, 4)
@@ -276,7 +276,7 @@ export function ProductDetailClient() {
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
                 </Link>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
                 {(sameProvinceResp?.data?.items || [])
                   ?.filter((p) => p.id !== product.id)
                   .slice(0, 4)

@@ -35,7 +35,7 @@ export default function NotificationsPage() {
     <div className="max-w-4xl mx-auto py-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-black text-stone-900 flex items-center gap-3">
+          <h1 className="text-sm md:text-2xl font-black text-stone-900 flex items-center gap-3">
             <FiBell className="text-emerald-600" />
             Thông báo của bạn
           </h1>
@@ -46,7 +46,7 @@ export default function NotificationsPage() {
           <button
             onClick={() => markAllAsRead()}
             disabled={isReadingAll}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-emerald-600 bg-emerald-50 rounded-xl hover:bg-emerald-100 transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2 text-xs md:text-sm font-bold text-emerald-600 bg-emerald-50 rounded-xl hover:bg-emerald-100 transition-colors disabled:opacity-50"
           >
             <FiCheck />
             Đánh dấu tất cả đã đọc

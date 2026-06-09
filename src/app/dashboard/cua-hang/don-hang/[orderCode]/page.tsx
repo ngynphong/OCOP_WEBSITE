@@ -265,18 +265,25 @@ function SellerOrderDetailsContent({ params }: PageProps) {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-center gap-4">
-        <Link
-          href="/dashboard/cua-hang/don-hang"
-          className="p-2 bg-stone-100 rounded-xl hover:bg-stone-200 transition-colors"
-        >
-          <ChevronLeft size={20} className="text-stone-600" />
-        </Link>
-        <div>
-          <h1 className="text-2xl font-bold text-stone-900">Quản lý duyệt đơn</h1>
-          <p className="text-stone-500 text-sm mt-1 font-medium">#{order.orderCode}</p>
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
+        <div className="flex items-center gap-4 min-w-0">
+          <Link
+            href="/dashboard/cua-hang/don-hang"
+            className="p-2 bg-stone-100 rounded-xl hover:bg-stone-200 transition-colors shrink-0"
+          >
+            <ChevronLeft size={20} className="text-stone-600" />
+          </Link>
+          <div className="min-w-0">
+            <h1 className="text-xl md:text-2xl font-bold text-stone-900 truncate">
+              Quản lý duyệt đơn
+            </h1>
+            <p className="text-stone-500 text-xs md:text-sm mt-1 font-medium break-all">
+              #{order.orderCode}
+            </p>
+          </div>
         </div>
-        <div className="ml-auto">
+        <div className="md:ml-auto w-fit">
           <OrderStatusBadge status={order.status} />
         </div>
       </div>
@@ -285,13 +292,13 @@ function SellerOrderDetailsContent({ params }: PageProps) {
         {/* Main Content (Trái) */}
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-sm">
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
               <h3 className="font-bold text-stone-900 flex items-center gap-2">
                 <Package size={18} className="text-stone-500" /> Sản phẩm cần đóng gói (
                 {orderItems.length})
               </h3>
               <span
-                className={`text-xs font-bold px-3 py-1.5 rounded-xl uppercase tracking-wider ${getPaymentStatusStyles(order.paymentStatus)}`}
+                className={`text-[10px] md:text-xs font-bold px-3 py-1.5 rounded-xl uppercase tracking-wider w-fit ${getPaymentStatusStyles(order.paymentStatus)}`}
               >
                 {getPaymentStatusLabel(order.paymentStatus)}
               </span>
@@ -308,14 +315,19 @@ function SellerOrderDetailsContent({ params }: PageProps) {
                       className="object-cover"
                     />
                   </div>
-                  <div className="flex-1">
-                    <h4 className="font-bold text-stone-900 line-clamp-2">{item.productName}</h4>
-                    <p className="text-sm text-stone-500 mt-1">Lựa chọn: {item.variantName}</p>
-                    <div className="flex justify-between items-end mt-2">
-                      <p className="text-sm font-bold text-stone-400">
-                        Số lượng xuất: <span className="text-stone-900 text-lg">x{item.qty}</span>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-bold text-sm md:text-base text-stone-900 line-clamp-2">
+                      {item.productName}
+                    </h4>
+                    <p className="text-xs md:text-sm text-stone-500 mt-1 truncate">
+                      Lựa chọn: {item.variantName}
+                    </p>
+                    <div className="flex flex-wrap justify-between items-end mt-2 gap-2">
+                      <p className="text-xs md:text-sm font-bold text-stone-400">
+                        Số lượng:{' '}
+                        <span className="text-stone-900 text-base md:text-lg">x{item.qty}</span>
                       </p>
-                      <p className="font-black text-green-700">
+                      <p className="font-black text-green-700 text-sm md:text-base">
                         {formatCurrencyVND(item.unitPrice)}
                       </p>
                     </div>
@@ -424,7 +436,7 @@ function SellerOrderDetailsContent({ params }: PageProps) {
           </div>
 
           <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-sm">
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4">
               <h3 className="font-bold text-stone-900 flex items-center gap-2">
                 <Truck size={18} className="text-stone-500" /> Tiến trình đơn hàng
               </h3>

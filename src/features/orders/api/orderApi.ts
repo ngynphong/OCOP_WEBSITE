@@ -17,6 +17,7 @@ import {
   ICreateB2BOrderReq,
   IRefundB2BOrderReq,
   IReviewB2BOrderReq,
+  IPaymentUrlRes,
 } from '../types/orderTypes';
 
 export const orderApi = {
@@ -41,6 +42,12 @@ export const orderApi = {
   getOrderByCode: async (orderCode: string) => {
     return axiosClient.get<unknown, { data: IOrderDetailsRes }>(
       buildRoute(API_ENDPOINTS.ORDERS, orderCode),
+    );
+  },
+
+  getPaymentUrl: async (orderCode: string) => {
+    return axiosClient.get<unknown, { data: IPaymentUrlRes }>(
+      buildRoute(API_ENDPOINTS.ORDERS, orderCode, 'payment-url'),
     );
   },
 

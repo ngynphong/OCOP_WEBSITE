@@ -33,7 +33,7 @@ export const reviewApi = {
 
   /** Gửi đánh giá sản phẩm mới (Multipart/FormData kèm ảnh) */
   submitReview: (formData: FormData): Promise<ReviewDetailResponse> => {
-    return axiosClient.post(API_ENDPOINTS.REVIEWS, formData, {
+    return axiosClient.post(`${API_ENDPOINTS.REVIEWS}/product`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },

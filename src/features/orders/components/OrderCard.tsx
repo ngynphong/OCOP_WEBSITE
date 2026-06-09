@@ -56,8 +56,8 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, isB2B = false }) =>
   return (
     <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-sm mb-4 transition-all hover:shadow-md group">
       {/* Header: Shop Info & Status */}
-      <div className="flex justify-between items-center mb-5 pb-4 border-b border-stone-100">
-        <div className="flex items-center gap-3">
+      <div className="flex flex-wrap justify-between items-center mb-4 md:mb-5 pb-3 md:pb-4 border-b border-stone-100 gap-3">
+        <div className="flex items-center gap-2 md:gap-3">
           <div className="relative w-8 h-8 rounded-full overflow-hidden bg-stone-50 border border-stone-100 shadow-sm">
             {order.shopLogoUrl ? (
               <Image src={order.shopLogoUrl} alt={order.shopName} fill className="object-cover" />
@@ -90,8 +90,8 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, isB2B = false }) =>
       </div>
 
       {/* Main Content: Product Details */}
-      <div className="flex gap-5">
-        <div className="relative w-24 h-24 rounded-xl overflow-hidden bg-stone-50 border border-stone-100 shrink-0 shadow-sm">
+      <div className="flex gap-3 md:gap-5">
+        <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden bg-stone-50 border border-stone-100 shrink-0 shadow-sm">
           {order.thumbnail ? (
             <Image
               src={order.thumbnail}
@@ -107,14 +107,18 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, isB2B = false }) =>
         </div>
 
         <div className="flex-1 flex flex-col pt-0.5">
-          <div className="flex justify-between items-start gap-4">
+          <div className="flex justify-between items-start gap-2 md:gap-4">
             <div>
-              <h3 className="font-bold text-stone-900 text-base line-clamp-1">{productName}</h3>
+              <h3 className="font-bold text-stone-900 text-sm md:text-base line-clamp-2 md:line-clamp-1 leading-snug">
+                {productName}
+              </h3>
               {variantName && (
-                <p className="text-xs font-medium text-stone-400 mt-1">Phân loại: {variantName}</p>
+                <p className="text-[11px] md:text-xs font-medium text-stone-400 mt-1 line-clamp-1">
+                  Phân loại: {variantName}
+                </p>
               )}
             </div>
-            <div className="text-right">
+            <div className="text-right shrink-0">
               <span className="text-xs font-black text-stone-400 uppercase tracking-tighter block mb-1">
                 Thanh toán
               </span>
@@ -124,13 +128,13 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, isB2B = false }) =>
             </div>
           </div>
 
-          <div className="mt-2 flex items-center gap-3">
-            <span className="text-xs font-bold text-stone-500 bg-stone-50 px-2 py-1 rounded-lg">
+          <div className="mt-2 md:mt-auto flex items-center gap-2 md:gap-3 flex-wrap">
+            <span className="text-[11px] md:text-xs font-bold text-stone-500 bg-stone-50 px-2 py-1 rounded-lg">
               Số lượng: {quantity}
             </span>
             {!isB2B && order.itemCount > 1 && (
-              <span className="text-xs font-medium text-stone-400 italic">
-                (Và {order.itemCount - 1} sản phẩm khác)
+              <span className="text-[10px] md:text-xs font-medium text-stone-400 italic">
+                (Và {order.itemCount - 1} SP khác)
               </span>
             )}
           </div>
@@ -146,17 +150,17 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, isB2B = false }) =>
       </div>
 
       {/* Footer: Price & Actions */}
-      <div className="mt-6 pt-5 border-t border-stone-50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="mt-4 md:mt-6 pt-4 md:pt-5 border-t border-stone-50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 md:gap-4">
         <div className="flex items-baseline gap-2">
-          <span className="text-xs font-black text-stone-400 uppercase tracking-widest">
+          <span className="text-[11px] md:text-xs font-black text-stone-400 uppercase tracking-widest">
             Tổng tiền:
           </span>
-          <span className="text-xl font-black text-stone-900 tracking-tighter">
+          <span className="text-lg md:text-xl font-black text-stone-900 tracking-tighter">
             {formatCurrencyVND(order.totalAmount)}
           </span>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center justify-end gap-2 md:gap-3 w-full sm:w-auto">
           <Link
             href={`/dashboard/don-hang/${isB2B ? order.id : order.orderCode}${isB2B ? '?b2b=true' : ''}`}
             className="flex-1 sm:flex-none"
@@ -164,7 +168,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, isB2B = false }) =>
             <Button
               variant="outline"
               size="sm"
-              className="w-full text-xs font-black uppercase tracking-widest border-stone-200 text-stone-600 hover:bg-stone-50 h-11 px-6 rounded-xl transition-all"
+              className="w-full text-[10px] md:text-xs font-black uppercase tracking-widest border-stone-200 text-stone-600 hover:bg-stone-50 h-9 md:h-11 px-3 md:px-6 rounded-xl transition-all"
             >
               Chi tiết
             </Button>
@@ -176,10 +180,25 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, isB2B = false }) =>
               size="sm"
               isLoading={isConfirming}
               onClick={handleConfirmReceived}
-              className="flex-1 sm:flex-none text-xs font-black uppercase tracking-widest bg-emerald-600 hover:bg-emerald-700 border-none shadow-lg shadow-emerald-100 h-11 px-6 rounded-xl transition-all"
+              className="flex-1 sm:flex-none text-[10px] md:text-xs font-black uppercase tracking-widest bg-emerald-600 hover:bg-emerald-700 border-none shadow-lg shadow-emerald-100 h-9 md:h-11 px-3 md:px-6 rounded-xl transition-all whitespace-nowrap"
             >
               Đã nhận được hàng
             </Button>
+          )}
+
+          {order.status === 'COMPLETED' && (
+            <Link
+              href={`/dashboard/don-hang/${isB2B ? order.id : order.orderCode}?action=review${isB2B ? '&b2b=true' : ''}`}
+              className="flex-1 sm:flex-none"
+            >
+              <Button
+                variant="primary"
+                size="sm"
+                className="w-full text-[10px] md:text-xs font-black uppercase tracking-widest bg-emerald-600 hover:bg-emerald-700 border-none shadow-lg shadow-emerald-100 h-9 md:h-11 px-3 md:px-6 rounded-xl transition-all whitespace-nowrap"
+              >
+                Đánh giá
+              </Button>
+            </Link>
           )}
 
           {(order.status === 'DELIVERED' ||
@@ -189,7 +208,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, isB2B = false }) =>
               variant="outline"
               size="sm"
               onClick={() => setIsComplaintModalOpen(true)}
-              className="flex-1 sm:flex-none text-xs font-black uppercase tracking-widest border-amber-100 text-amber-600 hover:bg-amber-50 h-11 px-6 rounded-xl transition-all gap-2"
+              className="flex-1 sm:flex-none text-[10px] md:text-xs font-black uppercase tracking-widest border-amber-100 text-amber-600 hover:bg-amber-50 h-9 md:h-11 px-3 md:px-6 rounded-xl transition-all gap-1.5 md:gap-2 whitespace-nowrap"
               leftIcon={<AlertCircle size={14} />}
             >
               Khiếu nại
@@ -201,7 +220,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, isB2B = false }) =>
               variant="outline"
               size="sm"
               onClick={() => setIsCancelModalOpen(true)}
-              className="flex-1 sm:flex-none text-xs font-black uppercase tracking-widest border-red-100 text-red-500 hover:bg-red-50 h-11 px-6 rounded-xl transition-all"
+              className="flex-1 sm:flex-none text-[10px] md:text-xs font-black uppercase tracking-widest border-red-100 text-red-500 hover:bg-red-50 h-9 md:h-11 px-3 md:px-6 rounded-xl transition-all whitespace-nowrap"
             >
               Hủy đơn
             </Button>

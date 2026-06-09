@@ -24,7 +24,12 @@ export const ChatList = ({
   role = 'USER',
 }: ChatListProps) => {
   return (
-    <div className="w-full md:w-80 lg:w-96 flex flex-col border-r border-stone-100 bg-white">
+    <div
+      className={cn(
+        'w-full md:w-80 lg:w-96 flex-col border-r border-stone-100 bg-white h-full shrink-0',
+        activeRoomId ? 'hidden md:flex' : 'flex',
+      )}
+    >
       {/* Title & Search */}
       <div className="p-6 pb-4">
         <h2 className="text-2xl font-black text-stone-900 mb-4 tracking-tight">Hội thoại</h2>

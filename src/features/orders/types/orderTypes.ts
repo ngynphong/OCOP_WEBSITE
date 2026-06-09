@@ -20,6 +20,8 @@ export interface IOrderItemList {
   createdAt: string;
   paymentMethod: string;
   canCancel?: boolean;
+  expiredAt?: string;
+  cancelReason?: string;
 }
 
 export interface IOrderListRes {
@@ -172,6 +174,22 @@ export interface IOrderDetailsRes {
   canReview: boolean;
   canReorder: boolean;
   createdAt: string;
+  expiredAt?: string;
+  estimatedDeliveryDate?: string;
+  cancellationInfo?: {
+    cancelledBy: string;
+    reason: string;
+    cancelledAt: string;
+  };
+  refundInfo?: {
+    status: string;
+    amount: number;
+    reason: string;
+  };
+}
+
+export interface IPaymentUrlRes {
+  paymentUrl: string;
 }
 
 export interface ICancelOrderReq {

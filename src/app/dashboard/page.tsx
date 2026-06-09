@@ -149,7 +149,7 @@ const DashboardPage = () => {
   const recentOrders = isSellerMode ? sellerData?.recentOrders : userData?.recentOrders;
 
   return (
-    <div className="space-y-8 p-6 md:p-10">
+    <div className="space-y-6 md:space-y-8">
       {/* Welcome Section */}
       <div
         className={cn(

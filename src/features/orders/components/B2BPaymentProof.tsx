@@ -17,8 +17,8 @@ export function B2BPaymentProof({ order, isUploading, onUpload }: B2BPaymentProo
   return (
     <div className="pt-4 border-t border-white/20">
       <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-black uppercase tracking-widest text-white">
+        <div className="flex items-start sm:items-center justify-between gap-2">
+          <span className="text-[10px] sm:text-[11px] md:text-xs font-black uppercase tracking-widest text-white">
             Minh chứng thanh toán
           </span>
           {order.paymentProofUrl && (

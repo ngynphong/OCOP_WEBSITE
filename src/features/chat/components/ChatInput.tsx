@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { FiSend, FiPlus, FiSmile, FiImage, FiFile } from 'react-icons/fi';
 import EmojiPicker, { Theme, EmojiClickData } from 'emoji-picker-react';
 import { cn } from '@/utils/cn';
@@ -18,6 +18,39 @@ export const ChatInput = ({ onSendMessage, onSendFile, isLoading }: ChatInputPro
   const [showAttachMenu, setShowAttachMenu] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
+  const emojiPickerRef = useRef<HTMLDivElement>(null);
+  const emojiBtnRef = useRef<HTMLButtonElement>(null);
+  const attachMenuRef = useRef<HTMLDivElement>(null);
+  const attachBtnRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        showEmoji &&
+        emojiPickerRef.current &&
+        !emojiPickerRef.current.contains(event.target as Node) &&
+        emojiBtnRef.current &&
+        !emojiBtnRef.current.contains(event.target as Node)
+      ) {
+        setShowEmoji(false);
+      }
+
+      if (
+        showAttachMenu &&
+        attachMenuRef.current &&
+        !attachMenuRef.current.contains(event.target as Node) &&
+        attachBtnRef.current &&
+        !attachBtnRef.current.contains(event.target as Node)
+      ) {
+        setShowAttachMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showEmoji, showAttachMenu]);
 
   const handleSend = () => {
     if (message.trim() && !isLoading) {
@@ -44,6 +77,7 @@ export const ChatInput = ({ onSendMessage, onSendFile, isLoading }: ChatInputPro
       <AnimatePresence>
         {showEmoji && (
           <motion.div
+            ref={emojiPickerRef}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
@@ -63,6 +97,7 @@ export const ChatInput = ({ onSendMessage, onSendFile, isLoading }: ChatInputPro
       <div className="flex items-center gap-2 max-w-7xl mx-auto">
         <div className="relative">
           <button
+            ref={attachBtnRef}
             onClick={() => setShowAttachMenu(!showAttachMenu)}
             className={cn(
               'p-2.5 rounded-full transition-all duration-200 cursor-pointer',
@@ -77,6 +112,7 @@ export const ChatInput = ({ onSendMessage, onSendFile, isLoading }: ChatInputPro
           <AnimatePresence>
             {showAttachMenu && (
               <motion.div
+                ref={attachMenuRef}
                 initial={{ opacity: 0, scale: 0.9, y: 10 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 10 }}
@@ -117,7 +153,8 @@ export const ChatInput = ({ onSendMessage, onSendFile, isLoading }: ChatInputPro
           />
           <div className="absolute right-2 bottom-2">
             <button
-              onClick={() => setShowEmoji(!showEmoji)}
+              ref={emojiBtnRef}
+              onClick={() => setShowEmoji((prev) => !prev)}
               className={cn(
                 'p-1.5 rounded-full transition-colors cursor-pointer',
                 showEmoji ? 'text-emerald-600' : 'text-stone-400 hover:text-stone-600',

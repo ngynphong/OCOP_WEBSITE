@@ -380,7 +380,7 @@ export function LoginForm() {
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-stone-100"></div>
         </div>
-        <span className="relative px-3 bg-white text-[10px] text-stone-400 font-bold uppercase tracking-wider">
+        <span className="relative px-3 text-[10px] text-stone-500 font-bold uppercase tracking-wider">
           Hoặc
         </span>
       </div>

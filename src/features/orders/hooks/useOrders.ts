@@ -131,6 +131,12 @@ export const useReorder = () => {
   });
 };
 
+export const usePaymentUrl = () => {
+  return useMutation({
+    mutationFn: (orderCode: string) => orderApi.getPaymentUrl(orderCode),
+  });
+};
+
 export const useUploadPaymentProof = (isB2B = false) => {
   const queryClient = useQueryClient();
   return useMutation({

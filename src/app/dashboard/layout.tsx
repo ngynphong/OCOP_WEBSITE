@@ -22,6 +22,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const { dashboardMode, isInitialized } = useAppSelector((state) => state.auth);
   const [isMounted, setIsMounted] = React.useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = React.useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = React.useState(false);
 
   React.useEffect(() => {
     setIsMounted(true);
@@ -66,20 +67,37 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Header & Breadcrumb - Fixed Height */}
       <div className="bg-white border-b border-stone-200 shrink-0">
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <Breadcrumb
-            items={[
-              { label: 'Trang chủ', href: '/' },
-              { label: 'Dashboard', href: '/dashboard' },
-              { label: getPageTitle() },
-            ]}
-          />
-          <div className="flex items-center gap-4">
-            <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">
-              Lần đăng nhập cuối:
-            </p>
-            <p className="text-xs font-bold text-stone-900">
-              {profile?.lastLoginAt?.split('T')[0] || 'Chưa có'}
-            </p>
+          <div className="flex items-center gap-3">
+            <button
+              className="lg:hidden p-2 -ml-2 text-stone-500 hover:text-stone-900 focus:outline-none"
+              onClick={() => setIsMobileSidebarOpen(true)}
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </button>
+            <Breadcrumb
+              items={[
+                { label: 'Trang chủ', href: '/' },
+                { label: 'Dashboard', href: '/dashboard' },
+                { label: getPageTitle() },
+              ]}
+            />
+          </div>
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4 justify-end sm:justify-start w-full sm:w-auto">
+            <div className="hidden md:flex items-center gap-2">
+              <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">
+                Lần đăng nhập cuối:
+              </p>
+              <p className="text-xs font-bold text-stone-900">
+                {profile?.lastLoginAt?.split('T')[0] || 'Chưa có'}
+              </p>
+            </div>
             {/* Notification Bell */}
             {isMounted && (
               <NotificationBell className="text-stone-500 hover:text-stone-900 hover:bg-stone-100 border border-stone-100 shadow-xs" />
@@ -97,10 +115,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
             {/* Dashboard Mode Switch */}
             {isMounted && isSeller && (
-              <div className="flex items-center gap-3 bg-stone-50 px-4 py-1.5 rounded-full border border-stone-200 shadow-xs">
+              <div className="flex items-center gap-2 sm:gap-3 bg-stone-50 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full border border-stone-200 shadow-xs ml-auto sm:ml-0">
                 <span
                   className={cn(
-                    'text-xs font-semibold transition-colors uppercase tracking-wider',
+                    'text-[10px] sm:text-xs font-semibold transition-colors uppercase tracking-wider whitespace-nowrap',
                     dashboardMode === 'USER' ? 'text-stone-900' : 'text-stone-400',
                   )}
                 >
@@ -139,7 +157,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
                 <span
                   className={cn(
-                    'text-xs font-semibold transition-colors uppercase tracking-wider',
+                    'text-[10px] sm:text-xs font-semibold transition-colors uppercase tracking-wider whitespace-nowrap',
                     dashboardMode === 'SELLER' ? 'text-green-600' : 'text-stone-400',
                   )}
                 >
@@ -156,16 +174,62 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="h-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-full">
             {/* Sidebar - Independent Scroll */}
-            <aside className="lg:col-span-1 h-full overflow-y-auto pr-1 custom-scrollbar">
+            <aside className="hidden lg:block lg:col-span-1 h-full overflow-y-auto pr-1 custom-scrollbar">
               <DashboardSidebar />
             </aside>
 
             {/* Main Content Area - Independent Scroll */}
             <main className="lg:col-span-3 h-full flex flex-col overflow-hidden">
               <div className="bg-white rounded-xl border border-stone-200 shadow-sm flex flex-col h-full overflow-hidden">
-                <div className="flex-1 overflow-y-auto p-6 md:p-8 custom-scrollbar">{children}</div>
+                <div className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 custom-scrollbar">
+                  {children}
+                </div>
               </div>
             </main>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Sidebar Drawer */}
+      <div
+        className={cn(
+          'fixed inset-0 z-[200] lg:hidden transition-opacity duration-300',
+          isMobileSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none',
+        )}
+      >
+        <div
+          className="absolute inset-0 bg-stone-900/60 backdrop-blur-sm"
+          onClick={() => setIsMobileSidebarOpen(false)}
+        />
+        <div
+          className={cn(
+            'absolute top-0 left-0 h-full w-[300px] max-w-[80vw] bg-stone-50 shadow-2xl transition-transform duration-300 ease-out transform flex flex-col',
+            isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full',
+          )}
+        >
+          <div className="flex items-center justify-between p-4 border-b border-stone-200 bg-white">
+            <span className="font-bold text-lg text-stone-900">Menu</span>
+            <button
+              onClick={() => setIsMobileSidebarOpen(false)}
+              className="p-2 hover:bg-stone-100 rounded-full transition-colors"
+            >
+              <svg
+                className="w-6 h-6 text-stone-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+          <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+            <DashboardSidebar onMobileClose={() => setIsMobileSidebarOpen(false)} />
           </div>
         </div>
       </div>

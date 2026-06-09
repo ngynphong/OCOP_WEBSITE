@@ -194,7 +194,7 @@ export function ProductListClient() {
 
           {/* Mobile Drawer Filter */}
           <div
-            className={`fixed inset-0 z-50 lg:hidden transition-opacity duration-300 ${
+            className={`fixed inset-0 z-[200] lg:hidden transition-opacity duration-300 ${
               isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
             }`}
           >
@@ -205,11 +205,11 @@ export function ProductListClient() {
             />
             {/* Sliding Panel */}
             <div
-              className={`absolute top-0 right-0 h-full w-[320px] bg-white shadow-2xl transition-transform duration-300 ease-out transform ${
+              className={`absolute top-0 right-0 h-[100dvh] w-[320px] max-w-[90vw] bg-white shadow-2xl transition-transform duration-300 ease-out transform flex flex-col ${
                 isSidebarOpen ? 'translate-x-0' : 'translate-x-full'
               }`}
             >
-              <div className="flex flex-col h-full">
+              <div className="flex flex-col h-full overflow-hidden">
                 <div className="flex items-center justify-between p-6 border-b border-stone-100">
                   <h2 className="text-xl font-bold text-stone-900">Bộ lọc sản phẩm</h2>
                   <button
@@ -254,7 +254,7 @@ export function ProductListClient() {
                     }}
                   />
                 </div>
-                <div className="p-6 border-t border-stone-100 bg-stone-50">
+                <div className="p-6 pb-8 border-t border-stone-100 bg-stone-50 shrink-0">
                   <button
                     onClick={() => setIsSidebarOpen(false)}
                     className="w-full bg-green-700 text-white py-4 rounded-xl font-bold shadow-lg hover:bg-green-800 transition-all active:scale-95"

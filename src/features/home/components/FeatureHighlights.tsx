@@ -117,7 +117,7 @@ export function FeatureHighlights() {
 
           <div className="pt-6 border-t border-stone-100 flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="text-xs text-stone-400">
-              Hotline hỗ trợ: <span className="font-bold text-green-700">1900 88 88</span>
+              Hotline hỗ trợ: <span className="font-bold text-green-700">096 524 8115</span>
             </p>
             <Button onClick={() => setIsPolicyModalOpen(false)} size="sm">
               Đã hiểu

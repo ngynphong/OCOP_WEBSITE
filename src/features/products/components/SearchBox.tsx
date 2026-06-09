@@ -190,7 +190,7 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ variant = 'header', classN
                             {product.provinceName}
                           </span>
                           <span className="flex items-center gap-1 text-emerald-600">
-                            {product.ocopStar} <Star size={10} className="fill-current" />
+                            {product.ocopStar} <Star size={10} className="fill-current" /> OCOP
                           </span>
                         </div>
                       </div>

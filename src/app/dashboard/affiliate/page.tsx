@@ -58,21 +58,25 @@ export default function UserAffiliatePage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-stone-900 tracking-tight">Tiếp thị liên kết</h1>
-          <p className="text-stone-500 mt-1">Quản lý thu nhập và giới thiệu sản phẩm của bạn.</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-stone-900 tracking-tight">
+            Tiếp thị liên kết
+          </h1>
+          <p className="text-sm md:text-base text-stone-500 mt-1">
+            Quản lý thu nhập và giới thiệu sản phẩm của bạn.
+          </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 md:gap-3 mt-2 md:mt-0 w-full md:w-auto">
           <Button
             variant="outline"
             onClick={handleRefresh}
-            className="rounded-xl w-12 h-12 p-0 flex items-center justify-center border-stone-200"
+            className="rounded-xl w-10 h-10 md:w-12 md:h-12 p-0 flex items-center justify-center border-stone-200 shrink-0"
           >
             <FiRefreshCcw className="text-stone-500" />
           </Button>
           <Button
             variant="primary"
             onClick={() => setIsModalOpen(true)}
-            className="rounded-xl flex items-center gap-2 px-6 h-12 shadow-lg shadow-emerald-500/25"
+            className="rounded-xl flex-1 md:flex-none flex items-center justify-center gap-2 px-4 md:px-6 h-10 md:h-12 shadow-lg shadow-emerald-500/25 text-sm"
           >
             <FiPlus />
             Rút tiền ngay
@@ -85,11 +89,11 @@ export default function UserAffiliatePage() {
 
       {/* Main Tabs */}
       <div className="space-y-6">
-        <div className="flex items-center gap-2 p-1.5 bg-stone-100 w-fit rounded-xl">
+        <div className="flex items-center gap-2 p-1.5 bg-stone-100 w-full md:w-fit rounded-xl overflow-x-auto no-scrollbar">
           <button
             onClick={() => setActiveTab('commissions')}
             className={cn(
-              'flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition-all',
+              'flex items-center justify-center gap-2 px-4 md:px-6 py-2.5 md:py-3 rounded-xl text-xs md:text-sm font-bold transition-all whitespace-nowrap flex-1 md:flex-none',
               activeTab === 'commissions'
                 ? 'bg-white text-emerald-600 shadow-sm'
                 : 'text-stone-500 hover:text-stone-700',
@@ -101,7 +105,7 @@ export default function UserAffiliatePage() {
           <button
             onClick={() => setActiveTab('withdrawals')}
             className={cn(
-              'flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition-all',
+              'flex items-center justify-center gap-2 px-4 md:px-6 py-2.5 md:py-3 rounded-xl text-xs md:text-sm font-bold transition-all whitespace-nowrap flex-1 md:flex-none',
               activeTab === 'withdrawals'
                 ? 'bg-white text-emerald-600 shadow-sm'
                 : 'text-stone-500 hover:text-stone-700',

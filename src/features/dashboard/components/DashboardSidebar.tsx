@@ -273,7 +273,7 @@ const COMMON_ITEMS: MenuItem[] = [
   },
 ];
 
-const DashboardSidebar = () => {
+const DashboardSidebar = ({ onMobileClose }: { onMobileClose?: () => void }) => {
   const pathname = usePathname();
   const dispatch = useDispatch();
   const { profile } = useAuth();
@@ -373,6 +373,7 @@ const DashboardSidebar = () => {
                   ? 'bg-green-600 text-white shadow-lg shadow-green-500/25'
                   : 'text-stone-600 hover:bg-stone-50',
               )}
+              onClick={onMobileClose}
             >
               <item.icon
                 size={18}
@@ -456,6 +457,7 @@ const DashboardSidebar = () => {
                               ? 'text-green-600 font-bold bg-green-50'
                               : 'text-stone-500 hover:text-stone-900 hover:bg-stone-50',
                           )}
+                          onClick={onMobileClose}
                         >
                           <span className="text-sm flex-1">{item.label}</span>
                           {unreadCount > 0 && (

@@ -297,9 +297,9 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
         </div>
 
         {/* Origin Meta */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="flex items-center gap-4 p-4 bg-white border border-stone-100 rounded-xl shadow-sm">
-            <div className="w-11 h-11 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600 shrink-0">
+        <div className="grid grid-cols-2 gap-3 md:gap-4">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-2 sm:gap-4 p-3 sm:p-4 bg-white border border-stone-100 rounded-xl shadow-sm">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600 shrink-0">
               <MapPin className="w-6 h-6" />
             </div>
             <div>
@@ -311,8 +311,8 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-4 p-4 bg-white border border-stone-100 rounded-xl shadow-sm">
-            <div className="w-11 h-11 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 shrink-0">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-2 sm:gap-4 p-3 sm:p-4 bg-white border border-stone-100 rounded-xl shadow-sm">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 shrink-0">
               <Package className="w-6 h-6" />
             </div>
             <div>
@@ -352,11 +352,11 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
                 />
               )}
             </div>
-            <div className=" flex flex-col justify-center items-start cursor-pointer">
+            <div className="flex flex-col justify-center items-start cursor-pointer min-w-0">
               <p className="text-[9px] uppercase tracking-widest text-gray-700 font-black mb-0.5">
                 Cung cấp bởi
               </p>
-              <h4 className="text-lg text-gray-700 font-black tracking-tight leading-tight">
+              <h4 className="text-base sm:text-lg text-gray-700 font-black tracking-tight leading-tight truncate w-full">
                 {product.shop.name}
               </h4>
             </div>

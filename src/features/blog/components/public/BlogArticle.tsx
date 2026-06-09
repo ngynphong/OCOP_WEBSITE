@@ -31,7 +31,7 @@ export const BlogArticle = () => {
   return (
     <article className="bg-white min-h-screen pb-24">
       {/* Header / Hero */}
-      <header className="relative h-[60vh] md:h-[70vh] bg-stone-900 flex items-end">
+      <header className="relative h-[60vh] md:h-[70vh] bg-stone-900 flex items-center">
         {blog.thumbnailUrl && (
           <div className="absolute inset-0 opacity-50">
             <Image
@@ -45,7 +45,7 @@ export const BlogArticle = () => {
           </div>
         )}
 
-        <div className="relative z-10 w-full max-w-4xl mx-auto px-6 pb-16">
+        <div className="relative z-10 w-full max-w-4xl mx-auto px-6 p-10">
           <div className="backdrop-blur-md bg-stone-900/40 p-8 md:p-12 rounded-3xl border border-white/10 shadow-2xl">
             <button
               onClick={() => router.back()}

@@ -75,7 +75,6 @@ export default function TracePage({ params }: PageProps) {
       {/* Header bar */}
       <div className="bg-green-700 text-white px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <ShieldCheck className="w-5 h-5" />
           <span className="text-sm font-black uppercase tracking-widest">
             Truy xuất nguồn gốc OCOP
           </span>

@@ -25,15 +25,19 @@ export const SellerOrderCard: React.FC<SellerOrderCardProps> = ({ order }) => {
 
   return (
     <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-sm mb-4 transition-all hover:shadow-md">
-      <div className="flex justify-between items-center mb-4 pb-4 border-b border-stone-100">
-        <div className="flex items-center gap-2">
-          <span className="font-bold text-stone-900">Mã đơn: #{order.orderCode}</span>
-          <span className="text-stone-300 mx-2">|</span>
-          <span className="text-sm text-stone-500 font-medium">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4 mb-4 pb-4 border-b border-stone-100">
+        <div className="flex flex-wrap items-center gap-1.5 md:gap-2">
+          <span className="font-bold text-sm md:text-base text-stone-900 break-all w-full md:w-auto">
+            Mã đơn: #{order.orderCode}
+          </span>
+          <span className="hidden md:inline text-stone-300 mx-2">|</span>
+          <span className="text-[11px] md:text-sm text-stone-500 font-medium">
             Ngày đặt: {new Date(order.createdAt).toLocaleDateString('vi-VN')}
           </span>
         </div>
-        <OrderStatusBadge status={order.status} />
+        <div className="w-fit self-start md:self-auto">
+          <OrderStatusBadge status={order.status} />
+        </div>
       </div>
 
       <div className="flex gap-4">
@@ -60,25 +64,25 @@ export const SellerOrderCard: React.FC<SellerOrderCardProps> = ({ order }) => {
             </p>
           )}
 
-          <div className="mt-auto flex justify-between items-end">
+          <div className="mt-3 flex flex-col sm:flex-row justify-between sm:items-end gap-3 sm:gap-0">
             <div>
-              <p className="text-xs font-bold px-2 py-1 bg-stone-100 text-stone-600 rounded-lg uppercase inline-block">
+              <p className="text-[10px] md:text-xs font-bold px-2 py-1 bg-stone-100 text-stone-600 rounded-lg uppercase inline-block whitespace-nowrap">
                 {order.paymentStatus === 'PAID' ? 'Đã thanh toán' : 'Thanh toán COD'}
               </p>
             </div>
-            <div className="text-right flex items-center gap-6">
+            <div className="text-left sm:text-right flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto">
               <div>
-                <p className="text-xs text-stone-500 font-medium">
+                <p className="text-[10px] md:text-xs text-stone-500 font-medium whitespace-nowrap">
                   Tổng tiền ({quantity} sản phẩm)
                 </p>
-                <p className="text-lg font-black text-green-700">
+                <p className="text-base md:text-lg font-black text-green-700">
                   {formatCurrencyVND(order.totalAmount)}
                 </p>
               </div>
-              <Link href={detailUrl}>
+              <Link href={detailUrl} className="hidden sm:block shrink-0">
                 <Button
                   variant="outline"
-                  className="hidden sm:flex items-center justify-center px-4 py-2 border-2 border-stone-200 rounded-xl font-bold text-stone-700 hover:border-green-600 hover:text-green-700 transition-colors"
+                  className="flex items-center justify-center px-4 py-2 border-2 border-stone-200 rounded-xl font-bold text-stone-700 hover:border-green-600 hover:text-green-700 transition-colors h-10 md:h-12"
                 >
                   Chi tiết <ChevronRight size={16} className="ml-1" />
                 </Button>

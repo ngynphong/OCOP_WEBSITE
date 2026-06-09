@@ -109,14 +109,14 @@ export const ProductGallery = memo(function ProductGallery({
       </div>
 
       {/* Thumbnails Row */}
-      <div className="flex flex-wrap gap-4 px-2">
+      <div className="flex flex-wrap gap-2 md:gap-4 px-0 md:px-2">
         {/* Image Thumbnails */}
         {sortedImages.map((image) => (
           <button
             key={image.id}
             onClick={() => setActiveMedia({ type: 'IMAGE', url: image.url, id: image.id })}
             className={cn(
-              'relative w-14 h-14 rounded-xl overflow-hidden border-2 transition-all duration-300',
+              'relative w-12 h-12 md:w-14 md:h-14 shrink-0 rounded-xl overflow-hidden border-2 transition-all duration-300',
               activeMedia.type === 'IMAGE' && activeMedia.id === image.id
                 ? 'border-emerald-600 ring-2 ring-emerald-500 ring-offset-2 shadow-md'
                 : 'border-transparent bg-stone-50 hover:border-stone-200',

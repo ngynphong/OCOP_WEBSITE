@@ -286,13 +286,23 @@ export function Header() {
                 </AnimatePresence>
               </div>
             ) : (
-              <Link
-                href="/dang-nhap"
-                suppressHydrationWarning
-                className="hidden md:inline-flex h-10 px-4 py-px flex-col justify-center items-center text-green-700 bg-white hover:bg-stone-100 rounded-full transition-colors cursor-pointer text-sm font-semibold whitespace-nowrap"
-              >
-                Đăng nhập
-              </Link>
+              <>
+                <Link
+                  href="/dang-nhap"
+                  suppressHydrationWarning
+                  className="md:hidden h-10 w-10 inline-flex flex-col justify-center items-center text-white hover:bg-white/10 rounded-full transition-colors cursor-pointer group"
+                  aria-label="Đăng nhập"
+                >
+                  <User className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                </Link>
+                <Link
+                  href="/dang-nhap"
+                  suppressHydrationWarning
+                  className="hidden md:inline-flex h-10 px-4 py-px flex-col justify-center items-center text-green-700 bg-white hover:bg-stone-100 rounded-full transition-colors cursor-pointer text-sm font-semibold whitespace-nowrap"
+                >
+                  Đăng nhập
+                </Link>
+              </>
             )}
             <button
               onClick={() => setIsQRModalOpen(true)}
@@ -327,7 +337,7 @@ export function Header() {
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="w-full bg-green-800 overflow-hidden lg:hidden"
+              className="w-full bg-green-800 lg:hidden relative z-50"
             >
               <div className="py-3 px-4">
                 <SearchBox variant="header" onClose={() => setIsSearchOpen(false)} />
@@ -392,6 +402,43 @@ export function Header() {
                 >
                   Câu Chuyện
                 </Link>
+
+                <div className="h-px bg-emerald-700/50 my-2" />
+
+                {isHydrated && isAuthenticated ? (
+                  <>
+                    <Link
+                      href={
+                        role.includes('ADMIN') || role.includes('SUPER_ADMIN')
+                          ? '/admin'
+                          : '/dashboard'
+                      }
+                      onClick={() => setIsMenuOpen(false)}
+                      className="text-emerald-100 hover:text-white text-base font-semibold flex items-center gap-3 py-1"
+                    >
+                      <User className="w-5 h-5" />
+                      Hồ sơ cá nhân
+                    </Link>
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        handleLogoutClick();
+                      }}
+                      className="text-red-300 hover:text-red-200 text-base font-semibold flex items-center gap-3 py-1 text-left"
+                    >
+                      <LogOut className="w-5 h-5" />
+                      Đăng xuất
+                    </button>
+                  </>
+                ) : (
+                  <Link
+                    href="/dang-nhap"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="text-emerald-900 bg-white hover:bg-stone-100 rounded-xl py-3 px-4 text-center text-base font-bold shadow-sm mt-2"
+                  >
+                    Đăng nhập / Đăng ký
+                  </Link>
+                )}
               </nav>
             </motion.div>
           )}

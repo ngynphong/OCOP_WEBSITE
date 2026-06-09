@@ -117,6 +117,24 @@ function OrderDetailsContent({ params }: PageProps) {
   const [showB2BRefundModal, setShowB2BRefundModal] = useState(false);
   const [showB2BReviewModal, setShowB2BReviewModal] = useState(false);
 
+  React.useEffect(() => {
+    const action = searchParams.get('action');
+    if (action === 'review' && order && !isLoading) {
+      if (isB2B) {
+        setShowB2BReviewModal(true);
+      } else if (order.items && order.items.length > 0) {
+        const firstUnreviewed = order.items.find((item: IOrderDetailsItem) => !item.isReviewed);
+        if (firstUnreviewed) {
+          setReviewingItem(firstUnreviewed);
+        }
+      }
+      // Remove query param to avoid re-triggering
+      const url = new URL(window.location.href);
+      url.searchParams.delete('action');
+      window.history.replaceState({}, '', url.toString());
+    }
+  }, [searchParams, order, isLoading, isB2B]);
+
   const { mutate: cancelB2B, isPending: isCancelingB2B } = useCancelB2BOrder();
   const { mutate: confirmB2BReceivedMut, isPending: isConfirmingB2B } = useConfirmB2BReceived();
   const { mutate: refundB2B, isPending: isRefundingB2B } = useRefundB2BOrder();
@@ -205,28 +223,30 @@ function OrderDetailsContent({ params }: PageProps) {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-6 lg:p-8 space-y-8 animate-in fade-in slide-in-from-bottom-3 duration-500">
+    <div className="max-w-7xl mx-auto p-3 sm:p-4 md:p-6 lg:p-8 space-y-5 md:space-y-8 animate-in fade-in slide-in-from-bottom-3 duration-500">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-stone-100">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4 pb-4 md:pb-6 border-b border-stone-100">
+        <div className="flex items-start md:items-center gap-3 md:gap-4">
           <Link
             href="/dashboard/don-hang"
-            className="w-10 h-10 rounded-xl bg-stone-50 border border-stone-100 flex items-center justify-center text-stone-500 hover:text-stone-900 hover:bg-stone-100 hover:scale-105 active:scale-95 transition-all shadow-sm"
+            className="w-10 h-10 mt-0.5 md:mt-0 rounded-xl bg-stone-50 border border-stone-100 flex items-center justify-center text-stone-500 hover:text-stone-900 hover:bg-stone-100 hover:scale-105 active:scale-95 transition-all shadow-sm shrink-0"
           >
             <ChevronLeft size={20} />
           </Link>
-          <div>
-            <h1 className="text-xl md:text-2xl font-black text-stone-900 tracking-tight flex items-center gap-2.5">
-              Chi tiết đơn hàng
-              <span className="text-stone-300 font-light">#</span>
-              <span className="font-extrabold letter-spacing-1">{order.orderCode}</span>
+          <div className="flex-1 min-w-0">
+            <h1 className="text-lg md:text-2xl font-black text-stone-900 tracking-tight flex flex-wrap items-center gap-x-2 gap-y-1 leading-tight">
+              <span>Chi tiết đơn hàng</span>
+              <span className="text-stone-300 font-light hidden md:inline">#</span>
+              <span className="font-extrabold tracking-widest text-xs md:text-2xl text-stone-500 md:text-stone-900 break-all bg-stone-100 md:bg-transparent px-2 py-0.5 md:p-0 rounded-md md:rounded-none">
+                {order.orderCode}
+              </span>
             </h1>
-            <p className="text-xs text-stone-400 font-bold mt-1">
+            <p className="text-[11px] md:text-xs text-stone-400 font-bold mt-1.5 md:mt-1">
               Đặt ngày {new Date(order.createdAt).toLocaleString('vi-VN')}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 pl-[52px] md:pl-0">
           <span className="text-xs font-black uppercase text-stone-400 tracking-widest hidden md:inline">
             Trạng thái:
           </span>
@@ -235,27 +255,94 @@ function OrderDetailsContent({ params }: PageProps) {
       </div>
 
       {/* Main Grid Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 md:gap-8">
         {/* Left Columns (Full width on small, 2/3 width on large) */}
-        <div className="lg:col-span-2 space-y-8">
+        <div className="lg:col-span-2 space-y-5 md:space-y-8">
           {/* Row 1: Shipping Progress timeline */}
           <B2BShipmentProgress shipment={shipment} isB2B={isB2B} />
 
+          {/* Special Status Info */}
+          {order.status === 'PENDING_PAYMENT' && order.expiredAt && (
+            <div className="bg-amber-50 rounded-xl p-4 border border-amber-200 shadow-sm flex items-start gap-3">
+              <div className="mt-0.5 text-amber-600">
+                <Store size={20} />
+              </div>
+              <div>
+                <h4 className="font-bold text-amber-900 text-sm">Chờ thanh toán</h4>
+                <p className="text-amber-700 text-xs mt-1">
+                  Vui lòng thanh toán trước {new Date(order.expiredAt).toLocaleString('vi-VN')} để
+                  đơn hàng không bị tự động huỷ.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {order.status === 'CANCELLED' && order.cancellationInfo && (
+            <div className="bg-red-50 rounded-xl p-4 border border-red-100 shadow-sm flex items-start gap-3">
+              <div className="mt-0.5 text-red-500">
+                <Store size={20} />
+              </div>
+              <div>
+                <h4 className="font-bold text-red-900 text-sm">Đơn hàng đã bị huỷ</h4>
+                <div className="text-red-700 text-xs mt-1 space-y-1">
+                  <p>
+                    <span className="font-bold">Người huỷ:</span>{' '}
+                    {order.cancellationInfo.cancelledBy}
+                  </p>
+                  <p>
+                    <span className="font-bold">Lý do:</span> {order.cancellationInfo.reason}
+                  </p>
+                  <p>
+                    <span className="font-bold">Thời gian:</span>{' '}
+                    {new Date(order.cancellationInfo.cancelledAt).toLocaleString('vi-VN')}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {order.refundInfo && (
+            <div className="bg-blue-50 rounded-xl p-4 border border-blue-200 shadow-sm flex items-start gap-3">
+              <div className="mt-0.5 text-blue-600">
+                <Store size={20} />
+              </div>
+              <div>
+                <h4 className="font-bold text-blue-900 text-sm">
+                  Yêu cầu trả hàng / Hoàn tiền
+                  {order.refundInfo.status === 'PENDING'
+                    ? ' (Đang xử lý)'
+                    : ` (${order.refundInfo.status})`}
+                </h4>
+                <div className="text-blue-700 text-xs mt-1 space-y-1">
+                  <p>
+                    <span className="font-bold">Số tiền hoàn:</span>{' '}
+                    {formatCurrencyVND(order.refundInfo.amount)}
+                  </p>
+                  <p>
+                    <span className="font-bold">Lý do:</span> {order.refundInfo.reason}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Row 2: Store / Vendor Metadata */}
-          <div className="bg-white rounded-4xl p-8 border border-stone-100 shadow-sm relative overflow-hidden group">
-            <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform">
+          <div className="bg-white rounded-2xl md:rounded-4xl p-4 md:p-8 border border-stone-100 shadow-sm relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-4 md:p-8 opacity-5 group-hover:scale-110 transition-transform pointer-events-none">
               <Store size={80} className="text-stone-900" />
             </div>
-            <div className="flex items-center justify-between pb-6 border-b border-stone-100 relative z-10">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-stone-50 rounded-xl flex items-center justify-center border border-stone-100 shadow-inner">
-                  <Store size={28} className="text-stone-600" />
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 md:pb-6 border-b border-stone-100 relative z-10 gap-3 sm:gap-4">
+              <div className="flex items-center gap-3 md:gap-4">
+                <div className="w-12 h-12 md:w-14 md:h-14 bg-stone-50 rounded-xl flex items-center justify-center border border-stone-100 shadow-inner shrink-0">
+                  <Store size={24} className="text-stone-600 md:w-7 md:h-7" />
                 </div>
                 <div>
-                  <h3 className="font-black text-stone-900 text-lg leading-tight">{shopName}</h3>
+                  <h3 className="font-black text-stone-900 text-base md:text-lg leading-tight line-clamp-1">
+                    {shopName}
+                  </h3>
                   <Link
                     href={`/cua-hang/${shopSlug}`}
-                    className="text-xs text-green-600 font-extrabold hover:text-green-700 mt-1 inline-block"
+                    className="text-[11px] md:text-xs text-green-600 font-extrabold hover:text-green-700 mt-1 inline-block"
                   >
                     Xem thông tin cửa hàng →
                   </Link>
@@ -264,22 +351,22 @@ function OrderDetailsContent({ params }: PageProps) {
               <button
                 onClick={handleChat}
                 disabled={isCreatingRoom}
-                className="bg-stone-50 text-stone-600 font-black text-xs px-4 py-2.5 rounded-xl border border-stone-100 hover:bg-stone-100 active:scale-95 transition-all shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-stone-50 text-stone-600 font-black text-[11px] md:text-xs px-3 py-2 md:px-4 md:py-2.5 rounded-xl border border-stone-100 hover:bg-stone-100 active:scale-95 transition-all shadow-sm flex items-center justify-center gap-1.5 md:gap-2 disabled:opacity-50 disabled:cursor-not-allowed shrink-0 w-full sm:w-auto"
               >
                 {isCreatingRoom ? (
-                  <div className="w-4 h-4 border-2 border-stone-300 border-t-stone-600 rounded-full animate-spin" />
+                  <div className="w-3.5 h-3.5 md:w-4 md:h-4 border-2 border-stone-300 border-t-stone-600 rounded-full animate-spin" />
                 ) : (
-                  '💬'
+                  <MessageSquare size={14} className="md:w-4 md:h-4" />
                 )}
-                {isCreatingRoom ? 'Đang mở chat...' : 'Chat ngay'}
+                {isCreatingRoom ? 'Đang mở...' : 'Chat ngay'}
               </button>
             </div>
 
             {/* Items List */}
-            <div className="pt-6 space-y-6 relative z-10">
+            <div className="pt-4 md:pt-6 space-y-4 md:space-y-6 relative z-10">
               {orderItems.map((item: IOrderDetailsItem, idx: number) => (
-                <div key={idx} className="flex gap-5 group/item">
-                  <div className="relative w-24 h-24 rounded-xl overflow-hidden bg-stone-50 border border-stone-100 shrink-0 shadow-sm">
+                <div key={idx} className="flex gap-3 md:gap-5 group/item">
+                  <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden bg-stone-50 border border-stone-100 shrink-0 shadow-sm">
                     {item.productImage ? (
                       <Image
                         src={item.productImage}
@@ -293,35 +380,37 @@ function OrderDetailsContent({ params }: PageProps) {
                       </div>
                     )}
                   </div>
-                  <div className="flex-1 flex flex-col justify-center py-1">
-                    <div className="flex justify-between items-start gap-2">
-                      <h4 className="font-bold text-stone-900 group-hover/item:text-green-700 transition-colors line-clamp-1">
+                  <div className="flex-1 flex flex-col justify-center py-0.5 md:py-1">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-2">
+                      <h4 className="font-bold text-sm md:text-base text-stone-900 group-hover/item:text-green-700 transition-colors line-clamp-2">
                         {item.productName}
                       </h4>
-                      {order.canReview && !item.isReviewed && (
+                      {(order.canReview || order.status === 'COMPLETED') && !item.isReviewed && (
                         <button
                           onClick={() => setReviewingItem(item)}
-                          className="flex items-center gap-1.5 text-[10px] font-black text-green-600 uppercase tracking-tighter hover:text-green-700 whitespace-nowrap cursor-pointer"
+                          className="flex items-center gap-1.5 text-[10px] md:text-xs font-black text-green-600 uppercase tracking-tighter hover:text-green-700 whitespace-nowrap cursor-pointer shrink-0 mt-1 sm:mt-0 w-fit"
                         >
                           <MessageSquare size={12} />
-                          Đánh giá ngay
+                          Đánh giá
                         </button>
                       )}
                       {item.isReviewed && (
-                        <span className="text-[10px] font-black text-stone-400 uppercase tracking-tighter">
+                        <span className="text-[10px] md:text-xs font-black text-stone-400 uppercase tracking-tighter shrink-0 mt-1 sm:mt-0 w-fit">
                           Đã đánh giá
                         </span>
                       )}
                     </div>
-                    <p className="text-xs font-medium text-stone-400 mt-1">{item.variantName}</p>
-                    <div className="flex justify-between items-end mt-3">
-                      <div className="bg-stone-100 px-2 py-1 rounded-lg">
+                    <p className="text-[11px] md:text-xs font-medium text-stone-400 mt-1 line-clamp-1">
+                      {item.variantName}
+                    </p>
+                    <div className="flex justify-between items-end mt-2 md:mt-3">
+                      <div className="bg-stone-100 px-2 py-1 rounded-lg flex items-center">
                         <span className="text-[10px] font-bold text-stone-400 uppercase mr-1">
                           SL:
                         </span>
                         <span className="text-xs font-bold text-stone-900">x{item.qty}</span>
                       </div>
-                      <p className="font-black text-stone-900 text-lg">
+                      <p className="font-black text-stone-900 text-base md:text-lg">
                         {formatCurrencyVND(item.unitPrice)}
                       </p>
                     </div>
@@ -381,28 +470,38 @@ function OrderDetailsContent({ params }: PageProps) {
                 canRefund={order.canRefund}
                 canReorder={order.canReorder}
                 canReview={order.canReview}
+                onReview={() => {
+                  const unreviewed = orderItems.find((i: IOrderDetailsItem) => !i.isReviewed);
+                  if (unreviewed) {
+                    setReviewingItem(unreviewed);
+                  } else {
+                    import('react-hot-toast').then((toast) =>
+                      toast.default.success('Tất cả sản phẩm đã được đánh giá.'),
+                    );
+                  }
+                }}
               />
             )}
           </div>
         </div>
 
         {/* Right Columns (Sidebar - 1/3 width) */}
-        <div className="space-y-8">
+        <div className="space-y-5 md:space-y-8">
           {/* Customer Address Details */}
-          <div className="bg-white rounded-4xl p-8 border border-stone-100 shadow-sm relative overflow-hidden group">
-            <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform">
+          <div className="bg-white rounded-2xl md:rounded-4xl p-5 md:p-8 border border-stone-100 shadow-sm relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-4 md:p-8 opacity-5 group-hover:scale-110 transition-transform pointer-events-none">
               <MapPin size={80} className="text-stone-900" />
             </div>
-            <h3 className="font-bold text-stone-900 flex items-center gap-2 mb-6">
+            <h3 className="font-bold text-stone-900 flex items-center gap-2 mb-4 md:mb-6">
               <MapPin size={18} className="text-green-600" /> Thông tin nhận hàng
             </h3>
             <div className="relative z-10">
-              <p className="font-black text-stone-900 mb-1 flex items-center gap-2">
+              <p className="font-black text-stone-900 mb-1 flex items-center flex-wrap gap-2 text-sm md:text-base">
                 {shippingAddress.recipient}
-                <span className="w-1 h-1 bg-stone-300 rounded-full" />
+                <span className="w-1 h-1 bg-stone-300 rounded-full shrink-0" />
                 <span className="text-stone-500 font-bold">{shippingAddress.phone}</span>
               </p>
-              <p className="text-stone-400 text-sm font-medium leading-relaxed mt-3">
+              <p className="text-stone-400 text-xs md:text-sm font-medium leading-relaxed mt-2 md:mt-3">
                 {shippingAddress.address}, {shippingAddress.ward}, {shippingAddress.district},{' '}
                 {shippingAddress.province}
               </p>
@@ -464,6 +563,16 @@ function OrderDetailsContent({ params }: PageProps) {
                 canRefund={order.canRefund}
                 canReorder={order.canReorder}
                 canReview={order.canReview}
+                onReview={() => {
+                  const unreviewed = orderItems.find((i: IOrderDetailsItem) => !i.isReviewed);
+                  if (unreviewed) {
+                    setReviewingItem(unreviewed);
+                  } else {
+                    import('react-hot-toast').then((toast) =>
+                      toast.default.success('Tất cả sản phẩm đã được đánh giá.'),
+                    );
+                  }
+                }}
               />
             )}
           </div>

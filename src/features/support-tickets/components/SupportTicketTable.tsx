@@ -32,7 +32,7 @@ export const SupportTicketTable = ({
 
   if (tickets.length === 0) {
     return (
-      <div className="bg-stone-50/50 rounded-4xl border border-dashed border-stone-200 py-24 text-center">
+      <div className="bg-stone-50/50 rounded-4xl border border-dashed border-stone-200 py-24 px-10 text-center">
         <div className="w-20 h-20 bg-white rounded-xl flex items-center justify-center mx-auto mb-6 border border-stone-100 shadow-sm text-stone-300">
           <MessageSquare size={40} />
         </div>

@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Ticket, Loader2, Wallet, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSavedVouchers } from '../hooks/useVouchers';
@@ -23,8 +24,16 @@ export function VoucherSelectionModal({
 }: VoucherSelectionModalProps) {
   const { data: savedRes, isLoading } = useSavedVouchers(1, 50);
   const vouchers = savedRes?.data?.content || [];
+  const [mounted, setMounted] = useState(false);
 
-  return (
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <>
@@ -33,13 +42,13 @@ export function VoucherSelectionModal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-stone-900/40 backdrop-blur-sm z-[110]"
+            className="fixed inset-0 bg-stone-900/40 backdrop-blur-sm z-[9999]"
           />
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-white rounded-xl shadow-2xl z-[120] overflow-hidden border border-stone-100"
+            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] md:w-full max-w-lg bg-white rounded-xl shadow-2xl z-[9999] overflow-hidden border border-stone-100"
           >
             {/* Header */}
             <div className="p-6 border-b border-stone-100 flex items-center justify-between bg-linear-to-r from-stone-50 to-white">
@@ -182,6 +191,7 @@ export function VoucherSelectionModal({
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }

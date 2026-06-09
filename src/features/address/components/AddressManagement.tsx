@@ -60,15 +60,18 @@ const AddressManagement = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <IoIosPin size={36} color="green" />
-          <span className="text-2xl font-black text-stone-900 uppercase tracking-tight">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-0">
+        <div className="flex items-center gap-3 md:gap-4">
+          <IoIosPin className="w-8 h-8 md:w-9 md:h-9 text-green-600 shrink-0" />
+          <span className="text-xl md:text-2xl font-black text-stone-900 uppercase tracking-tight">
             Địa chỉ của tôi
           </span>
         </div>
-        <Button onClick={handleAddNew} className="rounded-xl px-6 h-12 flex items-center gap-2">
-          <FiPlus />
+        <Button
+          onClick={handleAddNew}
+          className="rounded-xl px-4 md:px-6 h-10 md:h-12 flex items-center justify-center gap-2 text-xs md:text-sm w-full md:w-auto"
+        >
+          <FiPlus size={18} />
           Thêm địa chỉ mới
         </Button>
       </div>
@@ -78,16 +81,16 @@ const AddressManagement = () => {
           <div
             key={addr.id}
             className={cn(
-              'relative bg-white p-8 rounded-xl border-2 transition-all group',
+              'relative bg-white p-5 md:p-8 rounded-xl border-2 transition-all group',
               addr.isDefault
                 ? 'border-green-600 shadow-xl shadow-green-500/10'
                 : 'border-stone-100 hover:border-stone-200 shadow-lg shadow-stone-200/40',
             )}
           >
-            <div className="flex justify-between items-start mb-6">
+            <div className="flex justify-between items-start mb-4 md:mb-6">
               <div
                 className={cn(
-                  'px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2',
+                  'px-3 md:px-4 py-1 md:py-1.5 rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 md:gap-2',
                   addr.label === 'HOME'
                     ? 'bg-blue-50 text-blue-600'
                     : addr.label === 'OFFICE'
@@ -117,20 +120,20 @@ const AddressManagement = () => {
               )}
             </div>
 
-            <div className="space-y-2 mb-8">
-              <p className="text-lg font-black text-stone-900">{addr.recipient}</p>
-              <p className="text-sm text-stone-500 font-bold">{addr.phone}</p>
-              <p className="text-sm text-stone-600 leading-relaxed font-medium">
+            <div className="space-y-1.5 md:space-y-2 mb-4 md:mb-8">
+              <p className="text-base md:text-lg font-black text-stone-900">{addr.recipient}</p>
+              <p className="text-xs md:text-sm text-stone-500 font-bold">{addr.phone}</p>
+              <p className="text-xs md:text-sm text-stone-600 leading-relaxed font-medium">
                 {addr.addressLine}, {addr.wardName}, {addr.districtName}, {addr.provinceName}
               </p>
             </div>
 
-            <div className="flex items-center gap-2 border-t border-stone-50">
+            <div className="flex flex-wrap items-center gap-2 md:gap-3 pt-4 border-t border-stone-50">
               {!addr.isDefault && (
                 <button
                   onClick={() => setDefault(addr.id)}
                   disabled={isSettingDefault}
-                  className="text-xs font-black text-green-600 hover:text-green-700 disabled:text-stone-300 transition-colors uppercase tracking-widest"
+                  className="text-[10px] md:text-xs font-black text-green-600 hover:text-green-700 disabled:text-stone-300 transition-colors uppercase tracking-widest whitespace-nowrap"
                 >
                   Đặt làm mặc định
                 </button>
@@ -138,18 +141,18 @@ const AddressManagement = () => {
               <div className="flex-1" />
               <button
                 onClick={() => handleEdit(addr)}
-                className="p-3 text-stone-400 hover:text-green-600 hover:bg-green-50 rounded-xl transition-all"
+                className="p-2 md:p-3 text-stone-400 hover:text-green-600 hover:bg-green-50 rounded-xl transition-all"
                 title="Chỉnh sửa"
               >
-                <FiEdit2 size={18} />
+                <FiEdit2 size={18} className="w-4 h-4 md:w-[18px] md:h-[18px]" />
               </button>
               {!addr.isDefault && (
                 <button
                   onClick={() => setAddressToDelete(addr.id)}
-                  className="p-3 text-stone-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
+                  className="p-2 md:p-3 text-stone-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
                   title="Xóa"
                 >
-                  <FiTrash2 size={18} />
+                  <FiTrash2 size={18} className="w-4 h-4 md:w-[18px] md:h-[18px]" />
                 </button>
               )}
             </div>

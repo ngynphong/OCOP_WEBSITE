@@ -52,7 +52,7 @@ export default function ChatPage() {
         onRoomSelect={handleRoomSelect}
         isLoading={isLoading}
       />
-      <ChatWindow room={selectedRoom} isLoading={isLoading} />
+      <ChatWindow room={selectedRoom} isLoading={isLoading} onBack={() => setSelectedRoom(null)} />
     </div>
   );
 }

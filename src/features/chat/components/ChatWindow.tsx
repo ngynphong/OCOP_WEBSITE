@@ -6,16 +6,23 @@ import { ChatInput } from './ChatInput';
 import { useChatHistory, useChatMutations } from '../hooks/useChatRooms';
 import { useChat } from '../hooks/useChat';
 import { ChatRoom } from '../types/chatTypes';
-import { FiMessageSquare, FiInfo, FiLoader } from 'react-icons/fi';
+import { FiMessageSquare, FiInfo, FiLoader, FiChevronLeft } from 'react-icons/fi';
 import Image from 'next/image';
+import { cn } from '@/utils/cn';
 
 interface ChatWindowProps {
   room: ChatRoom | null;
   isLoading?: boolean;
   role?: 'USER' | 'SELLER';
+  onBack?: () => void;
 }
 
-export const ChatWindow = ({ room, isLoading: isRoomLoading, role = 'USER' }: ChatWindowProps) => {
+export const ChatWindow = ({
+  room,
+  isLoading: isRoomLoading,
+  role = 'USER',
+  onBack,
+}: ChatWindowProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { data: historyResp, isLoading: isHistoryLoading } = useChatHistory(room?.id);
   const { sendMessage, sendAttachment } = useChat(room?.id);
@@ -50,7 +57,7 @@ export const ChatWindow = ({ room, isLoading: isRoomLoading, role = 'USER' }: Ch
 
   if (!room) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center bg-stone-50 text-stone-400 p-8 text-center">
+      <div className="hidden md:flex flex-1 flex-col items-center justify-center bg-stone-50 text-stone-400 p-8 text-center h-full">
         <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-sm mb-4">
           <FiMessageSquare size={40} className="text-stone-200" />
         </div>
@@ -63,11 +70,24 @@ export const ChatWindow = ({ room, isLoading: isRoomLoading, role = 'USER' }: Ch
   }
 
   return (
-    <div className="flex-1 flex flex-col bg-white">
+    <div
+      className={cn(
+        'flex-1 flex-col bg-white w-full h-full overflow-hidden',
+        !room ? 'hidden md:flex' : 'flex',
+      )}
+    >
       {/* Header */}
-      <div className="px-6 py-4 border-b border-stone-100 flex items-center justify-between shadow-sm relative z-10">
-        <div className="flex items-center gap-4">
-          <div className="relative w-12 h-12 rounded-full overflow-hidden border border-stone-200 bg-stone-50">
+      <div className="px-4 md:px-6 py-3 md:py-4 border-b border-stone-100 flex items-center justify-between shadow-sm relative z-10 shrink-0 bg-white">
+        <div className="flex items-center gap-2 md:gap-4 min-w-0">
+          {onBack && (
+            <button
+              onClick={onBack}
+              className="md:hidden p-2 -ml-2 text-stone-500 hover:text-stone-700 active:bg-stone-100 rounded-full transition-colors shrink-0"
+            >
+              <FiChevronLeft size={24} />
+            </button>
+          )}
+          <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden border border-stone-200 bg-stone-50 shrink-0">
             {room.shopLogoUrl ? (
               <Image src={room.shopLogoUrl} alt={room.shopName} fill className="object-cover" />
             ) : (
@@ -78,8 +98,8 @@ export const ChatWindow = ({ room, isLoading: isRoomLoading, role = 'USER' }: Ch
               </div>
             )}
           </div>
-          <div>
-            <h3 className="font-bold text-stone-900 leading-tight">
+          <div className="min-w-0 flex-1">
+            <h3 className="font-bold text-base md:text-lg text-stone-900 leading-tight truncate">
               {role === 'SELLER' ? room.buyerEmail : room.shopName}
             </h3>
             <div className="flex items-center gap-1.5 mt-0.5">

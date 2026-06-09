@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiX, FiCheckCircle, FiTrash2, FiBellOff } from 'react-icons/fi';
 import { useInfiniteNotifications, useNotificationMutations } from '../hooks/useNotifications';
@@ -20,6 +21,13 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({ isOpen, 
     isFetchingNextPage,
     isLoading,
   } = useInfiniteNotifications();
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
 
   const { markAsRead, markAllAsRead, deleteOne, deleteBatch } = useNotificationMutations();
 
@@ -82,7 +90,9 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({ isOpen, 
     };
   }, [isOpen]);
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <>
@@ -184,6 +194,7 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({ isOpen, 
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 };

@@ -69,26 +69,26 @@ export const UserCommissionList: React.FC = () => {
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full text-left">
+      <div className="overflow-x-auto no-scrollbar">
+        <table className="w-full text-left min-w-[800px] md:min-w-full">
           <thead>
             <tr className="bg-stone-50/50">
-              <th className="px-6 py-4 text-xs font-bold text-stone-400 uppercase tracking-wider">
+              <th className="px-4 md:px-6 py-3 md:py-4 text-[10px] md:text-xs font-bold text-stone-400 uppercase tracking-wider whitespace-nowrap">
                 Mã đơn hàng
               </th>
-              <th className="px-6 py-4 text-xs font-bold text-stone-400 uppercase tracking-wider">
+              <th className="px-4 md:px-6 py-3 md:py-4 text-[10px] md:text-xs font-bold text-stone-400 uppercase tracking-wider whitespace-nowrap">
                 Giá trị đơn
               </th>
-              <th className="px-6 py-4 text-xs font-bold text-stone-400 uppercase tracking-wider">
+              <th className="px-4 md:px-6 py-3 md:py-4 text-[10px] md:text-xs font-bold text-stone-400 uppercase tracking-wider whitespace-nowrap">
                 Tỉ lệ %
               </th>
-              <th className="px-6 py-4 text-xs font-bold text-stone-400 uppercase tracking-wider">
+              <th className="px-4 md:px-6 py-3 md:py-4 text-[10px] md:text-xs font-bold text-stone-400 uppercase tracking-wider whitespace-nowrap">
                 Tiền hoa hồng
               </th>
-              <th className="px-6 py-4 text-xs font-bold text-stone-400 uppercase tracking-wider">
+              <th className="px-4 md:px-6 py-3 md:py-4 text-[10px] md:text-xs font-bold text-stone-400 uppercase tracking-wider whitespace-nowrap">
                 Trạng thái
               </th>
-              <th className="px-6 py-4 text-xs font-bold text-stone-400 uppercase tracking-wider">
+              <th className="px-4 md:px-6 py-3 md:py-4 text-[10px] md:text-xs font-bold text-stone-400 uppercase tracking-wider whitespace-nowrap">
                 Thời gian
               </th>
             </tr>
@@ -107,24 +107,24 @@ export const UserCommissionList: React.FC = () => {
                 const config = statusConfig[item.status];
                 return (
                   <tr key={item.id} className="hover:bg-stone-50/50 transition-colors">
-                    <td className="px-6 py-4">
-                      <span className="font-mono text-sm font-bold text-stone-600">
+                    <td className="px-4 md:px-6 py-3 md:py-4 whitespace-nowrap">
+                      <span className="font-mono text-xs md:text-sm font-bold text-stone-600">
                         {item.orderCode}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm font-medium text-stone-900">
+                    <td className="px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm font-medium text-stone-900 whitespace-nowrap">
                       {formatCurrencyVND(item.orderAmount)}
                     </td>
-                    <td className="px-6 py-4 text-sm font-medium text-stone-600">
+                    <td className="px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm font-medium text-stone-600 whitespace-nowrap">
                       {item.commissionRate}%
                     </td>
-                    <td className="px-6 py-4 text-sm font-bold text-emerald-600">
+                    <td className="px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm font-bold text-emerald-600 whitespace-nowrap">
                       {formatCurrencyVND(item.commissionAmount)}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 md:px-6 py-3 md:py-4 whitespace-nowrap">
                       <div
                         className={cn(
-                          'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border',
+                          'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] md:text-xs font-bold border',
                           config.color,
                         )}
                       >
@@ -132,7 +132,7 @@ export const UserCommissionList: React.FC = () => {
                         {config.label}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-stone-500">
+                    <td className="px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm text-stone-500 whitespace-nowrap">
                       {formatDate(item.createdAt)}
                     </td>
                   </tr>

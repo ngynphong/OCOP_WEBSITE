@@ -28,12 +28,10 @@ function VerifyEmailContent() {
       try {
         await verifyEmailTraditional({ email, code });
         setStatus('SUCCESS');
-      } catch (error: any) {
-        // eslint-disable-line @typescript-eslint/no-explicit-any
+      } catch (error) {
         setStatus('ERROR');
-        setErrorMessage(
-          error?.response?.data?.message || 'Xác thực thất bại. Vui lòng thử lại sau.',
-        );
+        const err = error as { response?: { data?: { message?: string } } };
+        setErrorMessage(err?.response?.data?.message || 'Xác thực thất bại. Vui lòng thử lại sau.');
       }
     };
 

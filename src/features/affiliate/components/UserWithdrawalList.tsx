@@ -73,23 +73,23 @@ export const UserWithdrawalList: React.FC<UserWithdrawalListProps> = ({ withdraw
         <h3 className="font-bold text-stone-900">Lịch sử rút tiền</h3>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full text-left">
+      <div className="overflow-x-auto no-scrollbar">
+        <table className="w-full text-left min-w-[700px] md:min-w-full">
           <thead>
             <tr className="bg-stone-50/50">
-              <th className="px-6 py-4 text-xs font-bold text-stone-400 uppercase tracking-wider">
+              <th className="px-4 md:px-6 py-3 md:py-4 text-[10px] md:text-xs font-bold text-stone-400 uppercase tracking-wider whitespace-nowrap">
                 Ngày yêu cầu
               </th>
-              <th className="px-6 py-4 text-xs font-bold text-stone-400 uppercase tracking-wider">
+              <th className="px-4 md:px-6 py-3 md:py-4 text-[10px] md:text-xs font-bold text-stone-400 uppercase tracking-wider whitespace-nowrap">
                 Số tiền
               </th>
-              <th className="px-6 py-4 text-xs font-bold text-stone-400 uppercase tracking-wider">
+              <th className="px-4 md:px-6 py-3 md:py-4 text-[10px] md:text-xs font-bold text-stone-400 uppercase tracking-wider whitespace-nowrap">
                 Ngân hàng
               </th>
-              <th className="px-6 py-4 text-xs font-bold text-stone-400 uppercase tracking-wider">
+              <th className="px-4 md:px-6 py-3 md:py-4 text-[10px] md:text-xs font-bold text-stone-400 uppercase tracking-wider whitespace-nowrap">
                 Trạng thái
               </th>
-              <th className="px-6 py-4 text-xs font-bold text-stone-400 uppercase tracking-wider">
+              <th className="px-4 md:px-6 py-3 md:py-4 text-[10px] md:text-xs font-bold text-stone-400 uppercase tracking-wider whitespace-nowrap">
                 Ghi chú
               </th>
             </tr>
@@ -104,13 +104,19 @@ export const UserWithdrawalList: React.FC<UserWithdrawalListProps> = ({ withdraw
             ) : (
               withdrawals.map((item) => (
                 <tr key={item.id} className="hover:bg-stone-50/30 transition-colors">
-                  <td className="px-6 py-4 text-sm text-stone-600">{formatDate(item.createdAt)}</td>
-                  <td className="px-6 py-4 text-sm font-bold text-stone-900">
+                  <td className="px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm text-stone-600 whitespace-nowrap">
+                    {formatDate(item.createdAt)}
+                  </td>
+                  <td className="px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm font-bold text-stone-900 whitespace-nowrap">
                     {formatCurrencyVND(item.amount)}
                   </td>
-                  <td className="px-6 py-4">{renderBankInfo(item.bankInfo)}</td>
-                  <td className="px-6 py-4">{getStatusBadge(item.status)}</td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-3 md:py-4 whitespace-nowrap">
+                    {renderBankInfo(item.bankInfo)}
+                  </td>
+                  <td className="px-4 md:px-6 py-3 md:py-4 whitespace-nowrap">
+                    {getStatusBadge(item.status)}
+                  </td>
+                  <td className="px-4 md:px-6 py-3 md:py-4">
                     {item.adminNote ? (
                       <div className="flex items-center gap-1.5 text-xs text-stone-500 bg-stone-50 p-2 rounded-lg border border-stone-100 max-w-[200px]">
                         <FiInfo className="shrink-0" />

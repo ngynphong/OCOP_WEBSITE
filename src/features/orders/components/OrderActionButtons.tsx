@@ -5,6 +5,7 @@ import {
   useConfirmReceived,
   useRefundOrder,
   useReorder,
+  usePaymentUrl,
 } from '@/features/orders/hooks/useOrders';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { RefundRequestModal } from './RefundRequestModal';
@@ -18,6 +19,7 @@ interface OrderActionButtonsProps {
   canRefund: boolean;
   canReorder: boolean;
   canReview?: boolean;
+  onReview?: () => void;
 }
 
 export const OrderActionButtons: React.FC<OrderActionButtonsProps> = ({
@@ -26,14 +28,31 @@ export const OrderActionButtons: React.FC<OrderActionButtonsProps> = ({
   canCancel,
   canRefund,
   canReorder,
+  onReview,
 }) => {
   const { mutate: cancelOrder, isPending: isCanceling } = useCancelOrder();
   const { mutate: confirmReceived, isPending: isConfirming } = useConfirmReceived();
   const { mutate: refundOrder, isPending: isRefunding } = useRefundOrder();
   const { mutate: reorder, isPending: isReordering } = useReorder();
+  const { mutate: getPaymentUrl, isPending: isGettingPaymentUrl } = usePaymentUrl();
   const router = useRouter();
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [isRefundModalOpen, setIsRefundModalOpen] = useState(false);
+
+  const handlePayNow = () => {
+    getPaymentUrl(orderCode, {
+      onSuccess: (res) => {
+        if (res?.data?.paymentUrl) {
+          window.location.href = res.data.paymentUrl;
+        } else {
+          toast.error('Không tìm thấy đường dẫn thanh toán.');
+        }
+      },
+      onError: () => {
+        toast.error('Có lỗi xảy ra khi tạo link thanh toán.');
+      },
+    });
+  };
 
   const handleCancelConfirm = () => {
     cancelOrder(
@@ -77,6 +96,17 @@ export const OrderActionButtons: React.FC<OrderActionButtonsProps> = ({
 
   return (
     <div className="flex flex-wrap items-center justify-end gap-3">
+      {orderStatus === 'PENDING_PAYMENT' && (
+        <Button
+          variant="primary"
+          disabled={isGettingPaymentUrl}
+          onClick={handlePayNow}
+          className="bg-emerald-600 hover:bg-emerald-700 text-white border-transparent font-bold px-5 py-2 whitespace-nowrap h-auto shadow-lg shadow-emerald-600/20"
+        >
+          {isGettingPaymentUrl ? 'Đang chuyển hướng...' : 'Thanh toán ngay'}
+        </Button>
+      )}
+
       {canCancel && (
         <Button
           variant="outline"
@@ -107,6 +137,18 @@ export const OrderActionButtons: React.FC<OrderActionButtonsProps> = ({
           className="bg-emerald-600 hover:bg-emerald-700 text-white border-transparent font-bold px-5 py-2 whitespace-nowrap h-auto shadow-lg shadow-emerald-600/20"
         >
           {isConfirming ? 'Đang xác nhận...' : 'Đã nhận được hàng'}
+        </Button>
+      )}
+
+      {orderStatus === 'COMPLETED' && (
+        <Button
+          variant="primary"
+          onClick={() => {
+            if (onReview) onReview();
+          }}
+          className="bg-emerald-600 hover:bg-emerald-700 text-white border-transparent font-bold px-5 py-2.5 whitespace-nowrap h-auto shadow-lg shadow-emerald-600/20"
+        >
+          Đánh giá sản phẩm
         </Button>
       )}
 

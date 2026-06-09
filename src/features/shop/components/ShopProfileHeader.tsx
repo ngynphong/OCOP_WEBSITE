@@ -144,9 +144,6 @@ export const ShopProfileHeader = ({ shop }: ShopProfileHeaderProps) => {
                   <FiAlertTriangle size={18} />
                   Khiếu nại
                 </Button>
-                <Button variant="primary" className="flex-1 md:flex-auto">
-                  Theo dõi
-                </Button>
               </div>
             </div>
           </div>
