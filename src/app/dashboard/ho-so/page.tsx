@@ -21,7 +21,7 @@ const ProfilePage = () => {
   return (
     <div className="space-y-10">
       {/* Avatar Section */}
-      <div className="flex flex-col items-center p-6 bg-stone-50 rounded-2xl border border-stone-100">
+      <div className="flex flex-col items-center p-6 bg-stone-50 rounded-xl border border-stone-100">
         <AvatarUpload
           currentAvatar={profile?.avatarUrl}
           name={`${profile?.lastName} ${profile?.firstName}`}

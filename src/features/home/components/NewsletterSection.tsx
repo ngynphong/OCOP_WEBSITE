@@ -99,7 +99,7 @@ export function NewsletterSection() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="bg-emerald-500/10 border border-emerald-500/20 rounded-[32px] p-10 text-center space-y-6"
+                  className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-10 text-center space-y-6"
                 >
                   <div className="w-20 h-20 bg-emerald-500 rounded-full flex items-center justify-center mx-auto shadow-xl shadow-emerald-500/20">
                     <CheckCircle2 size={40} className="text-white" />

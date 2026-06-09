@@ -69,13 +69,13 @@ export default function AdminAffiliatePage() {
           <Button
             variant="outline"
             onClick={() => refetch()}
-            className="rounded-2xl w-12 h-12 p-0 flex items-center justify-center bg-white border-stone-200 shadow-sm"
+            className="rounded-xl w-12 h-12 p-0 flex items-center justify-center bg-white border-stone-200 shadow-sm"
           >
             <FiRefreshCcw className="text-stone-500" />
           </Button>
           <Button
             variant="primary"
-            className="rounded-2xl flex items-center gap-2 px-6 h-12 bg-emerald-700 hover:bg-emerald-800 shadow-xl shadow-emerald-900/20"
+            className="rounded-xl flex items-center gap-2 px-6 h-12 bg-emerald-700 hover:bg-emerald-800 shadow-xl shadow-emerald-900/20"
           >
             <FiExternalLink />
             Xuất báo cáo tài chính
@@ -96,7 +96,7 @@ export default function AdminAffiliatePage() {
         />
 
         {pagination.totalPages > 1 && (
-          <div className="bg-white p-6 rounded-3xl border border-stone-100 shadow-sm">
+          <div className="bg-white p-6 rounded-xl border border-stone-100 shadow-sm">
             <Pagination
               currentPage={page}
               totalPages={pagination.totalPages}
@@ -114,19 +114,19 @@ export default function AdminAffiliatePage() {
 
       {/* Footer Stats / Info */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white backdrop-blur-md p-6 rounded-3xl border border-stone-100 shadow-sm">
+        <div className="bg-white backdrop-blur-md p-6 rounded-xl border border-stone-100 shadow-sm">
           <p className="text-xs font-bold text-stone-400 uppercase tracking-widest mb-1">
             Tổng yêu cầu chờ
           </p>
           <p className="text-2xl font-black text-emerald-900">{stats.pending}</p>
         </div>
-        <div className="bg-white backdrop-blur-md p-6 rounded-3xl border border-stone-100 shadow-sm">
+        <div className="bg-white backdrop-blur-md p-6 rounded-xl border border-stone-100 shadow-sm">
           <p className="text-xs font-bold text-stone-400 uppercase tracking-widest mb-1">
             Số lượng đã duyệt
           </p>
           <p className="text-2xl font-black text-emerald-800">{stats.approved}</p>
         </div>
-        <div className="bg-white backdrop-blur-md p-6 rounded-3xl border border-stone-100 shadow-sm">
+        <div className="bg-white backdrop-blur-md p-6 rounded-xl border border-stone-100 shadow-sm">
           <p className="text-xs font-bold text-stone-400 uppercase tracking-widest mb-1">
             Tỉ lệ hoàn thành
           </p>

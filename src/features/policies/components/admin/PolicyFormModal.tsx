@@ -92,7 +92,7 @@ export const PolicyFormModal = ({
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
-          className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl flex flex-col max-h-[90vh] overflow-hidden"
+          className="bg-white rounded-xl shadow-2xl w-full max-w-2xl flex flex-col max-h-[90vh] overflow-hidden"
         >
           <div className="px-6 py-4 border-b border-stone-100 flex justify-between items-center bg-stone-50/50">
             <h3 className="text-lg font-black text-stone-900">

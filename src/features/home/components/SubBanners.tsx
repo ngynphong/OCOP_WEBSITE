@@ -32,7 +32,7 @@ export const SubBanners = memo(function SubBanners() {
             key={banner.id}
             whileHover={{ y: -8 }}
             transition={{ duration: 0.3 }}
-            className="relative aspect-[16/7] md:aspect-[16/6] rounded-[32px] overflow-hidden shadow-lg shadow-stone-200/50 group"
+            className="relative aspect-[16/7] md:aspect-[16/6] rounded-xl overflow-hidden shadow-lg shadow-stone-200/50 group"
           >
             <Link href={banner.link || '#'}>
               <div className="relative w-full h-full">

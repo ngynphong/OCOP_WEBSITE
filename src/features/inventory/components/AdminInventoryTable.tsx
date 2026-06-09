@@ -12,7 +12,7 @@ interface AdminInventoryTableProps {
 export const AdminInventoryTable = ({ items, isLoading, onAdjust }: AdminInventoryTableProps) => {
   if (isLoading) {
     return (
-      <div className="bg-white rounded-3xl border border-stone-100 overflow-hidden shadow-sm">
+      <div className="bg-white rounded-xl border border-stone-100 overflow-hidden shadow-sm">
         <div className="p-8 flex justify-center items-center h-64">
           <div className="w-10 h-10 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
         </div>
@@ -22,7 +22,7 @@ export const AdminInventoryTable = ({ items, isLoading, onAdjust }: AdminInvento
 
   if (items.length === 0) {
     return (
-      <div className="bg-white rounded-3xl border border-stone-100 p-12 text-center shadow-sm">
+      <div className="bg-white rounded-xl border border-stone-100 p-12 text-center shadow-sm">
         <div className="w-20 h-20 bg-stone-50 rounded-full flex items-center justify-center mx-auto mb-4">
           <FiPackage className="text-stone-300 text-3xl" />
         </div>
@@ -33,7 +33,7 @@ export const AdminInventoryTable = ({ items, isLoading, onAdjust }: AdminInvento
   }
 
   return (
-    <div className="bg-white rounded-3xl border border-stone-100 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>

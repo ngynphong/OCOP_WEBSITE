@@ -21,7 +21,7 @@ const StaffProfilePage = () => {
         </p>
       </div>
 
-      <div className="bg-emerald-900 text-white p-8 rounded-3xl shadow-xl shadow-emerald-900/10 relative overflow-hidden">
+      <div className="bg-emerald-900 text-white p-8 rounded-xl shadow-xl shadow-emerald-900/10 relative overflow-hidden">
         <FiBriefcase className="absolute -right-8 -bottom-8 text-[200px] text-white/5" />
 
         {staffProfile ? (

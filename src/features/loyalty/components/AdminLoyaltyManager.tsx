@@ -46,8 +46,8 @@ const AdminLoyaltyManager = ({ userId }: AdminLoyaltyManagerProps) => {
   if (isLoading) {
     return (
       <div className="space-y-6 animate-pulse">
-        <div className="h-40 bg-stone-100 rounded-3xl" />
-        <div className="h-64 bg-stone-100 rounded-3xl" />
+        <div className="h-40 bg-stone-100 rounded-xl" />
+        <div className="h-64 bg-stone-100 rounded-xl" />
       </div>
     );
   }
@@ -55,9 +55,9 @@ const AdminLoyaltyManager = ({ userId }: AdminLoyaltyManagerProps) => {
   return (
     <div className="space-y-6">
       {/* Current Account Summary */}
-      <div className="bg-linear-to-br from-emerald-800 to-green-900 rounded-3xl p-8 text-white shadow-2xl shadow-emerald-900/20 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="bg-linear-to-br from-emerald-800 to-green-900 rounded-xl p-8 text-white shadow-2xl shadow-emerald-900/20 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-center gap-6">
-          <div className="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/10 shadow-inner">
+          <div className="w-20 h-20 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/10 shadow-inner">
             <FiAward size={40} className="text-emerald-300" />
           </div>
           <div>
@@ -91,7 +91,7 @@ const AdminLoyaltyManager = ({ userId }: AdminLoyaltyManagerProps) => {
       </div>
 
       {/* Adjustment Form */}
-      <div className="bg-white rounded-3xl border border-stone-100 shadow-xl shadow-stone-200/50 p-8">
+      <div className="bg-white rounded-xl border border-stone-100 shadow-xl shadow-stone-200/50 p-8">
         <div className="flex items-center gap-3 mb-8">
           <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-500">
             <FiTrendingUp size={20} />
@@ -103,7 +103,7 @@ const AdminLoyaltyManager = ({ userId }: AdminLoyaltyManagerProps) => {
           <div className="space-y-6">
             <div>
               <label className="block text-sm font-bold text-stone-700 mb-3">Tác vụ</label>
-              <div className="flex gap-2 p-1 bg-stone-50 rounded-2xl w-fit border border-stone-100">
+              <div className="flex gap-2 p-1 bg-stone-50 rounded-xl w-fit border border-stone-100">
                 <button
                   type="button"
                   onClick={() => setIsAdding(true)}
@@ -137,7 +137,7 @@ const AdminLoyaltyManager = ({ userId }: AdminLoyaltyManagerProps) => {
                   value={points || ''}
                   onChange={(e) => setPoints(Number(e.target.value))}
                   placeholder="Nhập số điểm..."
-                  className="w-full h-14 pl-5 pr-12 rounded-2xl bg-stone-50 border-2 border-stone-50 focus:border-emerald-500 focus:bg-white outline-hidden transition-all text-lg font-bold placeholder:text-stone-300"
+                  className="w-full h-14 pl-5 pr-12 rounded-xl bg-stone-50 border-2 border-stone-50 focus:border-emerald-500 focus:bg-white outline-hidden transition-all text-lg font-bold placeholder:text-stone-300"
                 />
                 <span className="absolute right-5 top-1/2 -translate-y-1/2 font-bold text-stone-300 group-focus-within:text-emerald-500 transition-colors">
                   PTS
@@ -154,7 +154,7 @@ const AdminLoyaltyManager = ({ userId }: AdminLoyaltyManagerProps) => {
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Ví dụ: Tặng quà sinh nhật, Bù điểm do lỗi hệ thống..."
                 rows={4}
-                className="w-full p-5 rounded-2xl bg-stone-50 border-2 border-stone-50 focus:border-emerald-500 focus:bg-white outline-hidden transition-all text-sm font-medium placeholder:text-stone-300 resize-none"
+                className="w-full p-5 rounded-xl bg-stone-50 border-2 border-stone-50 focus:border-emerald-500 focus:bg-white outline-hidden transition-all text-sm font-medium placeholder:text-stone-300 resize-none"
               />
             </div>
 
@@ -162,7 +162,7 @@ const AdminLoyaltyManager = ({ userId }: AdminLoyaltyManagerProps) => {
               onClick={handleAdjust}
               isLoading={adjustMutation.isPending}
               variant={isAdding ? 'primary' : 'danger'}
-              className="w-full h-14 rounded-2xl text-base font-bold shadow-xl shadow-emerald-900/10"
+              className="w-full h-14 rounded-xl text-base font-bold shadow-xl shadow-emerald-900/10"
             >
               Xác nhận điều chỉnh {isAdding ? 'cộng' : 'trừ'} điểm
             </Button>
@@ -171,7 +171,7 @@ const AdminLoyaltyManager = ({ userId }: AdminLoyaltyManagerProps) => {
       </div>
 
       {/* Info Notice */}
-      <div className="p-6 rounded-3xl bg-amber-50 border border-amber-100 flex gap-4">
+      <div className="p-6 rounded-xl bg-amber-50 border border-amber-100 flex gap-4">
         <div className="w-10 h-10 shrink-0 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-600 font-bold">
           !
         </div>

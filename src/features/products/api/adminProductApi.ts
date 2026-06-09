@@ -1,5 +1,7 @@
 import { axiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
+import { buildRoute } from '@/lib/routeBuilder';
+
 import {
   AdminProductListParams,
   ProductDetailResponse,
@@ -14,37 +16,37 @@ export const adminProductApi = {
   },
 
   getProduct: (id: number): Promise<ProductDetailResponse> => {
-    return axiosClient.get(`${API_ENDPOINTS.ADMIN.PRODUCTS}/${id}`);
+    return axiosClient.get(buildRoute(API_ENDPOINTS.ADMIN.PRODUCTS, id));
   },
 
   approveProduct: (id: number, note?: string): Promise<AdminApproveProductResponse> => {
-    return axiosClient.post(`${API_ENDPOINTS.ADMIN.PRODUCTS}/${id}/approve`, { note });
+    return axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.PRODUCTS, id, 'approve'), { note });
   },
 
   rejectProduct: (id: number, note: string): Promise<ProductDetailResponse> => {
-    return axiosClient.post(`${API_ENDPOINTS.ADMIN.PRODUCTS}/${id}/reject`, { note });
+    return axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.PRODUCTS, id, 'reject'), { note });
   },
 
   setFeatured: (id: number, featured: boolean): Promise<ProductDetailResponse> => {
-    return axiosClient.patch(`${API_ENDPOINTS.ADMIN.PRODUCTS}/${id}/feature`, null, {
+    return axiosClient.patch(buildRoute(API_ENDPOINTS.ADMIN.PRODUCTS, id, 'feature'), null, {
       params: { featured },
     });
   },
 
   setFeaturedStory: (id: number, featuredStory: boolean): Promise<ProductDetailResponse> => {
-    return axiosClient.patch(`${API_ENDPOINTS.ADMIN.PRODUCTS}/${id}/feature-story`, null, {
+    return axiosClient.patch(buildRoute(API_ENDPOINTS.ADMIN.PRODUCTS, id, 'feature-story'), null, {
       params: { featuredStory },
     });
   },
 
   hideProduct: (id: number): Promise<ProductDetailResponse> => {
-    return axiosClient.patch(`${API_ENDPOINTS.ADMIN.PRODUCTS}/${id}/hide`);
+    return axiosClient.patch(buildRoute(API_ENDPOINTS.ADMIN.PRODUCTS, id, 'hide'));
   },
 
   updateProductStory: (
     id: number,
     data: UpdateProductStoryRequest,
   ): Promise<ProductDetailResponse> => {
-    return axiosClient.patch(`${API_ENDPOINTS.ADMIN.PRODUCTS}/${id}/story`, data);
+    return axiosClient.patch(buildRoute(API_ENDPOINTS.ADMIN.PRODUCTS, id, 'story'), data);
   },
 };

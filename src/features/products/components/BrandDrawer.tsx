@@ -136,7 +136,7 @@ export function BrandDrawer({ isOpen, onClose, brand }: BrandDrawerProps) {
                   <input
                     {...register('name')}
                     placeholder="VD: Mật ong Lâm Đồng"
-                    className={`w-full px-5 py-3.5 rounded-2xl bg-white border ${
+                    className={`w-full px-5 py-3.5 rounded-xl bg-white border ${
                       errors.name
                         ? 'border-red-300 ring-4 ring-red-50'
                         : 'border-stone-100 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500'
@@ -155,7 +155,7 @@ export function BrandDrawer({ isOpen, onClose, brand }: BrandDrawerProps) {
                   <input
                     {...register('slug')}
                     placeholder="mat-ong-lam-dong"
-                    className={`w-full px-5 py-3.5 rounded-2xl bg-white border ${
+                    className={`w-full px-5 py-3.5 rounded-xl bg-white border ${
                       errors.slug
                         ? 'border-red-300 ring-4 ring-red-50'
                         : 'border-stone-100 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500'
@@ -174,7 +174,7 @@ export function BrandDrawer({ isOpen, onClose, brand }: BrandDrawerProps) {
                   <input
                     {...register('logoUrl')}
                     placeholder="https://example.com/logo.png"
-                    className={`w-full px-5 py-3.5 rounded-2xl bg-white border ${
+                    className={`w-full px-5 py-3.5 rounded-xl bg-white border ${
                       errors.logoUrl
                         ? 'border-red-300 ring-4 ring-red-50'
                         : 'border-stone-100 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500'
@@ -195,7 +195,7 @@ export function BrandDrawer({ isOpen, onClose, brand }: BrandDrawerProps) {
                   <input
                     {...register('website')}
                     placeholder="https://matonglamdong.com"
-                    className={`w-full px-5 py-3.5 rounded-2xl bg-white border ${
+                    className={`w-full px-5 py-3.5 rounded-xl bg-white border ${
                       errors.website
                         ? 'border-red-300 ring-4 ring-red-50'
                         : 'border-stone-100 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500'
@@ -217,12 +217,12 @@ export function BrandDrawer({ isOpen, onClose, brand }: BrandDrawerProps) {
                     {...register('description')}
                     rows={4}
                     placeholder="Nhập mô tả về thương hiệu..."
-                    className="w-full px-5 py-3.5 rounded-2xl bg-white border border-stone-100 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 outline-none transition-all font-medium text-stone-600 text-sm shadow-sm"
+                    className="w-full px-5 py-3.5 rounded-xl bg-white border border-stone-100 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 outline-none transition-all font-medium text-stone-600 text-sm shadow-sm"
                   />
                 </div>
 
                 {/* Status Toggle */}
-                <div className="bg-white p-6 rounded-2xl border border-stone-100 flex items-center justify-between shadow-sm">
+                <div className="bg-white p-6 rounded-xl border border-stone-100 flex items-center justify-between shadow-sm">
                   <div>
                     <p className="text-sm font-black text-stone-900">Trạng thái hoạt động</p>
                     <p className="text-[10px] text-stone-400 font-bold">
@@ -240,7 +240,7 @@ export function BrandDrawer({ isOpen, onClose, brand }: BrandDrawerProps) {
                   <Button
                     type="submit"
                     disabled={isCreating || isUpdating}
-                    className="w-full py-4 bg-emerald-600 text-white rounded-2xl font-black text-sm hover:bg-emerald-700 active:scale-95 transition-all shadow-xl shadow-emerald-600/20 flex items-center justify-center gap-2"
+                    className="w-full py-4 bg-emerald-600 text-white rounded-xl font-black text-sm hover:bg-emerald-700 active:scale-95 transition-all shadow-xl shadow-emerald-600/20 flex items-center justify-center gap-2"
                   >
                     {isCreating || isUpdating ? <FiLoader className="animate-spin" /> : <FiCheck />}
                     {brand ? 'Cập nhật Thay đổi' : 'Tạo Thương hiệu'}

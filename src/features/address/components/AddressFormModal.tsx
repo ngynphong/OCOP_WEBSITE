@@ -131,7 +131,7 @@ const AddressFormModal = ({ isOpen, onClose, initialData }: AddressFormModalProp
             </label>
             <input
               {...register('recipient')}
-              className="w-full px-5 py-3 rounded-2xl border text-gray-700 border-stone-100 bg-stone-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-all font-bold text-sm"
+              className="w-full px-5 py-3 rounded-xl border text-gray-700 border-stone-100 bg-stone-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-all font-bold text-sm"
               placeholder="Nhập tên người nhận"
             />
             {errors.recipient && (
@@ -145,7 +145,7 @@ const AddressFormModal = ({ isOpen, onClose, initialData }: AddressFormModalProp
             </label>
             <input
               {...register('phone')}
-              className="w-full px-5 py-3 rounded-2xl border text-gray-700 border-stone-100 bg-stone-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-all font-bold text-sm"
+              className="w-full px-5 py-3 rounded-xl border text-gray-700 border-stone-100 bg-stone-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-all font-bold text-sm"
               placeholder="Nhập số điện thoại"
             />
             {errors.phone && (
@@ -167,7 +167,7 @@ const AddressFormModal = ({ isOpen, onClose, initialData }: AddressFormModalProp
                 setValue('districtId', 0);
                 setValue('wardId', 0);
               }}
-              className="w-full px-4 py-3 rounded-2xl border text-gray-700 border-stone-100 bg-stone-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-all font-bold text-sm appearance-none"
+              className="w-full px-4 py-3 rounded-xl border text-gray-700 border-stone-100 bg-stone-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-all font-bold text-sm appearance-none"
             >
               <option value={0}>Chọn Tỉnh/Thành</option>
               {provinces?.data.map((p) => (
@@ -193,7 +193,7 @@ const AddressFormModal = ({ isOpen, onClose, initialData }: AddressFormModalProp
                 setValue('wardId', 0);
               }}
               disabled={!provinceId}
-              className="w-full px-4 py-3 rounded-2xl border text-gray-700 border-stone-100 bg-stone-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-all font-bold text-sm appearance-none disabled:opacity-50"
+              className="w-full px-4 py-3 rounded-xl border text-gray-700 border-stone-100 bg-stone-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-all font-bold text-sm appearance-none disabled:opacity-50"
             >
               <option value={0}>Chọn Quận/Huyện</option>
               {districts?.data.map((d) => (
@@ -214,7 +214,7 @@ const AddressFormModal = ({ isOpen, onClose, initialData }: AddressFormModalProp
             <select
               {...register('wardId', { valueAsNumber: true })}
               disabled={!districtId}
-              className="w-full px-4 py-3 rounded-2xl border text-gray-700 border-stone-100 bg-stone-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-all font-bold text-sm appearance-none disabled:opacity-50"
+              className="w-full px-4 py-3 rounded-xl border text-gray-700 border-stone-100 bg-stone-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-all font-bold text-sm appearance-none disabled:opacity-50"
             >
               <option value={0}>Chọn Phường/Xã</option>
               {wards?.data.map((w) => (
@@ -236,7 +236,7 @@ const AddressFormModal = ({ isOpen, onClose, initialData }: AddressFormModalProp
           <textarea
             {...register('addressLine')}
             rows={2}
-            className="w-full px-5 py-3 rounded-2xl border text-gray-700 border-stone-100 bg-stone-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-all font-bold text-sm resize-none"
+            className="w-full px-5 py-3 rounded-xl border text-gray-700 border-stone-100 bg-stone-50/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition-all font-bold text-sm resize-none"
             placeholder="Số nhà, tên đường, tòa nhà..."
           />
           {errors.addressLine && (
@@ -259,7 +259,7 @@ const AddressFormModal = ({ isOpen, onClose, initialData }: AddressFormModalProp
                 type="button"
                 onClick={() => setValue('label', type.id)}
                 className={cn(
-                  'flex-1 flex flex-col items-center justify-center py-3 rounded-2xl border-2 transition-all gap-1 cursor-pointer',
+                  'flex-1 flex flex-col items-center justify-center py-3 rounded-xl border-2 transition-all gap-1 cursor-pointer',
                   currentLabel === type.id
                     ? 'border-emerald-600 bg-emerald-50/30 text-emerald-700'
                     : 'border-stone-100 bg-stone-50/30 text-stone-400 hover:border-stone-200',
@@ -274,7 +274,7 @@ const AddressFormModal = ({ isOpen, onClose, initialData }: AddressFormModalProp
           </div>
         </div>
 
-        <label className="flex items-center gap-3 p-4 rounded-2xl bg-stone-50/50 border border-stone-100 cursor-pointer group">
+        <label className="flex items-center gap-3 p-4 rounded-xl bg-stone-50/50 border border-stone-100 cursor-pointer group">
           <input
             type="checkbox"
             {...register('isDefault')}
@@ -288,14 +288,14 @@ const AddressFormModal = ({ isOpen, onClose, initialData }: AddressFormModalProp
         <div className="flex gap-4">
           <button
             onClick={onClose}
-            className="flex-1 px-5 py-3 rounded-2xl border text-gray-700 border-stone-200 font-bold text-sm hover:bg-stone-50 transition-colors"
+            className="flex-1 px-5 py-3 rounded-xl border text-gray-700 border-stone-200 font-bold text-sm hover:bg-stone-50 transition-colors"
             type="button"
           >
             Hủy
           </button>
           <Button
             isLoading={isCreating || isUpdating}
-            className="flex-1 rounded-2xl h-12"
+            className="flex-1 rounded-xl h-12"
             type="submit"
           >
             {initialData ? 'Cập nhật địa chỉ' : 'Lưu địa chỉ'}

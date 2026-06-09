@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 /** Skeleton card giả cho 1 cart item */
 function CartItemSkeleton() {
   return (
-    <div className="bg-white rounded-2xl p-4 sm:p-5 flex items-start sm:items-center gap-3 sm:gap-5 transition-all duration-200 animate-pulse border border-transparent">
+    <div className="bg-white rounded-xl p-4 sm:p-5 flex items-start sm:items-center gap-3 sm:gap-5 transition-all duration-200 animate-pulse border border-transparent">
       {/* Checkbox */}
       <div className="w-4 h-4 rounded bg-stone-200 mt-1 sm:mt-0 shrink-0" />
       {/* Thumbnail */}

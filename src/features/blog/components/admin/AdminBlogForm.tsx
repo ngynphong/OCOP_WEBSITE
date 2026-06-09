@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm, useWatch, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { blogSchema, BlogFormValues, Blog } from '../../types/blogTypes';
 import { useAdminBlogMutations } from '../../hooks/useAdminBlogs';
@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/AppButton';
 import { FiSave, FiArrowLeft, FiImage, FiFileText, FiPlus, FiLoader } from 'react-icons/fi';
 import Image from 'next/image';
 import { slugify } from '@/utils/slugify';
+import { TipTapEditor } from '@/components/ui/TipTapEditor';
 
 interface AdminBlogFormProps {
   initialData?: Blog;
@@ -124,7 +125,7 @@ export const AdminBlogForm = ({ initialData, isEdit }: AdminBlogFormProps) => {
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col lg:flex-row gap-8">
         {/* Main Content Area */}
         <div className="flex-1 space-y-6">
-          <div className="bg-white p-8 rounded-3xl shadow-sm border border-stone-100 space-y-6">
+          <div className="bg-white p-8 rounded-xl shadow-sm border border-stone-100 space-y-6">
             <div className="space-y-2">
               <label className="text-xs font-bold text-stone-500 uppercase tracking-widest">
                 Tiêu đề bài viết
@@ -171,12 +172,12 @@ export const AdminBlogForm = ({ initialData, isEdit }: AdminBlogFormProps) => {
               <label className="flex items-center gap-2 text-xs font-bold text-stone-500 uppercase tracking-widest">
                 <FiFileText /> Nội dung chi tiết
               </label>
-              {/* Tạm thời dùng textarea. Nếu có Tiptap/Quill sẽ thay vào đây */}
-              <textarea
-                {...register('content')}
-                rows={15}
-                placeholder="Viết nội dung tại đây..."
-                className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-50 outline-none text-stone-800 leading-relaxed "
+              <Controller
+                name="content"
+                control={control}
+                render={({ field }) => (
+                  <TipTapEditor value={field.value} onChange={field.onChange} />
+                )}
               />
               {errors.content && (
                 <p className="text-xs text-red-500 font-bold">{errors.content.message}</p>
@@ -187,7 +188,7 @@ export const AdminBlogForm = ({ initialData, isEdit }: AdminBlogFormProps) => {
 
         {/* Sidebar */}
         <div className="w-full lg:w-80 space-y-6">
-          <div className="bg-white p-6 rounded-3xl shadow-sm border border-stone-100 space-y-6">
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-stone-100 space-y-6">
             <h3 className="font-black text-stone-900 border-b border-stone-100 pb-3">Xuất bản</h3>
 
             <div className="space-y-3">
@@ -213,7 +214,7 @@ export const AdminBlogForm = ({ initialData, isEdit }: AdminBlogFormProps) => {
             </Button>
           </div>
 
-          <div className="bg-white p-6 rounded-3xl shadow-sm border border-stone-100 space-y-4">
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-stone-100 space-y-4">
             <h3 className="font-black text-stone-900 border-b border-stone-100 pb-3 flex items-center gap-2">
               <FiImage /> Ảnh bìa
             </h3>
@@ -240,7 +241,7 @@ export const AdminBlogForm = ({ initialData, isEdit }: AdminBlogFormProps) => {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-3xl shadow-sm border border-stone-100 space-y-4">
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-stone-100 space-y-4">
             <h3 className="font-black text-stone-900 border-b border-stone-100 pb-3">Thẻ (Tags)</h3>
 
             <div className="flex gap-2">

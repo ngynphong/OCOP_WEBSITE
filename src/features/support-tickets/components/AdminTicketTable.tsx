@@ -20,7 +20,7 @@ export const AdminTicketTable = ({ tickets, isLoading }: AdminTicketTableProps) 
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-stone-100 shadow-sm">
+      <div className="flex flex-col items-center justify-center py-20 bg-white rounded-xl border border-stone-100 shadow-sm">
         <Loader2 className="w-10 h-10 text-stone-300 animate-spin" />
         <p className="text-stone-400 text-xs mt-4 font-black uppercase tracking-widest">
           Đang tải dữ liệu hệ thống...
@@ -30,7 +30,7 @@ export const AdminTicketTable = ({ tickets, isLoading }: AdminTicketTableProps) 
   }
 
   return (
-    <div className="bg-white rounded-3xl border border-stone-100 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>

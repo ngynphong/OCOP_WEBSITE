@@ -65,7 +65,7 @@ export const CreateTicketModal = ({ isOpen, onClose }: CreateTicketModalProps) =
                   setSelectedCategory(opt.value);
                 }}
                 className={cn(
-                  'flex flex-col items-center gap-2 p-4 rounded-2xl border transition-all text-center group cursor-pointer',
+                  'flex flex-col items-center gap-2 p-4 rounded-xl border transition-all text-center group cursor-pointer',
                   selectedCategory === opt.value
                     ? 'bg-emerald-50 border-emerald-500 shadow-sm'
                     : 'bg-white border-stone-100 hover:border-stone-300',
@@ -138,7 +138,7 @@ export const CreateTicketModal = ({ isOpen, onClose }: CreateTicketModalProps) =
               <input
                 {...register('subject')}
                 placeholder="Nhập tiêu đề ngắn gọn..."
-                className="w-full px-5 py-4 bg-stone-50 border text-gray-700 border-stone-100 rounded-2xl text-sm font-bold placeholder:text-stone-300 focus:bg-white focus:border-emerald-500 outline-none transition-all"
+                className="w-full px-5 py-4 bg-stone-50 border text-gray-700 border-stone-100 rounded-xl text-sm font-bold placeholder:text-stone-300 focus:bg-white focus:border-emerald-500 outline-none transition-all"
               />
               {errors.subject && (
                 <p className="text-red-500 text-[10px] italic ml-1">{errors.subject.message}</p>
@@ -155,7 +155,7 @@ export const CreateTicketModal = ({ isOpen, onClose }: CreateTicketModalProps) =
                   setValueAs: (v) => (v === '' || isNaN(v) ? undefined : Number(v)),
                 })}
                 placeholder="Ví dụ: 123456"
-                className="w-full px-5 py-4 bg-stone-50 text-gray-700 border border-stone-100 rounded-2xl text-sm font-bold placeholder:text-stone-300 focus:bg-white focus:border-emerald-500 outline-none transition-all"
+                className="w-full px-5 py-4 bg-stone-50 text-gray-700 border border-stone-100 rounded-xl text-sm font-bold placeholder:text-stone-300 focus:bg-white focus:border-emerald-500 outline-none transition-all"
               />
             </div>
           </div>
@@ -170,7 +170,7 @@ export const CreateTicketModal = ({ isOpen, onClose }: CreateTicketModalProps) =
             {...register('description')}
             rows={5}
             placeholder="Mô tả cụ thể vấn đề hoặc câu hỏi của bạn để chúng tôi hỗ trợ tốt nhất..."
-            className="w-full px-5 py-4 bg-stone-50 border text-gray-700 border-stone-100 rounded-2xl text-sm font-medium placeholder:text-stone-300 focus:bg-white focus:border-emerald-500 outline-none transition-all resize-none leading-relaxed"
+            className="w-full px-5 py-4 bg-stone-50 border text-gray-700 border-stone-100 rounded-xl text-sm font-medium placeholder:text-stone-300 focus:bg-white focus:border-emerald-500 outline-none transition-all resize-none leading-relaxed"
           />
           {errors.description && (
             <p className="text-red-500 text-[10px] italic ml-1">{errors.description.message}</p>
@@ -182,7 +182,7 @@ export const CreateTicketModal = ({ isOpen, onClose }: CreateTicketModalProps) =
           <Button
             type="button"
             variant="outline"
-            className="flex-1 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest"
+            className="flex-1 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest"
             onClick={onClose}
           >
             Hủy bỏ
@@ -190,7 +190,7 @@ export const CreateTicketModal = ({ isOpen, onClose }: CreateTicketModalProps) =
           <Button
             type="submit"
             disabled={isPending}
-            className="flex-2 py-4 rounded-2xl bg-green-700 hover:bg-green-800 text-white font-black text-[10px] uppercase tracking-widest shadow-xl shadow-emerald-500/20 flex items-center justify-center gap-2"
+            className="flex-2 py-4 rounded-xl bg-green-700 hover:bg-green-800 text-white font-black text-[10px] uppercase tracking-widest shadow-xl shadow-emerald-500/20 flex items-center justify-center gap-2"
           >
             {isPending ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
             Gửi yêu cầu ngay

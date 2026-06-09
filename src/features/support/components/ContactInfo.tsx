@@ -3,7 +3,7 @@ import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 
 export const ContactInfo = () => {
   return (
-    <div className="bg-green-900 text-white p-8 rounded-2xl shadow-xl h-full flex flex-col justify-between">
+    <div className="bg-green-900 text-white p-8 rounded-xl shadow-xl h-full flex flex-col justify-between">
       <div>
         <h3 className="text-2xl font-bold mb-2">Thông tin liên hệ</h3>
         <p className="text-green-100 mb-8 opacity-90">

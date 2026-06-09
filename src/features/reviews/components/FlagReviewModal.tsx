@@ -45,7 +45,7 @@ export const FlagReviewModal = ({ isOpen, onClose, reviewId }: FlagReviewModalPr
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Báo cáo đánh giá vi phạm">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div className="p-4 rounded-2xl bg-red-50 border border-red-100 flex gap-3">
+        <div className="p-4 rounded-xl bg-red-50 border border-red-100 flex gap-3">
           <AlertTriangle size={20} className="text-red-600 shrink-0" />
           <p className="text-sm text-stone-700 font-medium">
             Phản hồi của bạn giúp chúng tôi cải thiện chất lượng nội dung trên OCOP. Chúng tôi sẽ xử
@@ -68,7 +68,7 @@ export const FlagReviewModal = ({ isOpen, onClose, reviewId }: FlagReviewModalPr
               <label
                 key={reason.id}
                 className={cn(
-                  'flex items-center gap-3 p-4 rounded-2xl border cursor-pointer transition-all hover:bg-stone-50',
+                  'flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all hover:bg-stone-50',
                   'border-stone-100',
                 )}
               >
@@ -95,7 +95,7 @@ export const FlagReviewModal = ({ isOpen, onClose, reviewId }: FlagReviewModalPr
             {...register('detail')}
             rows={3}
             placeholder="Mô tả cụ thể hơn để chúng tôi dễ dàng xử lý..."
-            className="w-full px-5 py-4 bg-stone-50 border border-stone-200 rounded-2xl text-stone-900 placeholder:text-stone-300 focus:ring-2 focus:ring-green-500/20 focus:border-green-600 outline-none transition-all font-medium text-sm"
+            className="w-full px-5 py-4 bg-stone-50 border border-stone-200 rounded-xl text-stone-900 placeholder:text-stone-300 focus:ring-2 focus:ring-green-500/20 focus:border-green-600 outline-none transition-all font-medium text-sm"
           />
           {errors.detail && (
             <p className="text-xs text-red-500 font-bold">{errors.detail.message}</p>
@@ -107,14 +107,14 @@ export const FlagReviewModal = ({ isOpen, onClose, reviewId }: FlagReviewModalPr
             type="button"
             onClick={onClose}
             variant="outline"
-            className="flex-1 py-4 rounded-2xl border border-stone-200 text-stone-600 font-bold hover:bg-stone-50 transition-all uppercase tracking-widest text-xs"
+            className="flex-1 py-4 rounded-xl border border-stone-200 text-stone-600 font-bold hover:bg-stone-50 transition-all uppercase tracking-widest text-xs"
           >
             Hủy bỏ
           </Button>
           <Button
             type="submit"
             disabled={isFlagging}
-            className="flex-2 py-4 rounded-2xl bg-stone-900 text-white font-black transition-all shadow-xl shadow-stone-200 flex items-center justify-center gap-2 uppercase tracking-widest text-xs"
+            className="flex-2 py-4 rounded-xl bg-stone-900 text-white font-black transition-all shadow-xl shadow-stone-200 flex items-center justify-center gap-2 uppercase tracking-widest text-xs"
           >
             {isFlagging ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send size={16} />}
             {isFlagging ? 'Đang gửi...' : 'Gửi báo cáo ngay'}

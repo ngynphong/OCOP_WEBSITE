@@ -60,7 +60,7 @@ export const AdminKPIStats = ({ kpiStats }: AdminKPIStatsProps) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: idx * 0.1 }}
-          className="bg-white p-6 rounded-3xl shadow-sm border border-stone-100 relative group overflow-hidden"
+          className="bg-white p-6 rounded-xl shadow-sm border border-stone-100 relative group overflow-hidden"
         >
           <div
             className={`absolute top-0 right-0 w-24 h-24 ${stat.bg} rounded-full -mr-8 -mt-8 opacity-50 group-hover:scale-110 transition-transform duration-500`}

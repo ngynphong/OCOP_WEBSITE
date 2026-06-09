@@ -12,7 +12,7 @@ export default function ForbiddenPage() {
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
-        className="bg-white rounded-3xl shadow-xl shadow-black/5 border border-gray-100 max-w-lg w-full p-10 text-center"
+        className="bg-white rounded-xl shadow-xl shadow-black/5 border border-gray-100 max-w-lg w-full p-10 text-center"
       >
         {/* Icon */}
         <motion.div

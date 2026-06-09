@@ -43,7 +43,7 @@ export function B2BShipmentProgress({ shipment, isB2B }: B2BShipmentProgressProp
     <div className="bg-white rounded-4xl p-8 border border-stone-100 shadow-sm overflow-hidden">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center shadow-inner">
+          <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center shadow-inner">
             <Truck size={24} className="text-green-600" />
           </div>
           <div>
@@ -56,7 +56,7 @@ export function B2BShipmentProgress({ shipment, isB2B }: B2BShipmentProgressProp
             </div>
           </div>
         </div>
-        <div className="bg-stone-50 p-4 rounded-2xl border border-stone-100 flex items-center gap-4">
+        <div className="bg-stone-50 p-4 rounded-xl border border-stone-100 flex items-center gap-4">
           <div className="text-right border-r border-stone-200 pr-4">
             <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest block mb-1">
               Mã vận đơn
@@ -82,7 +82,7 @@ export function B2BShipmentProgress({ shipment, isB2B }: B2BShipmentProgressProp
                 )}
                 <div className="flex flex-col items-center shrink-0 w-12 mr-4">
                   <div
-                    className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 border-2 ${
+                    className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 border-2 ${
                       isLast
                         ? 'bg-green-600 border-green-600 text-white shadow-lg shadow-green-200 scale-110'
                         : 'bg-white border-stone-200 text-stone-400'
@@ -118,7 +118,7 @@ export function B2BShipmentProgress({ shipment, isB2B }: B2BShipmentProgressProp
       </div>
 
       {isB2B && (
-        <div className="mt-6 pt-6 border-t border-stone-100 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 bg-stone-50/50 p-6 rounded-3xl border border-stone-100">
+        <div className="mt-6 pt-6 border-t border-stone-100 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 bg-stone-50/50 p-6 rounded-xl border border-stone-100">
           <div>
             <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest block mb-1">
               Nhà xe / Carrier

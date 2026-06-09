@@ -46,7 +46,7 @@ export default function SellerQuotationPage() {
             Xử lý các yêu cầu số lượng lớn từ khách hàng đối tác
           </p>
         </div>
-        <div className="flex items-center gap-4 bg-amber-50 px-4 py-2 rounded-2xl border border-amber-100">
+        <div className="flex items-center gap-4 bg-amber-50 px-4 py-2 rounded-xl border border-amber-100">
           <Clock className="text-amber-600" size={20} />
           <div>
             <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest leading-none">
@@ -60,7 +60,7 @@ export default function SellerQuotationPage() {
       </div>
 
       {quotations.length === 0 ? (
-        <div className="bg-white rounded-3xl p-12 border border-dashed border-stone-200 flex flex-col items-center text-center">
+        <div className="bg-white rounded-xl p-12 border border-dashed border-stone-200 flex flex-col items-center text-center">
           <div className="w-20 h-20 bg-stone-50 rounded-full flex items-center justify-center text-stone-300 mb-4">
             <Inbox size={40} />
           </div>
@@ -101,7 +101,7 @@ function SellerQuotationCard({
   return (
     <div
       className={cn(
-        'bg-white rounded-2xl border transition-all hover:border-green-200 hover:shadow-lg overflow-hidden',
+        'bg-white rounded-xl border transition-all hover:border-green-200 hover:shadow-lg overflow-hidden',
         quotation.status === 'PENDING'
           ? 'border-amber-200 shadow-sm shadow-amber-50'
           : 'border-stone-100',

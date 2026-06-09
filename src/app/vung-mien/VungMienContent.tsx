@@ -84,7 +84,7 @@ export default function VungMienContent() {
       {/* Header & Breadcrumb */}
       <div className="flex flex-col gap-4">
         <Breadcrumb items={[{ label: 'Trang chủ', href: '/' }, { label: 'Đặc sản vùng miền' }]} />
-        <div className="bg-gradient-to-r from-green-800 to-emerald-600 rounded-2xl p-8 text-white shadow-lg overflow-hidden relative">
+        <div className="bg-gradient-to-r from-green-800 to-emerald-600 rounded-xl p-8 text-white shadow-lg overflow-hidden relative">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-y-1/2 translate-x-1/3"></div>
           <div className="absolute bottom-0 left-0 w-40 h-40 bg-green-400 opacity-10 rounded-full translate-y-1/3 -translate-x-1/4"></div>
           <div className="relative z-10 max-w-2xl">
@@ -102,7 +102,7 @@ export default function VungMienContent() {
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Column: Map */}
-        <div className="lg:col-span-5 bg-white rounded-2xl shadow-sm border border-stone-100 p-6 flex flex-col items-center">
+        <div className="lg:col-span-5 bg-white rounded-xl shadow-sm border border-stone-100 p-6 flex flex-col items-center">
           <div className="w-full flex items-center gap-2 mb-6 border-b border-stone-100 pb-4">
             <MapPin className="text-green-600 w-6 h-6" />
             <h2 className="text-lg font-bold text-stone-800">Bản Đồ Đặc Sản</h2>
@@ -122,7 +122,7 @@ export default function VungMienContent() {
 
         {/* Right Column: Products */}
         <div className="lg:col-span-7 flex flex-col gap-6">
-          <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-6">
+          <div className="bg-white rounded-xl shadow-sm border border-stone-100 p-6">
             <div className="flex items-center justify-between mb-6 border-b border-stone-100 pb-4">
               <div className="flex items-center gap-3">
                 <Package className="text-emerald-600 w-6 h-6" />

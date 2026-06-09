@@ -22,7 +22,7 @@ export const RejectOrderModal: React.FC<RejectOrderModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-3xl p-6 w-full max-w-lg shadow-2xl relative">
+      <div className="bg-white rounded-xl p-6 w-full max-w-lg shadow-2xl relative">
         <h3 className="text-xl font-bold text-stone-900 mb-2 mt-2">Từ chối đơn hàng</h3>
         <p className="text-sm text-stone-500 mb-6">
           Xin hãy nhập lý do từ chối để được ghi nhận vào hệ thống gửi tới khách hàng.
@@ -95,7 +95,7 @@ export const ConfirmOrderModal: React.FC<ConfirmOrderModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-3xl p-6 w-full max-w-lg shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-xl p-6 w-full max-w-lg shadow-2xl relative max-h-[90vh] overflow-y-auto">
         <h3 className="text-xl font-bold text-stone-900 mb-2 mt-2">
           Duyệt Đơn & Xác nhận Giao Hàng
         </h3>
@@ -214,7 +214,7 @@ export const UpdateTrackingModal: React.FC<UpdateTrackingModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-3xl p-6 w-full max-w-lg shadow-2xl relative">
+      <div className="bg-white rounded-xl p-6 w-full max-w-lg shadow-2xl relative">
         <h3 className="text-xl font-bold text-stone-900 mb-2 mt-2">Cập nhật Lộ trình Vận đơn</h3>
 
         <div className="space-y-4 mt-6">
@@ -296,7 +296,7 @@ export const CreateTrackingModal: React.FC<CreateTrackingModalProps> = ({
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl relative">
+      <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-2xl relative">
         <h3 className="text-xl font-bold text-stone-900 mb-2 mt-2">Thêm mã vận đơn</h3>
         <p className="text-sm text-stone-500 mb-6">Mã vận đơn dùng để kết nối lộ trình</p>
         <input

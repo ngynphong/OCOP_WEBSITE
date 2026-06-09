@@ -21,7 +21,7 @@ const formatCurrency = (amount: number) => {
 
 export const AdminRevenueChart = ({ revenueChart }: AdminRevenueChartProps) => {
   return (
-    <div className="col-span-12 lg:col-span-8 bg-white p-8 rounded-3xl shadow-sm border border-stone-100 overflow-hidden relative group">
+    <div className="col-span-12 lg:col-span-8 bg-white p-8 rounded-xl shadow-sm border border-stone-100 overflow-hidden relative group">
       <div className="flex justify-between items-center mb-8">
         <h4 className="text-lg font-black text-stone-900 tracking-tight">
           Xu hướng Doanh thu & Tăng trưởng

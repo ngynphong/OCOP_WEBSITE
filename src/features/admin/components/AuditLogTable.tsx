@@ -27,7 +27,7 @@ export const AuditLogTable = () => {
       <div className="space-y-4 animate-pulse">
         <div className="h-10 w-48 bg-stone-100 rounded-xl mb-8" />
         {Array.from({ length: 8 }).map((_, i) => (
-          <div key={i} className="h-20 bg-stone-50 rounded-3xl" />
+          <div key={i} className="h-20 bg-stone-50 rounded-xl" />
         ))}
       </div>
     );
@@ -35,7 +35,7 @@ export const AuditLogTable = () => {
 
   if (isError) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 bg-red-50 rounded-[40px] border border-red-100">
+      <div className="flex flex-col items-center justify-center py-20 bg-red-50 rounded-xl border border-red-100">
         <p className="text-red-500 font-black uppercase tracking-widest text-sm">
           Lỗi tải dữ liệu nhật ký
         </p>
@@ -94,7 +94,7 @@ export const AuditLogTable = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-[40px] border border-stone-100 overflow-hidden shadow-sm shadow-stone-200/50">
+      <div className="bg-white rounded-xl border border-stone-100 overflow-hidden shadow-sm shadow-stone-200/50">
         <div className="overflow-x-auto custom-scrollbar">
           <table className="w-full text-sm">
             <thead>
@@ -228,7 +228,7 @@ export const AuditLogTable = () => {
       {/* Log Detail Modal */}
       {selectedLog && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-300">
-          <div className="bg-white rounded-[40px] shadow-2xl w-full max-w-4xl max-h-[85vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-300">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[85vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-300">
             <div className="p-8 border-b border-stone-100 flex justify-between items-center bg-stone-50/50">
               <div>
                 <h3 className="text-xl font-black text-stone-800 tracking-tight">
@@ -250,13 +250,13 @@ export const AuditLogTable = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Before Value */}
                 <div className="space-y-4">
-                  <div className="flex items-center gap-2 px-4 py-2 bg-stone-100 rounded-2xl w-fit">
+                  <div className="flex items-center gap-2 px-4 py-2 bg-stone-100 rounded-xl w-fit">
                     <div className="w-2 h-2 rounded-full bg-stone-400" />
                     <span className="text-[10px] font-black uppercase tracking-widest text-stone-500">
                       Trước thay đổi
                     </span>
                   </div>
-                  <div className="bg-stone-900 rounded-3xl p-6 overflow-x-auto">
+                  <div className="bg-stone-900 rounded-xl p-6 overflow-x-auto">
                     <pre className="text-emerald-400 text-xs font-mono">
                       {JSON.stringify(selectedLog.beforeValue, null, 2)}
                     </pre>
@@ -265,13 +265,13 @@ export const AuditLogTable = () => {
 
                 {/* After Value */}
                 <div className="space-y-4">
-                  <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 rounded-2xl w-fit">
+                  <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 rounded-xl w-fit">
                     <div className="w-2 h-2 rounded-full bg-emerald-500" />
                     <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600">
                       Sau thay đổi
                     </span>
                   </div>
-                  <div className="bg-stone-900 rounded-3xl p-6 overflow-x-auto border border-emerald-500/20">
+                  <div className="bg-stone-900 rounded-xl p-6 overflow-x-auto border border-emerald-500/20">
                     <pre className="text-emerald-300 text-xs font-mono">
                       {JSON.stringify(selectedLog.afterValue, null, 2)}
                     </pre>
@@ -279,7 +279,7 @@ export const AuditLogTable = () => {
                 </div>
               </div>
 
-              <div className="mt-8 p-6 bg-stone-50 rounded-3xl border border-stone-100 grid grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="mt-8 p-6 bg-stone-50 rounded-xl border border-stone-100 grid grid-cols-2 lg:grid-cols-4 gap-6">
                 <div>
                   <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-1">
                     Thực hiện bởi
@@ -314,7 +314,7 @@ export const AuditLogTable = () => {
             <div className="p-8 border-t border-stone-100 bg-stone-50/50 flex justify-end">
               <button
                 onClick={() => setSelectedLog(null)}
-                className="px-8 py-3 bg-stone-900 text-white rounded-2xl text-xs font-bold hover:bg-stone-800 transition-all shadow-xl shadow-stone-900/10"
+                className="px-8 py-3 bg-stone-900 text-white rounded-xl text-xs font-bold hover:bg-stone-800 transition-all shadow-xl shadow-stone-900/10"
               >
                 Đóng chi tiết
               </button>

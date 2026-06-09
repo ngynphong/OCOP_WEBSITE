@@ -76,7 +76,7 @@ export const SupportCategories = () => {
             <Link
               key={category.id}
               href={`#`}
-              className="group flex flex-col bg-white p-6 rounded-2xl border border-stone-200 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1"
+              className="group flex flex-col bg-white p-6 rounded-xl border border-stone-200 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1"
             >
               <div
                 className={cn(

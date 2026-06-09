@@ -166,7 +166,7 @@ export const HeroSection = memo(function HeroSection() {
         {/* Right Carousel Column */}
         <div className="w-full lg:w-5/12 flex justify-center lg:justify-end items-center mt-12 lg:mt-0 relative h-[520px]">
           {!isMounted || isProductsLoading ? (
-            <div className="w-full max-w-[400px] h-[480px] bg-white/5 backdrop-blur-xl border border-white/10 rounded-[32px] flex items-center justify-center">
+            <div className="w-full max-w-[400px] h-[480px] bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl flex items-center justify-center">
               <Loader2 className="w-10 h-10 text-[#D4AF37] animate-spin" />
             </div>
           ) : (
@@ -181,10 +181,10 @@ export const HeroSection = memo(function HeroSection() {
                         animate={{ opacity: 1, x: 0, scale: 1 }}
                         exit={{ opacity: 0, x: -40, scale: 0.95 }}
                         transition={{ duration: 0.6, ease: 'easeOut' }}
-                        className="absolute right-0 top-0 w-full max-w-[400px] md:max-w-[440px] bg-white/5 backdrop-blur-xl border border-white/10 rounded-[32px] p-6 shadow-2xl origin-right z-20"
+                        className="absolute right-0 top-0 w-full max-w-[400px] md:max-w-[440px] bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6 shadow-2xl origin-right z-20"
                       >
                         <div
-                          className="relative rounded-2xl bg-[#FCF8F2] h-[240px] w-full flex items-center justify-center p-6 overflow-hidden shadow-inner group cursor-pointer"
+                          className="relative rounded-xl bg-[#FCF8F2] h-[240px] w-full flex items-center justify-center p-6 overflow-hidden shadow-inner group cursor-pointer"
                           onClick={() => router.push(`/san-pham/${item.slug}`)}
                         >
                           {/* OCOP Badge */}

@@ -72,17 +72,20 @@ export const ProductCard = memo(function ProductCard({
   }, [oldPrice, isMounted]);
 
   return (
-    <Link href={`/san-pham/${slug}`} className="block group">
+    <Link
+      href={`/san-pham/${slug}`}
+      className="block group focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-500/30 rounded-xl"
+    >
       <div className="w-full flex flex-col justify-start items-start gap-4 cursor-pointer">
         {/* Product Image Wrapper */}
-        <div className="w-full aspect-4/5 md:aspect-5/6 relative bg-stone-100 rounded-[24px] md:rounded-[40px] overflow-hidden shadow-sm group-hover:shadow-xl transition-all duration-500 border border-stone-100">
+        <div className="w-full aspect-4/5 md:aspect-5/6 relative bg-stone-100 rounded-xl overflow-hidden shadow-sm group-hover:shadow-2xl group-hover:-translate-y-1 transition-all duration-500 border border-stone-100">
           <Image
             src={image || '/images/fresh-green-produce.jpg'}
             alt={name}
             fill
             sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
             className={cn(
-              'object-cover transition-transform duration-700 group-hover:scale-110',
+              'object-cover transition-transform duration-700 group-hover:scale-105',
               inStock === false && 'grayscale opacity-70',
             )}
           />
@@ -185,7 +188,7 @@ const WishlistButton = memo(({ id, isWishlisted }: { id: number; isWishlisted: b
       disabled={isLoading}
       onClick={handleWishlistClick}
       className={cn(
-        'p-2 rounded-full backdrop-blur-md transition-all duration-300 active:scale-90 cursor-pointer',
+        'p-2 rounded-full backdrop-blur-md transition-all duration-300 active:scale-90 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500',
         isWishlisted ? 'bg-red-50 text-red-500' : 'bg-black/10 text-white hover:bg-black/20',
         isLoading && 'opacity-50 cursor-not-allowed',
       )}

@@ -30,7 +30,7 @@ const PricingSection = () => {
                   value={formatVNDInput(value)}
                   onChange={(e) => onChange(parseVNDInput(e.target.value))}
                   placeholder="0"
-                  className={`w-full pl-4 pr-12 py-3 bg-stone-50 border ${errors.priceMonthly ? 'border-red-300 ring-4 ring-red-50' : 'border-stone-100 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500'} rounded-2xl text-sm font-bold text-stone-800 transition-all outline-none`}
+                  className={`w-full pl-4 pr-12 py-3 bg-stone-50 border ${errors.priceMonthly ? 'border-red-300 ring-4 ring-red-50' : 'border-stone-100 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500'} rounded-xl text-sm font-bold text-stone-800 transition-all outline-none`}
                 />
               )}
             />
@@ -58,7 +58,7 @@ const PricingSection = () => {
                   value={formatVNDInput(value)}
                   onChange={(e) => onChange(parseVNDInput(e.target.value))}
                   placeholder="0"
-                  className={`w-full pl-4 pr-12 py-3 bg-stone-50 border ${errors.priceYearly ? 'border-red-300 ring-4 ring-red-50' : 'border-stone-100 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500'} rounded-2xl text-sm font-bold text-stone-800 transition-all outline-none`}
+                  className={`w-full pl-4 pr-12 py-3 bg-stone-50 border ${errors.priceYearly ? 'border-red-300 ring-4 ring-red-50' : 'border-stone-100 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500'} rounded-xl text-sm font-bold text-stone-800 transition-all outline-none`}
                 />
               )}
             />

@@ -1,5 +1,7 @@
 import { axiosClient, publicAxiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
+import { buildRoute } from '@/lib/routeBuilder';
+
 import {
   PublicBrandListResponse,
   PublicBrandDetailResponse,
@@ -25,7 +27,7 @@ export const brandApi = {
    * Get brand details by slug for the public storefront.
    */
   getBrandBySlug: (slug: string): Promise<PublicBrandDetailResponse> => {
-    return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.BRANDS}/${slug}`);
+    return publicAxiosClient.get(buildRoute(API_ENDPOINTS.PUBLIC.BRANDS, slug));
   },
 
   // ─── Admin APIs ────────────────────────────────────────────────────────────
@@ -44,6 +46,6 @@ export const brandApi = {
     id: number | string,
     data: UpdateBrandRequest,
   ): Promise<PublicBrandDetailResponse> => {
-    return axiosClient.put(`${API_ENDPOINTS.ADMIN.BRANDS}/${id}`, data);
+    return axiosClient.put(buildRoute(API_ENDPOINTS.ADMIN.BRANDS, id), data);
   },
 };

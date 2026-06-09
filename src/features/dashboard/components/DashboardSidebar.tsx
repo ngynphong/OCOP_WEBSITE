@@ -338,7 +338,7 @@ const DashboardSidebar = () => {
   return (
     <div className="flex flex-col gap-6">
       {/* User Info Card */}
-      <div className="bg-white rounded-3xl p-6 border border-stone-100 shadow-xl shadow-stone-200/50 flex flex-col items-center">
+      <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-xl shadow-stone-200/50 flex flex-col items-center">
         <div className="relative w-20 h-20 rounded-full bg-linear-to-br from-green-500 to-emerald-600 border-4 border-white shadow-lg overflow-hidden flex items-center justify-center text-white text-2xl font-bold">
           {profile?.avatarUrl ? (
             <Image src={profile.avatarUrl} alt="Avatar" fill className="object-cover" />
@@ -358,7 +358,7 @@ const DashboardSidebar = () => {
       </div>
 
       {/* Navigation Menu */}
-      <nav className="bg-white rounded-3xl p-3 border border-stone-100 shadow-xl shadow-stone-200/50 flex flex-col gap-1">
+      <nav className="bg-white rounded-xl p-3 border border-stone-100 shadow-xl shadow-stone-200/50 flex flex-col gap-1">
         {/* Common Items */}
         {filteredCommon.map((item) => {
           const isActive = pathname === item.href;
@@ -368,7 +368,7 @@ const DashboardSidebar = () => {
               key={item.id}
               href={item.href}
               className={cn(
-                'flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-300 group',
+                'flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-300 group',
                 isActive
                   ? 'bg-green-600 text-white shadow-lg shadow-green-500/25'
                   : 'text-stone-600 hover:bg-stone-50',
@@ -409,7 +409,7 @@ const DashboardSidebar = () => {
               <button
                 onClick={() => toggleGroup(group.id)}
                 className={cn(
-                  'flex items-center justify-between px-4 py-3.5 rounded-2xl transition-all duration-300 group cursor-pointer',
+                  'flex items-center justify-between px-4 py-3.5 rounded-xl transition-all duration-300 group cursor-pointer',
                   isOpen ? 'bg-stone-50 text-green-700' : 'text-stone-600 hover:bg-stone-50',
                   hasActiveChild && !isOpen && 'text-green-600 font-bold',
                 )}

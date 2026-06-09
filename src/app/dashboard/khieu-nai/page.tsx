@@ -29,7 +29,7 @@ export default function UserComplaintsPage() {
       <MyComplaintsTable complaints={complaints} isLoading={isLoading} />
 
       {pagination && pagination.totalPages > 0 && (
-        <div className="mt-8 bg-white p-4 rounded-3xl border border-stone-100 shadow-sm">
+        <div className="mt-8 bg-white p-4 rounded-xl border border-stone-100 shadow-sm">
           <Pagination
             currentPage={page}
             totalPages={pagination.totalPages}

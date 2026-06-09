@@ -99,7 +99,7 @@ export default function SellerProductsPage() {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab('PRODUCTS')}
-            className={`px-6 py-2 rounded-2xl text-xs font-black uppercase tracking-widest border transition-all cursor-pointer ${
+            className={`px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest border transition-all cursor-pointer ${
               activeTab === 'PRODUCTS'
                 ? 'bg-green-600 text-white border-green-600 shadow-lg shadow-green-600/20'
                 : 'bg-white text-stone-500 border-stone-200 hover:border-stone-400'
@@ -109,7 +109,7 @@ export default function SellerProductsPage() {
           </button>
           <button
             onClick={() => setActiveTab('FLASH_SALE')}
-            className={`px-6 py-2 rounded-2xl text-xs font-black uppercase tracking-widest border transition-all flex items-center gap-2 cursor-pointer ${
+            className={`px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest border transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'FLASH_SALE'
                 ? 'bg-red-600 text-white border-red-600 shadow-lg shadow-red-600/20'
                 : 'bg-white text-stone-500 border-stone-200 hover:border-red-400 hover:text-red-500'
@@ -125,7 +125,7 @@ export default function SellerProductsPage() {
             {selectedProducts.length > 0 && (
               <button
                 onClick={() => setIsFlashSaleDrawerOpen(true)}
-                className="flex items-center gap-2 px-6 py-2 bg-red-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-red-600/20 hover:bg-red-700 transition-all animate-in slide-in-from-right-4 cursor-pointer"
+                className="flex items-center gap-2 px-6 py-2 bg-red-600 text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-red-600/20 hover:bg-red-700 transition-all animate-in slide-in-from-right-4 cursor-pointer"
               >
                 <FiZap className="fill-current" />
                 Flash Sale ({selectedProducts.length})
@@ -159,14 +159,14 @@ export default function SellerProductsPage() {
       {isPending && (
         <div className="space-y-3 animate-pulse">
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="h-20 bg-stone-100 rounded-2xl" />
+            <div key={i} className="h-20 bg-stone-100 rounded-xl" />
           ))}
         </div>
       )}
 
       {/* Error */}
       {isError && (
-        <div className="flex items-center justify-center h-40 bg-red-50 rounded-2xl border border-red-100">
+        <div className="flex items-center justify-center h-40 bg-red-50 rounded-xl border border-red-100">
           <p className="text-red-500 text-sm font-semibold">Không tải được danh sách sản phẩm</p>
         </div>
       )}
@@ -177,7 +177,7 @@ export default function SellerProductsPage() {
       ) : (
         <div className="space-y-3">
           {products.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-48 bg-stone-50 rounded-2xl border border-dashed border-stone-200">
+            <div className="flex flex-col items-center justify-center h-48 bg-stone-50 rounded-xl border border-dashed border-stone-200">
               <p className="text-stone-400 text-sm font-semibold">Chưa có sản phẩm nào</p>
               <Button
                 onClick={() => router.push('/dashboard/san-pham/tao-moi')}
@@ -199,7 +199,7 @@ export default function SellerProductsPage() {
                 <div
                   key={product.id}
                   className={cn(
-                    'flex flex-col sm:flex-row sm:items-start gap-4 p-5 bg-white rounded-2xl border transition duration-300 relative',
+                    'flex flex-col sm:flex-row sm:items-start gap-4 p-5 bg-white rounded-xl border transition duration-300 relative',
                     isSelected(product.id)
                       ? 'border-emerald-500 shadow-md ring-1 ring-emerald-500/20'
                       : 'border-stone-100 hover:border-emerald-200',

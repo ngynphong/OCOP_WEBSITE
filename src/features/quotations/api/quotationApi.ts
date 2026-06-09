@@ -1,5 +1,7 @@
 import { axiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
+import { buildRoute } from '@/lib/routeBuilder';
+
 import {
   CreateQuotationRequest,
   QuotationDetailResponse,
@@ -19,7 +21,7 @@ export const quotationApi = {
   },
 
   acceptQuotation: (quotationId: string): Promise<QuotationDetailResponse> => {
-    return axiosClient.post(`${API_ENDPOINTS.QUOTATIONS}/${quotationId}/accept`);
+    return axiosClient.post(buildRoute(API_ENDPOINTS.QUOTATIONS, quotationId, 'accept'));
   },
 
   // Seller APIs
@@ -31,6 +33,6 @@ export const quotationApi = {
     quotationId: string,
     data: ReplyQuotationRequest,
   ): Promise<QuotationDetailResponse> => {
-    return axiosClient.put(`${API_ENDPOINTS.SELLER.QUOTATIONS}/${quotationId}/reply`, data);
+    return axiosClient.put(buildRoute(API_ENDPOINTS.SELLER.QUOTATIONS, quotationId, 'reply'), data);
   },
 };

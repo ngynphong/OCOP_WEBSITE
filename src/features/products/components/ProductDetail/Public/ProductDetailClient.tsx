@@ -90,7 +90,7 @@ export function ProductDetailClient() {
               Có vẻ như sản phẩm này đã được gỡ bỏ hoặc bạn đã truy cập sai đường dẫn.
             </p>
             <Link href="/san-pham">
-              <button className="px-8 py-4 bg-stone-900 text-white rounded-2xl font-black hover:bg-stone-800 transition-colors shadow-xl">
+              <button className="px-8 py-4 bg-stone-900 text-white rounded-xl font-black hover:bg-stone-800 transition-colors shadow-xl">
                 Quay lại cửa hàng
               </button>
             </Link>

@@ -35,7 +35,7 @@ export const PublicShopProfile = ({ shopSlug }: PublicShopProfileProps) => {
   if (isError || !data?.data) {
     return (
       <div className="w-full flex justify-center items-center py-32 px-4">
-        <div className="flex flex-col items-center gap-4 p-8 bg-red-50 text-red-500 rounded-3xl max-w-md text-center">
+        <div className="flex flex-col items-center gap-4 p-8 bg-red-50 text-red-500 rounded-xl max-w-md text-center">
           <FiAlertCircle size={48} />
           <h2 className="text-xl font-bold">Không tìm thấy cửa hàng</h2>
           <p className="text-sm">

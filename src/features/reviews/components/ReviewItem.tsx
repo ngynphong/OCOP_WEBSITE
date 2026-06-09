@@ -97,7 +97,7 @@ export const ReviewItem = ({ review, variant = 'public', onAction }: ReviewItemP
                 <div
                   key={idx}
                   onClick={() => setSelectedImage(img)}
-                  className="relative w-24 h-24 rounded-2xl overflow-hidden bg-stone-50 border border-stone-100 shrink-0 hover:border-green-300 cursor-zoom-in transition-all hover:scale-[1.02] active:scale-95 shadow-sm"
+                  className="relative w-24 h-24 rounded-xl overflow-hidden bg-stone-50 border border-stone-100 shrink-0 hover:border-green-300 cursor-zoom-in transition-all hover:scale-[1.02] active:scale-95 shadow-sm"
                 >
                   <Image src={img} alt={`Review image ${idx + 1}`} fill className="object-cover" />
                 </div>
@@ -117,7 +117,7 @@ export const ReviewItem = ({ review, variant = 'public', onAction }: ReviewItemP
               >
                 <X className="w-6 h-6" />
               </button>
-              <div className="relative w-full max-w-5xl aspect-square md:aspect-video rounded-3xl overflow-hidden shadow-2xl ring-1 ring-white/20">
+              <div className="relative w-full max-w-5xl aspect-square md:aspect-video rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/20">
                 <Image
                   src={selectedImage}
                   alt="Full preview"
@@ -131,7 +131,7 @@ export const ReviewItem = ({ review, variant = 'public', onAction }: ReviewItemP
 
           {/* Seller Reply */}
           {review.sellerReply && (
-            <div className="mt-4 p-4 rounded-2xl bg-stone-50/80 border border-stone-100 relative">
+            <div className="mt-4 p-4 rounded-xl bg-stone-50/80 border border-stone-100 relative">
               <div className="absolute -top-2 left-6 w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-b-8 border-b-stone-100" />
               <div className="flex items-center gap-2 mb-2">
                 <div className="p-1 rounded-lg bg-green-600 text-white">

@@ -43,10 +43,10 @@ export const DailyDiscoverFeed = memo(function DailyDiscoverFeed() {
   if (!isMounted) {
     return (
       <section className="w-full max-w-7xl mx-auto px-4 md:px-6 py-12">
-        <div className="w-full h-24 bg-stone-100/50 animate-pulse rounded-3xl" />
+        <div className="w-full h-24 bg-stone-100/50 animate-pulse rounded-xl" />
         <div className="grid grid-cols-2 md:grid-cols-6 gap-6 mt-8">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="aspect-[3/4] bg-stone-100/50 animate-pulse rounded-2xl" />
+            <div key={i} className="aspect-[3/4] bg-stone-100/50 animate-pulse rounded-xl" />
           ))}
         </div>
       </section>
@@ -56,7 +56,7 @@ export const DailyDiscoverFeed = memo(function DailyDiscoverFeed() {
   return (
     <section className="w-full max-w-7xl mx-auto px-4 md:px-6 py-12 flex flex-col gap-8">
       {/* Header & Filter Bar */}
-      <div className="sticky top-[72px] z-30 rounded-3xl bg-white/70 backdrop-blur-sm p-4 md:p-6 border border-white/50 shadow-sm transition-all duration-300">
+      <div className="sticky top-[72px] z-30 rounded-xl bg-white/70 backdrop-blur-sm p-4 md:p-6 border border-white/50 shadow-sm transition-all duration-300">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
@@ -94,7 +94,7 @@ export const DailyDiscoverFeed = memo(function DailyDiscoverFeed() {
               onClick={() => setActiveCategoryId(null)}
               suppressHydrationWarning
               className={cn(
-                'px-6 py-2.5 rounded-2xl text-sm font-bold transition-all whitespace-nowrap border-2 cursor-pointer',
+                'px-6 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap border-2 cursor-pointer',
                 activeCategoryId === null
                   ? 'bg-green-700 border-green-700 text-white shadow-sm shadow-green-900/20'
                   : 'bg-white border-stone-100 text-stone-600 hover:border-stone-300',
@@ -108,7 +108,7 @@ export const DailyDiscoverFeed = memo(function DailyDiscoverFeed() {
                 onClick={() => setActiveCategoryId(cat.id)}
                 suppressHydrationWarning
                 className={cn(
-                  'px-6 py-2.5 rounded-2xl text-sm font-bold transition-all whitespace-nowrap border-2 cursor-pointer',
+                  'px-6 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap border-2 cursor-pointer',
                   activeCategoryId === cat.id
                     ? 'bg-green-700 border-green-700 text-white shadow-xl shadow-green-900/20'
                     : 'bg-white border-stone-100 text-stone-600 hover:border-stone-300',
@@ -158,12 +158,12 @@ export const DailyDiscoverFeed = memo(function DailyDiscoverFeed() {
                   size="lg"
                   onClick={() => fetchNextPage()}
                   isLoading={isFetchingNextPage}
-                  className="min-w-[200px] rounded-2xl border-2 border-stone-200 hover:border-green-700 hover:text-green-700 font-black tracking-widest uppercase text-xs transition-all"
+                  className="min-w-[200px] rounded-xl border-2 border-stone-200 hover:border-green-700 hover:text-green-700 font-black tracking-widest uppercase text-xs transition-all"
                 >
                   XEM THÊM SẢN PHẨM
                 </Button>
               ) : (
-                <div className="flex flex-col items-center gap-4 text-stone-400 font-bold text-sm bg-stone-50 w-full py-8 rounded-[32px] border border-dashed border-stone-200">
+                <div className="flex flex-col items-center gap-4 text-stone-400 font-bold text-sm bg-stone-50 w-full py-8 rounded-xl border border-dashed border-stone-200">
                   <span className="text-2xl">😊</span>
                   Bạn đã xem hết các gợi ý hôm nay rồi
                 </div>

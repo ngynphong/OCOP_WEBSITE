@@ -64,7 +64,7 @@ const LotListPage = () => {
         </div>
         <Button
           variant="primary"
-          className="rounded-2xl shadow-lg shadow-emerald-500/20"
+          className="rounded-xl shadow-lg shadow-emerald-500/20"
           onClick={() => setIsCreateModalOpen(true)}
         >
           <FiPlus className="mr-2" /> Tạo lô hàng mới
@@ -72,17 +72,17 @@ const LotListPage = () => {
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="bg-white rounded-3xl p-4 border border-stone-100 shadow-xl shadow-stone-200/50 flex flex-col md:flex-row gap-4 items-center">
+      <div className="bg-white rounded-xl p-4 border border-stone-100 shadow-xl shadow-stone-200/50 flex flex-col md:flex-row gap-4 items-center">
         <div className="relative flex-1 w-full">
           <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" />
           <input
             type="text"
             placeholder="Tìm theo mã lô hàng hoặc tên sản phẩm..."
-            className="w-full pl-11 pr-4 py-3 bg-stone-50 text-gray-700 border border-stone-100 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:bg-white transition-all"
+            className="w-full pl-11 pr-4 py-3 bg-stone-50 text-gray-700 border border-stone-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:bg-white transition-all"
           />
         </div>
         <select
-          className="w-full md:w-48 px-4 py-3 bg-stone-50 border border-stone-100 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:bg-white transition-all appearance-none font-medium text-stone-600"
+          className="w-full md:w-48 px-4 py-3 bg-stone-50 border border-stone-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:bg-white transition-all appearance-none font-medium text-stone-600"
           value={statusFilter || ''}
           onChange={(e) => setStatusFilter((e.target.value as TLotStatus) || undefined)}
         >
@@ -101,16 +101,16 @@ const LotListPage = () => {
       <div className="grid grid-cols-1 gap-4">
         {loading ? (
           Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="h-32 bg-stone-100 animate-pulse rounded-3xl" />
+            <div key={i} className="h-32 bg-stone-100 animate-pulse rounded-xl" />
           ))
         ) : lots?.length > 0 ? (
           lots.map((lot) => (
             <Link
               key={lot.id}
               href={`/dashboard/truy-xuat/${lot.id}`}
-              className="group bg-white rounded-3xl p-5 border border-stone-50 shadow-lg shadow-stone-200/40 hover:border-emerald-200 hover:shadow-emerald-500/10 transition-all duration-300 flex flex-col md:flex-row md:items-center gap-6"
+              className="group bg-white rounded-xl p-5 border border-stone-50 shadow-lg shadow-stone-200/40 hover:border-emerald-200 hover:shadow-emerald-500/10 transition-all duration-300 flex flex-col md:flex-row md:items-center gap-6"
             >
-              <div className="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0 group-hover:scale-110 transition-transform">
+              <div className="w-14 h-14 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0 group-hover:scale-110 transition-transform">
                 <FiPackage size={24} />
               </div>
 
@@ -151,7 +151,7 @@ const LotListPage = () => {
             </Link>
           ))
         ) : (
-          <div className="text-center py-20 bg-stone-50 rounded-3xl border border-dashed border-stone-200">
+          <div className="text-center py-20 bg-stone-50 rounded-xl border border-dashed border-stone-200">
             <div className="w-20 h-20 rounded-full bg-stone-100 flex items-center justify-center mx-auto mb-4">
               <FiPackage className="text-stone-300" size={32} />
             </div>
@@ -161,7 +161,7 @@ const LotListPage = () => {
             </p>
             <Button
               variant="outline"
-              className="mt-6 rounded-2xl"
+              className="mt-6 rounded-xl"
               onClick={() => setIsCreateModalOpen(true)}
             >
               <FiPlus className="mr-2" /> Tạo ngay

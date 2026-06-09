@@ -125,7 +125,7 @@ export const ReviewFormModal = ({
     <Modal isOpen={isOpen} onClose={onClose} title="Đánh giá sản phẩm" maxWidth="max-w-2xl">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Product Brief */}
-        <div className="flex gap-4 p-4 rounded-2xl bg-stone-50 border border-stone-100">
+        <div className="flex gap-4 p-4 rounded-xl bg-stone-50 border border-stone-100">
           <div className="relative w-16 h-16 rounded-xl overflow-hidden border border-stone-200 shrink-0 bg-white">
             <Image src={productImage} alt={productName} fill className="object-cover" />
           </div>
@@ -164,7 +164,7 @@ export const ReviewFormModal = ({
             rows={4}
             placeholder="Sản phẩm rất tốt, đóng gói cẩn thận, giao hàng nhanh..."
             className={cn(
-              'w-full px-5 py-4 bg-stone-50 border rounded-2xl text-stone-900 placeholder:text-stone-300 focus:ring-2 focus:ring-green-500/20 focus:border-green-600 outline-none transition-all font-medium text-sm',
+              'w-full px-5 py-4 bg-stone-50 border rounded-xl text-stone-900 placeholder:text-stone-300 focus:ring-2 focus:ring-green-500/20 focus:border-green-600 outline-none transition-all font-medium text-sm',
               errors.content ? 'border-red-500' : 'border-stone-200',
             )}
           />
@@ -224,7 +224,7 @@ export const ReviewFormModal = ({
           <Button
             type="button"
             onClick={onClose}
-            className="flex-1 px-6 py-4 rounded-2xl border border-stone-200 text-stone-600 font-bold hover:bg-stone-50 transition-all uppercase tracking-widest text-xs cursor-pointer"
+            className="flex-1 px-6 py-4 rounded-xl border border-stone-200 text-stone-600 font-bold hover:bg-stone-50 transition-all uppercase tracking-widest text-xs cursor-pointer"
             variant="outline"
           >
             Hủy bỏ
@@ -232,7 +232,7 @@ export const ReviewFormModal = ({
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="flex-3 px-6 py-4 rounded-2xl text-white font-black transition-all shadow-xl shadow-stone-200 disabled:opacity-50 disabled:bg-stone-400 flex items-center justify-center gap-2 uppercase tracking-widest text-xs cursor-pointer"
+            className="flex-3 px-6 py-4 rounded-xl text-white font-black transition-all shadow-xl shadow-stone-200 disabled:opacity-50 disabled:bg-stone-400 flex items-center justify-center gap-2 uppercase tracking-widest text-xs cursor-pointer"
             variant="primary"
           >
             {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send size={16} />}

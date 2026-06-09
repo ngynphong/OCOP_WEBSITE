@@ -109,7 +109,7 @@ export function VerifyOtpForm() {
   const isPending = isVerifyingOtp || isVerifyingEmail;
 
   return (
-    <div className="relative z-20 w-full max-w-sm bg-white rounded-3xl overflow-hidden shadow-2xl p-6 lg:p-8 transform hover:scale-[1.01] transition-transform duration-500">
+    <div className="relative z-20 w-full max-w-sm bg-white rounded-xl overflow-hidden shadow-2xl p-6 lg:p-8 transform hover:scale-[1.01] transition-transform duration-500">
       <div className="flex flex-col items-center text-center mb-6">
         <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mb-4 text-green-600">
           <ShieldCheck className="w-8 h-8" />
@@ -178,7 +178,7 @@ export function VerifyOtpForm() {
           suppressHydrationWarning
           type="submit"
           disabled={isPending || otp.some((d) => d === '')}
-          className="w-full bg-green-700 hover:bg-green-800 disabled:bg-stone-300 disabled:opacity-50 text-white font-bold py-3.5 rounded-2xl transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
+          className="w-full bg-green-700 hover:bg-green-800 disabled:bg-stone-300 disabled:opacity-50 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
         >
           {isPending ? (
             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

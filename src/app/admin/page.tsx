@@ -35,20 +35,20 @@ const AdminOverview = () => {
   if (isPending) {
     return (
       <div className="space-y-10 animate-pulse">
-        <div className="h-20 bg-stone-100 rounded-2xl w-full"></div>
+        <div className="h-20 bg-stone-100 rounded-xl w-full"></div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="h-40 bg-stone-100 rounded-3xl w-full"></div>
-          <div className="h-40 bg-stone-100 rounded-3xl w-full"></div>
-          <div className="h-40 bg-stone-100 rounded-3xl w-full"></div>
+          <div className="h-40 bg-stone-100 rounded-xl w-full"></div>
+          <div className="h-40 bg-stone-100 rounded-xl w-full"></div>
+          <div className="h-40 bg-stone-100 rounded-xl w-full"></div>
         </div>
-        <div className="h-80 bg-stone-100 rounded-3xl w-full"></div>
+        <div className="h-80 bg-stone-100 rounded-xl w-full"></div>
       </div>
     );
   }
 
   if (isError || !dashboardData) {
     return (
-      <div className="p-10 text-center text-red-500 bg-red-50 rounded-2xl">
+      <div className="p-10 text-center text-red-500 bg-red-50 rounded-xl">
         <p className="font-bold">Không thể tải dữ liệu Dashboard</p>
       </div>
     );

@@ -78,7 +78,7 @@ export const NotificationItem = React.memo<{
 
       {/* Actor Avatar or Icon */}
       <div className="relative shrink-0">
-        <div className="w-12 h-12 rounded-2xl overflow-hidden bg-stone-100 border border-stone-200">
+        <div className="w-12 h-12 rounded-xl overflow-hidden bg-stone-100 border border-stone-200">
           {actorAvatar ? (
             <Image
               src={actorAvatar}
@@ -156,7 +156,7 @@ NotificationItem.displayName = 'NotificationItem';
 
 export const NotificationSkeleton = () => (
   <div className="flex items-start gap-4 p-4 border-b border-stone-50 animate-pulse">
-    <div className="w-12 h-12 rounded-2xl bg-stone-100 shrink-0" />
+    <div className="w-12 h-12 rounded-xl bg-stone-100 shrink-0" />
     <div className="flex-1 space-y-2 py-1">
       <div className="h-4 bg-stone-100 rounded-full w-3/4" />
       <div className="h-3 bg-stone-50 rounded-full w-1/4" />

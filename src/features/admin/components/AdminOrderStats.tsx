@@ -26,7 +26,7 @@ const StatCard = ({
   color: string;
   isCurrency?: boolean;
 }) => (
-  <div className="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 flex flex-col justify-between hover:shadow-md transition-all">
+  <div className="bg-white p-6 rounded-xl shadow-sm border border-stone-100 flex flex-col justify-between hover:shadow-md transition-all">
     <div className={`p-3 rounded-xl ${color} w-fit mb-4`}>
       <Icon className="text-white text-xl" />
     </div>
@@ -47,7 +47,7 @@ export const AdminOrderStats = ({ data, isLoading }: AdminOrderStatsProps) => {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
         {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="h-40 bg-stone-100 animate-pulse rounded-2xl" />
+          <div key={i} className="h-40 bg-stone-100 animate-pulse rounded-xl" />
         ))}
       </div>
     );

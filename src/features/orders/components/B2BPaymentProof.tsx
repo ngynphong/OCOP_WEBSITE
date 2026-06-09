@@ -38,7 +38,7 @@ export function B2BPaymentProof({ order, isUploading, onUpload }: B2BPaymentProo
             return (
               <div className="space-y-3">
                 {order.paymentProofUrl && (
-                  <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-white/20">
+                  <div className="relative aspect-video w-full rounded-xl overflow-hidden border border-white/20">
                     <Image
                       src={order.paymentProofUrl}
                       alt="Payment Proof"
@@ -47,7 +47,7 @@ export function B2BPaymentProof({ order, isUploading, onUpload }: B2BPaymentProo
                     />
                   </div>
                 )}
-                <div className="bg-white/10 rounded-2xl p-4 flex items-center gap-3 border border-white/10">
+                <div className="bg-white/10 rounded-xl p-4 flex items-center gap-3 border border-white/10">
                   <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse" />
                   <span className="text-xs font-bold text-amber-300">
                     Minh chứng đã gửi. Đang chờ cửa hàng duyệt xác nhận...
@@ -67,7 +67,7 @@ export function B2BPaymentProof({ order, isUploading, onUpload }: B2BPaymentProo
                   disabled={isUploading}
                   className="hidden"
                 />
-                <div className="border-2 border-dashed border-white/30 rounded-2xl p-6 flex flex-col items-center justify-center gap-2 group-hover:bg-white/5 transition-all text-white">
+                <div className="border-2 border-dashed border-white/30 rounded-xl p-6 flex flex-col items-center justify-center gap-2 group-hover:bg-white/5 transition-all text-white">
                   {isUploading ? (
                     <Loader2 className="animate-spin text-white" />
                   ) : (
@@ -88,7 +88,7 @@ export function B2BPaymentProof({ order, isUploading, onUpload }: B2BPaymentProo
           // Khi đã thanh toán đầy đủ (PAID)
           return (
             order.paymentProofUrl && (
-              <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-white/20">
+              <div className="relative aspect-video w-full rounded-xl overflow-hidden border border-white/20">
                 <Image
                   src={order.paymentProofUrl}
                   alt="Payment Proof"

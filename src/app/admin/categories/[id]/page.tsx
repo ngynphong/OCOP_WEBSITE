@@ -120,7 +120,7 @@ const CategoryDetailPage = ({ params }: PageProps) => {
 
       {/* ─── Main Hero Section ─── */}
       <div className="relative">
-        <div className="relative h-64 w-full rounded-[40px] overflow-hidden group shadow-2xl shadow-stone-200/50">
+        <div className="relative h-64 w-full rounded-xl overflow-hidden group shadow-2xl shadow-stone-200/50">
           {category.bannerUrl ? (
             <Image
               src={category.bannerUrl}
@@ -139,8 +139,8 @@ const CategoryDetailPage = ({ params }: PageProps) => {
 
         {/* Floating Category Info */}
         <div className="relative -mt-16 px-12 z-20">
-          <div className="bg-white/80 backdrop-blur-xl rounded-[32px] p-8 border border-white/50 shadow-2xl flex items-center gap-8">
-            <div className="relative w-24 h-24 rounded-3xl bg-white border-4 border-white shadow-xl overflow-hidden shrink-0">
+          <div className="bg-white/80 backdrop-blur-xl rounded-xl p-8 border border-white/50 shadow-2xl flex items-center gap-8">
+            <div className="relative w-24 h-24 rounded-xl bg-white border-4 border-white shadow-xl overflow-hidden shrink-0">
               {category.iconUrl ? (
                 <Image
                   src={category.iconUrl}
@@ -191,12 +191,12 @@ const CategoryDetailPage = ({ params }: PageProps) => {
         {/* ─── Navigation Left Column ─── */}
         <div className="lg:col-span-1 space-y-6">
           {/* Parent Info */}
-          <div className="bg-white rounded-[32px] p-6 border border-stone-100 shadow-sm">
+          <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-sm">
             <h4 className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-4">
               Cấu trúc cha
             </h4>
             {category.parentId ? (
-              <div className="p-4 bg-stone-50 rounded-2xl flex items-center gap-4 group cursor-pointer hover:bg-stone-100 transition-all border border-stone-100">
+              <div className="p-4 bg-stone-50 rounded-xl flex items-center gap-4 group cursor-pointer hover:bg-stone-100 transition-all border border-stone-100">
                 <div className="w-10 h-10 rounded-xl bg-white border border-stone-200 flex items-center justify-center text-stone-300">
                   <FiPackage />
                 </div>
@@ -207,7 +207,7 @@ const CategoryDetailPage = ({ params }: PageProps) => {
                 <FiChevronRight className="text-stone-300 group-hover:text-stone-600" />
               </div>
             ) : (
-              <div className="p-4 bg-emerald-50/30 border border-emerald-100 rounded-2xl">
+              <div className="p-4 bg-emerald-50/30 border border-emerald-100 rounded-xl">
                 <p className="text-xs font-black text-emerald-700">Đây là Danh mục gốc</p>
                 <p className="text-[10px] text-emerald-600/60 font-bold">
                   Không thuộc danh mục nào khác
@@ -217,7 +217,7 @@ const CategoryDetailPage = ({ params }: PageProps) => {
           </div>
 
           {/* Quick Stats Placeholder */}
-          <div className="bg-emerald-900 rounded-[32px] p-8 text-white relative overflow-hidden shadow-xl shadow-emerald-900/20">
+          <div className="bg-emerald-900 rounded-xl p-8 text-white relative overflow-hidden shadow-xl shadow-emerald-900/20">
             <div className="relative z-10">
               <h4 className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-6">
                 Sản phẩm trong ngành
@@ -242,7 +242,7 @@ const CategoryDetailPage = ({ params }: PageProps) => {
         {/* ─── Content Right Column ─── */}
         <div className="lg:col-span-2 space-y-8">
           {/* Description Section */}
-          <section className="bg-white rounded-[40px] p-10 border border-stone-100 shadow-sm relative overflow-hidden">
+          <section className="bg-white rounded-xl p-10 border border-stone-100 shadow-sm relative overflow-hidden">
             <div className="flex items-center gap-3 mb-8">
               <div className="w-10 h-10 rounded-xl bg-stone-50 flex items-center justify-center text-emerald-600">
                 <FiList size={20} />
@@ -251,13 +251,13 @@ const CategoryDetailPage = ({ params }: PageProps) => {
                 Mô tả chi tiết
               </h3>
             </div>
-            <div className="relative font-medium text-stone-600 leading-8 text-sm bg-stone-50/50 p-8 rounded-3xl border border-stone-100 whitespace-pre-line">
+            <div className="relative font-medium text-stone-600 leading-8 text-sm bg-stone-50/50 p-8 rounded-xl border border-stone-100 whitespace-pre-line">
               {category.description || 'Hệ thống chưa ghi nhận mô tả chi tiết cho danh mục này.'}
             </div>
           </section>
 
           {/* Sub-categories Section */}
-          <section className="bg-white rounded-[40px] p-10 border border-stone-100 shadow-sm">
+          <section className="bg-white rounded-xl p-10 border border-stone-100 shadow-sm">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-stone-50 flex items-center justify-center text-blue-600">
@@ -284,7 +284,7 @@ const CategoryDetailPage = ({ params }: PageProps) => {
                     className="p-5 bg-stone-50 rounded-[28px] border border-stone-100 flex items-center gap-4 group cursor-pointer hover:bg-white hover:border-emerald-200 transition-all shadow-sm hover:shadow-xl hover:shadow-emerald-900/5"
                     onClick={() => router.push(`/admin/categories/${child.id}`)}
                   >
-                    <div className="relative w-12 h-12 rounded-2xl bg-white border border-stone-200 overflow-hidden shrink-0 shadow-sm">
+                    <div className="relative w-12 h-12 rounded-xl bg-white border border-stone-200 overflow-hidden shrink-0 shadow-sm">
                       {child.iconUrl && (
                         <Image
                           src={child.iconUrl}

@@ -14,7 +14,7 @@ export default function LocationsPage() {
 
       <LocationImportSection />
 
-      <div className="bg-amber-50 p-6 rounded-3xl border border-amber-100">
+      <div className="bg-amber-50 p-6 rounded-xl border border-amber-100">
         <h4 className="text-amber-800 text-xs font-black uppercase tracking-widest mb-3 flex items-center gap-2">
           <span>⚠️</span> Lưu ý quan trọng
         </h4>

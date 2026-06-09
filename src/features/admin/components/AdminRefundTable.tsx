@@ -62,7 +62,7 @@ export const AdminRefundTable = ({
     setRejectReason('');
   };
   return (
-    <div className="bg-white rounded-3xl shadow-sm border border-stone-100 overflow-hidden mt-8">
+    <div className="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden mt-8">
       <div className="p-6 border-b border-stone-50 flex justify-between items-center">
         <div className="flex items-center gap-4">
           <h3 className="text-lg font-black text-[#00490E] uppercase tracking-wider">
@@ -174,7 +174,7 @@ export const AdminRefundTable = ({
       {/* Modal */}
       {selectedRefund && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl">
+          <div className="bg-white rounded-xl max-w-md w-full p-6 shadow-2xl">
             <h3 className="text-xl font-black text-[#00490E] mb-2">Xử lý yêu cầu hoàn tiền</h3>
             <p className="text-sm text-stone-500 mb-6">
               Yêu cầu #{selectedRefund.refundId} - Số tiền:{' '}

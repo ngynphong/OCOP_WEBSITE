@@ -68,7 +68,7 @@ export const UserWithdrawalList: React.FC<UserWithdrawalListProps> = ({ withdraw
   };
 
   return (
-    <div className="bg-white rounded-3xl border border-stone-100 shadow-xl shadow-stone-200/50 overflow-hidden">
+    <div className="bg-white rounded-xl border border-stone-100 shadow-xl shadow-stone-200/50 overflow-hidden">
       <div className="p-6 border-b border-stone-50 flex items-center justify-between">
         <h3 className="font-bold text-stone-900">Lịch sử rút tiền</h3>
       </div>

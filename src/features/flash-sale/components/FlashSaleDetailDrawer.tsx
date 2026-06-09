@@ -107,9 +107,9 @@ export function FlashSaleDetailDrawer({
               ) : (
                 <>
                   {/* Overview Card */}
-                  <div className="bg-white rounded-3xl p-6 border border-stone-100 shadow-sm space-y-6">
+                  <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-sm space-y-6">
                     <div className="flex flex-col md:flex-row gap-6">
-                      <div className="w-full md:w-1/3 aspect-video md:aspect-square rounded-2xl overflow-hidden bg-stone-100 border border-stone-200 shrink-0">
+                      <div className="w-full md:w-1/3 aspect-video md:aspect-square rounded-xl overflow-hidden bg-stone-100 border border-stone-200 shrink-0">
                         {flashSale.bannerUrl ? (
                           <Image
                             src={flashSale.bannerUrl}
@@ -180,7 +180,7 @@ export function FlashSaleDetailDrawer({
 
                   {/* Summary Stats */}
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    <div className="bg-white p-4 rounded-2xl border border-stone-100 flex items-center gap-3">
+                    <div className="bg-white p-4 rounded-xl border border-stone-100 flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center shrink-0">
                         <FiPackage size={20} />
                       </div>
@@ -191,7 +191,7 @@ export function FlashSaleDetailDrawer({
                         </p>
                       </div>
                     </div>
-                    <div className="bg-white p-4 rounded-2xl border border-stone-100 flex items-center gap-3">
+                    <div className="bg-white p-4 rounded-xl border border-stone-100 flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
                         <FiShoppingBag size={20} />
                       </div>
@@ -202,7 +202,7 @@ export function FlashSaleDetailDrawer({
                         </p>
                       </div>
                     </div>
-                    <div className="bg-white p-4 rounded-2xl border border-stone-100 flex items-center gap-3 col-span-2 md:col-span-1">
+                    <div className="bg-white p-4 rounded-xl border border-stone-100 flex items-center gap-3 col-span-2 md:col-span-1">
                       <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
                         <FiTrendingUp size={20} />
                       </div>
@@ -224,7 +224,7 @@ export function FlashSaleDetailDrawer({
                       {flashSale.items.map((item) => (
                         <div
                           key={item.id}
-                          className="bg-white p-4 rounded-3xl border border-stone-100 flex items-center gap-4 group hover:border-red-100 transition-all"
+                          className="bg-white p-4 rounded-xl border border-stone-100 flex items-center gap-4 group hover:border-red-100 transition-all"
                         >
                           <div className="w-16 h-16 rounded-xl overflow-hidden bg-stone-50 border border-stone-100 shrink-0">
                             {item.thumbnailUrl ? (
@@ -280,7 +280,7 @@ export function FlashSaleDetailDrawer({
               <div className="p-6 bg-white border-t border-stone-100 grid grid-cols-2 gap-4 shrink-0">
                 <Button
                   variant="outline"
-                  className="w-full py-4 border-stone-200 text-red-500 hover:bg-red-50 hover:border-red-100 rounded-2xl font-black text-sm"
+                  className="w-full py-4 border-stone-200 text-red-500 hover:bg-red-50 hover:border-red-100 rounded-xl font-black text-sm"
                   leftIcon={<FiXCircle size={18} />}
                   onClick={handleCancel}
                   isLoading={isCanceling}
@@ -290,7 +290,7 @@ export function FlashSaleDetailDrawer({
                 </Button>
                 <Button
                   variant="primary"
-                  className="w-full py-4 bg-emerald-600 text-white hover:bg-emerald-700 rounded-2xl font-black text-sm shadow-lg shadow-emerald-500/20"
+                  className="w-full py-4 bg-emerald-600 text-white hover:bg-emerald-700 rounded-xl font-black text-sm shadow-lg shadow-emerald-500/20"
                   leftIcon={<FiCheckCircle size={18} />}
                   onClick={handleApprove}
                   isLoading={isApproving}

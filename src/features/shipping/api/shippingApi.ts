@@ -1,5 +1,7 @@
 import { axiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
+import { buildRoute } from '@/lib/routeBuilder';
+
 import {
   IShippingProvider,
   ICreateShippingProvider,
@@ -29,10 +31,10 @@ export const shippingApi = {
     id: string,
     provider: IUpdateShippingProvider,
   ): Promise<ApiResponse<IAdminShippingProvider>> =>
-    axiosClient.put(`${API_ENDPOINTS.ADMIN.SHIPPING_PROVIDERS}/${id}`, provider),
+    axiosClient.put(buildRoute(API_ENDPOINTS.ADMIN.SHIPPING_PROVIDERS, id), provider),
 
   toggleProvider: (id: string): Promise<ApiResponse<IAdminShippingProvider>> =>
-    axiosClient.patch(`${API_ENDPOINTS.ADMIN.SHIPPING_PROVIDERS}/${id}/toggle`),
+    axiosClient.patch(buildRoute(API_ENDPOINTS.ADMIN.SHIPPING_PROVIDERS, id, 'toggle')),
 
   // User APIs
   getProviders: (): Promise<ApiResponse<IShippingProvider[]>> =>

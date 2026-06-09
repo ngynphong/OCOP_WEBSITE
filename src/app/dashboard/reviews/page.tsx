@@ -57,18 +57,18 @@ export default function SellerReviewsPage() {
       </div>
 
       {/* Filters (Mock UI) */}
-      <div className="flex flex-wrap items-center gap-4 bg-white p-4 rounded-3xl border border-stone-100 shadow-sm">
+      <div className="flex flex-wrap items-center gap-4 bg-white p-4 rounded-xl border border-stone-100 shadow-sm">
         <div className="relative flex-1 min-w-[240px]">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" size={18} />
           <input
             type="text"
             placeholder="Tìm theo tên khách hàng hoặc mã SP..."
-            className="w-full pl-11 pr-4 py-3 bg-stone-50 text-gray-700 border border-stone-100 rounded-2xl text-sm focus:ring-2 focus:ring-green-500/20 outline-none transition-all"
+            className="w-full pl-11 pr-4 py-3 bg-stone-50 text-gray-700 border border-stone-100 rounded-xl text-sm focus:ring-2 focus:ring-green-500/20 outline-none transition-all"
           />
         </div>
         {/* <div className="flex items-center gap-2">
            <Filter size={16} className="text-stone-400" />
-           <select className="bg-stone-50 border border-stone-100 rounded-2xl px-4 py-3 text-sm font-bold text-stone-700 outline-none">
+           <select className="bg-stone-50 border border-stone-100 rounded-xl px-4 py-3 text-sm font-bold text-stone-700 outline-none">
              <option>Tất cả đánh giá</option>
              <option>Chưa phản hồi</option>
              <option>Đã phản hồi</option>
@@ -112,7 +112,7 @@ export default function SellerReviewsPage() {
         </div>
       ) : (
         <div className="bg-stone-50 rounded-4xl border border-dashed border-stone-200 py-20 text-center">
-          <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 border border-stone-100 shadow-sm">
+          <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center mx-auto mb-4 border border-stone-100 shadow-sm">
             <MessageSquare className="text-stone-300" size={32} />
           </div>
           <h3 className="text-lg font-bold text-stone-900">Chưa có đánh giá nào</h3>
@@ -130,7 +130,7 @@ export default function SellerReviewsPage() {
       >
         {replyingReview && (
           <div className="space-y-6">
-            <div className="p-4 rounded-2xl bg-stone-50 border border-stone-100">
+            <div className="p-4 rounded-xl bg-stone-50 border border-stone-100">
               <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-2">
                 Đánh giá của {replyingReview.userName}
               </p>
@@ -146,7 +146,7 @@ export default function SellerReviewsPage() {
                 onChange={(e) => setReplyContent(e.target.value)}
                 rows={4}
                 placeholder="Cảm ơn quý khách đã tin dùng sản phẩm..."
-                className="w-full px-5 py-4 bg-stone-50 text-gray-700 border border-stone-200 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-green-500/20 focus:border-green-600 outline-none transition-all"
+                className="w-full px-5 py-4 bg-stone-50 text-gray-700 border border-stone-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-green-500/20 focus:border-green-600 outline-none transition-all"
               />
             </div>
 
@@ -154,14 +154,14 @@ export default function SellerReviewsPage() {
               <Button
                 variant="outline"
                 onClick={() => setReplyingReview(null)}
-                className="flex-1 py-4 rounded-2xl border border-stone-200 text-xs font-black text-stone-600 uppercase tracking-widest hover:bg-stone-50 transition-all"
+                className="flex-1 py-4 rounded-xl border border-stone-200 text-xs font-black text-stone-600 uppercase tracking-widest hover:bg-stone-50 transition-all"
               >
                 Hủy bỏ
               </Button>
               <Button
                 disabled={isReplying || !replyContent.trim()}
                 onClick={handleSendReply}
-                className="flex-2 py-4 rounded-2xl bg-stone-900 text-white text-xs font-black uppercase tracking-widest hover:bg-green-700 transition-all shadow-xl shadow-stone-200 disabled:opacity-50 flex items-center justify-center gap-2"
+                className="flex-2 py-4 rounded-xl bg-stone-900 text-white text-xs font-black uppercase tracking-widest hover:bg-green-700 transition-all shadow-xl shadow-stone-200 disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {isReplying && <Loader2 size={14} className="animate-spin" />}
                 Gửi phản hồi

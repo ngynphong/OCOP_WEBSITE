@@ -48,7 +48,7 @@ export const SubscriberTable = () => {
   return (
     <div className="space-y-6">
       {/* Filters */}
-      <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white p-6 rounded-3xl shadow-sm border border-stone-100">
+      <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white p-6 rounded-xl shadow-sm border border-stone-100">
         <div className="relative w-full md:w-96">
           <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" />
           <input
@@ -56,7 +56,7 @@ export const SubscriberTable = () => {
             placeholder="Tìm kiếm email..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 bg-stone-50 text-gray-700 border border-stone-100 rounded-2xl outline-none focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/5 transition-all text-sm font-medium"
+            className="w-full pl-12 pr-4 py-3 bg-stone-50 text-gray-700 border border-stone-100 rounded-xl outline-none focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/5 transition-all text-sm font-medium"
           />
         </div>
 
@@ -80,7 +80,7 @@ export const SubscriberTable = () => {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-[32px] shadow-sm border border-stone-100 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>

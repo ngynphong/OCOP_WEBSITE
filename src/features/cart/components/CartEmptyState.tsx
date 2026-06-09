@@ -39,7 +39,7 @@ export function CartEmptyState({ isGuest = false }: CartEmptyStateProps) {
       {/* ---- Hero illustration ---- */}
       <div className="relative mb-8 select-none">
         {/* Outer glow ring */}
-        <div className="absolute inset-0 rounded-full bg-green-100/80 blur-2xl scale-110" />
+        <div className="absolute inset-0 rounded-full bg-green-200/60 blur-[32px] scale-125 animate-pulse duration-[3000ms]" />
 
         {/* Main circle */}
         <div className="relative w-36 h-36 rounded-full bg-linear-to-br from-green-50 to-emerald-100 flex items-center justify-center border border-green-100 shadow-[0_8px_32px_rgba(22,101,52,0.12)]">
@@ -61,13 +61,13 @@ export function CartEmptyState({ isGuest = false }: CartEmptyStateProps) {
           <div className="flex flex-col sm:flex-row gap-3 mb-10 w-full max-w-sm">
             <Link
               href="/dang-nhap?returnUrl=/gio-hang"
-              className="flex-1 flex items-center justify-center gap-2 bg-green-700 hover:bg-green-800 text-white font-bold px-6 py-3.5 rounded-2xl transition-all duration-200 hover:shadow-[0_8px_20px_rgba(22,101,52,0.25)] hover:scale-[1.02] active:scale-[0.98] group"
+              className="flex-1 flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3.5 rounded-xl transition-all duration-300 hover:shadow-[0_8px_20px_rgba(16,185,129,0.3)] hover:-translate-y-0.5 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-500/30 group"
             >
               Đăng nhập ngay
             </Link>
             <Link
               href="/dang-ky"
-              className="flex-1 flex items-center justify-center gap-2 bg-white border-2 border-stone-200 hover:border-green-400 text-stone-700 hover:text-green-700 font-bold px-6 py-3.5 rounded-2xl transition-all duration-200"
+              className="flex-1 flex items-center justify-center gap-2 bg-white border-2 border-stone-200 hover:border-emerald-500 text-stone-700 hover:text-emerald-700 font-bold px-6 py-3.5 rounded-xl transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-500/30"
             >
               Tạo tài khoản
             </Link>
@@ -85,10 +85,10 @@ export function CartEmptyState({ isGuest = false }: CartEmptyStateProps) {
           {/* CTA for logged-in users */}
           <Link
             href="/san-pham"
-            className="inline-flex items-center gap-2 bg-green-700 hover:bg-green-800 text-white font-bold px-8 py-4 rounded-2xl transition-all duration-200 hover:shadow-[0_8px_20px_rgba(22,101,52,0.25)] hover:scale-[1.02] active:scale-[0.98] mb-10 group"
+            className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-4 rounded-xl transition-all duration-300 hover:shadow-[0_8px_20px_rgba(16,185,129,0.3)] hover:-translate-y-0.5 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-500/30 mb-10 group"
           >
             Khám phá ngay
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
           </Link>
         </>
       )}
@@ -98,7 +98,7 @@ export function CartEmptyState({ isGuest = false }: CartEmptyStateProps) {
         {BENEFITS.map(({ icon: Icon, title, desc }) => (
           <div
             key={title}
-            className="flex flex-col items-center text-center p-4 bg-white rounded-2xl border border-stone-100 shadow-sm hover:border-green-100 transition-colors"
+            className="flex flex-col items-center text-center p-4 bg-white rounded-xl border border-stone-100 shadow-sm hover:border-green-100 transition-colors"
           >
             <div className="w-9 h-9 rounded-full bg-green-50 flex items-center justify-center mb-2.5">
               <Icon className="w-4 h-4 text-green-600" />

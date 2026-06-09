@@ -29,7 +29,7 @@ export default function UserSupportTicketsPage() {
         </div>
         <Button
           onClick={() => setIsCreateOpen(true)}
-          className="flex items-center justify-center gap-2 px-6 py-4 bg-emerald-800 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-emerald-900/20 hover:bg-emerald-900 transition-all hover:-translate-y-1 cursor-pointer active:scale-95"
+          className="flex items-center justify-center gap-2 px-6 py-4 bg-emerald-800 text-white rounded-xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-emerald-900/20 hover:bg-emerald-900 transition-all hover:-translate-y-1 cursor-pointer active:scale-95"
         >
           <Plus size={18} /> Gửi yêu cầu mới
         </Button>
@@ -37,12 +37,12 @@ export default function UserSupportTicketsPage() {
 
       {/* Hero Info Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-linear-to-br from-green-700 to-green-800 p-6 rounded-[32px] text-white shadow-2xl shadow-emerald-950/20 relative overflow-hidden group">
+        <div className="bg-linear-to-br from-green-700 to-green-800 p-6 rounded-xl text-white shadow-2xl shadow-emerald-950/20 relative overflow-hidden group">
           <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
             <MessageSquare size={120} />
           </div>
           <div className="relative z-10 space-y-4">
-            <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-md">
+            <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-md">
               <HelpCircle size={24} />
             </div>
             <div>
@@ -59,7 +59,7 @@ export default function UserSupportTicketsPage() {
           </div>
         </div>
 
-        <div className="md:col-span-2 bg-white p-2 rounded-[32px] border border-stone-100 shadow-sm flex flex-col sm:flex-row gap-2">
+        <div className="md:col-span-2 bg-white p-2 rounded-xl border border-stone-100 shadow-sm flex flex-col sm:flex-row gap-2">
           {[
             {
               icon: ShieldCheck,
@@ -74,9 +74,9 @@ export default function UserSupportTicketsPage() {
           ].map((card, i) => (
             <div
               key={i}
-              className="flex-1 bg-stone-50/50 p-6 rounded-3xl border border-stone-50 flex items-start gap-4"
+              className="flex-1 bg-stone-50/50 p-6 rounded-xl border border-stone-50 flex items-start gap-4"
             >
-              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm text-emerald-800 shrink-0">
+              <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm text-emerald-800 shrink-0">
                 <card.icon size={24} />
               </div>
               <div>

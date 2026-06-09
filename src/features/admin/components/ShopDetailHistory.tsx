@@ -22,7 +22,7 @@ const ShopDetailHistory: React.FC<ShopDetailHistoryProps> = React.memo(({ logs }
               <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-stone-100 group-[.is-active]:bg-emerald-500 text-stone-500 group-[.is-active]:text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 transition-colors duration-300">
                 <FiActivity size={16} />
               </div>
-              <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-6 rounded-3xl border border-stone-100 shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-6 rounded-xl border border-stone-100 shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between gap-1 mb-2">
                   <div className="font-black text-[#00490E] text-xs uppercase">{log.toStatus}</div>
                   <time className="font-bold text-[9px] text-stone-400 uppercase tracking-tighter">

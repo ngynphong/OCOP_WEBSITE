@@ -52,7 +52,7 @@ export const StockAdjustmentModal = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Điều chỉnh tồn kho" maxWidth="max-w-md">
       <form onSubmit={handleSubmit(onConfirm)} className="space-y-6">
-        <div className="bg-stone-50 p-4 rounded-2xl flex items-center gap-4 border border-stone-100 mb-6">
+        <div className="bg-stone-50 p-4 rounded-xl flex items-center gap-4 border border-stone-100 mb-6">
           <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-green-600 shadow-sm shrink-0">
             <FiPackage size={24} />
           </div>

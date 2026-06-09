@@ -22,14 +22,14 @@ export function SellerPaymentProofBox({
   onConfirmB2BPayment,
 }: SellerPaymentProofBoxProps) {
   return (
-    <div className="bg-white rounded-3xl p-6 border border-stone-100 shadow-sm">
+    <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-sm">
       <h3 className="font-bold text-stone-900 flex items-center gap-2 mb-4">
         <FileText size={18} className="text-stone-500" /> Bằng chứng thanh toán chuyển khoản
       </h3>
 
       {order.paymentProofUrl ? (
         <div className="space-y-4">
-          <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-stone-100">
+          <div className="relative aspect-video w-full rounded-xl overflow-hidden border border-stone-100">
             <Image
               src={order.paymentProofUrl}
               alt="Minh chứng chuyển khoản B2B"
@@ -38,7 +38,7 @@ export function SellerPaymentProofBox({
             />
           </div>
 
-          <div className="bg-stone-50 p-4 rounded-2xl border border-stone-100 space-y-3">
+          <div className="bg-stone-50 p-4 rounded-xl border border-stone-100 space-y-3">
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-black uppercase text-stone-400">
                 Trạng thái thanh toán B2B:
@@ -74,7 +74,7 @@ export function SellerPaymentProofBox({
               </div>
             )}
             {(order.paymentStatus === 'PAID' || order.status === 'COMPLETED') && (
-              <div className="bg-green-50 text-green-700 font-extrabold text-xs py-3 px-4 rounded-2xl border border-green-100 flex items-center justify-center gap-2">
+              <div className="bg-green-50 text-green-700 font-extrabold text-xs py-3 px-4 rounded-xl border border-green-100 flex items-center justify-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
                 Đã nhận đủ tiền và hoàn tất giao dịch sỉ
               </div>
@@ -82,7 +82,7 @@ export function SellerPaymentProofBox({
           </div>
         </div>
       ) : (
-        <div className="p-6 bg-stone-50 rounded-2xl border border-dashed border-stone-200 text-center text-stone-400 text-sm">
+        <div className="p-6 bg-stone-50 rounded-xl border border-dashed border-stone-200 text-center text-stone-400 text-sm">
           Chưa có ảnh minh chứng chuyển khoản được tải lên từ người mua.
         </div>
       )}

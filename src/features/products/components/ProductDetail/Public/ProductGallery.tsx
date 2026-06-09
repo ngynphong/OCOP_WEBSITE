@@ -67,7 +67,7 @@ export const ProductGallery = memo(function ProductGallery({
 
   if (!images.length) {
     return (
-      <div className="w-full aspect-square bg-stone-100 rounded-3xl flex items-center justify-center">
+      <div className="w-full aspect-square bg-stone-100 rounded-xl flex items-center justify-center">
         <span className="text-stone-400">Không có hình ảnh</span>
       </div>
     );
@@ -76,14 +76,15 @@ export const ProductGallery = memo(function ProductGallery({
   return (
     <div className="flex flex-col gap-4">
       {/* Main Display */}
-      <div className="w-full max-h-[500px] aspect-square relative rounded-3xl overflow-hidden bg-stone-50 border border-stone-100 shadow-sm group">
+      <div className="w-full max-h-[500px] aspect-square relative rounded-xl overflow-hidden bg-stone-50 border border-stone-100 shadow-sm group">
         <Image
+          key={activeMedia.url}
           src={activeMedia.url}
           alt={name}
           fill
           priority
           sizes="(max-width: 768px) 100vw, 50vw"
-          className="object-contain scale-105 p-4 group-hover:scale-110 transition-transform duration-1000 ease-out"
+          className="object-contain scale-105 p-4 group-hover:scale-110 transition-transform duration-1000 ease-out animate-in fade-in zoom-in-95"
         />
 
         {/* Navigation Arrows */}
@@ -117,7 +118,7 @@ export const ProductGallery = memo(function ProductGallery({
             className={cn(
               'relative w-14 h-14 rounded-xl overflow-hidden border-2 transition-all duration-300',
               activeMedia.type === 'IMAGE' && activeMedia.id === image.id
-                ? 'border-green-600 ring-4 ring-green-50 shadow-md'
+                ? 'border-emerald-600 ring-2 ring-emerald-500 ring-offset-2 shadow-md'
                 : 'border-transparent bg-stone-50 hover:border-stone-200',
             )}
           >

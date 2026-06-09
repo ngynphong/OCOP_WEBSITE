@@ -105,7 +105,7 @@ const CategoryItemForm = React.memo(
 
     return (
       <div
-        className={`bg-white rounded-3xl border transition-all ${isExpanded ? 'border-emerald-200 shadow-md ring-4 ring-emerald-500/5' : 'border-stone-100 shadow-sm'}`}
+        className={`bg-white rounded-xl border transition-all ${isExpanded ? 'border-emerald-200 shadow-md ring-4 ring-emerald-500/5' : 'border-stone-100 shadow-sm'}`}
       >
         {/* Header / Accordion Trigger */}
         <div className="p-4 flex items-center justify-between cursor-pointer" onClick={onToggle}>
@@ -163,7 +163,7 @@ const CategoryItemForm = React.memo(
                       <FiType className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-300" />
                       <input
                         {...register(`categories.${index}.name`)}
-                        className="w-full pl-11 pr-4 py-3 bg-stone-50 border border-stone-100 rounded-2xl text-sm font-bold text-stone-800 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+                        className="w-full pl-11 pr-4 py-3 bg-stone-50 border border-stone-100 rounded-xl text-sm font-bold text-stone-800 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
                       />
                     </div>
                     {errors?.name && (
@@ -179,7 +179,7 @@ const CategoryItemForm = React.memo(
                       <FiLink className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-300" />
                       <input
                         {...register(`categories.${index}.slug`)}
-                        className={`w-full pl-11 pr-10 py-3 bg-stone-50 border rounded-2xl text-sm font-bold text-stone-800 focus:ring-2 focus:ring-emerald-500 transition-all outline-none ${
+                        className={`w-full pl-11 pr-10 py-3 bg-stone-50 border rounded-xl text-sm font-bold text-stone-800 focus:ring-2 focus:ring-emerald-500 transition-all outline-none ${
                           slugStatus === 'taken'
                             ? 'border-red-500 bg-red-50/10'
                             : slugStatus === 'available'
@@ -211,7 +211,7 @@ const CategoryItemForm = React.memo(
                     <label className="block text-[10px] font-black text-stone-500 uppercase ml-1">
                       Icon
                     </label>
-                    <div className="relative group cursor-pointer h-20 bg-stone-50 border border-stone-100 rounded-2xl flex items-center justify-center overflow-hidden hover:border-emerald-500 transition-all">
+                    <div className="relative group cursor-pointer h-20 bg-stone-50 border border-stone-100 rounded-xl flex items-center justify-center overflow-hidden hover:border-emerald-500 transition-all">
                       {iconPreview || freshCategory?.iconUrl ? (
                         <Image
                           src={iconPreview || freshCategory?.iconUrl || ''}
@@ -235,7 +235,7 @@ const CategoryItemForm = React.memo(
                     <label className="block text-[10px] font-black text-stone-500 uppercase ml-1">
                       Banner
                     </label>
-                    <div className="relative group cursor-pointer h-20 bg-stone-50 border border-stone-100 rounded-2xl flex items-center justify-center overflow-hidden hover:border-emerald-500 transition-all">
+                    <div className="relative group cursor-pointer h-20 bg-stone-50 border border-stone-100 rounded-xl flex items-center justify-center overflow-hidden hover:border-emerald-500 transition-all">
                       {bannerPreview || freshCategory?.bannerUrl ? (
                         <Image
                           src={bannerPreview || freshCategory?.bannerUrl || ''}
@@ -264,7 +264,7 @@ const CategoryItemForm = React.memo(
                   <textarea
                     {...register(`categories.${index}.description`)}
                     rows={4}
-                    className="w-full px-4 py-3 bg-stone-50 border border-stone-100 rounded-2xl text-sm text-stone-800 outline-none resize-none font-sans"
+                    className="w-full px-4 py-3 bg-stone-50 border border-stone-100 rounded-xl text-sm text-stone-800 outline-none resize-none font-sans"
                   />
                 </div>
 

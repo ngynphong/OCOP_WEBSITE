@@ -38,7 +38,7 @@ export const ProductStory = memo(function ProductStory({
         <div className="flex flex-col gap-8">
           {/* Section 1: Image Left, Text Right */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-center justify-between">
-            <div className="relative max-h-[500px] aspect-4/5 rounded-3xl overflow-hidden shadow-xl skew-y-1 hover:skew-y-0 transition-transform duration-700">
+            <div className="relative max-h-[500px] aspect-4/5 rounded-xl overflow-hidden shadow-xl skew-y-1 hover:skew-y-0 transition-transform duration-700">
               <Image
                 src={images[0] || '/images/placeholder-product.jpg'}
                 alt="Product Origin"
@@ -59,7 +59,7 @@ export const ProductStory = memo(function ProductStory({
           </div>
 
           {/* Section 2: Full Width Quote Banner */}
-          <div className="relative py-10 bg-stone-900 rounded-3xl text-white overflow-hidden text-center px-6">
+          <div className="relative py-10 bg-stone-900 rounded-xl text-white overflow-hidden text-center px-6">
             <div className="absolute inset-0 opacity-20">
               <Image
                 src={images[1] || images[0] || '/images/placeholder-product.jpg'}
@@ -95,7 +95,7 @@ export const ProductStory = memo(function ProductStory({
                 )}
               </div>
             </div>
-            <div className="relative w-full max-w-[400px] lg:ml-auto aspect-4/5 rounded-3xl overflow-hidden shadow-xl -skew-y-1 hover:skew-y-0 transition-transform duration-700 order-1 lg:order-2">
+            <div className="relative w-full max-w-[400px] lg:ml-auto aspect-4/5 rounded-xl overflow-hidden shadow-xl -skew-y-1 hover:skew-y-0 transition-transform duration-700 order-1 lg:order-2">
               <Image
                 src={images[2] || images[1] || images[0] || '/images/placeholder-product.jpg'}
                 alt="Craftsmanship"

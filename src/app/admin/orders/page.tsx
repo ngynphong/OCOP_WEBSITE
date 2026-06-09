@@ -68,7 +68,7 @@ const AdminOrdersPage = () => {
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex p-1.5 bg-stone-100 rounded-2xl w-fit border border-stone-200 shadow-inner">
+        <div className="flex p-1.5 bg-stone-100 rounded-xl w-fit border border-stone-200 shadow-inner">
           <button
             onClick={() => setActiveTab('orders')}
             className={cn(

@@ -70,7 +70,7 @@ export const ComplaintFloatingButton = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
-              className="bg-white px-4 py-2 rounded-2xl shadow-2xl border border-stone-100 relative mb-2"
+              className="bg-white px-4 py-2 rounded-xl shadow-2xl border border-stone-100 relative mb-2"
             >
               <button
                 onClick={() => setShowTooltip(false)}

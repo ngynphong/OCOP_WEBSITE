@@ -91,7 +91,7 @@ const QRScannerModal = ({ isOpen, onClose }: QRScannerModalProps) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Quét mã QR Truy xuất" maxWidth="max-w-md">
       <div className="flex flex-col items-center justify-center space-y-6">
-        <div className="relative w-full aspect-square max-w-[300px] overflow-hidden rounded-2xl bg-stone-900 border-4 border-emerald-500/30 shadow-inner flex items-center justify-center">
+        <div className="relative w-full aspect-square max-w-[300px] overflow-hidden rounded-xl bg-stone-900 border-4 border-emerald-500/30 shadow-inner flex items-center justify-center">
           <div id={scannerId} className="w-full h-full"></div>
 
           {!isScanning && !error && (

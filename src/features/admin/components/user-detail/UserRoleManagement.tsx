@@ -38,7 +38,7 @@ const UserRoleManagement = ({
   };
 
   return (
-    <div className="bg-white p-8 rounded-3xl shadow-sm border border-stone-100">
+    <div className="bg-white p-8 rounded-xl shadow-sm border border-stone-100">
       <div className="flex justify-between items-center mb-6">
         <h4 className="text-lg font-black text-stone-900 tracking-tight flex items-center gap-2">
           <FiShield className="text-emerald-600" /> Vai trò hệ thống
@@ -73,7 +73,7 @@ const UserRoleManagement = ({
           <select
             value={newRole}
             onChange={(e) => setNewRole(e.target.value)}
-            className="w-full pl-11 pr-4 py-3.5 bg-stone-50 border border-stone-100 rounded-2xl text-xs font-black text-stone-800 outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all appearance-none cursor-pointer"
+            className="w-full pl-11 pr-4 py-3.5 bg-stone-50 border border-stone-100 rounded-xl text-xs font-black text-stone-800 outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all appearance-none cursor-pointer"
           >
             <option value="">Chọn vai trò để thêm...</option>
             {availableRoles.map((role: AdminRole) => (
@@ -89,7 +89,7 @@ const UserRoleManagement = ({
         <button
           onClick={handleAddRole}
           disabled={!newRole}
-          className="px-6 py-3.5 bg-[#0D631B] text-white rounded-2xl text-xs font-black shadow-lg shadow-emerald-900/20 flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+          className="px-6 py-3.5 bg-[#0D631B] text-white rounded-xl text-xs font-black shadow-lg shadow-emerald-900/20 flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
         >
           <FiPlus /> Thêm
         </button>

@@ -48,7 +48,7 @@ export const ShopProductsTab = ({ shopSlug }: ShopProductsTabProps) => {
 
   if (isError) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 bg-red-50/50 rounded-2xl border border-red-100 mt-8">
+      <div className="flex flex-col items-center justify-center p-12 bg-red-50/50 rounded-xl border border-red-100 mt-8">
         <FiAlertCircle className="text-red-400 mb-2" size={32} />
         <p className="text-red-600 font-medium">
           Không thể tải danh sách sản phẩm. Vui lòng thử lại sau.
@@ -59,7 +59,7 @@ export const ShopProductsTab = ({ shopSlug }: ShopProductsTabProps) => {
 
   if (!products || products.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-16 sm:p-24 bg-stone-50 rounded-[24px] border border-dashed border-stone-200 mt-8">
+      <div className="flex flex-col items-center justify-center p-16 sm:p-24 bg-stone-50 rounded-xl border border-dashed border-stone-200 mt-8">
         <div className="w-16 h-16 bg-white rounded-full shadow-sm flex items-center justify-center mb-4 text-stone-300">
           <FiBox size={28} />
         </div>

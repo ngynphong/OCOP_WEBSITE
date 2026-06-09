@@ -31,11 +31,11 @@ export const QuickLinksRow = memo(function QuickLinksRow() {
   if (isLoading) {
     return (
       <section className="w-full max-w-7xl mx-auto px-6 py-4">
-        <div className="bg-white/50 backdrop-blur-md border border-white/40 rounded-[32px] p-8 shadow-xl shadow-stone-200/50">
+        <div className="bg-white/50 backdrop-blur-md border border-white/40 rounded-xl p-8 shadow-xl shadow-stone-200/50">
           <div className="grid grid-cols-4 md:grid-cols-8 gap-6 md:gap-4">
             {[...Array(8)].map((_, i) => (
               <div key={i} className="flex flex-col items-center gap-3 animate-pulse">
-                <div className="w-12 h-12 md:w-16 md:h-16 bg-stone-100 rounded-2xl" />
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-stone-100 rounded-xl" />
                 <div className="w-12 h-2 bg-stone-100 rounded-full" />
               </div>
             ))}
@@ -50,7 +50,7 @@ export const QuickLinksRow = memo(function QuickLinksRow() {
 
   return (
     <section className="w-full max-w-7xl mx-auto px-6 py-4">
-      <div className="bg-white/50 backdrop-blur-md border border-white/40 rounded-[32px] p-6 md:p-8 shadow-xl shadow-stone-200/50">
+      <div className="bg-white/50 backdrop-blur-md border border-white/40 rounded-xl p-6 md:p-8 shadow-xl shadow-stone-200/50">
         <div className="flex items-center justify-between overflow-x-auto gap-8 md:grid md:grid-cols-8 md:gap-4 hide-scrollbar">
           {quickLinks.map((item, index) => (
             <Link
@@ -62,7 +62,7 @@ export const QuickLinksRow = memo(function QuickLinksRow() {
                 whileHover={{ y: -5, scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-                className={`w-12 h-12 md:w-16 md:h-16 ${colors[index % colors.length]} rounded-2xl flex items-center justify-center shadow-sm group-hover:shadow-md transition-all duration-300 relative overflow-hidden`}
+                className={`w-12 h-12 md:w-16 md:h-16 ${colors[index % colors.length]} rounded-xl flex items-center justify-center shadow-sm group-hover:shadow-md transition-all duration-300 relative overflow-hidden`}
               >
                 {item.iconUrl ? (
                   <div className="relative w-7 h-7 md:w-10 md:h-10">

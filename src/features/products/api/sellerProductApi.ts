@@ -1,5 +1,7 @@
 import { axiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
+import { buildRoute } from '@/lib/routeBuilder';
+
 import {
   CreateProductRequest,
   UpdateProductRequest,
@@ -21,9 +23,6 @@ import {
   JournalListResponse,
   JournalDetailResponse,
   QrCodeResponse,
-  AttributeListResponse,
-  AttributeTemplateListResponse,
-  UpdateAttributesRequest,
   ResponseBase,
   WholesalePrice,
 } from '@/features/products/types/productTypes';
@@ -40,44 +39,44 @@ export const sellerProductApi = {
   },
 
   getProduct: (id: number): Promise<ProductDetailResponse> => {
-    return axiosClient.get(`${API_ENDPOINTS.SELLER.PRODUCTS}/${id}`);
+    return axiosClient.get(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, id));
   },
 
   updateProduct: (id: number, data: UpdateProductRequest): Promise<ProductDetailResponse> => {
-    return axiosClient.put(`${API_ENDPOINTS.SELLER.PRODUCTS}/${id}`, data);
+    return axiosClient.put(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, id), data);
   },
 
   deleteProduct: (id: number): Promise<void> => {
-    return axiosClient.delete(`${API_ENDPOINTS.SELLER.PRODUCTS}/${id}`);
+    return axiosClient.delete(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, id));
   },
 
   submitProduct: (id: number): Promise<ProductDetailResponse> => {
-    return axiosClient.post(`${API_ENDPOINTS.SELLER.PRODUCTS}/${id}/submit`);
+    return axiosClient.post(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, id, 'submit'));
   },
 
   withdrawProduct: (id: number): Promise<ProductDetailResponse> => {
-    return axiosClient.post(`${API_ENDPOINTS.SELLER.PRODUCTS}/${id}/withdraw`);
+    return axiosClient.post(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, id, 'withdraw'));
   },
 
   duplicateProduct: (id: number): Promise<ProductDetailResponse> => {
-    return axiosClient.post(`${API_ENDPOINTS.SELLER.PRODUCTS}/${id}/duplicate`);
+    return axiosClient.post(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, id, 'duplicate'));
   },
 
   discontinueProduct: (id: number): Promise<ProductDetailResponse> => {
-    return axiosClient.post(`${API_ENDPOINTS.SELLER.PRODUCTS}/${id}/discontinue`);
+    return axiosClient.post(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, id, 'discontinue'));
   },
 
   // ─── Variants ─────────────────────────────────────────────────────────────
 
   getVariants: (productId: number): Promise<VariantListResponse> => {
-    return axiosClient.get(`${API_ENDPOINTS.SELLER.PRODUCTS}/${productId}/variants`);
+    return axiosClient.get(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'variants'));
   },
 
   createVariant: (
     productId: number,
     data: CreateVariantRequest,
   ): Promise<VariantDetailResponse> => {
-    return axiosClient.post(`${API_ENDPOINTS.SELLER.PRODUCTS}/${productId}/variants`, data);
+    return axiosClient.post(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'variants'), data);
   },
 
   updateVariant: (
@@ -86,14 +85,14 @@ export const sellerProductApi = {
     data: UpdateVariantRequest,
   ): Promise<VariantDetailResponse> => {
     return axiosClient.put(
-      `${API_ENDPOINTS.SELLER.PRODUCTS}/${productId}/variants/${variantId}`,
+      buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'variants', variantId),
       data,
     );
   },
 
   deleteVariant: (productId: number, variantId: number): Promise<void> => {
     return axiosClient.delete(
-      `${API_ENDPOINTS.SELLER.PRODUCTS}/${productId}/variants/${variantId}`,
+      buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'variants', variantId),
     );
   },
 
@@ -103,7 +102,7 @@ export const sellerProductApi = {
     data: UpdateStockRequest,
   ): Promise<VariantDetailResponse> => {
     return axiosClient.patch(
-      `${API_ENDPOINTS.SELLER.PRODUCTS}/${productId}/variants/${variantId}/stock`,
+      buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'variants', variantId, 'stock'),
       data,
     );
   },
@@ -117,26 +116,32 @@ export const sellerProductApi = {
 
   setDefaultVariant: (productId: number, variantId: number): Promise<VariantDetailResponse> => {
     return axiosClient.patch(
-      `${API_ENDPOINTS.SELLER.PRODUCTS}/${productId}/variants/${variantId}/default`,
+      buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'variants', variantId, 'default'),
     );
   },
 
   // ─── Images ───────────────────────────────────────────────────────────────
 
   getImages: (productId: number): Promise<ImageListResponse> => {
-    return axiosClient.get(`${API_ENDPOINTS.SELLER.PRODUCTS}/${productId}/images`);
+    return axiosClient.get(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'images'));
   },
 
   uploadImage: (productId: number, file: File): Promise<ImageDetailResponse> => {
     const formData = new FormData();
     formData.append('file', file);
-    return axiosClient.post(`${API_ENDPOINTS.SELLER.PRODUCTS}/${productId}/images`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    return axiosClient.post(
+      buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'images'),
+      formData,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      },
+    );
   },
 
   deleteImage: (productId: number, imageId: number): Promise<void> => {
-    return axiosClient.delete(`${API_ENDPOINTS.SELLER.PRODUCTS}/${productId}/images/${imageId}`);
+    return axiosClient.delete(
+      buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'images', imageId),
+    );
   },
 
   reorderImages: (productId: number, data: ReorderImagesRequest): Promise<ImageListResponse> => {
@@ -145,14 +150,14 @@ export const sellerProductApi = {
 
   setPrimaryImage: (productId: number, imageId: number): Promise<ImageDetailResponse> => {
     return axiosClient.patch(
-      `${API_ENDPOINTS.SELLER.PRODUCTS}/${productId}/images/${imageId}/primary`,
+      buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'images', imageId, 'primary'),
     );
   },
 
   // ─── Journals ─────────────────────────────────────────────────────────────
 
   getJournals: (productId: number): Promise<JournalListResponse> => {
-    return axiosClient.get(`${API_ENDPOINTS.SELLER.PRODUCTS}/${productId}/journals`);
+    return axiosClient.get(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'journals'));
   },
 
   createJournal: (
@@ -175,9 +180,13 @@ export const sellerProductApi = {
       });
     }
 
-    return axiosClient.post(`${API_ENDPOINTS.SELLER.PRODUCTS}/${productId}/journals`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    return axiosClient.post(
+      buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'journals'),
+      formData,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      },
+    );
   },
 
   updateJournal: (
@@ -186,14 +195,14 @@ export const sellerProductApi = {
     data: UpdateJournalRequest,
   ): Promise<JournalDetailResponse> => {
     return axiosClient.put(
-      `${API_ENDPOINTS.SELLER.PRODUCTS}/${productId}/journals/${journalId}`,
+      buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'journals', journalId),
       data,
     );
   },
 
   deleteJournal: (productId: number, journalId: number): Promise<void> => {
     return axiosClient.delete(
-      `${API_ENDPOINTS.SELLER.PRODUCTS}/${productId}/journals/${journalId}`,
+      buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'journals', journalId),
     );
   },
 
@@ -205,24 +214,7 @@ export const sellerProductApi = {
   },
 
   getQr: (productId: number): Promise<QrCodeResponse> => {
-    return axiosClient.get(`${API_ENDPOINTS.SELLER.PRODUCTS}/${productId}/qr`);
-  },
-
-  // ─── Attributes ───────────────────────────────────────────────────────────
-
-  getAttributes: (productId: number): Promise<AttributeListResponse> => {
-    return axiosClient.get(`${API_ENDPOINTS.SELLER.PRODUCTS}/${productId}/attributes`);
-  },
-
-  updateAttributes: (
-    productId: number,
-    data: UpdateAttributesRequest,
-  ): Promise<AttributeListResponse> => {
-    return axiosClient.put(`${API_ENDPOINTS.SELLER.PRODUCTS}/${productId}/attributes`, data);
-  },
-
-  getAttributeTemplates: (categoryId?: number): Promise<AttributeTemplateListResponse> => {
-    return axiosClient.get(API_ENDPOINTS.SELLER.ATTRIBUTE_TEMPLATES, { params: { categoryId } });
+    return axiosClient.get(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'qr'));
   },
 
   // ─── Tier Prices ──────────────────────────────────────────────────────────
@@ -230,7 +222,7 @@ export const sellerProductApi = {
     productId: number,
     variantId?: number,
   ): Promise<ResponseBase<WholesalePrice[]>> => {
-    return axiosClient.get(`${API_ENDPOINTS.SELLER.PRODUCTS}/${productId}/tier-prices`, {
+    return axiosClient.get(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'tier-prices'), {
       params: { variantId },
     });
   },
@@ -239,11 +231,14 @@ export const sellerProductApi = {
     productId: number,
     data: { variantId: number | null; tiers: WholesalePrice[] },
   ): Promise<ResponseBase<WholesalePrice[]>> => {
-    return axiosClient.put(`${API_ENDPOINTS.SELLER.PRODUCTS}/${productId}/tier-prices`, data);
+    return axiosClient.put(
+      buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'tier-prices'),
+      data,
+    );
   },
 
   deleteTierPrices: (productId: number, variantId?: number): Promise<void> => {
-    return axiosClient.delete(`${API_ENDPOINTS.SELLER.PRODUCTS}/${productId}/tier-prices`, {
+    return axiosClient.delete(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'tier-prices'), {
       params: { variantId },
     });
   },

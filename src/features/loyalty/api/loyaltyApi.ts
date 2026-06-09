@@ -1,5 +1,7 @@
 import { axiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
+import { buildRoute } from '@/lib/routeBuilder';
+
 import {
   AdminLoyaltyAccountResponse,
   AdminAdjustPointsResponse,
@@ -13,14 +15,14 @@ import {
 export const loyaltyApi = {
   // Admin Endpoints
   getAdminLoyaltyAccount: (userId: string): Promise<AdminLoyaltyAccountResponse> => {
-    return axiosClient.get(`${API_ENDPOINTS.ADMIN.LOYALTY}/${userId}`);
+    return axiosClient.get(buildRoute(API_ENDPOINTS.ADMIN.LOYALTY, userId));
   },
 
   adjustPoints: (
     userId: string,
     data: IAdjustPointsRequest,
   ): Promise<AdminAdjustPointsResponse> => {
-    return axiosClient.post(`${API_ENDPOINTS.ADMIN.LOYALTY}/${userId}/adjust`, data);
+    return axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.LOYALTY, userId, 'adjust'), data);
   },
 
   // User Endpoints

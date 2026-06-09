@@ -72,20 +72,20 @@ const DashboardPage = () => {
   if (isPending) {
     return (
       <div className="space-y-8 p-6 md:p-10 animate-pulse">
-        <div className="h-24 bg-stone-100 rounded-2xl w-full"></div>
+        <div className="h-24 bg-stone-100 rounded-xl w-full"></div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-32 bg-stone-100 rounded-2xl w-full"></div>
+            <div key={i} className="h-32 bg-stone-100 rounded-xl w-full"></div>
           ))}
         </div>
-        <div className="h-40 bg-stone-100 rounded-2xl w-full"></div>
+        <div className="h-40 bg-stone-100 rounded-xl w-full"></div>
       </div>
     );
   }
 
   if (isError) {
     return (
-      <div className="p-10 text-center text-red-500 bg-red-50 rounded-2xl m-6">
+      <div className="p-10 text-center text-red-500 bg-red-50 rounded-xl m-6">
         <p className="font-bold">Không thể tải dữ liệu Dashboard. Vui lòng thử lại sau.</p>
       </div>
     );
@@ -153,7 +153,7 @@ const DashboardPage = () => {
       {/* Welcome Section */}
       <div
         className={cn(
-          'flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-2xl border transition-colors bg-green-50 border-green-100',
+          'flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-xl border transition-colors bg-green-50 border-green-100',
         )}
       >
         <div>
@@ -184,7 +184,7 @@ const DashboardPage = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: idx * 0.1 }}
-            className="p-5 bg-white border border-stone-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow"
+            className="p-5 bg-white border border-stone-100 rounded-xl shadow-sm hover:shadow-md transition-shadow"
           >
             <div
               className={`w-10 h-10 ${stat.color} rounded-xl flex items-center justify-center text-white mb-3 shadow-lg shadow-${stat.color.split('-')[1]}-500/20`}
@@ -203,9 +203,9 @@ const DashboardPage = () => {
       {!isSellerMode ? (
         <Link
           href="/dashboard/cua-hang"
-          className="group flex items-center gap-5 p-5 rounded-2xl bg-linear-to-r from-green-700 to-emerald-600 text-white shadow-xl shadow-green-700/25 hover:shadow-green-600/40 transition-all hover:-translate-y-0.5"
+          className="group flex items-center gap-5 p-5 rounded-xl bg-linear-to-r from-green-700 to-emerald-600 text-white shadow-xl shadow-green-700/25 hover:shadow-green-600/40 transition-all hover:-translate-y-0.5"
         >
-          <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center shrink-0">
+          <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
             <FiTag size={22} />
           </div>
           <div className="flex-1">
@@ -221,7 +221,7 @@ const DashboardPage = () => {
         </Link>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="p-5 rounded-2xl bg-white border border-stone-100 flex items-center gap-4">
+          <div className="p-5 rounded-xl bg-white border border-stone-100 flex items-center gap-4">
             <div className="w-10 h-10 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center">
               <FiTag size={20} />
             </div>
@@ -234,7 +234,7 @@ const DashboardPage = () => {
               </p>
             </div>
           </div>
-          <div className="p-5 rounded-2xl bg-white border border-stone-100 flex items-center gap-4">
+          <div className="p-5 rounded-xl bg-white border border-stone-100 flex items-center gap-4">
             <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
               <FiBarChart2 size={20} />
             </div>
@@ -266,7 +266,7 @@ const DashboardPage = () => {
           </div>
 
           {recentOrders && recentOrders.length > 0 ? (
-            <div className="bg-white border border-stone-100 rounded-2xl overflow-hidden shadow-sm">
+            <div className="bg-white border border-stone-100 rounded-xl overflow-hidden shadow-sm">
               <div className="divide-y divide-stone-100">
                 {recentOrders.slice(0, 4).map((order) => (
                   <div
@@ -297,7 +297,7 @@ const DashboardPage = () => {
               </div>
             </div>
           ) : (
-            <div className="bg-stone-50 rounded-2xl p-8 text-center space-y-3">
+            <div className="bg-stone-50 rounded-xl p-8 text-center space-y-3">
               <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm">
                 <FiClock size={20} className="text-stone-300" />
               </div>
@@ -313,7 +313,7 @@ const DashboardPage = () => {
           <h3 className="font-bold text-stone-900">
             {isSellerMode ? 'Công cụ bán hàng' : 'Thông tin tài khoản'}
           </h3>
-          <div className="bg-white border border-stone-100 rounded-2xl p-6 space-y-4 shadow-sm">
+          <div className="bg-white border border-stone-100 rounded-xl p-6 space-y-4 shadow-sm">
             <div className="flex items-center gap-4">
               <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600">
                 <FiUser size={18} />

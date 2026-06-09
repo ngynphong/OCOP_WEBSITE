@@ -75,17 +75,17 @@ export function VariantsTab({ productId }: VariantsTabProps) {
     setShowForm(false);
   };
 
-  if (isPending) return <div className="h-32 bg-stone-100 rounded-2xl animate-pulse" />;
+  if (isPending) return <div className="h-32 bg-stone-100 rounded-xl animate-pulse" />;
 
   return (
     <div className="space-y-4">
       {/* Variants list */}
       {variants.length === 0 ? (
-        <div className="flex items-center justify-center h-24 bg-stone-50 rounded-2xl border border-dashed border-stone-200">
+        <div className="flex items-center justify-center h-24 bg-stone-50 rounded-xl border border-dashed border-stone-200">
           <p className="text-stone-400 text-sm">Chưa có biến thể nào</p>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-stone-100">
+        <div className="overflow-hidden rounded-xl border border-stone-100">
           <table className="w-full text-sm">
             <thead className="bg-stone-50 border-b border-stone-100">
               <tr>
@@ -280,7 +280,7 @@ export function VariantsTab({ productId }: VariantsTabProps) {
       {showForm ? (
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="border border-stone-100 rounded-2xl p-5 space-y-4 bg-stone-50/50"
+          className="border border-stone-100 rounded-xl p-5 space-y-4 bg-stone-50/50"
         >
           <h4 className="text-sm font-black text-stone-700">Thêm biến thể mới</h4>
           <div className="grid grid-cols-2 gap-4">
@@ -406,7 +406,7 @@ export function VariantsTab({ productId }: VariantsTabProps) {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 p-4 bg-white rounded-2xl border border-stone-200">
+          <div className="flex flex-col gap-4 p-4 bg-white rounded-xl border border-stone-200">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <input
@@ -540,7 +540,7 @@ export function VariantsTab({ productId }: VariantsTabProps) {
       ) : (
         <button
           onClick={() => setShowForm(true)}
-          className="w-full py-3 border border-dashed border-stone-200 rounded-2xl text-sm font-bold text-stone-400 hover:border-emerald-300 hover:text-emerald-600 transition cursor-pointer"
+          className="w-full py-3 border border-dashed border-stone-200 rounded-xl text-sm font-bold text-stone-400 hover:border-emerald-300 hover:text-emerald-600 transition cursor-pointer"
         >
           + Thêm biến thể
         </button>

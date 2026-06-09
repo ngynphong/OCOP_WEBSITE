@@ -52,7 +52,7 @@ export const WithdrawalRequestModal: React.FC<WithdrawalRequestModalProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Yêu cầu rút tiền Affiliate">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div className="bg-emerald-50 p-4 rounded-2xl border border-emerald-100 flex items-center gap-3">
+        <div className="bg-emerald-50 p-4 rounded-xl border border-emerald-100 flex items-center gap-3">
           <div className="bg-emerald-500 p-2 rounded-xl text-white">
             <FiDollarSign />
           </div>
@@ -81,7 +81,7 @@ export const WithdrawalRequestModal: React.FC<WithdrawalRequestModalProps> = ({
                     value={formatVNDInput(field.value)}
                     onChange={(e) => field.onChange(parseVNDInput(e.target.value))}
                     placeholder="VD: 10.000"
-                    className={`w-full px-5 py-4 rounded-2xl bg-stone-50 text-gray-700 border transition-all duration-300 focus:outline-hidden focus:ring-2 focus:ring-emerald-500 ${
+                    className={`w-full px-5 py-4 rounded-xl bg-stone-50 text-gray-700 border transition-all duration-300 focus:outline-hidden focus:ring-2 focus:ring-emerald-500 ${
                       formState.errors.amount
                         ? 'border-red-300'
                         : 'border-stone-200 focus:border-emerald-500'
@@ -106,7 +106,7 @@ export const WithdrawalRequestModal: React.FC<WithdrawalRequestModalProps> = ({
               <input
                 {...register('bankInfo.bankName')}
                 placeholder="VD: Vietcombank, MB Bank..."
-                className={`w-full px-5 py-4 rounded-2xl bg-stone-50 text-gray-700 border transition-all duration-300 focus:outline-hidden focus:ring-2 focus:ring-emerald-500 ${
+                className={`w-full px-5 py-4 rounded-xl bg-stone-50 text-gray-700 border transition-all duration-300 focus:outline-hidden focus:ring-2 focus:ring-emerald-500 ${
                   formState.errors.bankInfo?.bankName
                     ? 'border-red-300'
                     : 'border-stone-200 focus:border-emerald-500'
@@ -124,7 +124,7 @@ export const WithdrawalRequestModal: React.FC<WithdrawalRequestModalProps> = ({
               <input
                 {...register('bankInfo.accountNumber')}
                 placeholder="VD: 0123456789"
-                className={`w-full px-5 py-4 rounded-2xl bg-stone-50 text-gray-700 border transition-all duration-300 focus:outline-hidden focus:ring-2 focus:ring-emerald-500 ${
+                className={`w-full px-5 py-4 rounded-xl bg-stone-50 text-gray-700 border transition-all duration-300 focus:outline-hidden focus:ring-2 focus:ring-emerald-500 ${
                   formState.errors.bankInfo?.accountNumber
                     ? 'border-red-300'
                     : 'border-stone-200 focus:border-emerald-500'
@@ -142,7 +142,7 @@ export const WithdrawalRequestModal: React.FC<WithdrawalRequestModalProps> = ({
               <input
                 {...register('bankInfo.accountName')}
                 placeholder="VD: NGUYEN VAN A"
-                className={`w-full px-5 py-4 rounded-2xl bg-stone-50 text-gray-700 border transition-all duration-300 focus:outline-hidden focus:ring-2 focus:ring-emerald-500 ${
+                className={`w-full px-5 py-4 rounded-xl bg-stone-50 text-gray-700 border transition-all duration-300 focus:outline-hidden focus:ring-2 focus:ring-emerald-500 ${
                   formState.errors.bankInfo?.accountName
                     ? 'border-red-300'
                     : 'border-stone-200 focus:border-emerald-500'
@@ -161,7 +161,7 @@ export const WithdrawalRequestModal: React.FC<WithdrawalRequestModalProps> = ({
           <Button
             type="button"
             variant="outline"
-            className="flex-1 rounded-2xl py-4 h-auto font-bold"
+            className="flex-1 rounded-xl py-4 h-auto font-bold"
             onClick={onClose}
           >
             Hủy bỏ
@@ -169,7 +169,7 @@ export const WithdrawalRequestModal: React.FC<WithdrawalRequestModalProps> = ({
           <Button
             type="submit"
             variant="primary"
-            className="flex-1 rounded-2xl py-4 h-auto font-bold shadow-lg shadow-emerald-500/30"
+            className="flex-1 rounded-xl py-4 h-auto font-bold shadow-lg shadow-emerald-500/30"
             isLoading={isCreatingWithdrawal}
           >
             Gửi yêu cầu

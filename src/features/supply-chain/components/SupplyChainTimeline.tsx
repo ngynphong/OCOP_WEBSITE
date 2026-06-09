@@ -61,7 +61,7 @@ export const SupplyChainTimeline = ({ steps, className }: SupplyChainTimelinePro
             <div className="flex items-center sm:items-start shrink-0 z-10">
               <div
                 className={cn(
-                  'w-10 h-10 rounded-2xl flex items-center justify-center shadow-md transition-transform group-hover:scale-110 duration-300',
+                  'w-10 h-10 rounded-xl flex items-center justify-center shadow-md transition-transform group-hover:scale-110 duration-300',
                   config.color,
                 )}
               >
@@ -76,7 +76,7 @@ export const SupplyChainTimeline = ({ steps, className }: SupplyChainTimelinePro
             </div>
 
             {/* Content Card */}
-            <div className="flex-1 bg-white rounded-3xl p-5 border border-stone-100 shadow-xl shadow-stone-200/40 group-hover:border-emerald-200/50 transition-colors duration-300">
+            <div className="flex-1 bg-white rounded-xl p-5 border border-stone-100 shadow-xl shadow-stone-200/40 group-hover:border-emerald-200/50 transition-colors duration-300">
               <div className="hidden sm:flex justify-between items-center mb-4">
                 <h4 className="font-bold text-stone-900 group-hover:text-emerald-700 transition-colors">
                   {config.label}
@@ -104,7 +104,7 @@ export const SupplyChainTimeline = ({ steps, className }: SupplyChainTimelinePro
       })}
 
       {sortedSteps.length === 0 && (
-        <div className="text-center py-12 bg-stone-50 rounded-3xl border border-dashed border-stone-200">
+        <div className="text-center py-12 bg-stone-50 rounded-xl border border-dashed border-stone-200">
           <FiClock className="mx-auto text-stone-300 mb-3" size={32} />
           <p className="text-stone-500 font-medium">
             Chưa có thông tin chuỗi cung ứng được ghi nhận.

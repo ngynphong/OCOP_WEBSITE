@@ -1,10 +1,10 @@
 'use client';
 
-import { ProductCard } from '@/components/ui/ProductCard';
 import { ArrowLeft, ArrowRight, Loader2 } from 'lucide-react';
 import { useWishlistStatus } from '@/features/wishlist/hooks/useWishlist';
 import { useAppSelector } from '@/store/hooks';
 import { useFeaturedProductsQuery } from '@/features/products/hooks/usePublicProducts';
+import { ProductCard } from '@/components/ui/ProductCard';
 
 export function BestSellersSection() {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
@@ -39,7 +39,7 @@ export function BestSellersSection() {
       </div>
 
       {isLoading ? (
-        <div className="w-full h-64 flex items-center justify-center bg-stone-50 rounded-[40px] border border-dashed border-stone-200">
+        <div className="w-full h-64 flex items-center justify-center bg-stone-50 rounded-xl border border-dashed border-stone-200">
           <div className="flex flex-col items-center gap-3 text-stone-400">
             <Loader2 className="w-8 h-8 animate-spin" />
             <span className="text-sm font-bold uppercase tracking-widest">
@@ -48,7 +48,7 @@ export function BestSellersSection() {
           </div>
         </div>
       ) : products.length === 0 ? (
-        <div className="w-full h-64 flex flex-col items-center justify-center bg-stone-50 rounded-[40px] border border-dashed border-stone-200 text-stone-400 gap-4">
+        <div className="w-full h-64 flex flex-col items-center justify-center bg-stone-50 rounded-xl border border-dashed border-stone-200 text-stone-400 gap-4">
           <div className="p-4 bg-white rounded-full shadow-sm">
             <Loader2 className="w-8 h-8 opacity-20" /> {/* Or a better empty icon */}
           </div>

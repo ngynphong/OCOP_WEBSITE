@@ -21,7 +21,7 @@ export const SupportTicketTable = ({
 }: SupportTicketTableProps) => {
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-stone-100 shadow-sm">
+      <div className="flex flex-col items-center justify-center py-20 bg-white rounded-xl border border-stone-100 shadow-sm">
         <Loader2 className="w-10 h-10 text-emerald-800 animate-spin" />
         <p className="text-stone-400 text-sm mt-4 font-medium italic">
           Đang tải danh sách yêu cầu...
@@ -33,7 +33,7 @@ export const SupportTicketTable = ({
   if (tickets.length === 0) {
     return (
       <div className="bg-stone-50/50 rounded-4xl border border-dashed border-stone-200 py-24 text-center">
-        <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center mx-auto mb-6 border border-stone-100 shadow-sm text-stone-300">
+        <div className="w-20 h-20 bg-white rounded-xl flex items-center justify-center mx-auto mb-6 border border-stone-100 shadow-sm text-stone-300">
           <MessageSquare size={40} />
         </div>
         <h3 className="text-xl font-bold text-stone-900">Bạn chưa có yêu cầu hỗ trợ nào</h3>
@@ -45,7 +45,7 @@ export const SupportTicketTable = ({
   }
 
   return (
-    <div className="bg-white rounded-3xl border border-stone-100 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>

@@ -64,7 +64,7 @@ export function BrandManagement() {
       </div>
 
       {/* Brands Table */}
-      <div className="bg-white rounded-3xl shadow-sm border border-stone-100 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>

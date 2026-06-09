@@ -37,7 +37,7 @@ export const ContactForm = () => {
   };
 
   return (
-    <div className="bg-white p-8 rounded-2xl border border-stone-200 shadow-lg">
+    <div className="bg-white p-8 rounded-xl border border-stone-200 shadow-lg">
       <h3 className="text-2xl font-bold text-stone-900 mb-6">Gửi Yêu Cầu Hỗ Trợ</h3>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">

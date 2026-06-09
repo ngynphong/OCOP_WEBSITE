@@ -33,8 +33,8 @@ const DetailMode = ({ freshCategory, activeTab, setActiveTab, onAddSub }: Detail
         )}
 
         {/* Floating Info Card */}
-        <div className="absolute -bottom-12 left-8 right-8 bg-white rounded-3xl p-6 shadow-xl shadow-stone-200 border border-stone-50 flex items-center gap-6">
-          <div className="w-20 h-20 rounded-2xl bg-stone-50 border-4 border-white shadow-md overflow-hidden shrink-0">
+        <div className="absolute -bottom-12 left-8 right-8 bg-white rounded-xl p-6 shadow-xl shadow-stone-200 border border-stone-50 flex items-center gap-6">
+          <div className="w-20 h-20 rounded-xl bg-stone-50 border-4 border-white shadow-md overflow-hidden shrink-0">
             {freshCategory.iconUrl ? (
               <Image
                 src={freshCategory.iconUrl}
@@ -110,7 +110,7 @@ const DetailMode = ({ freshCategory, activeTab, setActiveTab, onAddSub }: Detail
               className="space-y-8"
             >
               {/* Description */}
-              <div className="bg-white p-6 rounded-3xl border border-stone-100 shadow-sm">
+              <div className="bg-white p-6 rounded-xl border border-stone-100 shadow-sm">
                 <label className="block text-[10px] font-black text-stone-400 uppercase tracking-widest mb-4">
                   Mô tả chi tiết
                 </label>
@@ -121,7 +121,7 @@ const DetailMode = ({ freshCategory, activeTab, setActiveTab, onAddSub }: Detail
 
               {/* Stats/Meta */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white p-5 rounded-3xl border border-stone-100 flex items-center gap-4">
+                <div className="bg-white p-5 rounded-xl border border-stone-100 flex items-center gap-4">
                   <div className="w-10 h-10 rounded-xl bg-stone-50 flex items-center justify-center text-stone-400">
                     <FiList />
                   </div>
@@ -132,7 +132,7 @@ const DetailMode = ({ freshCategory, activeTab, setActiveTab, onAddSub }: Detail
                     <p className="text-sm font-black text-stone-800">{freshCategory.sortOrder}</p>
                   </div>
                 </div>
-                <div className="bg-white p-5 rounded-3xl border border-stone-100 flex items-center gap-4">
+                <div className="bg-white p-5 rounded-xl border border-stone-100 flex items-center gap-4">
                   <div className="w-10 h-10 rounded-xl bg-stone-50 flex items-center justify-center text-stone-400">
                     <FiType />
                   </div>
@@ -170,7 +170,7 @@ const DetailMode = ({ freshCategory, activeTab, setActiveTab, onAddSub }: Detail
                   {freshCategory.children.map((child: Category) => (
                     <div
                       key={child.id}
-                      className="bg-white p-4 rounded-2xl border border-stone-100 shadow-sm flex items-center gap-4 group hover:border-emerald-200 transition-all font-sans"
+                      className="bg-white p-4 rounded-xl border border-stone-100 shadow-sm flex items-center gap-4 group hover:border-emerald-200 transition-all font-sans"
                     >
                       <div className="relative w-10 h-10 rounded-xl bg-stone-50 border border-stone-100 overflow-hidden shrink-0">
                         {child.iconUrl && (
@@ -201,7 +201,7 @@ const DetailMode = ({ freshCategory, activeTab, setActiveTab, onAddSub }: Detail
                   ))}
                 </div>
               ) : (
-                <div className="py-12 border-2 border-dashed border-stone-100 rounded-3xl flex flex-col items-center justify-center">
+                <div className="py-12 border-2 border-dashed border-stone-100 rounded-xl flex flex-col items-center justify-center">
                   <FiList className="text-stone-200 mb-2" size={32} />
                   <p className="text-xs font-bold text-stone-300 uppercase tracking-widest">
                     Không có danh mục con

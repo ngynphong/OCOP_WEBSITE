@@ -113,7 +113,7 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({ isOpen, 
               </div>
               <button
                 onClick={onClose}
-                className="w-10 h-10 rounded-2xl bg-stone-50 flex items-center justify-center text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-all shadow-sm border border-stone-200"
+                className="w-10 h-10 rounded-xl bg-stone-50 flex items-center justify-center text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-all shadow-sm border border-stone-200"
               >
                 <FiX size={20} />
               </button>
@@ -166,7 +166,7 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({ isOpen, 
                 </>
               ) : (
                 <div className="h-full flex flex-col items-center justify-center px-12 text-center space-y-4">
-                  <div className="w-20 h-20 rounded-[32px] bg-stone-50 flex items-center justify-center text-stone-300 border border-dashed border-stone-200">
+                  <div className="w-20 h-20 rounded-xl bg-stone-50 flex items-center justify-center text-stone-300 border border-dashed border-stone-200">
                     <FiBellOff size={32} />
                   </div>
                   <div>
@@ -175,7 +175,7 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({ isOpen, 
                       Hộp thư của bạn hiện đang trống. Hãy quay lại sau nhé!
                     </p>
                   </div>
-                  <Button variant="outline" className="rounded-2xl px-8" onClick={onClose}>
+                  <Button variant="outline" className="rounded-xl px-8" onClick={onClose}>
                     Đóng lại
                   </Button>
                 </div>

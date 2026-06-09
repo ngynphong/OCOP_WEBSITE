@@ -71,7 +71,7 @@ const AdminPaymentGatewaysManager = () => {
             key={gateway.id}
             onClick={() => setActiveId(gateway.id)}
             className={cn(
-              'p-4 rounded-2xl border transition-all cursor-pointer relative group',
+              'p-4 rounded-xl border transition-all cursor-pointer relative group',
               selectedGateway?.id === gateway.id
                 ? 'border-emerald-600 bg-emerald-50/30 shadow-sm ring-1 ring-emerald-600'
                 : 'border-slate-100 bg-white hover:border-slate-300 hover:shadow-sm',
@@ -130,7 +130,7 @@ const AdminPaymentGatewaysManager = () => {
       </div>
 
       {/* Right side: Configuration Form */}
-      <div className="flex-1 bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden flex flex-col">
+      <div className="flex-1 bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden flex flex-col">
         <AnimatePresence mode="wait">
           {selectedGateway ? (
             <motion.div
@@ -143,7 +143,7 @@ const AdminPaymentGatewaysManager = () => {
               {/* Header */}
               <div className="p-6 border-b border-slate-50 flex items-center justify-between bg-slate-50/30">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 relative rounded-2xl border border-white bg-white shadow-sm p-3 flex items-center justify-center">
+                  <div className="w-14 h-14 relative rounded-xl border border-white bg-white shadow-sm p-3 flex items-center justify-center">
                     {selectedGateway.logoUrl && selectedGateway.logoUrl.trim() !== '' ? (
                       <Image
                         src={selectedGateway.logoUrl}
@@ -304,7 +304,7 @@ const GatewayConfigForm = ({ gateway }: { gateway: IPaymentGatewayAdmin }) => {
                 <select
                   value={config[field] || 'SANDBOX'}
                   onChange={(e) => handleFieldChange(field, e.target.value)}
-                  className="w-full px-5 py-3 rounded-2xl border border-slate-100 bg-stone-50/30 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-bold text-sm text-slate-700 appearance-none cursor-pointer"
+                  className="w-full px-5 py-3 rounded-xl border border-slate-100 bg-stone-50/30 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-bold text-sm text-slate-700 appearance-none cursor-pointer"
                 >
                   <option value="SANDBOX">SANDBOX</option>
                   <option value="PRODUCTION">PRODUCTION</option>
@@ -318,7 +318,7 @@ const GatewayConfigForm = ({ gateway }: { gateway: IPaymentGatewayAdmin }) => {
                     disabled={!isEditable}
                     onChange={(e) => handleFieldChange(field, e.target.value)}
                     className={cn(
-                      'w-full px-5 py-3 rounded-2xl border transition-all font-bold text-sm',
+                      'w-full px-5 py-3 rounded-xl border transition-all font-bold text-sm',
                       isEditable
                         ? 'border-slate-100 bg-stone-50/30 text-slate-700 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500'
                         : 'border-slate-50 bg-stone-50/10 text-stone-300 cursor-not-allowed select-none',
@@ -340,7 +340,7 @@ const GatewayConfigForm = ({ gateway }: { gateway: IPaymentGatewayAdmin }) => {
           );
         })
       ) : (
-        <div className="p-8 rounded-3xl bg-slate-50 border border-slate-100 text-center">
+        <div className="p-8 rounded-xl bg-slate-50 border border-slate-100 text-center">
           <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">
             {gateway.code === 'COD'
               ? 'Thanh toán khi nhận hàng không có cấu hình đặc biệt'
@@ -375,7 +375,7 @@ const GatewayConfigForm = ({ gateway }: { gateway: IPaymentGatewayAdmin }) => {
                 setIsChanged(false);
               }}
               disabled={!isChanged || isPending}
-              className="rounded-2xl px-6 h-12"
+              className="rounded-xl px-6 h-12"
             >
               Hủy thay đổi
             </Button>
@@ -383,7 +383,7 @@ const GatewayConfigForm = ({ gateway }: { gateway: IPaymentGatewayAdmin }) => {
               isLoading={isPending}
               onClick={handleUpdate}
               disabled={!isChanged}
-              className="rounded-2xl px-8 h-12 flex items-center gap-2 shadow-sm shadow-emerald-500/20"
+              className="rounded-xl px-8 h-12 flex items-center gap-2 shadow-sm shadow-emerald-500/20"
             >
               <FiSave /> Lưu cấu hình
             </Button>

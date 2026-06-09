@@ -95,7 +95,7 @@ const Step5Documents = () => {
       </div>
 
       {/* Upload Progress */}
-      <div className="p-4 bg-stone-50 rounded-2xl border border-stone-100 flex items-center justify-between">
+      <div className="p-4 bg-stone-50 rounded-xl border border-stone-100 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-green-600">
             <span className="font-bold">
@@ -121,7 +121,7 @@ const Step5Documents = () => {
             <div
               key={doc.type}
               className={cn(
-                'relative group flex flex-col p-5 rounded-3xl border-2 transition-all duration-300',
+                'relative group flex flex-col p-5 rounded-xl border-2 transition-all duration-300',
                 isUploaded
                   ? 'bg-green-50/50 border-green-100'
                   : 'bg-white border-stone-100 hover:border-green-200',
@@ -188,7 +188,7 @@ const Step5Documents = () => {
       </div>
 
       {/* Disclaimer */}
-      <div className="flex gap-3 p-4 bg-amber-50 rounded-2xl border border-amber-100">
+      <div className="flex gap-3 p-4 bg-amber-50 rounded-xl border border-amber-100">
         <FiAlertCircle size={18} className="text-amber-600 mt-0.5 shrink-0" />
         <p className="text-[11px] text-amber-800 leading-relaxed">
           <strong>Lưu ý:</strong> Nút <strong>Hoàn tất</strong> sẽ chỉ hiện khi bạn đã tải lên đủ 3
@@ -203,12 +203,12 @@ const Step5Documents = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             onClick={onFinish}
-            className="w-full flex items-center justify-center gap-2 py-4 bg-green-600 text-white rounded-2xl font-black shadow-xl shadow-green-500/25 hover:bg-green-700 hover:-translate-y-0.5 transition-all cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 py-4 bg-green-600 text-white rounded-xl font-black shadow-xl shadow-green-500/25 hover:bg-green-700 hover:-translate-y-0.5 transition-all cursor-pointer"
           >
             Hoàn tất & Về Dashboard <FiArrowRight />
           </motion.button>
         ) : (
-          <div className="w-full py-4 bg-stone-100 text-stone-400 rounded-2xl font-black text-center text-sm cursor-not-allowed border border-stone-200">
+          <div className="w-full py-4 bg-stone-100 text-stone-400 rounded-xl font-black text-center text-sm cursor-not-allowed border border-stone-200">
             Vui lòng tải đủ hồ sơ để tiếp tục
           </div>
         )}

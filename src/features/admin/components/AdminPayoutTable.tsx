@@ -136,7 +136,7 @@ export const AdminPayoutTable: React.FC<AdminPayoutTableProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
       {/* Header Actions */}
       <div className="p-4 border-b border-stone-200 flex justify-between items-center bg-stone-50/50">
         <h3 className="font-bold text-stone-800">Danh sách đối soát</h3>
@@ -281,7 +281,7 @@ export const AdminPayoutTable: React.FC<AdminPayoutTableProps> = ({
       {/* Process Payout Modal */}
       {selectedPayout && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl">
+          <div className="bg-white rounded-xl max-w-md w-full p-6 shadow-2xl">
             <div className="flex justify-between items-start mb-4">
               <h3 className="text-xl font-black text-[#00490E]">Xác nhận thanh toán</h3>
               <button
@@ -406,7 +406,7 @@ export const AdminPayoutTable: React.FC<AdminPayoutTableProps> = ({
       {/* Generate Payout Modal */}
       {showGenerateModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl">
+          <div className="bg-white rounded-xl max-w-md w-full p-6 shadow-2xl">
             <div className="flex justify-between items-start mb-6">
               <h3 className="text-xl font-black text-[#00490E]">Tạo đối soát mới</h3>
               <button

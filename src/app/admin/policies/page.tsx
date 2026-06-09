@@ -92,15 +92,15 @@ const AdminPoliciesPage = () => {
   if (isPending) {
     return (
       <div className="space-y-6 animate-pulse">
-        <div className="h-16 bg-stone-100 rounded-2xl w-full"></div>
-        <div className="h-[400px] bg-stone-100 rounded-3xl w-full"></div>
+        <div className="h-16 bg-stone-100 rounded-xl w-full"></div>
+        <div className="h-[400px] bg-stone-100 rounded-xl w-full"></div>
       </div>
     );
   }
 
   if (isError) {
     return (
-      <div className="p-10 text-center text-red-500 bg-red-50 rounded-2xl">
+      <div className="p-10 text-center text-red-500 bg-red-50 rounded-xl">
         <p className="font-bold">Không thể tải dữ liệu Chính sách</p>
       </div>
     );

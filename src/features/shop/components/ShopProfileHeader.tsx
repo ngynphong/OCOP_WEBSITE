@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import {
   FiMapPin,
   FiStar,
@@ -25,6 +26,8 @@ export const ShopProfileHeader = ({ shop }: ShopProfileHeaderProps) => {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const { createRoom, isCreatingRoom } = useChatMutations();
   const [isComplaintModalOpen, setIsComplaintModalOpen] = React.useState(false);
+  const { scrollY } = useScroll();
+  const yParallax = useTransform(scrollY, [0, 500], [0, 150]);
 
   const handleStartChat = async () => {
     if (!isAuthenticated) {
@@ -52,18 +55,20 @@ export const ShopProfileHeader = ({ shop }: ShopProfileHeaderProps) => {
     <div className="bg-white border-b border-stone-200">
       {/* Banner */}
       <div className="relative w-full h-48 sm:h-64 md:h-80 bg-stone-100 overflow-hidden">
-        {shop.bannerUrl ? (
-          <Image
-            src={shop.bannerUrl}
-            alt={`Banner của ${shop.name}`}
-            fill
-            className="object-cover"
-            priority
-            sizes="100vw"
-          />
-        ) : (
-          <div className="absolute inset-0 bg-linear-to-r from-emerald-600 to-teal-500 opacity-80" />
-        )}
+        <motion.div style={{ y: yParallax }} className="absolute inset-0 -top-20 -bottom-20">
+          {shop.bannerUrl ? (
+            <Image
+              src={shop.bannerUrl}
+              alt={`Banner của ${shop.name}`}
+              fill
+              className="object-cover"
+              priority
+              sizes="100vw"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-linear-to-r from-emerald-600 to-teal-500 opacity-80" />
+          )}
+        </motion.div>
       </div>
 
       {/* Profile Info overlaps banner */}

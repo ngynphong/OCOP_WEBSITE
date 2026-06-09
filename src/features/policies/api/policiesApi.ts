@@ -1,5 +1,7 @@
 import { axiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
+import { buildRoute } from '@/lib/routeBuilder';
+
 import {
   IPolicy,
   ICreatePolicyRequest,
@@ -12,7 +14,7 @@ export const policiesApi = {
   // Public/User APIs
   getPolicy: async (id: number): Promise<IPolicy> => {
     const response = (await axiosClient.get(
-      `${API_ENDPOINTS.POLICIES}/${id}`,
+      buildRoute(API_ENDPOINTS.POLICIES, id),
     )) as IPolicyApiResponse<IPolicy>;
     return response.data;
   },
@@ -26,7 +28,7 @@ export const policiesApi = {
 
   consentPolicy: async (id: number, data: IPolicyConsentRequest): Promise<string> => {
     const response = (await axiosClient.post(
-      `${API_ENDPOINTS.POLICIES}/${id}/consent`,
+      buildRoute(API_ENDPOINTS.POLICIES, id, 'consent'),
       data,
     )) as IPolicyApiResponse<string>;
     return response.data;
@@ -56,7 +58,7 @@ export const policiesApi = {
     data: IUpdatePolicyRequest;
   }): Promise<IPolicy> => {
     const response = (await axiosClient.put(
-      `${API_ENDPOINTS.ADMIN.POLICIES}/${id}`,
+      buildRoute(API_ENDPOINTS.ADMIN.POLICIES, id),
       data,
     )) as IPolicyApiResponse<IPolicy>;
     return response.data;
@@ -64,14 +66,14 @@ export const policiesApi = {
 
   deactivatePolicy: async (id: number): Promise<IPolicy> => {
     const response = (await axiosClient.post(
-      `${API_ENDPOINTS.ADMIN.POLICIES}/${id}/deactivate`,
+      buildRoute(API_ENDPOINTS.ADMIN.POLICIES, id, 'deactivate'),
     )) as IPolicyApiResponse<IPolicy>;
     return response.data;
   },
 
   activatePolicy: async (id: number): Promise<IPolicy> => {
     const response = (await axiosClient.post(
-      `${API_ENDPOINTS.ADMIN.POLICIES}/${id}/activate`,
+      buildRoute(API_ENDPOINTS.ADMIN.POLICIES, id, 'activate'),
     )) as IPolicyApiResponse<IPolicy>;
     return response.data;
   },

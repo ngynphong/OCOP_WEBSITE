@@ -1,5 +1,7 @@
 import { axiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
+import { buildRoute } from '@/lib/routeBuilder';
+
 import {
   AffiliateAccount,
   WithdrawalRequest,
@@ -50,7 +52,7 @@ export const affiliateApi = {
     data: ProcessWithdrawalPayload,
   ): Promise<ApiResponse<WithdrawalRequest>> => {
     return axiosClient.post(
-      `${API_ENDPOINTS.ADMIN.AFFILIATE_WITHDRAWALS}/${id}/process`,
+      buildRoute(API_ENDPOINTS.ADMIN.AFFILIATE_WITHDRAWALS, id, 'process'),
       data.adminNote ? { adminNote: data.adminNote } : {},
       {
         params: { status: data.status },

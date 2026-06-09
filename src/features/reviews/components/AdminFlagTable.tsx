@@ -35,7 +35,7 @@ export const AdminFlagTable = ({
   return (
     <div className="space-y-6">
       {/* Tabs / Filter Status */}
-      <div className="flex gap-2 p-1 bg-stone-100 rounded-2xl w-fit">
+      <div className="flex gap-2 p-1 bg-stone-100 rounded-xl w-fit">
         {['PENDING', 'RESOLVED_KEPT', 'RESOLVED_REMOVED', 'ALL'].map((s) => (
           <button
             key={s}
@@ -69,7 +69,7 @@ export const AdminFlagTable = ({
           {flags.map((flag) => (
             <div
               key={flag.id}
-              className="bg-white rounded-3xl border border-stone-100 shadow-sm overflow-hidden group"
+              className="bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden group"
             >
               <div className="p-6 flex flex-col md:flex-row gap-6">
                 {/* Reporter Info */}
@@ -100,7 +100,7 @@ export const AdminFlagTable = ({
                 </div>
 
                 {/* Targeted Content Context */}
-                <div className="flex-1 p-6 bg-stone-50 rounded-2xl border border-stone-100 relative">
+                <div className="flex-1 p-6 bg-stone-50 rounded-xl border border-stone-100 relative">
                   <div className="absolute -top-3 left-6 px-2 bg-stone-50 text-[10px] font-black text-stone-400 uppercase tracking-widest">
                     Nội dung bị báo cáo
                   </div>
@@ -140,7 +140,7 @@ export const AdminFlagTable = ({
                       <button
                         disabled={isResolving}
                         onClick={() => onResolve(flag.id, 'REMOVE')}
-                        className="w-full py-4 rounded-2xl bg-red-500 text-white text-xs font-black uppercase tracking-widest hover:bg-red-600 transition-all shadow-lg shadow-red-100 flex items-center justify-center gap-2"
+                        className="w-full py-4 rounded-xl bg-red-500 text-white text-xs font-black uppercase tracking-widest hover:bg-red-600 transition-all shadow-lg shadow-red-100 flex items-center justify-center gap-2"
                       >
                         <XCircle size={16} />
                         Gỡ bỏ nội dung
@@ -148,7 +148,7 @@ export const AdminFlagTable = ({
                       <button
                         disabled={isResolving}
                         onClick={() => onResolve(flag.id, 'KEEP')}
-                        className="w-full py-4 rounded-2xl border border-stone-200 text-stone-600 text-xs font-black uppercase tracking-widest hover:bg-stone-50 transition-all flex items-center justify-center gap-2"
+                        className="w-full py-4 rounded-xl border border-stone-200 text-stone-600 text-xs font-black uppercase tracking-widest hover:bg-stone-50 transition-all flex items-center justify-center gap-2"
                       >
                         <CheckCircle2 size={16} />
                         Giữ lại (Hợp lệ)
@@ -157,7 +157,7 @@ export const AdminFlagTable = ({
                   ) : (
                     <div
                       className={cn(
-                        'p-4 rounded-2xl border flex flex-col items-center gap-2 text-center',
+                        'p-4 rounded-xl border flex flex-col items-center gap-2 text-center',
                         flag.status === 'RESOLVED_KEPT'
                           ? 'bg-green-50 border-green-100 text-green-700'
                           : 'bg-stone-100 border-stone-200 text-stone-500',

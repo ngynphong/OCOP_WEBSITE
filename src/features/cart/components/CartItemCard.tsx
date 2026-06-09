@@ -93,8 +93,10 @@ function QtyStepper({ qty, max, disabled, onDecrease, onIncrease, isPending }: Q
         disabled={isDecDisabled}
         title={qty <= 1 ? 'Số lượng tối thiểu là 1' : undefined}
         className={cn(
-          'w-7 h-7 flex items-center justify-center rounded-full transition-colors text-stone-600',
-          isDecDisabled ? 'opacity-30 cursor-not-allowed' : 'hover:bg-white hover:shadow-sm',
+          'w-7 h-7 flex items-center justify-center rounded-full transition-all duration-300 text-stone-600',
+          isDecDisabled
+            ? 'opacity-30 cursor-not-allowed'
+            : 'hover:bg-white hover:shadow-sm active:scale-90',
         )}
         aria-label="Giảm số lượng"
       >
@@ -117,8 +119,10 @@ function QtyStepper({ qty, max, disabled, onDecrease, onIncrease, isPending }: Q
         disabled={isIncDisabled}
         title={qty >= max ? `Đã đạt số lượng tối đa (${max} sản phẩm)` : undefined}
         className={cn(
-          'w-7 h-7 flex items-center justify-center rounded-full transition-colors text-stone-600',
-          isIncDisabled ? 'opacity-30 cursor-not-allowed' : 'hover:bg-white hover:shadow-sm',
+          'w-7 h-7 flex items-center justify-center rounded-full transition-all duration-300 text-stone-600',
+          isIncDisabled
+            ? 'opacity-30 cursor-not-allowed'
+            : 'hover:bg-white hover:shadow-sm active:scale-90',
         )}
         aria-label="Tăng số lượng"
       >
@@ -193,8 +197,8 @@ export const CartItemCard = React.memo(function CartItemCard({
   return (
     <div
       className={cn(
-        'bg-white rounded-2xl p-4 sm:p-5 flex items-start sm:items-center gap-3 sm:gap-5 transition-all duration-200',
-        'border border-transparent hover:border-stone-100 hover:shadow-sm',
+        'bg-white rounded-xl p-4 sm:p-5 flex items-start sm:items-center gap-3 sm:gap-5 transition-all duration-300',
+        'border border-transparent hover:border-stone-100 hover:shadow-lg hover:-translate-y-0.5',
         isDisabled && 'opacity-60',
         isRemoving && 'opacity-30 scale-95',
       )}

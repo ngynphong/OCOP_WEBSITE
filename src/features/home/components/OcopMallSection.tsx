@@ -20,7 +20,7 @@ export const OcopMallSection = memo(function OcopMallSection() {
   if (isLoading) {
     return (
       <div className="w-full max-w-7xl mx-auto px-6 py-8">
-        <div className="h-64 w-full bg-stone-100 animate-pulse rounded-[32px]" />
+        <div className="h-64 w-full bg-stone-100 animate-pulse rounded-xl" />
       </div>
     );
   }
@@ -48,7 +48,7 @@ export const OcopMallSection = memo(function OcopMallSection() {
             <motion.div
               key={shop.id}
               whileHover={{ y: -6 }}
-              className="group relative bg-white/60 backdrop-blur-md border border-white/40 rounded-[32px] overflow-hidden shadow-sm hover:shadow-xl hover:shadow-green-900/5 transition-all duration-500"
+              className="group relative bg-white/60 backdrop-blur-md border border-white/40 rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-green-900/5 transition-all duration-500"
             >
               {/* Card Header Background - Using shop.bannerUrl if available */}
               <div className="h-28 bg-linear-to-br from-[#113B28] to-[#1a4d35] relative overflow-hidden">
@@ -74,7 +74,7 @@ export const OcopMallSection = memo(function OcopMallSection() {
               {/* Shop Info Container */}
               <div className="px-6 pb-6 pt-0 relative">
                 {/* Logo Overlap */}
-                <div className="absolute -top-10 left-6 w-20 h-20 bg-white rounded-2xl p-2 shadow-xl border border-stone-100 group-hover:scale-105 transition-transform duration-500">
+                <div className="absolute -top-10 left-6 w-20 h-20 bg-white rounded-xl p-2 shadow-xl border border-stone-100 group-hover:scale-105 transition-transform duration-500">
                   <div className="relative w-full h-full rounded-xl overflow-hidden">
                     <Image
                       src={shop.logoUrl || '/images/logo.png'}
@@ -129,7 +129,7 @@ export const OcopMallSection = memo(function OcopMallSection() {
 
                   <Link
                     href={`/cua-hang/${shop.slug}`}
-                    className="flex items-center gap-2 bg-[#113B28] text-white px-5 py-2.5 rounded-2xl text-xs font-bold hover:bg-[#1a4d35] transition-all shadow-lg shadow-green-900/10 active:scale-95"
+                    className="flex items-center gap-2 bg-[#113B28] text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-[#1a4d35] transition-all shadow-lg shadow-green-900/10 active:scale-95"
                   >
                     <Store className="w-3.5 h-3.5" /> Vào shop
                   </Link>

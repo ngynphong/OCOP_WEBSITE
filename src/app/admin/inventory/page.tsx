@@ -107,7 +107,7 @@ const AdminInventoryPage = () => {
       />
 
       {/* Filters Section */}
-      <div className="bg-white p-5 rounded-3xl border border-stone-100 shadow-xl shadow-stone-200/40 flex flex-col md:flex-row gap-4 items-center">
+      <div className="bg-white p-5 rounded-xl border border-stone-100 shadow-xl shadow-stone-200/40 flex flex-col md:flex-row gap-4 items-center">
         <form onSubmit={handleSearch} className="relative flex-1 group w-full">
           <FiSearch
             className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-green-600 transition-colors"
@@ -118,7 +118,7 @@ const AdminInventoryPage = () => {
             value={tempKeyword}
             onChange={(e) => setTempKeyword(e.target.value)}
             placeholder="Tìm kiếm theo tên sản phẩm hoặc mã SKU..."
-            className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-stone-50 text-gray-700 border border-stone-100 focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 transition-all outline-none text-sm font-medium"
+            className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-stone-50 text-gray-700 border border-stone-100 focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 transition-all outline-none text-sm font-medium"
           />
           <button type="submit" className="hidden" />
         </form>
@@ -135,7 +135,7 @@ const AdminInventoryPage = () => {
                 setShopId(e.target.value);
                 setPage(1);
               }}
-              className="w-full pl-12 pr-10 py-3.5 rounded-2xl bg-stone-50 border border-stone-100 appearance-none outline-none focus:border-emerald-500 focus:bg-white transition-all text-sm font-bold text-stone-700 cursor-pointer"
+              className="w-full pl-12 pr-10 py-3.5 rounded-xl bg-stone-50 border border-stone-100 appearance-none outline-none focus:border-emerald-500 focus:bg-white transition-all text-sm font-bold text-stone-700 cursor-pointer"
             >
               <option value="">Tất cả cửa hàng</option>
               {/* Ở đây có thể fetch danh sách shop để render option nếu cần */}

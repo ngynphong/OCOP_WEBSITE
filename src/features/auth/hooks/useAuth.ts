@@ -19,6 +19,8 @@ import {
   ChangePasswordRequest,
   SimpleRegisterRequest,
   ResendOtpRequest,
+  Verify2FARequest,
+  VerifyEmailTraditionalRequest,
 } from '../types';
 import { cartApi } from '@/features/cart/api/cartApi';
 import { getSessionId, clearSessionId } from '@/features/cart/utils/cartSession';
@@ -160,6 +162,16 @@ export const useAuth = () => {
     },
   });
 
+  const verifyEmailTraditionalMutation = useMutation({
+    mutationFn: (data: VerifyEmailTraditionalRequest) => authApi.verifyEmailTraditional(data),
+    onSuccess: (res) => handleAuthSuccess(res, 'Xác thực email thành công!'),
+  });
+
+  const verify2faMutation = useMutation({
+    mutationFn: (data: Verify2FARequest) => authApi.verify2fa(data),
+    onSuccess: (res) => handleAuthSuccess(res, 'Xác thực 2 bước thành công!'),
+  });
+
   const logoutMutation = useMutation({
     mutationFn: (data: LogoutRequest) => authApi.logout(data),
     onSuccess: () => handleClientLogout(),
@@ -261,6 +273,10 @@ export const useAuth = () => {
     isSimpleRegistering: simpleRegisterMutation.isPending,
     verifyEmail: verifyEmailMutation.mutateAsync,
     isVerifyingEmail: verifyEmailMutation.isPending,
+    verifyEmailTraditional: verifyEmailTraditionalMutation.mutateAsync,
+    isVerifyingEmailTraditional: verifyEmailTraditionalMutation.isPending,
+    verify2fa: verify2faMutation.mutateAsync,
+    isVerifying2fa: verify2faMutation.isPending,
     logout: logoutMutation.mutateAsync,
     isLoggingOut: logoutMutation.isPending,
     forgotPassword: forgotPasswordMutation.mutateAsync,

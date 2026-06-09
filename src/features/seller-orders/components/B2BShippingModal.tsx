@@ -163,14 +163,14 @@ export function B2BShippingModal({
           <Button
             onClick={onClose}
             variant="outline"
-            className="flex-1 py-3 rounded-2xl font-black uppercase text-xs tracking-wider"
+            className="flex-1 py-3 rounded-xl font-black uppercase text-xs tracking-wider"
           >
             Hủy bỏ
           </Button>
           <Button
             onClick={handleSubmit}
             isLoading={isLoading}
-            className="flex-1 py-3 bg-green-600 hover:bg-green-700 text-white rounded-2xl font-black uppercase text-xs tracking-wider"
+            className="flex-1 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl font-black uppercase text-xs tracking-wider"
           >
             Lưu thông tin
           </Button>

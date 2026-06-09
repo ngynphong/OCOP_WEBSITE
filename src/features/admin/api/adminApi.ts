@@ -1,5 +1,7 @@
 import { axiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
+import { buildRoute } from '@/lib/routeBuilder';
+
 import {
   AdminUserListResponse,
   AdminUserDetailResponse,
@@ -55,11 +57,11 @@ export const adminApi = {
   },
 
   getUserDetail: (userId: string): Promise<AdminUserDetailResponse> => {
-    return axiosClient.get(`${API_ENDPOINTS.ADMIN.USERS}/${userId}`);
+    return axiosClient.get(buildRoute(API_ENDPOINTS.ADMIN.USERS, userId));
   },
 
   getUserPermissions: (userId: string): Promise<AdminUserPermissionsResponse> => {
-    return axiosClient.get(`${API_ENDPOINTS.ADMIN.USERS}/${userId}/permissions`);
+    return axiosClient.get(buildRoute(API_ENDPOINTS.ADMIN.USERS, userId, 'permissions'));
   },
 
   revokePermissions: (userId: string, permissions: string[]): Promise<ResponseBase<string>> => {
@@ -77,24 +79,24 @@ export const adminApi = {
   },
 
   updateUserStatus: (userId: string, status: string): Promise<AdminUserDetailResponse> => {
-    return axiosClient.patch(`${API_ENDPOINTS.ADMIN.USERS}/${userId}/status`, null, {
+    return axiosClient.patch(buildRoute(API_ENDPOINTS.ADMIN.USERS, userId, 'status'), null, {
       params: { status },
     });
   },
 
   updateUserRoles: (userId: string, roles: string[]): Promise<AdminUserDetailResponse> => {
-    return axiosClient.patch(`${API_ENDPOINTS.ADMIN.USERS}/${userId}/roles`, { roles });
+    return axiosClient.patch(buildRoute(API_ENDPOINTS.ADMIN.USERS, userId, 'roles'), { roles });
   },
 
   deleteUser: (userId: string): Promise<ResponseBase<string>> => {
-    return axiosClient.delete(`${API_ENDPOINTS.ADMIN.USERS}/${userId}`);
+    return axiosClient.delete(buildRoute(API_ENDPOINTS.ADMIN.USERS, userId));
   },
 
   updateStaffProfile: (
     userId: string,
     data: UpdateStaffProfileRequest,
   ): Promise<ResponseBase<StaffProfile>> => {
-    return axiosClient.put(`${API_ENDPOINTS.ADMIN.USERS}/${userId}/staff-profile`, data);
+    return axiosClient.put(buildRoute(API_ENDPOINTS.ADMIN.USERS, userId, 'staff-profile'), data);
   },
 
   getStaffMyProfile: (): Promise<ResponseBase<StaffProfile>> => {
@@ -111,33 +113,33 @@ export const adminApi = {
   },
 
   getShopDetail: (shopId: number | string): Promise<AdminShopDetailResponse> => {
-    return axiosClient.get(`${API_ENDPOINTS.ADMIN.SHOPS}/${shopId}`);
+    return axiosClient.get(buildRoute(API_ENDPOINTS.ADMIN.SHOPS, shopId));
   },
 
   getShopStatusLogs: (shopId: number | string): Promise<AdminShopStatusLogsResponse> => {
-    return axiosClient.get(`${API_ENDPOINTS.ADMIN.SHOPS}/${shopId}/status-logs`);
+    return axiosClient.get(buildRoute(API_ENDPOINTS.ADMIN.SHOPS, shopId, 'status-logs'));
   },
 
   approveShop: (
     shopId: number | string,
     data: ShopActionRequest,
   ): Promise<ResponseBase<string>> => {
-    return axiosClient.post(`${API_ENDPOINTS.ADMIN.SHOPS}/${shopId}/approve`, data);
+    return axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.SHOPS, shopId, 'approve'), data);
   },
 
   rejectShop: (
     shopId: number | string,
     data: ShopActionRequest,
   ): Promise<AdminShopDocumentResponse> => {
-    return axiosClient.post(`${API_ENDPOINTS.ADMIN.SHOPS}/${shopId}/reject`, data);
+    return axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.SHOPS, shopId, 'reject'), data);
   },
 
   lockShop: (shopId: number | string, data: ShopActionRequest): Promise<ResponseBase<string>> => {
-    return axiosClient.post(`${API_ENDPOINTS.ADMIN.SHOPS}/${shopId}/lock`, data);
+    return axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.SHOPS, shopId, 'lock'), data);
   },
 
   unlockShop: (shopId: number | string, data: ShopActionRequest): Promise<ResponseBase<string>> => {
-    return axiosClient.post(`${API_ENDPOINTS.ADMIN.SHOPS}/${shopId}/unlock`, data);
+    return axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.SHOPS, shopId, 'unlock'), data);
   },
 
   verifyDocument: (
@@ -158,14 +160,14 @@ export const adminApi = {
     shopId: number | string,
     data: OverridePlanRequest,
   ): Promise<AdminOverridePlanResponse> => {
-    return axiosClient.post(`${API_ENDPOINTS.ADMIN.SHOPS}/${shopId}/override-plan`, data);
+    return axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.SHOPS, shopId, 'override-plan'), data);
   },
 
   updateShopOwner: (
     shopId: number | string,
     data: UpdateShopOwnerRequest,
   ): Promise<AdminShopDetailResponse> => {
-    return axiosClient.patch(`${API_ENDPOINTS.ADMIN.SHOPS}/${shopId}/owner`, data);
+    return axiosClient.patch(buildRoute(API_ENDPOINTS.ADMIN.SHOPS, shopId, 'owner'), data);
   },
 
   // ─── Subscription Plans ─────────────────────────────────────────────────────
@@ -175,7 +177,7 @@ export const adminApi = {
   },
 
   getSubscriptionPlanDetail: (planId: string): Promise<AdminSubscriptionPlanDetailResponse> => {
-    return axiosClient.get(`${API_ENDPOINTS.ADMIN.SUBSCRIPTION_PLANS}/${planId}`);
+    return axiosClient.get(buildRoute(API_ENDPOINTS.ADMIN.SUBSCRIPTION_PLANS, planId));
   },
 
   createSubscriptionPlan: (
@@ -188,11 +190,11 @@ export const adminApi = {
     planId: string,
     data: UpdateSubscriptionPlanRequest,
   ): Promise<AdminSubscriptionPlanDetailResponse> => {
-    return axiosClient.put(`${API_ENDPOINTS.ADMIN.SUBSCRIPTION_PLANS}/${planId}`, data);
+    return axiosClient.put(buildRoute(API_ENDPOINTS.ADMIN.SUBSCRIPTION_PLANS, planId), data);
   },
 
   toggleSubscriptionPlan: (planId: string): Promise<AdminSubscriptionPlanDetailResponse> => {
-    return axiosClient.patch(`${API_ENDPOINTS.ADMIN.SUBSCRIPTION_PLANS}/${planId}/toggle`);
+    return axiosClient.patch(buildRoute(API_ENDPOINTS.ADMIN.SUBSCRIPTION_PLANS, planId, 'toggle'));
   },
 
   // ─── Permissions ──────────────────────────────────────────────────────────
@@ -202,7 +204,7 @@ export const adminApi = {
   },
 
   deletePermission: (permission: string): Promise<ResponseBase<string>> => {
-    return axiosClient.delete(`${API_ENDPOINTS.PERMISSIONS}/${permission}`);
+    return axiosClient.delete(buildRoute(API_ENDPOINTS.PERMISSIONS, permission));
   },
 
   // ─── Roles Management ──────────────────────────────────────────────────────
@@ -216,25 +218,25 @@ export const adminApi = {
   },
 
   getRolePermissions: (roleName: string): Promise<AdminUserPermissionsResponse> => {
-    return axiosClient.get(`${API_ENDPOINTS.ROLES}/${roleName}/permissions`);
+    return axiosClient.get(buildRoute(API_ENDPOINTS.ROLES, roleName, 'permissions'));
   },
 
   addRolePermissions: (
     roleName: string,
     data: RolePermissionsRequest,
   ): Promise<AdminRoleDetailResponse> => {
-    return axiosClient.post(`${API_ENDPOINTS.ROLES}/${roleName}/permissions`, data);
+    return axiosClient.post(buildRoute(API_ENDPOINTS.ROLES, roleName, 'permissions'), data);
   },
 
   removeRolePermissions: (
     roleName: string,
     data: RolePermissionsRequest,
   ): Promise<AdminRoleDetailResponse> => {
-    return axiosClient.delete(`${API_ENDPOINTS.ROLES}/${roleName}/permissions`, { data });
+    return axiosClient.delete(buildRoute(API_ENDPOINTS.ROLES, roleName, 'permissions'), { data });
   },
 
   deleteRole: (roleName: string): Promise<ResponseBase<string>> => {
-    return axiosClient.delete(`${API_ENDPOINTS.ROLES}/${roleName}`);
+    return axiosClient.delete(buildRoute(API_ENDPOINTS.ROLES, roleName));
   },
 
   // ─── Category Management ────────────────────────────────────────────────────
@@ -244,7 +246,7 @@ export const adminApi = {
   },
 
   getCategoryDetail: (id: number): Promise<AdminCategoryDetailResponse> => {
-    return axiosClient.get(`${API_ENDPOINTS.ADMIN.CATEGORIES}/${id}`);
+    return axiosClient.get(buildRoute(API_ENDPOINTS.ADMIN.CATEGORIES, id));
   },
 
   createCategories: (data: CategoryCreateRequest[]): Promise<AdminCategoryListResponse> => {
@@ -255,11 +257,11 @@ export const adminApi = {
     id: number,
     data: CategoryUpdateRequest,
   ): Promise<AdminCategoryDetailResponse> => {
-    return axiosClient.put(`${API_ENDPOINTS.ADMIN.CATEGORIES}/${id}`, data);
+    return axiosClient.put(buildRoute(API_ENDPOINTS.ADMIN.CATEGORIES, id), data);
   },
 
   deleteCategory: (id: number): Promise<ResponseBase<string>> => {
-    return axiosClient.delete(`${API_ENDPOINTS.ADMIN.CATEGORIES}/${id}`);
+    return axiosClient.delete(buildRoute(API_ENDPOINTS.ADMIN.CATEGORIES, id));
   },
 
   checkCategorySlug: (slug: string): Promise<CategoryCheckSlugResponse> => {
@@ -276,7 +278,7 @@ export const adminApi = {
     id: number,
     data: CategorySchemaType,
   ): Promise<AdminCategoryDetailResponse> => {
-    return axiosClient.put(`${API_ENDPOINTS.ADMIN.CATEGORIES}/${id}`, data);
+    return axiosClient.put(buildRoute(API_ENDPOINTS.ADMIN.CATEGORIES, id), data);
   },
 
   updateCategoryMultipart: (
@@ -307,7 +309,7 @@ export const adminApi = {
       formData.append('banner', data.bannerFile[0]);
     }
 
-    return axiosClient.put(`${API_ENDPOINTS.ADMIN.CATEGORIES}/${id}`, formData, {
+    return axiosClient.put(buildRoute(API_ENDPOINTS.ADMIN.CATEGORIES, id), formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },

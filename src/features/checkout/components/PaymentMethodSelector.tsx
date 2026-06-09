@@ -37,7 +37,7 @@ export const PaymentMethodSelector = memo(function PaymentMethodSelector({
         <div className="h-4 w-32 bg-stone-100 animate-pulse rounded" />
         <div className="space-y-3">
           {[1, 2].map((i) => (
-            <div key={i} className="h-20 w-full bg-stone-50 animate-pulse rounded-2xl" />
+            <div key={i} className="h-20 w-full bg-stone-50 animate-pulse rounded-xl" />
           ))}
         </div>
       </div>
@@ -61,7 +61,7 @@ export const PaymentMethodSelector = memo(function PaymentMethodSelector({
               key={method.code}
               onClick={() => onSelect(method.code)}
               className={cn(
-                'flex items-start gap-4 p-4 rounded-2xl border transition-all cursor-pointer hover:shadow-sm group',
+                'flex items-start gap-4 p-4 rounded-xl border transition-all cursor-pointer hover:shadow-sm group',
                 isActive
                   ? 'border-green-600 bg-green-50/20'
                   : 'border-stone-100 bg-white hover:border-stone-200',

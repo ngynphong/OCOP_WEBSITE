@@ -167,7 +167,7 @@ export function FlashSaleQuickBuyModal({ isOpen, onClose, item }: FlashSaleQuick
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 20 }}
-        className="relative w-full max-w-4xl max-h-[90vh] bg-white rounded-[40px] shadow-2xl overflow-hidden flex flex-col md:flex-row"
+        className="relative w-full max-w-4xl max-h-[90vh] bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col md:flex-row"
       >
         {/* Close Button */}
         <button
@@ -179,14 +179,14 @@ export function FlashSaleQuickBuyModal({ isOpen, onClose, item }: FlashSaleQuick
 
         {/* Left Side: Summary & Product */}
         <div className="w-full md:w-1/3 bg-stone-50 p-8 border-r border-stone-100 overflow-y-auto">
-          <div className="flex items-center gap-2 mb-8 bg-red-600 text-white px-4 py-2 rounded-2xl w-fit">
+          <div className="flex items-center gap-2 mb-8 bg-red-600 text-white px-4 py-2 rounded-xl w-fit">
             <Zap className="w-4 h-4 fill-current" />
             <span className="text-[10px] font-black uppercase tracking-widest">
               Flash Sale Mua Ngay
             </span>
           </div>
 
-          <div className="relative aspect-square w-full rounded-3xl overflow-hidden border border-stone-200 shadow-sm mb-6">
+          <div className="relative aspect-square w-full rounded-xl overflow-hidden border border-stone-200 shadow-sm mb-6">
             <Image src={item.thumbnailUrl} alt={item.productName} fill className="object-cover" />
           </div>
 
@@ -246,7 +246,7 @@ export function FlashSaleQuickBuyModal({ isOpen, onClose, item }: FlashSaleQuick
             <AddressSelector selectedId={activeAddress?.id} onSelect={setSelectedAddress} />
             <div className="relative">
               {isCalculating && (
-                <div className="absolute inset-0 z-10 bg-white/50 backdrop-blur-[1px] rounded-2xl flex items-center justify-center">
+                <div className="absolute inset-0 z-10 bg-white/50 backdrop-blur-[1px] rounded-xl flex items-center justify-center">
                   <div className="flex items-center gap-2 text-red-600 font-bold bg-white px-4 py-2 rounded-full shadow-md shadow-red-600/5">
                     <Loader2 className="w-4 h-4 animate-spin text-red-600" />
                     <span className="text-stone-700 text-xs">Đang tính phí...</span>
@@ -267,7 +267,7 @@ export function FlashSaleQuickBuyModal({ isOpen, onClose, item }: FlashSaleQuick
             <button
               onClick={handleBuy}
               disabled={isSubmitting || isCalculating}
-              className="w-full py-2 bg-red-600 hover:bg-red-700 disabled:bg-stone-200 disabled:text-stone-400 text-white rounded-2xl font-black text-md transition-all shadow-xl shadow-red-600/20 active:scale-[0.98] flex items-center justify-center gap-3 cursor-pointer"
+              className="w-full py-2 bg-red-600 hover:bg-red-700 disabled:bg-stone-200 disabled:text-stone-400 text-white rounded-xl font-black text-md transition-all shadow-xl shadow-red-600/20 active:scale-[0.98] flex items-center justify-center gap-3 cursor-pointer"
             >
               {isSubmitting ? (
                 <>

@@ -190,7 +190,7 @@ export function QuickBuyModal({ isOpen, onClose, product, selectedVariant }: Qui
           initial={{ scale: 0.9, opacity: 0, y: 20 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.9, opacity: 0, y: 20 }}
-          className="relative w-full max-w-4xl max-h-[90vh] bg-white rounded-[40px] shadow-2xl overflow-hidden flex flex-col md:flex-row"
+          className="relative w-full max-w-4xl max-h-[90vh] bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col md:flex-row"
         >
           {/* Close Button */}
           <button
@@ -202,12 +202,12 @@ export function QuickBuyModal({ isOpen, onClose, product, selectedVariant }: Qui
 
           {/* Left Side: Summary & Product */}
           <div className="w-full md:w-1/3 bg-stone-50 p-8 border-r border-stone-100 overflow-y-auto custom-scrollbar">
-            <div className="flex items-center gap-2 mb-8 bg-green-700 text-white px-4 py-2 rounded-2xl w-fit shadow-md shadow-green-700/20">
+            <div className="flex items-center gap-2 mb-8 bg-green-700 text-white px-4 py-2 rounded-xl w-fit shadow-md shadow-green-700/20">
               <Zap className="w-4 h-4 fill-current" />
               <span className="text-[10px] font-black uppercase tracking-widest">Mua Ngay</span>
             </div>
 
-            <div className="relative aspect-square w-full rounded-3xl overflow-hidden border border-stone-200 shadow-sm mb-6 bg-white">
+            <div className="relative aspect-square w-full rounded-xl overflow-hidden border border-stone-200 shadow-sm mb-6 bg-white">
               <Image
                 src={
                   product.thumbnailUrl ||
@@ -297,7 +297,7 @@ export function QuickBuyModal({ isOpen, onClose, product, selectedVariant }: Qui
 
               <div className="relative">
                 {isCalculating && (
-                  <div className="absolute inset-0 z-10 bg-white/50 backdrop-blur-[1px] rounded-2xl flex items-center justify-center">
+                  <div className="absolute inset-0 z-10 bg-white/50 backdrop-blur-[1px] rounded-xl flex items-center justify-center">
                     <div className="flex items-center gap-2 text-green-700 font-bold bg-white px-4 py-2 rounded-full shadow-md">
                       <Loader2 className="w-4 h-4 animate-spin" />
                       <span>Đang tính phí...</span>
@@ -336,7 +336,7 @@ export function QuickBuyModal({ isOpen, onClose, product, selectedVariant }: Qui
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                   disabled={isSubmitting}
-                  className="w-full bg-stone-50 border text-gray-700 border-stone-200 rounded-2xl p-4 text-sm focus:outline-hidden focus:ring-2 focus:ring-green-600/20 focus:border-green-600 transition-all font-medium placeholder:text-stone-400 placeholder:font-normal resize-none"
+                  className="w-full bg-stone-50 border text-gray-700 border-stone-200 rounded-xl p-4 text-sm focus:outline-hidden focus:ring-2 focus:ring-green-600/20 focus:border-green-600 transition-all font-medium placeholder:text-stone-400 placeholder:font-normal resize-none"
                   rows={2}
                 />
               </div>
@@ -346,7 +346,7 @@ export function QuickBuyModal({ isOpen, onClose, product, selectedVariant }: Qui
               <Button
                 onClick={handleBuy}
                 disabled={isSubmitting || isCalculating}
-                className="w-full py-4 bg-green-700 hover:bg-green-800 disabled:bg-stone-200 disabled:text-stone-400 text-white rounded-2xl font-black text-lg transition-all shadow-xl shadow-green-700/20 active:scale-[0.98] flex items-center justify-center gap-3"
+                className="w-full py-4 bg-green-700 hover:bg-green-800 disabled:bg-stone-200 disabled:text-stone-400 text-white rounded-xl font-black text-lg transition-all shadow-xl shadow-green-700/20 active:scale-[0.98] flex items-center justify-center gap-3"
               >
                 {isSubmitting ? (
                   <>

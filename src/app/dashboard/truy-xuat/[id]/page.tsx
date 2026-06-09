@@ -139,7 +139,7 @@ const LotDetailPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left: Info Card */}
         <div className="lg:col-span-1 space-y-6">
-          <div className="bg-white rounded-3xl p-6 border border-stone-100 shadow-xl shadow-stone-200/50 relative overflow-hidden">
+          <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-xl shadow-stone-200/50 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-bl-full -mr-8 -mt-8 flex items-center justify-center p-4">
               <FiPackage className="text-emerald-200 text-3xl ml-4 mt-4" />
             </div>
@@ -180,7 +180,7 @@ const LotDetailPage = () => {
               </div>
 
               {lot.notes && (
-                <div className="bg-stone-50 p-4 rounded-2xl">
+                <div className="bg-stone-50 p-4 rounded-xl">
                   <p className="text-xs font-bold text-stone-400 uppercase mb-2">Ghi chú</p>
                   <p className="text-sm text-stone-600 italic">{lot.notes}</p>
                 </div>
@@ -190,9 +190,9 @@ const LotDetailPage = () => {
 
           {/* QR Code Section */}
           {showQR && (
-            <div className="bg-white rounded-3xl p-6 border border-emerald-100 shadow-xl shadow-emerald-500/10 text-center animate-in fade-in zoom-in duration-300">
+            <div className="bg-white rounded-xl p-6 border border-emerald-100 shadow-xl shadow-emerald-500/10 text-center animate-in fade-in zoom-in duration-300">
               <h3 className="font-bold text-stone-900 mb-4">Mã QR Truy xuất</h3>
-              <div className="bg-white p-4 rounded-2xl border-2 border-stone-50 inline-block shadow-inner">
+              <div className="bg-white p-4 rounded-xl border-2 border-stone-50 inline-block shadow-inner">
                 <QRCode value={publicUrl} size={180} />
               </div>
               <p className="text-xs text-stone-400 mt-4 px-4 leading-relaxed">
@@ -220,7 +220,7 @@ const LotDetailPage = () => {
                 <Button variant="primary" size="sm" className="rounded-xl">
                   <FiPlus className="mr-2" /> Ghi nhận bước tiếp theo
                 </Button>
-                <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl border border-stone-100 shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-20 py-2">
+                <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl border border-stone-100 shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-20 py-2">
                   <StepOption
                     label="Sản xuất"
                     onClick={() => {

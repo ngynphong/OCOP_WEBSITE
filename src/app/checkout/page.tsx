@@ -271,7 +271,7 @@ function CheckoutContent() {
           <div className="flex items-center gap-4">
             <Link
               href="/gio-hang"
-              className="p-3 bg-white rounded-2xl border border-stone-200 text-stone-600 hover:text-green-700 hover:border-green-200 transition-all shadow-sm"
+              className="p-3 bg-white rounded-xl border border-stone-200 text-stone-600 hover:text-green-700 hover:border-green-200 transition-all shadow-sm"
             >
               <ChevronLeft size={20} />
             </Link>
@@ -287,7 +287,7 @@ function CheckoutContent() {
             {/* Left Column - Forms & Info */}
             <div className="lg:col-span-2 space-y-6">
               {/* Delivery Section */}
-              <section className="bg-white rounded-[32px] p-8 border border-stone-100 shadow-xl shadow-stone-200/50">
+              <section className="bg-white rounded-xl p-8 border border-stone-100 shadow-xl shadow-stone-200/50">
                 <AddressSelector selectedId={effectiveAddress?.id} onSelect={handleSelectAddress} />
 
                 <ShippingSelector
@@ -320,14 +320,14 @@ function CheckoutContent() {
                     value={note}
                     onChange={(e) => setNote(e.target.value)}
                     disabled={isSubmitting}
-                    className="w-full bg-stone-50 border text-gray-700 border-stone-200 rounded-2xl p-4 text-sm focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all font-medium placeholder:text-stone-400 placeholder:font-normal resize-none"
+                    className="w-full bg-stone-50 border text-gray-700 border-stone-200 rounded-xl p-4 text-sm focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all font-medium placeholder:text-stone-400 placeholder:font-normal resize-none"
                     rows={2}
                   />
                 </div>
               </section>
 
               {/* Order Items Review */}
-              <section className="bg-white rounded-[32px] p-8 border border-stone-100 shadow-xl shadow-stone-200/50">
+              <section className="bg-white rounded-xl p-8 border border-stone-100 shadow-xl shadow-stone-200/50">
                 <h3 className="text-sm font-bold text-stone-800 flex items-center gap-2 mb-6">
                   <ShoppingBag className="w-4 h-4 text-green-600" />
                   Sản phẩm trong đơn hàng
@@ -338,7 +338,7 @@ function CheckoutContent() {
                     checkoutItems.map((item: CartItem) => (
                       <div
                         key={item.id}
-                        className="flex gap-4 p-4 rounded-2xl bg-stone-50/50 border border-stone-100"
+                        className="flex gap-4 p-4 rounded-xl bg-stone-50/50 border border-stone-100"
                       >
                         <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-white border border-stone-100 shrink-0">
                           <Image

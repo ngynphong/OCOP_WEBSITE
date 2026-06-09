@@ -247,7 +247,7 @@ export const BannerFormModal = memo(function BannerFormModal({
               Ảnh Desktop
             </label>
             <div
-              className={`relative group h-40 w-full border-2 border-dashed rounded-2xl transition-all overflow-hidden flex flex-col items-center justify-center gap-2 cursor-pointer ${
+              className={`relative group h-40 w-full border-2 border-dashed rounded-xl transition-all overflow-hidden flex flex-col items-center justify-center gap-2 cursor-pointer ${
                 displayImage
                   ? 'border-emerald-500/50 bg-emerald-50/10'
                   : 'border-stone-200 bg-stone-50 hover:bg-stone-100/50'
@@ -306,7 +306,7 @@ export const BannerFormModal = memo(function BannerFormModal({
               Ảnh Mobile (Tùy chọn)
             </label>
             <div
-              className={`relative group h-40 w-full border-2 border-dashed rounded-2xl transition-all overflow-hidden flex flex-col items-center justify-center gap-2 cursor-pointer ${
+              className={`relative group h-40 w-full border-2 border-dashed rounded-xl transition-all overflow-hidden flex flex-col items-center justify-center gap-2 cursor-pointer ${
                 displayImageMobile
                   ? 'border-emerald-500/50 bg-emerald-50/10'
                   : 'border-stone-200 bg-stone-50 hover:bg-stone-100/50'

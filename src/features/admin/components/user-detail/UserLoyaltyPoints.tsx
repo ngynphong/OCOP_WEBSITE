@@ -9,11 +9,11 @@ interface UserLoyaltyPointsProps {
 
 const UserLoyaltyPoints = ({ id }: UserLoyaltyPointsProps) => {
   return (
-    <div className="bg-amber-50 p-6 rounded-3xl border border-amber-100 relative overflow-hidden group">
+    <div className="bg-amber-50 p-6 rounded-xl border border-amber-100 relative overflow-hidden group">
       <div className="absolute -right-4 -top-4 w-24 h-24 bg-amber-100/50 rounded-full group-hover:scale-125 transition-transform duration-700" />
       <div className="relative z-10 flex items-center justify-between gap-6">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-amber-600 shadow-sm shadow-amber-900/5 shrink-0">
+          <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-amber-600 shadow-sm shadow-amber-900/5 shrink-0">
             <FiAward size={24} />
           </div>
           <div className="space-y-1">
@@ -28,7 +28,7 @@ const UserLoyaltyPoints = ({ id }: UserLoyaltyPointsProps) => {
         </div>
         <Link
           href={`/admin/users/${id}/loyalty`}
-          className="flex items-center gap-2 px-6 py-3 bg-amber-600 text-white text-[10px] font-black uppercase rounded-2xl hover:bg-amber-700 transition-all shadow-lg shadow-amber-900/20 active:scale-95 shrink-0"
+          className="flex items-center gap-2 px-6 py-3 bg-amber-600 text-white text-[10px] font-black uppercase rounded-xl hover:bg-amber-700 transition-all shadow-lg shadow-amber-900/20 active:scale-95 shrink-0"
         >
           Tới quản lý <FiArrowRight />
         </Link>

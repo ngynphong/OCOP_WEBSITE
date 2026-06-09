@@ -81,7 +81,7 @@ export default function B2BCheckoutPage() {
   if (error || !info) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-stone-50 text-center">
-        <div className="bg-white p-10 rounded-[40px] shadow-xl shadow-stone-200/50 border border-stone-100 max-w-md">
+        <div className="bg-white p-10 rounded-xl shadow-xl shadow-stone-200/50 border border-stone-100 max-w-md">
           <div className="w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
             <ShieldCheck size={40} />
           </div>
@@ -89,7 +89,7 @@ export default function B2BCheckoutPage() {
           <p className="text-stone-500 font-medium mb-8">
             Liên kết thanh toán này không tồn tại, đã hết hạn hoặc đã được sử dụng.
           </p>
-          <Button onClick={() => router.push('/')} className="w-full rounded-2xl h-14">
+          <Button onClick={() => router.push('/')} className="w-full rounded-xl h-14">
             Quay lại trang chủ
           </Button>
         </div>
@@ -113,9 +113,9 @@ export default function B2BCheckoutPage() {
         <div className="flex flex-col lg:flex-row gap-10">
           {/* Main Content */}
           <div className="flex-1 space-y-8">
-            <div className="bg-white rounded-[40px] p-8 md:p-10 shadow-xl shadow-stone-200/50 border border-stone-100">
+            <div className="bg-white rounded-xl p-8 md:p-10 shadow-xl shadow-stone-200/50 border border-stone-100">
               <div className="flex items-center gap-4 mb-8">
-                <div className="w-12 h-12 bg-green-700 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-green-700/20">
+                <div className="w-12 h-12 bg-green-700 text-white rounded-xl flex items-center justify-center shadow-lg shadow-green-700/20">
                   <Package size={24} />
                 </div>
                 <div>
@@ -211,7 +211,7 @@ export default function B2BCheckoutPage() {
                 <div className="pt-8 border-t border-stone-100">
                   <h3 className="text-sm font-bold text-stone-800 mb-4">Ghi chú cho đơn hàng</h3>
                   <textarea
-                    className="w-full rounded-2xl border-stone-100 text-gray-700 bg-stone-50 p-4 min-h-[100px] text-sm font-medium focus:border-green-500 focus:ring-0 outline-none transition-all"
+                    className="w-full rounded-xl border-stone-100 text-gray-700 bg-stone-50 p-4 min-h-[100px] text-sm font-medium focus:border-green-500 focus:ring-0 outline-none transition-all"
                     placeholder="Lưu ý về thời gian giao hàng, đóng gói..."
                     value={note}
                     onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
@@ -226,7 +226,7 @@ export default function B2BCheckoutPage() {
           {/* Sidebar Summary */}
           <div className="w-full lg:w-[400px] shrink-0">
             <div className="sticky top-24 space-y-6">
-              <div className="bg-white rounded-[40px] p-8 shadow-xl shadow-stone-200/50 border border-stone-100 overflow-hidden relative">
+              <div className="bg-white rounded-xl p-8 shadow-xl shadow-stone-200/50 border border-stone-100 overflow-hidden relative">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-green-50 rounded-full -mr-16 -mt-16 z-0" />
 
                 <div className="relative z-10 space-y-6">
@@ -234,7 +234,7 @@ export default function B2BCheckoutPage() {
                     Tóm tắt đơn sỉ
                   </h2>
 
-                  <div className="flex gap-4 p-4 bg-stone-50 rounded-2xl border border-stone-100">
+                  <div className="flex gap-4 p-4 bg-stone-50 rounded-xl border border-stone-100">
                     <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-white shrink-0 shadow-sm border border-stone-200/50">
                       <Image
                         src={info.productImage || '/images/placeholder.png'}
@@ -300,7 +300,7 @@ export default function B2BCheckoutPage() {
 
                   <Button
                     variant="primary"
-                    className="w-full h-14 rounded-2xl font-black text-base shadow-xl shadow-green-700/20"
+                    className="w-full h-14 rounded-xl font-black text-base shadow-xl shadow-green-700/20"
                     onClick={handleCheckout}
                     isLoading={isCreating}
                   >
@@ -309,7 +309,7 @@ export default function B2BCheckoutPage() {
                 </div>
               </div>
 
-              <div className="bg-green-900 rounded-[32px] p-6 text-white flex items-center gap-4 shadow-lg shadow-stone-900/10">
+              <div className="bg-green-900 rounded-xl p-6 text-white flex items-center gap-4 shadow-lg shadow-stone-900/10">
                 <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center shrink-0">
                   <ShieldCheck className="text-green-400" size={24} />
                 </div>

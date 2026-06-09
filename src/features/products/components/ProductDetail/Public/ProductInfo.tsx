@@ -90,7 +90,7 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
                 onClick={handleWishlistClick}
                 disabled={isWishlistLoading}
                 className={cn(
-                  'p-3 rounded-2xl border transition-all active:scale-95',
+                  'p-3 rounded-xl border transition-all active:scale-95',
                   isWishlisted
                     ? 'bg-red-50 border-red-100 text-red-500 shadow-sm'
                     : 'bg-stone-50 border-stone-100 text-stone-400 hover:text-red-500 hover:bg-red-50/50',
@@ -133,7 +133,7 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
         </div>
 
         {/* Pricing & Buy Box */}
-        <div className="bg-stone-50 p-5 md:p-6 rounded-3xl border border-stone-100 flex flex-col gap-5 shadow-sm">
+        <div className="bg-white p-5 md:p-6 rounded-2xl border border-stone-100 flex flex-col gap-5 shadow-md hover:shadow-lg transition-shadow">
           <div className="flex flex-col gap-0.5">
             <div className="flex items-baseline gap-2.5">
               <span className="text-3xl font-black text-green-700 tracking-tighter">
@@ -166,7 +166,7 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
           {selectedVariant?.isWholesaleEnabled &&
             selectedVariant.wholesalePrices &&
             selectedVariant.wholesalePrices.length > 0 && (
-              <div className="bg-amber-50 rounded-2xl p-4 border border-amber-100 animate-in fade-in slide-in-from-top-2">
+              <div className="bg-amber-50 rounded-xl p-4 border border-amber-100 animate-in fade-in slide-in-from-top-2">
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-1.5 h-4 bg-amber-500 rounded-full" />
                   <h4 className="text-[10px] font-black text-amber-800 uppercase tracking-widest">
@@ -206,10 +206,10 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
                     key={variant.id}
                     onClick={() => setSelectedVariant(variant)}
                     className={cn(
-                      'px-5 py-2.5 rounded-xl border-2 font-black transition-all text-[13px]',
+                      'px-5 py-2.5 rounded-xl border-2 font-black transition-all text-[13px] active:scale-95 focus:outline-none',
                       selectedVariant?.id === variant.id
-                        ? 'border-green-600 bg-green-50 text-green-700 shadow-md scale-[1.03]'
-                        : 'border-white bg-white text-stone-600 hover:border-stone-200 shadow-sm',
+                        ? 'border-emerald-600 ring-2 ring-emerald-500 ring-offset-2 bg-emerald-50 text-emerald-700 shadow-md'
+                        : 'border-stone-100 bg-white text-stone-600 hover:border-emerald-300 hover:text-emerald-700 shadow-sm',
                     )}
                   >
                     {variant.variantName}
@@ -223,7 +223,7 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
           <div className="hidden md:flex flex-col gap-3">
             {(selectedVariant ? selectedVariant.inStock === false : product.inStock === false) ? (
               <div className="flex flex-col gap-3">
-                <div className="w-full py-4 bg-stone-100 text-stone-400 rounded-2xl font-black text-center text-sm border border-stone-200 uppercase tracking-widest">
+                <div className="w-full py-4 bg-stone-100 text-stone-400 rounded-xl font-black text-center text-sm border border-stone-200 uppercase tracking-widest">
                   Sản phẩm hiện đang hết hàng
                 </div>
                 <p className="text-center text-stone-400 text-xs font-medium">
@@ -298,7 +298,7 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
 
         {/* Origin Meta */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="flex items-center gap-4 p-4 bg-white border border-stone-100 rounded-3xl shadow-sm">
+          <div className="flex items-center gap-4 p-4 bg-white border border-stone-100 rounded-xl shadow-sm">
             <div className="w-11 h-11 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600 shrink-0">
               <MapPin className="w-6 h-6" />
             </div>
@@ -311,7 +311,7 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-4 p-4 bg-white border border-stone-100 rounded-3xl shadow-sm">
+          <div className="flex items-center gap-4 p-4 bg-white border border-stone-100 rounded-xl shadow-sm">
             <div className="w-11 h-11 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 shrink-0">
               <Package className="w-6 h-6" />
             </div>
@@ -329,7 +329,7 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
         {/* Shop Info Overlay */}
         <div
           onClick={() => router.push(`/cua-hang/${product.shop.slug}`)}
-          className="p-6 border bg-stone-100 rounded-3xl text-white flex items-center justify-between shadow-sm relative overflow-hidden group cursor-pointer"
+          className="p-6 border bg-stone-100 rounded-xl text-white flex items-center justify-between shadow-sm relative overflow-hidden group cursor-pointer"
         >
           <div className="absolute inset-0 bg-linear-to-r from-emerald-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
           <div className="flex items-center gap-5 relative z-10">

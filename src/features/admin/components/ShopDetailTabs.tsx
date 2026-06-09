@@ -19,7 +19,7 @@ const TABS: { id: ShopDetailTabType; label: string; icon: React.ElementType }[] 
 
 const ShopDetailTabs: React.FC<ShopDetailTabsProps> = React.memo(({ activeTab, setActiveTab }) => {
   return (
-    <div className="bg-white p-2 rounded-[24px] shadow-sm border border-stone-100 flex gap-1 overflow-x-auto no-scrollbar">
+    <div className="bg-white p-2 rounded-xl shadow-sm border border-stone-100 flex gap-1 overflow-x-auto no-scrollbar">
       {TABS.map((tab) => {
         const Icon = tab.icon;
         const isActive = activeTab === tab.id;
@@ -28,7 +28,7 @@ const ShopDetailTabs: React.FC<ShopDetailTabsProps> = React.memo(({ activeTab, s
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={cn(
-              'flex items-center gap-2 px-6 py-3 rounded-2xl text-xs font-black transition-all whitespace-nowrap cursor-pointer',
+              'flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-black transition-all whitespace-nowrap cursor-pointer',
               isActive
                 ? 'bg-green-600 text-white'
                 : 'text-stone-400 hover:text-stone-600 hover:bg-stone-50',

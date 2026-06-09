@@ -40,7 +40,7 @@ export default function SellerProductDetailPage() {
     return (
       <div className="space-y-4 animate-pulse">
         <div className="h-8 w-48 bg-stone-100 rounded-xl" />
-        <div className="h-64 bg-stone-100 rounded-2xl" />
+        <div className="h-64 bg-stone-100 rounded-xl" />
       </div>
     );
   }
@@ -102,7 +102,7 @@ export default function SellerProductDetailPage() {
 
       {/* Rejection note */}
       {product.status === 'REJECTED' && product.rejectionNote && (
-        <div className="bg-red-50 border border-red-100 rounded-2xl p-4">
+        <div className="bg-red-50 border border-red-100 rounded-xl p-4">
           <p className="text-xs font-black text-red-500 uppercase tracking-widest mb-1">
             Lý do từ chối
           </p>
@@ -111,7 +111,7 @@ export default function SellerProductDetailPage() {
       )}
 
       {/* Tabs */}
-      <div className="flex gap-1 p-1 bg-stone-100/50 rounded-2xl w-fit border border-stone-100">
+      <div className="flex gap-1 p-1 bg-stone-100/50 rounded-xl w-fit border border-stone-100">
         {TABS.map((tab) => (
           <button
             key={tab.id}

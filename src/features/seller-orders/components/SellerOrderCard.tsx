@@ -37,7 +37,7 @@ export const SellerOrderCard: React.FC<SellerOrderCardProps> = ({ order }) => {
       </div>
 
       <div className="flex gap-4">
-        <div className="relative w-24 h-24 rounded-2xl overflow-hidden bg-stone-50 border border-stone-100 shrink-0">
+        <div className="relative w-24 h-24 rounded-xl overflow-hidden bg-stone-50 border border-stone-100 shrink-0">
           {order.thumbnail ? (
             <Image
               src={order.thumbnail}

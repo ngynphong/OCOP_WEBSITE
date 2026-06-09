@@ -47,7 +47,7 @@ export const QuickLinkManagement = memo(function QuickLinkManagement() {
     return (
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[...Array(8)].map((_, i) => (
-          <div key={i} className="h-40 w-full bg-stone-100 animate-pulse rounded-3xl" />
+          <div key={i} className="h-40 w-full bg-stone-100 animate-pulse rounded-xl" />
         ))}
       </div>
     );
@@ -71,7 +71,7 @@ export const QuickLinkManagement = memo(function QuickLinkManagement() {
 
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
         {quickLinks.length === 0 ? (
-          <div className="col-span-full py-20 text-center bg-stone-50 rounded-[32px] border-2 border-dashed border-stone-200">
+          <div className="col-span-full py-20 text-center bg-stone-50 rounded-xl border-2 border-dashed border-stone-200">
             <p className="text-stone-400 font-medium">Chưa có liên kết nào.</p>
           </div>
         ) : (
@@ -83,7 +83,7 @@ export const QuickLinkManagement = memo(function QuickLinkManagement() {
                 layout
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-white border border-stone-100 rounded-[32px] p-4 shadow-sm hover:shadow-xl hover:shadow-emerald-900/5 transition-all duration-300 flex flex-col items-center text-center group relative"
+                className="bg-white border border-stone-100 rounded-xl p-4 shadow-sm hover:shadow-xl hover:shadow-emerald-900/5 transition-all duration-300 flex flex-col items-center text-center group relative"
               >
                 <div className="absolute top-3 right-3 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button
@@ -100,7 +100,7 @@ export const QuickLinkManagement = memo(function QuickLinkManagement() {
                   </button>
                 </div>
 
-                <div className="w-16 h-16 rounded-2xl bg-stone-50 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300 relative overflow-hidden border border-stone-100">
+                <div className="w-16 h-16 rounded-xl bg-stone-50 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300 relative overflow-hidden border border-stone-100">
                   <Image src={ql.iconUrl} alt={ql.label} fill className="object-contain p-2" />
                 </div>
 

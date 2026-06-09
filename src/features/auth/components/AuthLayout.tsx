@@ -62,7 +62,7 @@ export function AuthLayout({
         </div>
 
         {/* Bottom Left Dark Card */}
-        <div className="mt-8 md:mt-auto shrink-0 relative rounded-3xl overflow-hidden bg-green-950 h-32 md:h-40 xl:h-48 shadow-2xl group w-full lg:max-w-xl mx-auto md:mx-0">
+        <div className="mt-8 md:mt-auto shrink-0 relative rounded-xl overflow-hidden bg-green-950 h-32 md:h-40 xl:h-48 shadow-2xl group w-full lg:max-w-xl mx-auto md:mx-0">
           <Image
             src="/images/left-side-login.jpg"
             alt="Agriculture background"

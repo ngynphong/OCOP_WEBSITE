@@ -22,7 +22,7 @@ const ChangePasswordPage = () => {
         và ký tự đặc biệt) và không nên sử dụng lại mật khẩu cũ.
       </p>
 
-      <div className="bg-stone-50/50 p-6 md:p-8 rounded-2xl border border-stone-100">
+      <div className="bg-stone-50/50 p-6 md:p-8 rounded-xl border border-stone-100">
         <ChangePasswordForm />
       </div>
     </motion.div>

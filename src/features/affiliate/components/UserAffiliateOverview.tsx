@@ -59,9 +59,9 @@ export const UserAffiliateOverview: React.FC<UserAffiliateOverviewProps> = ({ ac
         {stats.map((stat, index) => (
           <div
             key={index}
-            className="bg-white p-6 rounded-3xl border border-stone-100 shadow-xl shadow-stone-200/50 flex items-center gap-4"
+            className="bg-white p-6 rounded-xl border border-stone-100 shadow-xl shadow-stone-200/50 flex items-center gap-4"
           >
-            <div className={cn(stat.color, 'p-3 rounded-2xl text-white shadow-lg')}>
+            <div className={cn(stat.color, 'p-3 rounded-xl text-white shadow-lg')}>
               <stat.icon size={24} />
             </div>
             <div>
@@ -73,7 +73,7 @@ export const UserAffiliateOverview: React.FC<UserAffiliateOverviewProps> = ({ ac
       </div>
 
       {/* Affiliate Link Card */}
-      <div className="bg-white p-8 rounded-3xl border border-stone-100 shadow-xl shadow-stone-200/50">
+      <div className="bg-white p-8 rounded-xl border border-stone-100 shadow-xl shadow-stone-200/50">
         <h3 className="text-lg font-bold text-stone-900 mb-4 flex items-center gap-2">
           <FiTrendingUp className="text-emerald-600" />
           Link Giới Thiệu Của Bạn
@@ -84,14 +84,14 @@ export const UserAffiliateOverview: React.FC<UserAffiliateOverviewProps> = ({ ac
         </p>
 
         <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex-1 flex items-center gap-3 bg-stone-50 px-5 py-4 rounded-2xl border border-stone-200 font-mono text-sm text-stone-600 overflow-hidden truncate">
+          <div className="flex-1 flex items-center gap-3 bg-stone-50 px-5 py-4 rounded-xl border border-stone-200 font-mono text-sm text-stone-600 overflow-hidden truncate">
             {account.affiliateCode}
           </div>
           <div className="flex gap-2">
             <Button
               variant="primary"
               onClick={() => copyToClipboard(account.affiliateCode, 'Đã copy mã giới thiệu')}
-              className="rounded-2xl h-full px-6"
+              className="rounded-xl h-full px-6"
             >
               Copy Mã
             </Button>

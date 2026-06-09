@@ -66,14 +66,14 @@ const UnsubscribeContent = () => {
               </p>
             </div>
             <Link href="/" className="block">
-              <button className="w-full bg-stone-900 text-white py-4 rounded-2xl text-sm font-black uppercase tracking-widest hover:bg-stone-800 transition-all cursor-pointer">
+              <button className="w-full bg-stone-900 text-white py-4 rounded-xl text-sm font-black uppercase tracking-widest hover:bg-stone-800 transition-all cursor-pointer">
                 Về trang chủ
               </button>
             </Link>
           </div>
         ) : (
           <div className="space-y-8">
-            <div className="w-24 h-24 bg-stone-50 text-stone-400 rounded-[32px] flex items-center justify-center mx-auto border border-stone-100">
+            <div className="w-24 h-24 bg-stone-50 text-stone-400 rounded-xl flex items-center justify-center mx-auto border border-stone-100">
               <Inbox size={48} />
             </div>
             <div className="space-y-4">
@@ -86,7 +86,7 @@ const UnsubscribeContent = () => {
               </p>
             </div>
 
-            <div className="p-4 bg-stone-50 rounded-2xl border border-stone-100">
+            <div className="p-4 bg-stone-50 rounded-xl border border-stone-100">
               <p className="text-xs font-bold text-stone-400 uppercase tracking-widest">
                 Tự động quay lại trang chủ sau{' '}
                 <span className="text-lg text-stone-600 ml-1">{countdown}s</span>
@@ -96,7 +96,7 @@ const UnsubscribeContent = () => {
             <div className="pt-6">
               <Link
                 href="/"
-                className="inline-flex items-center gap-3 bg-emerald-50 text-emerald-700 px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-emerald-100 transition-all group cursor-pointer"
+                className="inline-flex items-center gap-3 bg-emerald-50 text-emerald-700 px-8 py-4 rounded-xl font-black text-sm uppercase tracking-widest hover:bg-emerald-100 transition-all group cursor-pointer"
               >
                 <Home size={18} /> Quay lại trang chủ ngay
               </Link>

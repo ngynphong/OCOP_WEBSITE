@@ -46,7 +46,7 @@ const PublicTraceabilityPage = () => {
   if (!lot)
     return (
       <div className="min-h-screen bg-stone-50 flex items-center justify-center p-6">
-        <div className="w-full max-w-md bg-white rounded-[40px] shadow-2xl p-10 text-center border border-stone-100">
+        <div className="w-full max-w-md bg-white rounded-xl shadow-2xl p-10 text-center border border-stone-100">
           <div className="w-24 h-24 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
             <FiShield size={40} />
           </div>
@@ -57,7 +57,7 @@ const PublicTraceabilityPage = () => {
           </p>
           <button
             onClick={() => router.push('/')}
-            className="mt-8 w-full py-4 bg-stone-900 text-white font-bold rounded-2xl hover:bg-stone-800 transition-all"
+            className="mt-8 w-full py-4 bg-stone-900 text-white font-bold rounded-xl hover:bg-stone-800 transition-all"
           >
             Về trang chủ
           </button>
@@ -87,9 +87,9 @@ const PublicTraceabilityPage = () => {
 
       {/* Product Info Floating Card */}
       <div className="max-w-xl mx-auto px-6 -mt-16 relative z-20">
-        <div className="bg-white rounded-[40px] shadow-2xl shadow-stone-200/60 p-8 border border-stone-100 ring-4 ring-white/50">
+        <div className="bg-white rounded-xl shadow-2xl shadow-stone-200/60 p-8 border border-stone-100 ring-4 ring-white/50">
           <div className="flex flex-col items-center text-center">
-            <div className="w-20 h-20 rounded-3xl bg-emerald-50 flex items-center justify-center text-emerald-600 mb-6 shadow-inner ring-1 ring-emerald-100">
+            <div className="w-20 h-20 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 mb-6 shadow-inner ring-1 ring-emerald-100">
               <FiPackage size={40} />
             </div>
 
@@ -109,7 +109,7 @@ const PublicTraceabilityPage = () => {
             </p>
 
             <div className="w-full grid grid-cols-2 gap-4 pt-6 border-t border-stone-50">
-              <div className="bg-stone-50/50 p-4 rounded-3xl text-left">
+              <div className="bg-stone-50/50 p-4 rounded-xl text-left">
                 <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest block mb-1">
                   Số lượng
                 </span>
@@ -117,7 +117,7 @@ const PublicTraceabilityPage = () => {
                   {lot.quantity} {lot.unit}
                 </span>
               </div>
-              <div className="bg-stone-50/50 p-4 rounded-3xl text-left">
+              <div className="bg-stone-50/50 p-4 rounded-xl text-left">
                 <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest block mb-1">
                   Hạn sử dụng
                 </span>

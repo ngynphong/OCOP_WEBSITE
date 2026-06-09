@@ -39,12 +39,12 @@ export function VoucherSelectionModal({
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-white rounded-[32px] shadow-2xl z-[120] overflow-hidden border border-stone-100"
+            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-white rounded-xl shadow-2xl z-[120] overflow-hidden border border-stone-100"
           >
             {/* Header */}
             <div className="p-6 border-b border-stone-100 flex items-center justify-between bg-linear-to-r from-stone-50 to-white">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-emerald-100 rounded-2xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
                   <Wallet className="w-5 h-5 text-emerald-600" />
                 </div>
                 <div>
@@ -75,7 +75,7 @@ export function VoucherSelectionModal({
                 </div>
               ) : vouchers.length === 0 ? (
                 <div className="py-16 flex flex-col items-center justify-center text-center px-8">
-                  <div className="w-16 h-16 bg-stone-50 rounded-3xl flex items-center justify-center mb-4">
+                  <div className="w-16 h-16 bg-stone-50 rounded-xl flex items-center justify-center mb-4">
                     <Ticket className="w-8 h-8 text-stone-200" />
                   </div>
                   <h4 className="text-stone-900 font-black uppercase tracking-tight">
@@ -101,7 +101,7 @@ export function VoucherSelectionModal({
                       <div
                         key={v.savedId}
                         className={cn(
-                          'flex bg-white border rounded-2xl overflow-hidden transition-all duration-300 relative group',
+                          'flex bg-white border rounded-xl overflow-hidden transition-all duration-300 relative group',
                           isSelected
                             ? 'border-emerald-500 ring-1 ring-emerald-500 shadow-lg shadow-emerald-500/10'
                             : 'border-stone-100 hover:border-stone-200 hover:shadow-md',

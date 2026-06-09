@@ -95,13 +95,13 @@ export function JournalsTab({ productId }: JournalsTabProps) {
     }
   };
 
-  if (isPending) return <div className="h-48 bg-stone-100 rounded-2xl animate-pulse" />;
+  if (isPending) return <div className="h-48 bg-stone-100 rounded-xl animate-pulse" />;
 
   return (
     <div className="space-y-4">
       {/* Journal steps */}
       {journals.length === 0 ? (
-        <div className="flex items-center justify-center h-24 bg-stone-50 rounded-2xl border border-dashed border-stone-200">
+        <div className="flex items-center justify-center h-24 bg-stone-50 rounded-xl border border-dashed border-stone-200">
           <p className="text-stone-400 text-sm">Chưa có bước nhật ký nào</p>
         </div>
       ) : (
@@ -112,7 +112,7 @@ export function JournalsTab({ productId }: JournalsTabProps) {
             .map((j) => (
               <div
                 key={j.id}
-                className="flex items-start gap-4 p-4 bg-white rounded-2xl border border-stone-100"
+                className="flex items-start gap-4 p-4 bg-white rounded-xl border border-stone-100"
               >
                 <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
                   <span className="text-emerald-600 font-black text-xs">{j.stepOrder}</span>
@@ -176,7 +176,7 @@ export function JournalsTab({ productId }: JournalsTabProps) {
       {showForm ? (
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="border border-stone-100 rounded-2xl p-5 space-y-4 bg-stone-50/50"
+          className="border border-stone-100 rounded-xl p-5 space-y-4 bg-stone-50/50"
         >
           <h4 className="text-sm font-black text-stone-700">Thêm bước nhật ký</h4>
           <div className="grid grid-cols-2 gap-4">
@@ -251,7 +251,7 @@ export function JournalsTab({ productId }: JournalsTabProps) {
               {previewUrls.map((url, index) => (
                 <div
                   key={index}
-                  className="relative w-20 h-20 rounded-2xl overflow-hidden border border-stone-200 group bg-white"
+                  className="relative w-20 h-20 rounded-xl overflow-hidden border border-stone-200 group bg-white"
                 >
                   <Image src={url} alt="" fill className="object-cover" />
                   <button
@@ -263,7 +263,7 @@ export function JournalsTab({ productId }: JournalsTabProps) {
                   </button>
                 </div>
               ))}
-              <label className="w-20 h-20 rounded-2xl border-2 border-dashed border-stone-200 flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-emerald-300 hover:bg-emerald-50/30 transition text-stone-400 hover:text-emerald-600">
+              <label className="w-20 h-20 rounded-xl border-2 border-dashed border-stone-200 flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-emerald-300 hover:bg-emerald-50/30 transition text-stone-400 hover:text-emerald-600">
                 <FiPlus size={20} />
                 <span className="text-[10px] font-bold">Thêm ảnh</span>
                 <input
@@ -288,7 +288,7 @@ export function JournalsTab({ productId }: JournalsTabProps) {
       ) : (
         <button
           onClick={() => setShowForm(true)}
-          className="w-full py-3 border border-dashed border-stone-200 rounded-2xl text-sm font-bold text-stone-400 hover:border-emerald-300 hover:text-emerald-600 transition cursor-pointer"
+          className="w-full py-3 border border-dashed border-stone-200 rounded-xl text-sm font-bold text-stone-400 hover:border-emerald-300 hover:text-emerald-600 transition cursor-pointer"
         >
           + Thêm bước nhật ký
         </button>

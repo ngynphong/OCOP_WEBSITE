@@ -46,7 +46,7 @@ export function FlashSaleManagementTab({ role }: FlashSaleManagementProps) {
   return (
     <div className="space-y-4">
       {flashSales.length === 0 ? (
-        <div className="flex flex-col items-center justify-center h-64 bg-stone-50 rounded-3xl border border-dashed border-stone-200">
+        <div className="flex flex-col items-center justify-center h-64 bg-stone-50 rounded-xl border border-dashed border-stone-200">
           <p className="text-stone-400 font-bold">Chưa có chương trình Flash Sale nào</p>
           {role === 'SELLER' && (
             <p className="text-xs text-stone-400 mt-1">
@@ -58,7 +58,7 @@ export function FlashSaleManagementTab({ role }: FlashSaleManagementProps) {
         flashSales.map((fs) => (
           <div
             key={fs.id}
-            className="bg-white rounded-3xl border border-stone-100 p-6 hover:shadow-lg transition-all"
+            className="bg-white rounded-xl border border-stone-100 p-6 hover:shadow-lg transition-all"
           >
             <div className="flex flex-col md:flex-row justify-between gap-6">
               {/* Flash Sale Header Info */}
@@ -92,7 +92,7 @@ export function FlashSaleManagementTab({ role }: FlashSaleManagementProps) {
                   {fs.items.map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-center gap-3 p-3 bg-stone-50 rounded-2xl border border-stone-100"
+                      className="flex items-center gap-3 p-3 bg-stone-50 rounded-xl border border-stone-100"
                     >
                       <div className="w-12 h-12 rounded-lg overflow-hidden bg-white border border-stone-200 shrink-0">
                         {item.thumbnailUrl ? (

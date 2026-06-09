@@ -28,7 +28,7 @@ export function FlashSaleSection() {
   if (isPending) {
     return (
       <section className="w-full max-w-7xl mx-auto my-8 px-6">
-        <div className="w-full h-64 bg-stone-100 animate-pulse rounded-[32px]" />
+        <div className="w-full h-64 bg-stone-100 animate-pulse rounded-xl" />
       </section>
     );
   }
@@ -37,7 +37,7 @@ export function FlashSaleSection() {
 
   return (
     <section className="w-full max-w-7xl mx-auto my-8 px-6">
-      <div className="relative w-full overflow-hidden rounded-[32px] border border-red-200/50 shadow-2xl shadow-red-900/10">
+      <div className="relative w-full overflow-hidden rounded-xl border border-red-200/50 shadow-2xl shadow-red-900/10">
         {/* Premium Banner Background Overlay */}
         <div className="absolute inset-0 z-0">
           <Image
@@ -63,7 +63,7 @@ export function FlashSaleSection() {
                 </h2>
               </div>
 
-              <div className="flex justify-start items-center gap-3 bg-white/60 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/40 border-b-2 border-b-red-200">
+              <div className="flex justify-start items-center gap-3 bg-white/60 backdrop-blur-md px-4 py-2 rounded-xl border border-white/40 border-b-2 border-b-red-200">
                 <span className="text-red-600 text-xs font-black uppercase tracking-widest">
                   Kết thúc sau
                 </span>
@@ -73,7 +73,7 @@ export function FlashSaleSection() {
 
             <Link
               href="/flash-sale"
-              className="group flex justify-start items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-2xl text-base font-bold shadow-lg shadow-red-600/20 hover:bg-red-700 transition-all hover:scale-105"
+              className="group flex justify-start items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-xl text-base font-bold shadow-lg shadow-red-600/20 hover:bg-red-700 transition-all hover:scale-105"
             >
               <span>Xem tất cả</span>
               <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

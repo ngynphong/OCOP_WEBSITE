@@ -58,7 +58,7 @@ export default function BuyerQuotationPage() {
       </div>
 
       {quotations.length === 0 ? (
-        <div className="bg-white rounded-3xl p-12 border border-dashed border-stone-200 flex flex-col items-center text-center">
+        <div className="bg-white rounded-xl p-12 border border-dashed border-stone-200 flex flex-col items-center text-center">
           <div className="w-20 h-20 bg-stone-50 rounded-full flex items-center justify-center text-stone-300 mb-4">
             <MessageSquareQuote size={40} />
           </div>
@@ -97,7 +97,7 @@ function QuotationCard({ quotation }: { quotation: Quotation }) {
   return (
     <div
       className={cn(
-        'bg-white rounded-3xl border transition-all hover:shadow-xl hover:border-green-200 overflow-hidden',
+        'bg-white rounded-xl border transition-all hover:shadow-xl hover:border-green-200 overflow-hidden',
         quotation.status === 'REPLIED'
           ? 'border-green-200 shadow-sm shadow-green-100 ring-1 ring-green-100'
           : 'border-stone-100',
@@ -125,7 +125,7 @@ function QuotationCard({ quotation }: { quotation: Quotation }) {
 
           {/* Left Column: Product Info */}
           <div className="flex gap-4 lg:w-1/3">
-            <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden bg-stone-50 shrink-0 border border-stone-100 shadow-inner">
+            <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden bg-stone-50 shrink-0 border border-stone-100 shadow-inner">
               <div className="absolute inset-0 flex items-center justify-center text-stone-300">
                 <MessageSquareQuote size={32} />
               </div>
@@ -209,7 +209,7 @@ function QuotationCard({ quotation }: { quotation: Quotation }) {
                   </div>
                 )}
                 {quotation.replyMessage && (
-                  <div className="bg-blue-50/50 p-3 rounded-2xl border border-blue-100/50 flex gap-3">
+                  <div className="bg-blue-50/50 p-3 rounded-xl border border-blue-100/50 flex gap-3">
                     <MessageSquareQuote className="text-blue-400 shrink-0" size={16} />
                     <div className="min-w-0 flex-1">
                       <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-1">
@@ -247,7 +247,7 @@ function QuotationCard({ quotation }: { quotation: Quotation }) {
               {quotation.status === 'REPLIED' && (
                 <Button
                   variant="primary"
-                  className="w-full rounded-2xl h-12 font-black shadow-xl shadow-green-600/20 text-sm gap-2"
+                  className="w-full rounded-xl h-12 font-black shadow-xl shadow-green-600/20 text-sm gap-2"
                   leftIcon={<CheckCircle2 size={16} />}
                   onClick={handleAccept}
                   isLoading={isPending}
@@ -261,7 +261,7 @@ function QuotationCard({ quotation }: { quotation: Quotation }) {
                 <Link href={`/checkout/b2b/${quotation.checkoutToken}`}>
                   <Button
                     variant="primary"
-                    className="w-full rounded-2xl h-12 font-black shadow-xl shadow-green-600/20 text-sm gap-2"
+                    className="w-full rounded-xl h-12 font-black shadow-xl shadow-green-600/20 text-sm gap-2"
                     leftIcon={<ShoppingBag size={16} />}
                   >
                     Mua ngay

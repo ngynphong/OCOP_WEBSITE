@@ -114,14 +114,14 @@ export const PaymentCallbackManager = ({ provider, searchParams }: PaymentCallba
             <div className="flex gap-4">
               <Button
                 onClick={() => router.push('/dashboard/don-hang')}
-                className="rounded-2xl px-8 h-12 flex items-center gap-2 bg-emerald-800"
+                className="rounded-xl px-8 h-12 flex items-center gap-2 bg-emerald-800"
               >
                 Xem đơn hàng <ArrowRight size={18} />
               </Button>
               <Button
                 variant="outline"
                 onClick={() => router.push('/')}
-                className="rounded-2xl px-8 h-12"
+                className="rounded-xl px-8 h-12"
               >
                 Tiếp tục mua sắm
               </Button>
@@ -148,14 +148,14 @@ export const PaymentCallbackManager = ({ provider, searchParams }: PaymentCallba
             <div className="flex gap-4">
               <Button
                 onClick={() => router.push('/checkout')}
-                className="rounded-2xl px-8 h-12 flex items-center gap-2 bg-stone-900"
+                className="rounded-xl px-8 h-12 flex items-center gap-2 bg-stone-900"
               >
                 Thử lại thanh toán
               </Button>
               <Button
                 variant="outline"
                 onClick={() => router.push('/')}
-                className="rounded-2xl px-8 h-12"
+                className="rounded-xl px-8 h-12"
               >
                 Về trang chủ
               </Button>

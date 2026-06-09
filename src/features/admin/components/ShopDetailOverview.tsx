@@ -41,13 +41,13 @@ const ShopDetailOverview: React.FC<ShopDetailOverviewProps> = React.memo(({ shop
           <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
           Giới thiệu cửa hàng
         </h4>
-        <div className="bg-stone-50 p-8 rounded-3xl border border-stone-100 text-stone-600 text-sm leading-relaxed italic">
+        <div className="bg-stone-50 p-8 rounded-xl border border-stone-100 text-stone-600 text-sm leading-relaxed italic">
           &ldquo;{shop.description}&rdquo;
         </div>
       </section>
 
       {/* Owner Info Section */}
-      <section className="bg-white rounded-[32px] border border-stone-100 overflow-hidden">
+      <section className="bg-white rounded-xl border border-stone-100 overflow-hidden">
         <div className="px-8 py-6 bg-stone-50/50 border-b border-stone-100 flex justify-between items-center">
           <h4 className="text-sm font-black text-stone-800 uppercase tracking-widest flex items-center gap-2">
             <FiUser className="text-emerald-600" />
@@ -90,7 +90,7 @@ const ShopDetailOverview: React.FC<ShopDetailOverviewProps> = React.memo(({ shop
                   type="text"
                   value={formData.ownerName}
                   onChange={(e) => setFormData({ ...formData, ownerName: e.target.value })}
-                  className="w-full bg-stone-50 border border-stone-100 rounded-2xl px-5 py-3 text-sm font-bold text-stone-800 outline-none focus:border-emerald-500/50 transition-all"
+                  className="w-full bg-stone-50 border border-stone-100 rounded-xl px-5 py-3 text-sm font-bold text-stone-800 outline-none focus:border-emerald-500/50 transition-all"
                   placeholder="Nguyễn Văn A"
                 />
               </div>
@@ -102,7 +102,7 @@ const ShopDetailOverview: React.FC<ShopDetailOverviewProps> = React.memo(({ shop
                   type="text"
                   value={formData.ownerRole}
                   onChange={(e) => setFormData({ ...formData, ownerRole: e.target.value })}
-                  className="w-full bg-stone-50 border border-stone-100 rounded-2xl px-5 py-3 text-sm font-bold text-stone-800 outline-none focus:border-emerald-500/50 transition-all"
+                  className="w-full bg-stone-50 border border-stone-100 rounded-xl px-5 py-3 text-sm font-bold text-stone-800 outline-none focus:border-emerald-500/50 transition-all"
                   placeholder="Giám đốc / Chủ hộ kinh doanh"
                 />
               </div>
@@ -114,7 +114,7 @@ const ShopDetailOverview: React.FC<ShopDetailOverviewProps> = React.memo(({ shop
                   type="text"
                   value={formData.ownerImageUrl}
                   onChange={(e) => setFormData({ ...formData, ownerImageUrl: e.target.value })}
-                  className="w-full bg-stone-50 border border-stone-100 rounded-2xl px-5 py-3 text-sm font-medium text-stone-600 outline-none focus:border-emerald-500/50 transition-all"
+                  className="w-full bg-stone-50 border border-stone-100 rounded-xl px-5 py-3 text-sm font-medium text-stone-600 outline-none focus:border-emerald-500/50 transition-all"
                   placeholder="https://..."
                 />
               </div>
@@ -126,14 +126,14 @@ const ShopDetailOverview: React.FC<ShopDetailOverviewProps> = React.memo(({ shop
                   value={formData.ownerQuote}
                   onChange={(e) => setFormData({ ...formData, ownerQuote: e.target.value })}
                   rows={3}
-                  className="w-full bg-stone-50 border border-stone-100 rounded-2xl px-5 py-3 text-sm font-medium text-stone-600 outline-none focus:border-emerald-500/50 transition-all resize-none"
+                  className="w-full bg-stone-50 border border-stone-100 rounded-xl px-5 py-3 text-sm font-medium text-stone-600 outline-none focus:border-emerald-500/50 transition-all resize-none"
                   placeholder="Chia sẻ tâm huyết về sản phẩm OCOP..."
                 />
               </div>
             </div>
           ) : (
             <div className="flex flex-col md:flex-row gap-8 items-start">
-              <div className="w-24 h-24 rounded-3xl bg-stone-100 overflow-hidden border border-stone-200 shrink-0 relative">
+              <div className="w-24 h-24 rounded-xl bg-stone-100 overflow-hidden border border-stone-200 shrink-0 relative">
                 {shop.ownerImageUrl ? (
                   <Image src={shop.ownerImageUrl} alt="Owner" fill className="object-cover" />
                 ) : (
@@ -165,8 +165,8 @@ const ShopDetailOverview: React.FC<ShopDetailOverviewProps> = React.memo(({ shop
 
       {/* Basic Stats */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-3xl border border-stone-100 flex items-center gap-5">
-          <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center">
+        <div className="bg-white p-6 rounded-xl border border-stone-100 flex items-center gap-5">
+          <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
             <FiActivity size={24} />
           </div>
           <div>
@@ -174,8 +174,8 @@ const ShopDetailOverview: React.FC<ShopDetailOverviewProps> = React.memo(({ shop
             <p className="text-sm font-bold text-stone-800">Sản phẩm OCOP</p>
           </div>
         </div>
-        <div className="bg-white p-6 rounded-3xl border border-stone-100 flex items-center gap-5">
-          <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center">
+        <div className="bg-white p-6 rounded-xl border border-stone-100 flex items-center gap-5">
+          <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center">
             <FiCalendar size={24} />
           </div>
           <div>

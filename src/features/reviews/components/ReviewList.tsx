@@ -86,7 +86,7 @@ export const ReviewList = ({ productSlug }: ReviewListProps) => {
             <button
               onClick={() => handleFilterRating(undefined)}
               className={cn(
-                'px-5 py-2.5 rounded-2xl text-xs font-bold transition-all border',
+                'px-5 py-2.5 rounded-xl text-xs font-bold transition-all border',
                 params.rating === undefined
                   ? 'bg-stone-900 text-white border-stone-900 shadow-lg shadow-stone-200'
                   : 'bg-white text-stone-600 border-stone-200 hover:border-stone-900',
@@ -100,7 +100,7 @@ export const ReviewList = ({ productSlug }: ReviewListProps) => {
                 key={star}
                 onClick={() => handleFilterRating(star)}
                 className={cn(
-                  'flex items-center gap-1.5 px-5 py-2.5 rounded-2xl text-xs font-bold transition-all border',
+                  'flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-bold transition-all border',
                   params.rating === star
                     ? 'bg-stone-900 text-white border-stone-900 shadow-lg shadow-stone-200'
                     : 'bg-white text-stone-600 border-stone-200 hover:border-stone-900',
@@ -113,7 +113,7 @@ export const ReviewList = ({ productSlug }: ReviewListProps) => {
             <button
               onClick={handleToggleImage}
               className={cn(
-                'flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-bold transition-all border',
+                'flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all border',
                 params.hasImage
                   ? 'bg-stone-900 text-white border-stone-900 shadow-lg shadow-stone-200'
                   : 'bg-white text-stone-600 border-stone-200 hover:border-stone-900',
@@ -130,7 +130,7 @@ export const ReviewList = ({ productSlug }: ReviewListProps) => {
                 <ReviewItem key={review.id} review={review} onAction={handleReviewAction} />
               ))
             ) : (
-              <div className="text-center py-20 bg-stone-50 rounded-[32px] border border-stone-100">
+              <div className="text-center py-20 bg-stone-50 rounded-xl border border-stone-100">
                 <p className="text-stone-500 font-medium italic">
                   Không có đánh giá nào phù hợp với bộ lọc.
                 </p>
@@ -159,7 +159,7 @@ export const ReviewList = ({ productSlug }: ReviewListProps) => {
           )}
         </>
       ) : (
-        <div className="text-center py-20 bg-stone-50 rounded-[32px] border border-stone-100">
+        <div className="text-center py-20 bg-stone-50 rounded-xl border border-stone-100">
           <p className="text-stone-500 font-medium">Sản phẩm chưa có đánh giá nào.</p>
           <p className="text-sm text-stone-400 mt-2">
             Hãy trở thành người đầu tiên trải nghiệm tinh hoa này!

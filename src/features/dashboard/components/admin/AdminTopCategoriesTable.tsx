@@ -32,7 +32,7 @@ export const AdminTopCategoriesTable = ({ topCategories }: AdminTopCategoriesTab
   );
 
   return (
-    <div className="bg-white rounded-3xl shadow-sm border border-stone-100 overflow-hidden flex flex-col">
+    <div className="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden flex flex-col">
       <div className="px-8 py-6 flex justify-between items-center border-b border-stone-50 bg-stone-50/50">
         <h4 className="text-lg font-black text-stone-900 tracking-tight">
           Danh mục sản phẩm hàng đầu

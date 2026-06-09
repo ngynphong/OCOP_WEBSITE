@@ -56,7 +56,7 @@ export const AdminBlogTagsModal = ({ isOpen, onClose }: AdminBlogTagsModalProps)
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-white rounded-3xl shadow-2xl z-[70] overflow-hidden"
+            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-white rounded-xl shadow-2xl z-[70] overflow-hidden"
           >
             <div className="p-6 border-b border-stone-100 flex justify-between items-center bg-stone-50">
               <h2 className="text-xl font-black text-stone-900">Quản lý Thẻ (Tags)</h2>

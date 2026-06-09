@@ -46,14 +46,14 @@ function RevenueSummary({ isB2B = false }: { isB2B?: boolean }) {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-      <div className="bg-green-50 rounded-3xl p-6 border border-green-100">
+      <div className="bg-green-50 rounded-xl p-6 border border-green-100">
         <div className="flex items-center gap-2 text-green-700 mb-2">
           <TrendingUp size={18} /> <span className="font-bold text-sm">Doanh thu gộp (Tháng)</span>
         </div>
         <p className="text-3xl font-black text-green-800">{formatCurrencyVND(rev.grossRevenue)}</p>
         <p className="text-sm text-green-600 mt-2 font-medium">{rev.totalOrders} đơn hàng</p>
       </div>
-      <div className="bg-stone-50 rounded-3xl p-6 border border-stone-100">
+      <div className="bg-stone-50 rounded-xl p-6 border border-stone-100">
         <div className="flex items-center gap-2 text-stone-500 mb-2">
           <DollarSign size={18} /> <span className="font-bold text-sm">Số dư nhận thực (Net)</span>
         </div>
@@ -62,7 +62,7 @@ function RevenueSummary({ isB2B = false }: { isB2B?: boolean }) {
           Chiết khấu sàn: -{formatCurrencyVND(rev.commissionFee)}
         </p>
       </div>
-      <div className="bg-red-50 rounded-3xl p-6 border border-red-100">
+      <div className="bg-red-50 rounded-xl p-6 border border-red-100">
         <div className="flex items-center gap-2 text-red-700 mb-2">
           <RotateCcw size={18} /> <span className="font-bold text-sm">Tỉ lệ hoàn trả</span>
         </div>
@@ -147,7 +147,7 @@ function OrdersManagementContent() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         {/* Switcher Mua lẻ / Mua sỉ B2B */}
-        <div className="flex bg-stone-100/80 p-1.5 rounded-2xl w-fit border border-stone-200/50">
+        <div className="flex bg-stone-100/80 p-1.5 rounded-xl w-fit border border-stone-200/50">
           <button
             onClick={() => setIsB2B(false)}
             className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-300 ${
@@ -173,7 +173,7 @@ function OrdersManagementContent() {
 
       <RevenueSummary isB2B={isB2B} />
 
-      <div className="bg-white rounded-3xl border border-stone-100 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden">
         {/* Main Tabs */}
         <div className="border-b border-stone-100 bg-stone-50 flex px-2 pt-2">
           <button
@@ -241,7 +241,7 @@ function OrdersManagementContent() {
                         size="lg"
                         onClick={() => fetchNextPage()}
                         isLoading={isFetchingNextPage}
-                        className="min-w-[200px] rounded-2xl border-2 border-stone-200 hover:border-green-600 hover:text-green-700 font-black tracking-widest uppercase text-xs transition-all shadow-sm"
+                        className="min-w-[200px] rounded-xl border-2 border-stone-200 hover:border-green-600 hover:text-green-700 font-black tracking-widest uppercase text-xs transition-all shadow-sm"
                       >
                         <Plus className="mr-2" size={16} />
                         Xem thêm đơn hàng
@@ -254,7 +254,7 @@ function OrdersManagementContent() {
                   </div>
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center py-20 px-4 text-center bg-stone-50 rounded-2xl border border-stone-100">
+                <div className="flex flex-col items-center justify-center py-20 px-4 text-center bg-stone-50 rounded-xl border border-stone-100">
                   <PackageX className="w-12 h-12 text-stone-300 mb-4" />
                   <h3 className="text-lg font-bold text-stone-800 mb-1">Không có đơn hàng nào</h3>
                   <p className="text-stone-500 max-w-sm">

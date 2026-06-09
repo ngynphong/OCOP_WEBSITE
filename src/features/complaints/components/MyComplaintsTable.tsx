@@ -47,7 +47,7 @@ export const MyComplaintsTable = ({ complaints, isLoading }: MyComplaintsTablePr
   if (complaints.length === 0) {
     return (
       <div className="bg-stone-50/50 rounded-4xl border border-dashed border-stone-200 py-20 text-center">
-        <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 border border-stone-100 shadow-sm text-stone-400">
+        <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center mx-auto mb-4 border border-stone-100 shadow-sm text-stone-400">
           <MessageSquare size={32} />
         </div>
         <h3 className="text-lg font-bold text-stone-900">Bạn chưa gửi khiếu nại nào</h3>
@@ -59,7 +59,7 @@ export const MyComplaintsTable = ({ complaints, isLoading }: MyComplaintsTablePr
   }
 
   return (
-    <div className="bg-white rounded-3xl border border-stone-100 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>

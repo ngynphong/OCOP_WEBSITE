@@ -284,7 +284,7 @@ function SellerOrderDetailsContent({ params }: PageProps) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Content (Trái) */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white rounded-3xl p-6 border border-stone-100 shadow-sm">
+          <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-sm">
             <div className="flex justify-between items-center mb-6">
               <h3 className="font-bold text-stone-900 flex items-center gap-2">
                 <Package size={18} className="text-stone-500" /> Sản phẩm cần đóng gói (
@@ -299,7 +299,7 @@ function SellerOrderDetailsContent({ params }: PageProps) {
 
             <div className="space-y-4">
               {orderItems.map((item) => (
-                <div key={item.id} className="flex gap-4 p-4 bg-stone-50 rounded-2xl">
+                <div key={item.id} className="flex gap-4 p-4 bg-stone-50 rounded-xl">
                   <div className="relative w-20 h-20 rounded-xl overflow-hidden shrink-0">
                     <Image
                       src={item.productImage || '/images/default-image.png'}
@@ -327,11 +327,11 @@ function SellerOrderDetailsContent({ params }: PageProps) {
 
           {/* Customer Note Section */}
           {order.note && (
-            <div className="bg-amber-50 rounded-3xl p-6 border border-amber-100 shadow-sm animate-in fade-in slide-in-from-bottom-2">
+            <div className="bg-amber-50 rounded-xl p-6 border border-amber-100 shadow-sm animate-in fade-in slide-in-from-bottom-2">
               <h3 className="font-bold text-amber-900 flex items-center gap-2 mb-3">
                 <StickyNote size={18} className="text-amber-600" /> Ghi chú từ khách hàng
               </h3>
-              <div className="bg-white/80 rounded-2xl p-4 text-amber-900 font-medium text-sm leading-relaxed border border-amber-200/50">
+              <div className="bg-white/80 rounded-xl p-4 text-amber-900 font-medium text-sm leading-relaxed border border-amber-200/50">
                 {order.note}
               </div>
             </div>
@@ -339,11 +339,11 @@ function SellerOrderDetailsContent({ params }: PageProps) {
 
           {/* Hóa đơn VAT (nếu có) */}
           {order.invoiceInfo && (
-            <div className="bg-white rounded-3xl p-6 border border-stone-100 shadow-sm animate-in fade-in slide-in-from-bottom-2">
+            <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-sm animate-in fade-in slide-in-from-bottom-2">
               <h3 className="font-bold text-stone-900 flex items-center gap-2 mb-4">
                 <FileText size={18} className="text-blue-600" /> Yêu cầu xuất hóa đơn VAT
               </h3>
-              <div className="space-y-3 bg-stone-50 p-4 rounded-2xl border border-stone-100/50">
+              <div className="space-y-3 bg-stone-50 p-4 rounded-xl border border-stone-100/50">
                 <div>
                   <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest block mb-0.5">
                     Tên công ty / đơn vị
@@ -404,7 +404,7 @@ function SellerOrderDetailsContent({ params }: PageProps) {
             onOpenRejectModal={() => setRejectModalOpen(true)}
           />
 
-          <div className="bg-white rounded-3xl p-6 border border-stone-100 shadow-sm">
+          <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-sm">
             <h3 className="font-bold text-stone-900 flex items-center gap-2 mb-4">
               <MapPin size={18} className="text-stone-500" /> Thông tin khách hàng
             </h3>
@@ -423,7 +423,7 @@ function SellerOrderDetailsContent({ params }: PageProps) {
             )}
           </div>
 
-          <div className="bg-white rounded-3xl p-6 border border-stone-100 shadow-sm">
+          <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-sm">
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-bold text-stone-900 flex items-center gap-2">
                 <Truck size={18} className="text-stone-500" /> Tiến trình đơn hàng

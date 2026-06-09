@@ -79,7 +79,7 @@ const CategorySection = memo(({ category, index }: { category: PublicCategory; i
         /* Featured / Editorial Layout */
         <div className="w-full flex flex-col lg:flex-row gap-6 md:gap-8">
           {/* Big Featured Card */}
-          <div className="flex-1 relative min-h-[400px] md:min-h-[500px] rounded-[32px] md:rounded-[48px] overflow-hidden group shadow-2xl shadow-stone-200">
+          <div className="flex-1 relative min-h-[400px] md:min-h-[500px] rounded-xl md:rounded-[48px] overflow-hidden group shadow-2xl shadow-stone-200">
             <Image
               src={category.bannerUrl || '/images/fresh-green-produce.jpg'}
               alt={category.name}
@@ -105,7 +105,7 @@ const CategorySection = memo(({ category, index }: { category: PublicCategory; i
               </p>
               <Link
                 href={`/danh-muc/${category.slug}`}
-                className="px-8 py-4 bg-white text-stone-900 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-green-500 hover:text-white transition-all shadow-xl"
+                className="px-8 py-4 bg-white text-stone-900 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-green-500 hover:text-white transition-all shadow-xl"
               >
                 Trải nghiệm ngay
               </Link>

@@ -27,9 +27,9 @@ export default function AdminVouchersPage() {
   return (
     <div className="p-8 space-y-8">
       {/* Admin Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-green-700 text-white p-8 rounded-[32px] shadow-2xl">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-green-700 text-white p-8 rounded-xl shadow-2xl">
         <div className="flex items-center gap-6">
-          <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center text-white">
+          <div className="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center text-white">
             <IoTicket size={32} />
           </div>
           <div>
@@ -44,7 +44,7 @@ export default function AdminVouchersPage() {
           <Button
             onClick={() => setIsDrawerOpen(true)}
             variant="primary"
-            className="rounded-2xl bg-white text-white hover:bg-stone-100 border-none px-8 py-7 shadow-lg shadow-black/10"
+            className="rounded-xl bg-white text-white hover:bg-stone-100 border-none px-8 py-7 shadow-lg shadow-black/10"
           >
             Tạo Voucher hệ thống
           </Button>
@@ -53,13 +53,13 @@ export default function AdminVouchersPage() {
 
       {/* Stats Quick View */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-3xl border border-stone-100 shadow-sm">
+        <div className="bg-white p-6 rounded-xl border border-stone-100 shadow-sm">
           <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-1">
             Tổng số Voucher
           </p>
           <p className="text-3xl font-black text-stone-900">{voucherData?.totalElements || 0}</p>
         </div>
-        <div className="bg-white p-6 rounded-3xl border border-stone-100 shadow-sm">
+        <div className="bg-white p-6 rounded-xl border border-stone-100 shadow-sm">
           <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-1">
             Đang hoạt động
           </p>
@@ -67,7 +67,7 @@ export default function AdminVouchersPage() {
             {voucherData?.content?.filter((v) => v.status === 'ACTIVE').length || 0}
           </p>
         </div>
-        <div className="bg-white p-6 rounded-3xl border border-stone-100 shadow-sm">
+        <div className="bg-white p-6 rounded-xl border border-stone-100 shadow-sm">
           <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-1">
             Lượt sử dụng toàn sàn
           </p>

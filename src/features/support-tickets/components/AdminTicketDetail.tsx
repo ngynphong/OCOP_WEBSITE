@@ -105,7 +105,7 @@ export const AdminTicketDetail = ({ ticketId }: AdminTicketDetailProps) => {
         <div className="flex items-center gap-4">
           <Link
             href="/admin/support-tickets"
-            className="p-3 bg-white border border-stone-100 rounded-2xl text-stone-400 hover:text-stone-900 transition-all shadow-sm hover:shadow-md active:scale-95"
+            className="p-3 bg-white border border-stone-100 rounded-xl text-stone-400 hover:text-stone-900 transition-all shadow-sm hover:shadow-md active:scale-95"
           >
             <ChevronLeft size={20} />
           </Link>
@@ -127,7 +127,7 @@ export const AdminTicketDetail = ({ ticketId }: AdminTicketDetailProps) => {
         <div className="flex items-center gap-3">
           <div
             className={cn(
-              'px-5 py-2.5 rounded-2xl flex items-center gap-2.5 text-[11px] font-black uppercase tracking-widest border shadow-sm transition-all duration-300',
+              'px-5 py-2.5 rounded-xl flex items-center gap-2.5 text-[11px] font-black uppercase tracking-widest border shadow-sm transition-all duration-300',
               STATUS_CONFIG[ticket.status].bgColor,
               STATUS_CONFIG[ticket.status].color,
             )}
@@ -159,13 +159,13 @@ export const AdminTicketDetail = ({ ticketId }: AdminTicketDetailProps) => {
             ref={scrollRef}
           >
             {/* User Original Request */}
-            <div className="bg-white rounded-[24px] p-6 border border-stone-100 shadow-lg shadow-stone-200/10 relative overflow-hidden group">
+            <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-lg shadow-stone-200/10 relative overflow-hidden group">
               <div className="absolute -top-6 -right-6 p-4 opacity-[0.02] -rotate-12 transition-transform duration-700 group-hover:scale-110">
                 <MessageSquare size={160} />
               </div>
               <div className="flex items-center justify-between mb-5 relative z-10">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-emerald-900 border-2 border-emerald-50 flex items-center justify-center text-white shadow-lg">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-900 border-2 border-emerald-50 flex items-center justify-center text-white shadow-lg">
                     <User size={16} />
                   </div>
                   <div>
@@ -188,7 +188,7 @@ export const AdminTicketDetail = ({ ticketId }: AdminTicketDetailProps) => {
                 <h3 className="text-lg font-black text-stone-900 tracking-tight leading-tight border-l-4 border-emerald-500 pl-4 uppercase">
                   {ticket.subject}
                 </h3>
-                <div className="text-sm text-stone-600 leading-relaxed font-medium bg-stone-50/80 p-5 rounded-2xl border border-stone-100/50 shadow-inner italic">
+                <div className="text-sm text-stone-600 leading-relaxed font-medium bg-stone-50/80 p-5 rounded-xl border border-stone-100/50 shadow-inner italic">
                   {ticket.description}
                 </div>
               </div>
@@ -216,7 +216,7 @@ export const AdminTicketDetail = ({ ticketId }: AdminTicketDetailProps) => {
                   >
                     <div
                       className={cn(
-                        'max-w-full p-5 rounded-[24px] shadow-md relative group transition-all duration-300 hover:shadow-lg',
+                        'max-w-full p-5 rounded-xl shadow-md relative group transition-all duration-300 hover:shadow-lg',
                         isAdmin
                           ? 'bg-emerald-900 text-white rounded-tr-none shadow-emerald-900/5 hover:-translate-x-1'
                           : 'bg-white border border-stone-100 text-stone-800 rounded-tl-none shadow-stone-200/10 hover:translate-x-1',
@@ -289,7 +289,7 @@ export const AdminTicketDetail = ({ ticketId }: AdminTicketDetailProps) => {
               <Button
                 type="submit"
                 disabled={isReplying || !replyContent.trim()}
-                className="group relative rounded-3xl flex flex-col items-center justify-center cursor-pointer disabled:opacity-30 transition-all active:scale-95 space-y-1"
+                className="group relative rounded-xl flex flex-col items-center justify-center cursor-pointer disabled:opacity-30 transition-all active:scale-95 space-y-1"
               >
                 {isReplying ? (
                   <Loader2 className="animate-spin text-emerald-400" />
@@ -305,7 +305,7 @@ export const AdminTicketDetail = ({ ticketId }: AdminTicketDetailProps) => {
         {/* Right Panel: Internal Tools (4 cols) - Sticky */}
         <div className="lg:col-span-4 space-y-6 sticky top-24">
           {/* Assignment & Status Control */}
-          <div className="bg-white rounded-[32px] p-8 border border-stone-100 shadow-sm space-y-8">
+          <div className="bg-white rounded-xl p-8 border border-stone-100 shadow-sm space-y-8">
             <div className="space-y-6">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-emerald-800 rounded-xl shadow-lg shadow-emerald-900/20">
@@ -400,7 +400,7 @@ export const AdminTicketDetail = ({ ticketId }: AdminTicketDetailProps) => {
                   Chi tiết khách hàng
                 </h4>
               </div>
-              <div className="bg-green-700 p-6 rounded-2xl space-y-4 shadow-xl">
+              <div className="bg-green-700 p-6 rounded-xl space-y-4 shadow-xl">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-white/40">
                     <Mail size={24} />

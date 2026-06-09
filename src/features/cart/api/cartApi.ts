@@ -1,5 +1,7 @@
 import { axiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
+import { buildRoute } from '@/lib/routeBuilder';
+
 import type {
   CartResponse,
   CartCountResponse,
@@ -25,10 +27,10 @@ export const cartApi = {
   },
 
   updateItem: (itemId: number, data: UpdateCartItemRequest): Promise<CartResponse> => {
-    return axiosClient.patch(`${API_ENDPOINTS.CART.ITEMS}/${itemId}`, data);
+    return axiosClient.patch(buildRoute(API_ENDPOINTS.CART.ITEMS, itemId), data);
   },
   removeItem: (itemId: number): Promise<CartResponse> => {
-    return axiosClient.delete(`${API_ENDPOINTS.CART.ITEMS}/${itemId}`);
+    return axiosClient.delete(buildRoute(API_ENDPOINTS.CART.ITEMS, itemId));
   },
 
   removeItems: (data: DeleteCartItemsRequest): Promise<CartResponse> => {

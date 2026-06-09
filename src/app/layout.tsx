@@ -1,17 +1,17 @@
 import type { Metadata } from 'next';
-import { Roboto, Open_Sans } from 'next/font/google';
+import { DM_Sans, Inter } from 'next/font/google';
 import './globals.css';
 import AppProvider from '../providers/AppProvider';
 
-const roboto = Roboto({
-  variable: '--font-roboto',
-  weight: ['300', '400', '500', '700', '900'],
-  subsets: ['vietnamese', 'latin'],
+const dmSans = DM_Sans({
+  variable: '--font-dm-sans',
+  weight: ['400', '500', '700'],
+  subsets: ['latin', 'latin-ext'],
   display: 'swap',
 });
 
-const openSans = Open_Sans({
-  variable: '--font-open-sans',
+const inter = Inter({
+  variable: '--font-inter',
   subsets: ['vietnamese', 'latin'],
   display: 'swap',
 });
@@ -37,7 +37,7 @@ export default function RootLayout({
     <html
       lang="vi"
       suppressHydrationWarning
-      className={`${roboto.variable} ${openSans.variable} h-full antialiased`}
+      className={`${dmSans.variable} ${inter.variable} h-full antialiased`}
     >
       <body suppressHydrationWarning className="min-h-full flex flex-col">
         <AppProvider>

@@ -111,6 +111,17 @@ export interface VerifyEmailRequest {
   code: string;
 }
 
+export interface VerifyEmailTraditionalRequest {
+  email: string;
+  code: string;
+}
+
+export interface Verify2FARequest {
+  target: string;
+  code: string;
+  deviceType?: 'WEB' | 'MOBILE' | 'DESKTOP';
+}
+
 export interface RefreshTokenRequest {
   refreshToken: string;
 }
@@ -156,6 +167,19 @@ export const verifyEmailSchema = z.object({
 });
 
 export type VerifyEmailFormData = z.infer<typeof verifyEmailSchema>;
+
+export const verifyEmailTraditionalSchema = z.object({
+  email: z.string().min(1, 'Vui lòng nhập email').email('Email không hợp lệ'),
+  code: z.string().length(6, 'Mã xác thực phải gồm 6 chữ số'),
+});
+
+export type VerifyEmailTraditionalFormData = z.infer<typeof verifyEmailTraditionalSchema>;
+
+export const verify2faSchema = z.object({
+  code: z.string().length(6, 'Mã xác thực phải gồm 6 chữ số'),
+});
+
+export type Verify2FAFormData = z.infer<typeof verify2faSchema>;
 
 export const forgotPasswordSchema = z.object({
   email: z.string().min(1, 'Vui lòng nhập email').email('Email không hợp lệ'),

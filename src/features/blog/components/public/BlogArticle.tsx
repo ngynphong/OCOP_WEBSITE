@@ -46,47 +46,51 @@ export const BlogArticle = () => {
         )}
 
         <div className="relative z-10 w-full max-w-4xl mx-auto px-6 pb-16">
-          <button
-            onClick={() => router.back()}
-            className="flex items-center gap-2 text-stone-300 hover:text-white mb-8 transition-colors text-sm font-bold uppercase tracking-widest"
-          >
-            <FiChevronLeft /> Quay lại
-          </button>
+          <div className="backdrop-blur-md bg-stone-900/40 p-8 md:p-12 rounded-3xl border border-white/10 shadow-2xl">
+            <button
+              onClick={() => router.back()}
+              className="flex items-center gap-2 text-stone-300 hover:text-white mb-8 transition-colors text-sm font-bold uppercase tracking-widest"
+            >
+              <FiChevronLeft /> Quay lại
+            </button>
 
-          <div className="flex flex-wrap gap-2 mb-6">
-            {blog.tags?.map((tag) => (
-              <span
-                key={tag.id}
-                className="bg-[#D4AF37] text-[#113B28] px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest"
-              >
-                {tag.name}
+            <div className="flex flex-wrap gap-2 mb-6">
+              {blog.tags?.map((tag) => (
+                <span
+                  key={tag.id}
+                  className="bg-[#D4AF37] text-[#113B28] px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest"
+                >
+                  {tag.name}
+                </span>
+              ))}
+            </div>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-4xl md:text-5xl lg:text-6xl font-black text-white  italic mb-6 leading-tight"
+            >
+              {blog.title}
+            </motion.h1>
+
+            <div className="flex flex-wrap items-center gap-6 text-stone-300 text-sm font-medium border-t border-stone-700 pt-6">
+              <span className="flex items-center gap-2">
+                <FiClock /> {new Date(blog.createdAt).toLocaleDateString('vi-VN')}
               </span>
-            ))}
-          </div>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-black text-white  italic mb-6 leading-tight"
-          >
-            {blog.title}
-          </motion.h1>
-
-          <div className="flex flex-wrap items-center gap-6 text-stone-300 text-sm font-medium border-t border-stone-700 pt-6">
-            <span className="flex items-center gap-2">
-              <FiClock /> {new Date(blog.createdAt).toLocaleDateString('vi-VN')}
-            </span>
-            <span className="flex items-center gap-2">
-              <FiEye /> {blog.viewCount || 0} Lượt xem
-            </span>
-            <span className="flex items-center gap-2">Bởi: {blog.authorEmail || 'OCOP Admin'}</span>
+              <span className="flex items-center gap-2">
+                <FiEye /> {blog.viewCount || 0} Lượt xem
+              </span>
+              <span className="flex items-center gap-2">
+                Bởi: {blog.authorEmail || 'OCOP Admin'}
+              </span>
+            </div>
           </div>
         </div>
       </header>
 
       {/* Content */}
       <main className="max-w-3xl mx-auto px-6 py-16">
-        <p className="text-xl md:text-2xl text-stone-500  italic leading-relaxed mb-12 border-l-4 border-[#D4AF37] pl-6">
+        <p className="text-xl md:text-2xl text-emerald-800 italic leading-relaxed mb-12 border-l-4 border-emerald-500 bg-emerald-50/50 p-6 md:p-8 rounded-r-2xl shadow-sm">
           {blog.shortDesc}
         </p>
 
@@ -97,7 +101,7 @@ export const BlogArticle = () => {
         <div
           className="prose prose-emerald prose-lg max-w-none text-stone-800 leading-relaxed 
           prose-headings:font-black prose-headings:font-sans
-          prose-a:text-emerald-600 prose-img:rounded-3xl prose-img:shadow-lg"
+          prose-a:text-emerald-600 prose-img:rounded-xl prose-img:shadow-lg"
           dangerouslySetInnerHTML={{ __html: blog.content.replace(/\n/g, '<br/>') }}
         />
 

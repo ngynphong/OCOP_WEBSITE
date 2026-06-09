@@ -46,7 +46,7 @@ const UserPermissionManagement = ({
   };
 
   return (
-    <div className="bg-white p-8 rounded-3xl shadow-sm border border-stone-100">
+    <div className="bg-white p-8 rounded-xl shadow-sm border border-stone-100">
       <h4 className="text-lg font-black text-stone-900 tracking-tight flex items-center gap-2 mb-6">
         <FiCheckCircle className="text-blue-600" /> Quyền truy cập
       </h4>
@@ -64,7 +64,7 @@ const UserPermissionManagement = ({
           permissions.map((perm) => (
             <div
               key={perm.name}
-              className="p-4 bg-stone-50 rounded-2xl border border-stone-100 flex justify-between items-start group min-w-[240px]"
+              className="p-4 bg-stone-50 rounded-xl border border-stone-100 flex justify-between items-start group min-w-[240px]"
             >
               <div>
                 <p className="text-xs font-black text-stone-900 uppercase mb-1">{perm.name}</p>
@@ -129,7 +129,7 @@ const UserPermissionManagement = ({
                 key={p.name}
                 onClick={() => togglePermission(p.name)}
                 className={cn(
-                  'p-4 rounded-2xl border transition-all cursor-pointer flex items-start gap-3',
+                  'p-4 rounded-xl border transition-all cursor-pointer flex items-start gap-3',
                   selectedPermissions.includes(p.name)
                     ? 'bg-blue-50 border-blue-200 shadow-sm'
                     : 'bg-white border-stone-100 hover:border-blue-100',
@@ -166,7 +166,7 @@ const UserPermissionManagement = ({
           <button
             onClick={handleGrant}
             disabled={selectedPermissions.length === 0}
-            className="px-8 py-3 bg-blue-600 text-white text-[10px] font-black rounded-2xl uppercase hover:bg-blue-700 shadow-lg shadow-blue-900/10 transition-all flex items-center gap-2 disabled:opacity-40 disabled:grayscale active:scale-95 cursor-pointer"
+            className="px-8 py-3 bg-blue-600 text-white text-[10px] font-black rounded-xl uppercase hover:bg-blue-700 shadow-lg shadow-blue-900/10 transition-all flex items-center gap-2 disabled:opacity-40 disabled:grayscale active:scale-95 cursor-pointer"
           >
             <FiPlus /> Cấp quyền cho user
           </button>

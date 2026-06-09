@@ -41,13 +41,13 @@ export function FeatureHighlights() {
 
   return (
     <section className="w-full max-w-7xl mx-auto px-6 mt-4 mb-4">
-      <div className="w-full px-6 md:px-12 py-8 bg-orange-100/80 rounded-[32px] grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4 shadow-sm">
+      <div className="w-full px-6 md:px-12 py-8 bg-orange-100/80 rounded-xl grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4 shadow-sm">
         {highlights.map((item, index) => (
           <div
             key={index}
             className={cn(
               'flex justify-start items-center gap-4 transition-all duration-300',
-              item.clickable && 'cursor-pointer hover:bg-white/40 p-2 -m-2 rounded-2xl group',
+              item.clickable && 'cursor-pointer hover:bg-white/40 p-2 -m-2 rounded-xl group',
             )}
             onClick={item.onClick}
           >
@@ -90,7 +90,7 @@ export function FeatureHighlights() {
         title="Chính sách đổi trả"
       >
         <div className="space-y-6 text-stone-600">
-          <div className="p-4 bg-orange-50 rounded-2xl border border-orange-100">
+          <div className="p-4 bg-orange-50 rounded-xl border border-orange-100">
             <p className="text-sm text-orange-800 flex gap-2 font-medium">
               <Info className="w-5 h-5 shrink-0" />
               Lưu ý: Chính sách này không áp dụng đối với các mặt hàng tươi sống (thịt, cá, rau củ

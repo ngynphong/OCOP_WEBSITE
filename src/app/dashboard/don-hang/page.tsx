@@ -72,7 +72,7 @@ function OrderListContent() {
   return (
     <div className="space-y-6">
       {/* Switcher Mua lẻ / Mua sỉ B2B */}
-      <div className="flex gap-4 p-1.5 bg-stone-100/80 border border-stone-200/50 rounded-2xl w-fit">
+      <div className="flex gap-4 p-1.5 bg-stone-100/80 border border-stone-200/50 rounded-xl w-fit">
         <button
           onClick={() => handleTypeChange('retail')}
           className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
@@ -115,7 +115,7 @@ function OrderListContent() {
       {isLoading ? (
         <div className="flex justify-center text-gray-700 py-20">Đang tải...</div>
       ) : isError ? (
-        <div className="text-center py-20 text-red-500 font-bold p-10 bg-red-50 rounded-3xl border border-red-100">
+        <div className="text-center py-20 text-red-500 font-bold p-10 bg-red-50 rounded-xl border border-red-100">
           <LifeBuoy className="mx-auto mb-4 text-red-400" size={40} />
           Đã có lỗi xảy ra khi tải dữ liệu đơn hàng. Vui lòng thử lại.
         </div>
@@ -133,7 +133,7 @@ function OrderListContent() {
                 size="lg"
                 onClick={() => fetchNextPage()}
                 isLoading={isFetchingNextPage}
-                className="min-w-[200px] rounded-2xl border-2 border-stone-200 hover:border-green-600 hover:text-green-700 font-black tracking-widest uppercase text-xs transition-all shadow-sm"
+                className="min-w-[200px] rounded-xl border-2 border-stone-200 hover:border-green-600 hover:text-green-700 font-black tracking-widest uppercase text-xs transition-all shadow-sm"
               >
                 <Plus className="mr-2" size={16} />
                 Xem thêm đơn hàng
@@ -148,7 +148,7 @@ function OrderListContent() {
           </div>
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center py-20 px-4 text-center bg-stone-50 rounded-3xl border border-stone-100">
+        <div className="flex flex-col items-center justify-center py-20 px-4 text-center bg-stone-50 rounded-xl border border-stone-100">
           <div className="w-24 h-24 bg-stone-200/50 rounded-full flex items-center justify-center mb-6">
             <PackageX className="w-12 h-12 text-stone-400" />
           </div>

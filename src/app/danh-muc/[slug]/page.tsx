@@ -59,7 +59,7 @@ export default function CategoryDetailPage() {
         />
 
         {/* Category Header */}
-        <div className="relative w-full h-[200px] md:h-[300px] rounded-[32px] overflow-hidden mb-12 shadow-xl group">
+        <div className="relative w-full h-[200px] md:h-[300px] rounded-xl overflow-hidden mb-12 shadow-xl group">
           {category?.bannerUrl ? (
             <Image
               src={category.bannerUrl}
@@ -96,7 +96,7 @@ export default function CategoryDetailPage() {
               ))}
             </div>
           ) : isError ? (
-            <div className="w-full h-64 flex flex-col items-center justify-center bg-red-50 rounded-3xl border border-red-100 border-dashed">
+            <div className="w-full h-64 flex flex-col items-center justify-center bg-red-50 rounded-xl border border-red-100 border-dashed">
               <p className="text-red-500 text-lg font-medium">Không thể tải danh sách sản phẩm.</p>
               <button
                 onClick={() => window.location.reload()}
@@ -130,7 +130,7 @@ export default function CategoryDetailPage() {
               ))}
             </div>
           ) : (
-            <div className="w-full h-80 flex flex-col items-center justify-center bg-white rounded-3xl border border-stone-100 shadow-sm transition-all hover:shadow-md">
+            <div className="w-full h-80 flex flex-col items-center justify-center bg-white rounded-xl border border-stone-100 shadow-sm transition-all hover:shadow-md">
               <div className="w-20 h-20 bg-stone-50 rounded-full flex items-center justify-center mb-6">
                 <Search className="w-8 h-8 text-stone-300" />
               </div>

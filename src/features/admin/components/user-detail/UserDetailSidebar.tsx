@@ -21,7 +21,7 @@ const UserDetailSidebar = ({ user }: UserDetailSidebarProps) => {
 
   return (
     <div className="col-span-12 lg:col-span-4 space-y-6">
-      <div className="bg-white rounded-[32px] p-8 shadow-sm border border-stone-100 relative overflow-hidden group">
+      <div className="bg-white rounded-xl p-8 shadow-sm border border-stone-100 relative overflow-hidden group">
         <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-full -mr-8 -mt-8 group-hover:scale-110 transition-transform duration-500 opacity-50" />
 
         <div className="relative z-10 flex flex-col items-center">

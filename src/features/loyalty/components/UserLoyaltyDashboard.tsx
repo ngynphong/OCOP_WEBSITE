@@ -21,10 +21,10 @@ const UserLoyaltyDashboard = () => {
       <div className="space-y-6 animate-pulse">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-32 bg-stone-100 rounded-3xl" />
+            <div key={i} className="h-32 bg-stone-100 rounded-xl" />
           ))}
         </div>
-        <div className="h-96 bg-stone-100 rounded-3xl" />
+        <div className="h-96 bg-stone-100 rounded-xl" />
       </div>
     );
   }
@@ -34,7 +34,7 @@ const UserLoyaltyDashboard = () => {
       {/* Header Info Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Available Points */}
-        <div className="bg-linear-to-br from-green-600 to-emerald-700 rounded-3xl p-6 text-white shadow-xl shadow-green-900/20 relative overflow-hidden group">
+        <div className="bg-linear-to-br from-green-600 to-emerald-700 rounded-xl p-6 text-white shadow-xl shadow-green-900/20 relative overflow-hidden group">
           <div className="relative z-10">
             <p className="text-green-100 font-medium text-sm mb-1">Điểm hiện có</p>
             <h3 className="text-4xl font-bold tracking-tight">
@@ -49,7 +49,7 @@ const UserLoyaltyDashboard = () => {
         </div>
 
         {/* Tier Info */}
-        <div className="bg-white rounded-3xl p-6 border border-stone-100 shadow-xl shadow-stone-200/50 flex flex-col justify-between">
+        <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-xl shadow-stone-200/50 flex flex-col justify-between">
           <div>
             <p className="text-stone-400 font-medium text-sm mb-1">Hạng thành viên</p>
             <h3 className="text-2xl font-bold text-stone-900 capitalize">
@@ -73,7 +73,7 @@ const UserLoyaltyDashboard = () => {
         </div>
 
         {/* Expiring Soon */}
-        <div className="bg-white rounded-3xl p-6 border border-stone-100 shadow-xl shadow-stone-200/50">
+        <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-xl shadow-stone-200/50">
           <p className="text-stone-400 font-medium text-sm mb-1">Điểm sắp hết hạn</p>
           <h3 className="text-2xl font-bold text-orange-500">
             {account?.expiringPoints?.toLocaleString() || 0}
@@ -88,7 +88,7 @@ const UserLoyaltyDashboard = () => {
       </div>
 
       {/* Transaction History */}
-      <div className="bg-white rounded-3xl border border-stone-100 shadow-xl shadow-stone-200/50 overflow-hidden">
+      <div className="bg-white rounded-xl border border-stone-100 shadow-xl shadow-stone-200/50 overflow-hidden">
         <div className="p-6 border-b border-stone-50 flex items-center justify-between">
           <h3 className="text-lg font-bold text-stone-900">Lịch sử giao dịch điểm</h3>
           <div className="flex gap-2">

@@ -32,7 +32,7 @@ export const ForcedLogoutModal = () => {
             {/* Decoration */}
             <div className="absolute top-0 left-0 w-full h-2 bg-linear-to-r from-green-500 to-emerald-600" />
 
-            <div className="w-20 h-20 bg-green-100 text-green-600 rounded-3xl flex items-center justify-center mx-auto mb-6 rotate-3">
+            <div className="w-20 h-20 bg-green-100 text-green-600 rounded-xl flex items-center justify-center mx-auto mb-6 rotate-3">
               <FiCheckCircle size={40} />
             </div>
 
@@ -44,7 +44,7 @@ export const ForcedLogoutModal = () => {
 
             <button
               onClick={handleClientLogout}
-              className="w-full py-4 bg-green-600 hover:bg-green-700 text-white font-black rounded-2xl flex items-center justify-center gap-3 shadow-xl shadow-green-500/30 transition-all active:scale-95 group"
+              className="w-full py-4 bg-green-600 hover:bg-green-700 text-white font-black rounded-xl flex items-center justify-center gap-3 shadow-xl shadow-green-500/30 transition-all active:scale-95 group"
             >
               <FiLogOut className="group-hover:translate-x-1 transition-transform" />
               Đăng nhập ngay

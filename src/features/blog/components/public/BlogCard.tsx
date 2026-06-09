@@ -20,7 +20,7 @@ export const BlogCard = React.memo(({ blog, idx = 0, variant = 'grid' }: BlogCar
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="group relative flex flex-col md:flex-row bg-white rounded-[32px] overflow-hidden border border-stone-100 hover:shadow-2xl hover:shadow-emerald-900/5 transition-all duration-500"
+        className="group relative flex flex-col md:flex-row bg-white rounded-2xl overflow-hidden border border-stone-100 hover:shadow-[0_20px_40px_rgba(16,185,129,0.1)] hover:-translate-y-1 transition-all duration-500"
       >
         <Link href={`/bai-viet/${blog.slug}`} className="flex flex-col md:flex-row w-full">
           <div className="relative w-full md:w-1/2 aspect-[16/10] md:aspect-auto overflow-hidden">
@@ -86,7 +86,7 @@ export const BlogCard = React.memo(({ blog, idx = 0, variant = 'grid' }: BlogCar
         className="group flex gap-4 items-center"
       >
         <Link href={`/bai-viet/${blog.slug}`} className="flex gap-4 items-center w-full">
-          <div className="relative w-24 h-24 flex-shrink-0 rounded-2xl overflow-hidden bg-stone-100">
+          <div className="relative w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden bg-stone-100">
             {blog.thumbnailUrl ? (
               <Image
                 src={blog.thumbnailUrl}
@@ -122,10 +122,10 @@ export const BlogCard = React.memo(({ blog, idx = 0, variant = 'grid' }: BlogCar
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: idx * 0.1 }}
-      className="group flex flex-col"
+      className="group flex flex-col bg-white border border-transparent hover:border-emerald-100 p-3 rounded-2xl hover:shadow-[0_15px_30px_rgba(16,185,129,0.08)] hover:-translate-y-1 transition-all duration-500"
     >
       <Link href={`/bai-viet/${blog.slug}`} className="flex flex-col w-full">
-        <div className="relative aspect-[16/10] rounded-[24px] overflow-hidden bg-stone-100 mb-6">
+        <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-stone-100 mb-6">
           {blog.thumbnailUrl ? (
             <Image
               src={blog.thumbnailUrl}
@@ -140,7 +140,7 @@ export const BlogCard = React.memo(({ blog, idx = 0, variant = 'grid' }: BlogCar
           )}
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-3 px-1">
           <div className="flex items-center gap-2 text-[10px] font-black text-emerald-600 uppercase tracking-[0.15em]">
             {blog.tags?.[0]?.name || 'OCOP News'}
           </div>

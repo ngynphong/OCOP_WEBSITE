@@ -162,7 +162,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
             {/* Main Content Area - Independent Scroll */}
             <main className="lg:col-span-3 h-full flex flex-col overflow-hidden">
-              <div className="bg-white rounded-2xl border border-stone-200 shadow-sm flex flex-col h-full overflow-hidden">
+              <div className="bg-white rounded-xl border border-stone-200 shadow-sm flex flex-col h-full overflow-hidden">
                 <div className="flex-1 overflow-y-auto p-6 md:p-8 custom-scrollbar">{children}</div>
               </div>
             </main>

@@ -198,7 +198,7 @@ export function CartPageClient() {
           )}
 
           {/* Bulk action bar */}
-          <div className="flex items-center justify-between bg-white rounded-2xl px-4 py-3 border border-stone-100">
+          <div className="flex items-center justify-between bg-white rounded-xl px-4 py-3 border border-stone-100">
             {/* Select all */}
             <button
               onClick={handleToggleAll}

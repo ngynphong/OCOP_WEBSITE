@@ -62,7 +62,7 @@ const AdminProductsPage = () => {
       </div>
 
       {/* Tabs Navigation — chỉ hiện tab nếu có permission tương ứng */}
-      <div className="flex gap-1 p-1 bg-stone-100/50 rounded-2xl w-fit border border-stone-100">
+      <div className="flex gap-1 p-1 bg-stone-100/50 rounded-xl w-fit border border-stone-100">
         <button
           onClick={() => setActiveTab('products')}
           className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all cursor-pointer ${

@@ -26,7 +26,7 @@ export const MainBanner = memo(function MainBanner() {
 
   if (isLoading) {
     return (
-      <div className="w-full h-[300px] md:h-[450px] lg:h-[500px] bg-stone-100 animate-pulse rounded-[32px] flex items-center justify-center">
+      <div className="w-full h-[300px] md:h-[450px] lg:h-[500px] bg-stone-100 animate-pulse rounded-xl flex items-center justify-center">
         <Loader2 className="w-8 h-8 text-[#0D631B] animate-spin" />
       </div>
     );
@@ -45,7 +45,7 @@ export const MainBanner = memo(function MainBanner() {
   };
 
   return (
-    <div className="relative w-full group overflow-hidden rounded-[24px] md:rounded-[32px] shadow-2xl shadow-emerald-900/10">
+    <div className="relative w-full group overflow-hidden rounded-xl md:rounded-xl shadow-2xl shadow-emerald-900/10">
       <div className="relative w-full aspect-[16/10] md:aspect-[21/7] lg:h-[500px]">
         <AnimatePresence mode="wait">
           <motion.div

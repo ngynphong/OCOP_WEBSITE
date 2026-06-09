@@ -25,7 +25,7 @@ export function SellerRevenueSummaryBox({
   orderItemsCount,
 }: SellerRevenueSummaryBoxProps) {
   return (
-    <div className="bg-white rounded-3xl p-6 border border-stone-100 shadow-sm">
+    <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-sm">
       <h3 className="font-bold text-stone-900 flex items-center gap-2 mb-4">
         <DollarSign size={18} className="text-stone-500" /> Tổng kết doanh thu dự kiến
       </h3>

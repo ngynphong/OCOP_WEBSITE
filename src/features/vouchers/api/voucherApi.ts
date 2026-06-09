@@ -1,5 +1,7 @@
 import { axiosClient, publicAxiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
+import { buildRoute } from '@/lib/routeBuilder';
+
 import {
   SavedVoucherListResponse,
   Voucher,
@@ -11,7 +13,7 @@ import {
 export const voucherApi = {
   // 1. Public API (Không cần auth)
   getVoucherDetail: (id: number) =>
-    publicAxiosClient.get<Voucher>(`${API_ENDPOINTS.PUBLIC.VOUCHERS}/${id}`),
+    publicAxiosClient.get<Voucher>(buildRoute(API_ENDPOINTS.PUBLIC.VOUCHERS, id)),
 
   getPublicFeaturedVouchers: (limit = 4) =>
     publicAxiosClient.get<Voucher[]>(`${API_ENDPOINTS.PUBLIC.VOUCHERS}/featured`, {
@@ -28,13 +30,13 @@ export const voucherApi = {
     axiosClient.get<SavedVoucherListResponse>(`${API_ENDPOINTS.USERS.VOUCHERS}/saved`, { params }),
 
   checkVoucherSaved: (voucherId: number) =>
-    axiosClient.get<boolean>(`${API_ENDPOINTS.USERS.VOUCHERS}/${voucherId}/saved`),
+    axiosClient.get<boolean>(buildRoute(API_ENDPOINTS.USERS.VOUCHERS, voucherId, 'saved')),
 
   saveVoucher: (voucherId: number) =>
-    axiosClient.post(`${API_ENDPOINTS.USERS.VOUCHERS}/${voucherId}/save`),
+    axiosClient.post(buildRoute(API_ENDPOINTS.USERS.VOUCHERS, voucherId, 'save')),
 
   unsaveVoucher: (voucherId: number) =>
-    axiosClient.delete(`${API_ENDPOINTS.USERS.VOUCHERS}/${voucherId}/save`),
+    axiosClient.delete(buildRoute(API_ENDPOINTS.USERS.VOUCHERS, voucherId, 'save')),
 
   validateVoucherUser: (params: { code: string; shopId?: number; subtotal?: number }) =>
     axiosClient.get<VoucherValidateResponse>(`${API_ENDPOINTS.USERS.VOUCHERS}/validate`, {
@@ -49,12 +51,13 @@ export const voucherApi = {
     axiosClient.post<Voucher>(`${API_ENDPOINTS.SELLER.VOUCHERS}`, data),
 
   updateSellerVoucher: (id: number, data: VoucherFormValues) =>
-    axiosClient.put<Voucher>(`${API_ENDPOINTS.SELLER.VOUCHERS}/${id}`, data),
+    axiosClient.put<Voucher>(buildRoute(API_ENDPOINTS.SELLER.VOUCHERS, id), data),
 
-  deleteSellerVoucher: (id: number) => axiosClient.delete(`${API_ENDPOINTS.SELLER.VOUCHERS}/${id}`),
+  deleteSellerVoucher: (id: number) =>
+    axiosClient.delete(buildRoute(API_ENDPOINTS.SELLER.VOUCHERS, id)),
 
   toggleSellerVoucher: (id: number) =>
-    axiosClient.patch<Voucher>(`${API_ENDPOINTS.SELLER.VOUCHERS}/${id}/toggle`),
+    axiosClient.patch<Voucher>(buildRoute(API_ENDPOINTS.SELLER.VOUCHERS, id, 'toggle')),
 
   // 4. Admin API
   getAdminVouchers: (params: { pageNo?: number; pageSize?: number }) =>

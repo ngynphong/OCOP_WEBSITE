@@ -38,7 +38,7 @@ export const AdminBlogList = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-stone-100 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-xl border border-stone-100 shadow-sm">
         <div>
           <h1 className="text-2xl font-black text-stone-900">Quản lý bài viết</h1>
           <p className="text-sm text-stone-500">Quản lý tin tức, blog và kiến thức</p>
@@ -59,7 +59,7 @@ export const AdminBlogList = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-3xl shadow-sm border border-stone-100 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden">
         <div className="p-4 border-b border-stone-100 flex gap-4 bg-stone-50/50">
           <select
             className="px-4 py-2 rounded-lg border text-gray-700 border-stone-200 text-sm font-medium outline-none"

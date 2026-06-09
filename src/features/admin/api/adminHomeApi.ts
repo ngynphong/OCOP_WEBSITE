@@ -1,5 +1,7 @@
 import { axiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
+import { buildRoute } from '@/lib/routeBuilder';
+
 import {
   AdminBanner,
   AdminBannerDetailResponse,
@@ -20,7 +22,7 @@ export const adminHomeApi = {
   },
 
   getBannerById: (id: number): Promise<AdminBannerDetailResponse> => {
-    return axiosClient.get(`${API_ENDPOINTS.ADMIN.BANNERS}/${id}`);
+    return axiosClient.get(buildRoute(API_ENDPOINTS.ADMIN.BANNERS, id));
   },
 
   createBanner: (formData: FormData): Promise<AdminBannerDetailResponse> => {
@@ -28,17 +30,17 @@ export const adminHomeApi = {
   },
 
   updateBanner: (id: number, formData: FormData): Promise<AdminBannerDetailResponse> => {
-    return axiosClient.put(`${API_ENDPOINTS.ADMIN.BANNERS}/${id}`, formData, {
+    return axiosClient.put(buildRoute(API_ENDPOINTS.ADMIN.BANNERS, id), formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
 
   deleteBanner: (id: number): Promise<ResponseBase<string>> => {
-    return axiosClient.delete(`${API_ENDPOINTS.ADMIN.BANNERS}/${id}`);
+    return axiosClient.delete(buildRoute(API_ENDPOINTS.ADMIN.BANNERS, id));
   },
 
   toggleBannerStatus: (id: number): Promise<ResponseBase<AdminBanner>> => {
-    return axiosClient.post(`${API_ENDPOINTS.ADMIN.BANNERS}/${id}/toggle`);
+    return axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.BANNERS, id, 'toggle'));
   },
 
   // ─── Quick Link Management ─────────────────────────────────────────────────
@@ -48,7 +50,7 @@ export const adminHomeApi = {
   },
 
   getQuickLinkById: (id: number): Promise<AdminQuickLinkDetailResponse> => {
-    return axiosClient.get(`${API_ENDPOINTS.ADMIN.QUICK_LINKS}/${id}`);
+    return axiosClient.get(buildRoute(API_ENDPOINTS.ADMIN.QUICK_LINKS, id));
   },
 
   createQuickLink: (data: CreateQuickLinkRequest): Promise<AdminQuickLinkDetailResponse> => {
@@ -59,14 +61,14 @@ export const adminHomeApi = {
     id: number,
     data: UpdateQuickLinkRequest,
   ): Promise<AdminQuickLinkDetailResponse> => {
-    return axiosClient.put(`${API_ENDPOINTS.ADMIN.QUICK_LINKS}/${id}`, data);
+    return axiosClient.put(buildRoute(API_ENDPOINTS.ADMIN.QUICK_LINKS, id), data);
   },
 
   deleteQuickLink: (id: number): Promise<ResponseBase<string>> => {
-    return axiosClient.delete(`${API_ENDPOINTS.ADMIN.QUICK_LINKS}/${id}`);
+    return axiosClient.delete(buildRoute(API_ENDPOINTS.ADMIN.QUICK_LINKS, id));
   },
 
   toggleQuickLinkStatus: (id: number): Promise<ResponseBase<AdminQuickLink>> => {
-    return axiosClient.post(`${API_ENDPOINTS.ADMIN.QUICK_LINKS}/${id}/toggle`);
+    return axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.QUICK_LINKS, id, 'toggle'));
   },
 };

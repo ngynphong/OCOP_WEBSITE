@@ -11,7 +11,7 @@ export const ShopInfoTab = ({ shop }: ShopInfoTabProps) => {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
       {/* Về chúng tôi (Mô tả) */}
       <div className="lg:col-span-2 space-y-6">
-        <div className="bg-white p-6 md:p-8 rounded-[24px] border border-stone-100 shadow-xs">
+        <div className="bg-white p-6 md:p-8 rounded-xl border border-stone-100 shadow-xs">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
               <FiInfo size={20} />
@@ -29,7 +29,7 @@ export const ShopInfoTab = ({ shop }: ShopInfoTabProps) => {
 
       {/* Thông tin pháp lý & Liên hệ */}
       <div className="space-y-6">
-        <div className="bg-white p-6 rounded-[24px] border border-stone-100 shadow-xs">
+        <div className="bg-white p-6 rounded-xl border border-stone-100 shadow-xs">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
               <FiMapPin size={20} />
@@ -59,7 +59,7 @@ export const ShopInfoTab = ({ shop }: ShopInfoTabProps) => {
           </ul>
         </div>
 
-        <div className="bg-white p-6 rounded-[24px] border border-stone-100 shadow-xs">
+        <div className="bg-white p-6 rounded-xl border border-stone-100 shadow-xs">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center">
               <FiFileText size={20} />

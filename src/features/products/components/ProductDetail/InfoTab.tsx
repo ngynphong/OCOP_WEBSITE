@@ -62,7 +62,7 @@ export function InfoTab({ productId }: InfoTabProps) {
   };
 
   if (isLoadingCategories || isLoadingProvinces) {
-    return <div className="h-64 bg-stone-100/50 rounded-2xl animate-pulse" />;
+    return <div className="h-64 bg-stone-100/50 rounded-xl animate-pulse" />;
   }
 
   return (

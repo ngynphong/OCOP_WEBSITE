@@ -78,7 +78,7 @@ export function FlashSaleCard({
       href={`/san-pham/${slug}`}
       onClick={handleCardClick}
       className={cn(
-        'group relative bg-white rounded-[32px] shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col p-5 cursor-pointer border border-stone-100/50',
+        'group relative bg-white rounded-xl shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col p-5 cursor-pointer border border-stone-100/50',
         className,
       )}
     >

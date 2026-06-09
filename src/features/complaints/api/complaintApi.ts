@@ -1,5 +1,7 @@
 import { axiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
+import { buildRoute } from '@/lib/routeBuilder';
+
 import {
   ComplaintRequest,
   ComplaintResponse,
@@ -20,7 +22,7 @@ export const complaintApi = {
   },
 
   getUserComplaintById: (id: number): Promise<ComplaintResponse> => {
-    return axiosClient.get(`${API_ENDPOINTS.USERS.COMPLAINTS}/${id}`);
+    return axiosClient.get(buildRoute(API_ENDPOINTS.USERS.COMPLAINTS, id));
   },
 
   // Admin APIs
@@ -35,14 +37,14 @@ export const complaintApi = {
   },
 
   getComplaintById: (id: number): Promise<ComplaintResponse> => {
-    return axiosClient.get(`${API_ENDPOINTS.ADMIN.COMPLAINTS}/${id}`);
+    return axiosClient.get(buildRoute(API_ENDPOINTS.ADMIN.COMPLAINTS, id));
   },
 
   updateComplaintStatus: (
     id: number,
     data: AdminUpdateComplaintRequest,
   ): Promise<ComplaintResponse> => {
-    return axiosClient.post(`${API_ENDPOINTS.ADMIN.COMPLAINTS}/${id}/resolve`, null, {
+    return axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.COMPLAINTS, id, 'resolve'), null, {
       params: {
         status: data.status,
         resolutionNote: data.resolutionNote,

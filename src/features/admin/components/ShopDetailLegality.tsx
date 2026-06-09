@@ -47,7 +47,7 @@ const ShopDetailLegality: React.FC<ShopDetailLegalityProps> = React.memo(
                 key={doc.id}
                 onClick={() => setActiveDoc(doc)}
                 className={cn(
-                  'w-full text-left p-4 rounded-2xl border transition-all flex items-center justify-between group',
+                  'w-full text-left p-4 rounded-xl border transition-all flex items-center justify-between group',
                   activeDoc?.id === doc.id
                     ? 'bg-emerald-50 border-emerald-500 shadow-sm'
                     : 'bg-white border-stone-100 hover:border-emerald-200',
@@ -89,7 +89,7 @@ const ShopDetailLegality: React.FC<ShopDetailLegalityProps> = React.memo(
         {/* Previewer */}
         <div className="md:col-span-12 lg:col-span-8">
           {activeDoc ? (
-            <div className="bg-stone-50 rounded-3xl border border-stone-100 p-6 flex flex-col h-full min-h-[500px]">
+            <div className="bg-stone-50 rounded-xl border border-stone-100 p-6 flex flex-col h-full min-h-[500px]">
               <div className="flex justify-between items-center mb-4">
                 <h5 className="text-[10px] font-black text-stone-400 uppercase">
                   Xem trước tài liệu
@@ -116,7 +116,7 @@ const ShopDetailLegality: React.FC<ShopDetailLegalityProps> = React.memo(
                   )}
                 </div>
               </div>
-              <div className="flex-1 bg-white rounded-2xl border border-stone-100 shadow-inner overflow-hidden relative flex items-center justify-center min-h-[300px]">
+              <div className="flex-1 bg-white rounded-xl border border-stone-100 shadow-inner overflow-hidden relative flex items-center justify-center min-h-[300px]">
                 {activeDoc.fileUrl && activeDoc.fileUrl.match(/\.(jpg|jpeg|png|webp)$/i) ? (
                   <Image
                     src={activeDoc.fileUrl}
@@ -142,7 +142,7 @@ const ShopDetailLegality: React.FC<ShopDetailLegalityProps> = React.memo(
                   <Button
                     onClick={() => onVerifyDoc(activeDoc.id)}
                     disabled={isVerifying}
-                    className="flex-1 py-4 bg-[#0D631B] text-white rounded-2xl text-xs font-black shadow-lg shadow-emerald-900/20 flex items-center justify-center gap-2 hover:opacity-90 transition-all disabled:opacity-50"
+                    className="flex-1 py-4 bg-[#0D631B] text-white rounded-xl text-xs font-black shadow-lg shadow-emerald-900/20 flex items-center justify-center gap-2 hover:opacity-90 transition-all disabled:opacity-50"
                   >
                     <FiCheck /> {isVerifying ? 'Đang duyệt...' : 'Chấp nhận'}
                   </Button>
@@ -150,14 +150,14 @@ const ShopDetailLegality: React.FC<ShopDetailLegalityProps> = React.memo(
                     variant="outline"
                     onClick={() => onRejectDoc(activeDoc.id)}
                     disabled={isRejecting}
-                    className="flex-1 py-4 bg-white text-red-600 border border-red-100 rounded-2xl text-xs font-black flex items-center justify-center gap-2 hover:bg-red-50 transition-all disabled:opacity-50"
+                    className="flex-1 py-4 bg-white text-red-600 border border-red-100 rounded-xl text-xs font-black flex items-center justify-center gap-2 hover:bg-red-50 transition-all disabled:opacity-50"
                   >
                     <FiXCircle /> {isRejecting ? 'Đang xử lý...' : 'Từ chối'}
                   </Button>
                 </div>
               )}
               {activeDoc.isVerified && (
-                <div className="mt-6 p-4 bg-emerald-50 rounded-2xl border border-emerald-100 flex items-center gap-3">
+                <div className="mt-6 p-4 bg-emerald-50 rounded-xl border border-emerald-100 flex items-center gap-3">
                   <FiCheck className="text-emerald-600" />
                   <span className="text-xs font-black text-emerald-900 uppercase">
                     Tài liệu đã được xác nhận

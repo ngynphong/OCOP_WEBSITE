@@ -121,7 +121,7 @@ export const UserTicketDetailModal = ({
       ) : ticket ? (
         <div className="flex flex-col h-[70vh]">
           {/* Header Info Bar */}
-          <div className="bg-stone-50/80 backdrop-blur-md p-4 rounded-2xl border border-stone-100 flex items-center justify-between mb-4">
+          <div className="bg-stone-50/80 backdrop-blur-md p-4 rounded-xl border border-stone-100 flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <div
                 className={cn(
@@ -182,7 +182,7 @@ export const UserTicketDetailModal = ({
                   <User size={14} />
                 </div>
                 <div className="flex-1 space-y-2 max-w-[85%]">
-                  <div className="bg-white border border-stone-100 p-4 rounded-2xl rounded-tl-none shadow-sm space-y-3">
+                  <div className="bg-white border border-stone-100 p-4 rounded-xl rounded-tl-none shadow-sm space-y-3">
                     <div className="flex items-center justify-between border-b border-stone-50 pb-2">
                       <span className="text-[10px] font-black text-stone-400 uppercase">
                         Bạn (Người yêu cầu)
@@ -218,7 +218,7 @@ export const UserTicketDetailModal = ({
                   <div className={cn('flex-1 space-y-1 max-w-[85%]', isAdmin ? 'items-end' : '')}>
                     <div
                       className={cn(
-                        'p-4 rounded-2xl shadow-sm space-y-2',
+                        'p-4 rounded-xl shadow-sm space-y-2',
                         isAdmin
                           ? 'bg-green-700 text-white rounded-tr-none'
                           : 'bg-white border border-stone-100 text-stone-800 rounded-tl-none',
@@ -258,7 +258,7 @@ export const UserTicketDetailModal = ({
           {/* Reply Input Area */}
           <div className="mt-4 pt-4 border-t border-stone-100">
             {ticket.status === 'CLOSED' || ticket.status === 'RESOLVED' ? (
-              <div className="bg-stone-50 p-4 rounded-2xl border border-dashed border-stone-200 text-center">
+              <div className="bg-stone-50 p-4 rounded-xl border border-dashed border-stone-200 text-center">
                 <p className="text-xs text-stone-400 font-bold uppercase tracking-widest italic flex items-center justify-center gap-2">
                   <CheckCircle2 size={14} className="text-emerald-600" /> Cuộc hội thoại đã kết thúc
                 </p>
@@ -276,7 +276,7 @@ export const UserTicketDetailModal = ({
                     value={replyContent}
                     onChange={(e) => setReplyContent(e.target.value)}
                     placeholder="Nhập tin nhắn phản hồi của bạn..."
-                    className="w-full px-4 py-3 bg-stone-50 text-gray-700 border border-stone-100 rounded-2xl text-sm font-medium outline-none focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 transition-all resize-none max-h-32 min-h-12"
+                    className="w-full px-4 py-3 bg-stone-50 text-gray-700 border border-stone-100 rounded-xl text-sm font-medium outline-none focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 transition-all resize-none max-h-32 min-h-12"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
@@ -298,7 +298,7 @@ export const UserTicketDetailModal = ({
                 <button
                   type="submit"
                   disabled={isReplying || !replyContent.trim()}
-                  className="p-4 bg-emerald-800 hover:bg-emerald-900 text-white rounded-2xl shadow-xl shadow-emerald-500/20 disabled:bg-stone-100 disabled:text-stone-300 disabled:shadow-none transition-all active:scale-95 flex items-center justify-center cursor-pointer"
+                  className="p-4 bg-emerald-800 hover:bg-emerald-900 text-white rounded-xl shadow-xl shadow-emerald-500/20 disabled:bg-stone-100 disabled:text-stone-300 disabled:shadow-none transition-all active:scale-95 flex items-center justify-center cursor-pointer"
                 >
                   {isReplying ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
                 </button>

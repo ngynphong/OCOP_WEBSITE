@@ -24,7 +24,7 @@ export const AdminSidePanel = ({ orderOverview, recentActivities }: AdminSidePan
 
   return (
     <div className="col-span-12 lg:col-span-4 space-y-6">
-      <div className="bg-white text-gray-900 p-8 rounded-3xl shadow-xl shadow-emerald-900/20 relative overflow-hidden group">
+      <div className="bg-white text-gray-900 p-8 rounded-xl shadow-xl shadow-emerald-900/20 relative overflow-hidden group">
         <FiShoppingBag className="absolute -right-8 -bottom-8 text-[160px] text-emerald-900/5 group-hover:rotate-12 transition-transform duration-700" />
         <h4 className="text-[10px] font-black uppercase tracking-widest mb-6 opacity-70">
           Tổng quan đơn hàng
@@ -63,7 +63,7 @@ export const AdminSidePanel = ({ orderOverview, recentActivities }: AdminSidePan
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-3xl shadow-sm border border-stone-100">
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-stone-100">
         <h4 className="text-[10px] font-black text-stone-900 uppercase tracking-widest mb-6">
           Hoạt động gần đây
         </h4>

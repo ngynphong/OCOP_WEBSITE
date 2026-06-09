@@ -55,7 +55,7 @@ export function CartSummary({ selectedItems, hasIssues }: CartSummaryProps) {
   return (
     <div className="sticky top-28 space-y-4">
       {/* Order Summary Card */}
-      <div className="bg-white rounded-2xl p-6 border border-stone-100 shadow-sm">
+      <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-sm">
         <h2 className="text-base font-bold text-stone-800 mb-5">Tóm tắt đơn hàng</h2>
 
         {/* Price breakdown */}
@@ -81,7 +81,7 @@ export function CartSummary({ selectedItems, hasIssues }: CartSummaryProps) {
           onClick={handleCheckout}
           disabled={!canCheckout || isValidating}
           className={cn(
-            'w-full mt-5 flex items-center justify-center gap-2 py-4 rounded-2xl font-bold text-base transition-all duration-200 cursor-pointer',
+            'w-full mt-5 flex items-center justify-center gap-2 py-4 rounded-xl font-bold text-base transition-all duration-200 cursor-pointer',
             canCheckout && !isValidating
               ? 'bg-green-700 hover:bg-green-800 text-white shadow-[0_8px_24px_rgba(22,101,52,0.25)] hover:shadow-[0_12px_32px_rgba(22,101,52,0.35)] hover:scale-[1.01] active:scale-[0.99]'
               : 'bg-stone-100 text-stone-400 cursor-not-allowed',
@@ -114,7 +114,7 @@ export function CartSummary({ selectedItems, hasIssues }: CartSummaryProps) {
       </div>
 
       {/* Trust badge */}
-      <div className="bg-green-50 rounded-2xl p-4 flex items-start gap-3">
+      <div className="bg-green-50 rounded-xl p-4 flex items-start gap-3">
         <ShieldCheck className="w-5 h-5 text-green-600 shrink-0 mt-0.5" />
         <div>
           <p className="text-xs font-bold text-green-800 mb-0.5">Mua sắm an toàn</p>
@@ -125,7 +125,7 @@ export function CartSummary({ selectedItems, hasIssues }: CartSummaryProps) {
       </div>
 
       {/* OCOP Impact card */}
-      <div className="bg-amber-50 rounded-2xl p-4 flex items-start gap-3">
+      <div className="bg-amber-50 rounded-xl p-4 flex items-start gap-3">
         <span className="text-xl shrink-0">🌾</span>
         <div>
           <p className="text-xs font-bold text-amber-900 mb-0.5">Đóng góp cho nông thôn Việt</p>

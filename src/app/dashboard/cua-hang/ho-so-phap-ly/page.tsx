@@ -114,7 +114,7 @@ export default function LegalDocumentsPage() {
   return (
     <div className="space-y-8">
       {/* Header Info */}
-      <div className="flex items-start gap-4 p-5 bg-blue-50 border border-blue-100 rounded-2xl">
+      <div className="flex items-start gap-4 p-5 bg-blue-50 border border-blue-100 rounded-xl">
         <FiAlertCircle size={20} className="text-blue-500 mt-0.5 shrink-0" />
         <div className="space-y-1">
           <p className="text-sm font-bold text-blue-900">Quy định về hồ sơ pháp lý</p>
@@ -139,7 +139,7 @@ export default function LegalDocumentsPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
               className={cn(
-                'group relative rounded-3xl border transition-all duration-300 overflow-hidden',
+                'group relative rounded-xl border transition-all duration-300 overflow-hidden',
                 doc?.isVerified
                   ? 'bg-green-50/30 border-green-100 hover:border-green-200'
                   : 'bg-white border-stone-100 hover:border-green-200 hover:shadow-lg hover:shadow-green-500/5',
@@ -148,7 +148,7 @@ export default function LegalDocumentsPage() {
               {/* Header */}
               <div className="p-6">
                 <div className="flex items-start justify-between mb-4">
-                  <div className="w-12 h-12 bg-stone-50 rounded-2xl flex items-center justify-center text-stone-400 group-hover:bg-green-100 group-hover:text-green-600 transition-colors">
+                  <div className="w-12 h-12 bg-stone-50 rounded-xl flex items-center justify-center text-stone-400 group-hover:bg-green-100 group-hover:text-green-600 transition-colors">
                     <config.icon size={22} />
                   </div>
                   {doc && <StatusBadge isVerified={doc.isVerified} note={doc.note} />}
@@ -167,7 +167,7 @@ export default function LegalDocumentsPage() {
                 {doc ? (
                   <div className="space-y-4">
                     {/* Preview Area */}
-                    <div className="relative aspect-video rounded-2xl bg-stone-50 border border-dashed border-stone-200 overflow-hidden group/preview">
+                    <div className="relative aspect-video rounded-xl bg-stone-50 border border-dashed border-stone-200 overflow-hidden group/preview">
                       {doc.fileUrl.match(/\.(jpg|jpeg|png|webp)$/i) ? (
                         <Image src={doc.fileUrl} alt={config.label} fill className="object-cover" />
                       ) : doc.fileUrl.toLowerCase().endsWith('.pdf') ? (
@@ -216,7 +216,7 @@ export default function LegalDocumentsPage() {
                     )}
                   </div>
                 ) : (
-                  <label className="relative flex flex-col items-center justify-center py-8 px-4 bg-stone-50/50 border-2 border-dashed border-stone-100 rounded-2xl cursor-pointer hover:bg-green-50 hover:border-green-200 hover:text-green-600 transition-all group/upload">
+                  <label className="relative flex flex-col items-center justify-center py-8 px-4 bg-stone-50/50 border-2 border-dashed border-stone-100 rounded-xl cursor-pointer hover:bg-green-50 hover:border-green-200 hover:text-green-600 transition-all group/upload">
                     {isUploadingDocument ? (
                       <FiLoader size={24} className="animate-spin" />
                     ) : (

@@ -126,7 +126,7 @@ const ShopDetailPage = () => {
         <div className="col-span-12 lg:col-span-8 flex flex-col gap-6">
           <ShopDetailTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
-          <div className="bg-white rounded-[32px] shadow-sm border border-stone-100 min-h-[600px] relative overflow-hidden">
+          <div className="bg-white rounded-xl shadow-sm border border-stone-100 min-h-[600px] relative overflow-hidden">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}

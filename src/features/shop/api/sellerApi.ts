@@ -1,5 +1,7 @@
 import { axiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
+import { buildRoute } from '@/lib/routeBuilder';
+
 import {
   CreateShopRequest,
   UpdateShopRequest,
@@ -64,7 +66,7 @@ export const sellerApi = {
   },
 
   deleteDocument: (documentId: number | string): Promise<ShopDocumentDeleteResponse> => {
-    return axiosClient.delete(`${API_ENDPOINTS.SELLER.SHOP_DOCUMENTS}/${documentId}`);
+    return axiosClient.delete(buildRoute(API_ENDPOINTS.SELLER.SHOP_DOCUMENTS, documentId));
   },
 
   getMyShopPolicy: (): Promise<ShopPolicyResponse> => {

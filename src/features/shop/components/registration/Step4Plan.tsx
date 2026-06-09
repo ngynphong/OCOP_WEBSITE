@@ -94,7 +94,7 @@ const Step4Plan: React.FC<Step4PlanProps> = memo(({ register, errors, control, s
                 whileHover={{ y: -5 }}
                 whileTap={{ scale: 0.98 }}
                 className={cn(
-                  'relative flex flex-col p-6 rounded-3xl border-2 cursor-pointer transition-all duration-300 min-h-[340px]',
+                  'relative flex flex-col p-6 rounded-xl border-2 cursor-pointer transition-all duration-300 min-h-[340px]',
                   isSelected
                     ? 'border-green-600 border-[3px] ring-4 ring-green-600/15 bg-white shadow-xl shadow-green-500/10'
                     : 'border-stone-100 bg-white hover:border-green-200 hover:shadow-lg',

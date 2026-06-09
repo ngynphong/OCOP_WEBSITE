@@ -9,7 +9,7 @@ import { motion } from 'framer-motion';
 
 const BlogSkeleton = () => (
   <div className="space-y-6 animate-pulse">
-    <div className="aspect-[4/3] bg-stone-100 rounded-[32px]" />
+    <div className="aspect-[4/3] bg-stone-100 rounded-xl" />
     <div className="space-y-3">
       <div className="h-4 bg-stone-100 rounded w-1/3" />
       <div className="h-8 bg-stone-100 rounded w-full" />
@@ -142,7 +142,7 @@ export const BlogFeed = () => {
 
           {remainingBlogs.length === 0 && blogs.length <= 4 ? (
             blogs.length === 0 ? (
-              <div className="text-center py-24 bg-stone-50 rounded-[40px] border border-stone-100">
+              <div className="text-center py-24 bg-stone-50 rounded-xl border border-stone-100">
                 <FiSearch className="mx-auto text-4xl text-stone-300 mb-4" />
                 <h3 className="text-xl font-bold text-stone-900 mb-2">Chưa có bài viết nào</h3>
                 <p className="text-stone-500">Chúng tôi đang cập nhật thêm nội dung mới.</p>

@@ -56,7 +56,7 @@ export default function AdminSupportTicketsPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => refetch()}
-            className="p-4 bg-white border border-stone-100 rounded-2xl text-stone-400 hover:text-emerald-800 hover:border-emerald-100 transition-all shadow-sm active:scale-95"
+            className="p-4 bg-white border border-stone-100 rounded-xl text-stone-400 hover:text-emerald-800 hover:border-emerald-100 transition-all shadow-sm active:scale-95"
           >
             <RefreshCcw size={20} className={isLoading ? 'animate-spin' : ''} />
           </button>
@@ -97,7 +97,7 @@ export default function AdminSupportTicketsPage() {
         ].map((stat, i) => (
           <div
             key={i}
-            className="bg-white p-6 rounded-[32px] border border-stone-100 shadow-sm flex items-center justify-between"
+            className="bg-white p-6 rounded-xl border border-stone-100 shadow-sm flex items-center justify-between"
           >
             <div className="space-y-1">
               <p className="text-[10px] font-black text-stone-300 uppercase tracking-tight">
@@ -107,7 +107,7 @@ export default function AdminSupportTicketsPage() {
             </div>
             <div
               className={cn(
-                'w-12 h-12 rounded-2xl flex items-center justify-center',
+                'w-12 h-12 rounded-xl flex items-center justify-center',
                 stat.bg,
                 stat.color,
               )}
@@ -119,7 +119,7 @@ export default function AdminSupportTicketsPage() {
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="bg-white p-4 rounded-[32px] border border-stone-100 shadow-sm flex flex-col lg:flex-row gap-6">
+      <div className="bg-white p-4 rounded-xl border border-stone-100 shadow-sm flex flex-col lg:flex-row gap-6">
         <div className="flex-1 overflow-x-auto scroller-hide">
           <div className="flex items-center gap-2">
             <div className="p-3 bg-stone-50 rounded-xl text-stone-400 shrink-0">
@@ -150,12 +150,12 @@ export default function AdminSupportTicketsPage() {
               placeholder="Tìm giao dịch theo User ID..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-stone-50 text-gray-700 border border-stone-50 rounded-2xl text-sm font-medium focus:bg-white focus:border-emerald-500 outline-none transition-all"
+              className="w-full pl-12 pr-4 py-3 bg-stone-50 text-gray-700 border border-stone-50 rounded-xl text-sm font-medium focus:bg-white focus:border-emerald-500 outline-none transition-all"
             />
           </div>
           <Button
             type="submit"
-            className="px-6 bg-emerald-800 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-900 transition-all shadow-xl shadow-emerald-900/10 active:scale-95"
+            className="px-6 bg-emerald-800 text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-900 transition-all shadow-xl shadow-emerald-900/10 active:scale-95"
           >
             Tìm kiếm
           </Button>

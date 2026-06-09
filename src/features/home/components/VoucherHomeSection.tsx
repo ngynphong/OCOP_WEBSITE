@@ -44,7 +44,7 @@ export const VoucherHomeSection = memo(function VoucherHomeSection() {
           {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="h-32 w-full bg-stone-100 animate-pulse rounded-2xl border border-stone-200"
+              className="h-32 w-full bg-stone-100 animate-pulse rounded-xl border border-stone-200"
             />
           ))}
         </div>
@@ -79,7 +79,7 @@ export const VoucherHomeSection = memo(function VoucherHomeSection() {
             <motion.div
               key={voucher.id}
               whileHover={{ y: -8 }}
-              className="relative flex bg-white border border-stone-100 rounded-2xl overflow-hidden shadow-xs hover:shadow-2xl hover:shadow-stone-200/50 transition-all group min-h-[130px]"
+              className="relative flex bg-white border border-stone-100 rounded-xl overflow-hidden shadow-xs hover:shadow-2xl hover:shadow-stone-200/50 transition-all group min-h-[130px]"
             >
               {/* Left Cut-out part */}
               <div className="w-28 bg-linear-to-br from-red-500 to-rose-600 flex flex-col items-center justify-center border-r border-dashed border-white/30 relative shrink-0">

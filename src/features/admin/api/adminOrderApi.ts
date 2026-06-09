@@ -1,5 +1,7 @@
 import { axiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
+import { buildRoute } from '@/lib/routeBuilder';
+
 import {
   AdminOrderListResponse,
   AdminDashboardResponse,
@@ -47,14 +49,14 @@ export const adminOrderApi = {
     payoutId: number | string,
     data: IPayoutProcessReq,
   ): Promise<AdminPayoutResponse> => {
-    return axiosClient.post(`${API_ENDPOINTS.ADMIN.PAYOUTS}/${payoutId}/process`, data);
+    return axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.PAYOUTS, payoutId, 'process'), data);
   },
 
   approveRefund: (
     refundId: number | string,
     data: IRefundApproveReq,
   ): Promise<AdminRefundActionResponse> => {
-    return axiosClient.post(`${API_ENDPOINTS.ADMIN.REFUNDS}/${refundId}/approve`, data);
+    return axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.REFUNDS, refundId, 'approve'), data);
   },
 
   getPayouts: (params: IAdminPayoutParams): Promise<AdminPayoutListResponse> => {

@@ -91,7 +91,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, isB2B = false }) =>
 
       {/* Main Content: Product Details */}
       <div className="flex gap-5">
-        <div className="relative w-24 h-24 rounded-2xl overflow-hidden bg-stone-50 border border-stone-100 shrink-0 shadow-sm">
+        <div className="relative w-24 h-24 rounded-xl overflow-hidden bg-stone-50 border border-stone-100 shrink-0 shadow-sm">
           {order.thumbnail ? (
             <Image
               src={order.thumbnail}

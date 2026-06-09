@@ -1,5 +1,7 @@
 import { axiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
+import { buildRoute } from '@/lib/routeBuilder';
+
 import {
   WishlistListResponse,
   WishlistActionResponse,
@@ -15,11 +17,11 @@ export const wishlistApi = {
   },
 
   addToWishlist: (productId: number): Promise<WishlistActionResponse> => {
-    return axiosClient.post(`${API_ENDPOINTS.WISHLIST.BASE}/${productId}`);
+    return axiosClient.post(buildRoute(API_ENDPOINTS.WISHLIST.BASE, productId));
   },
 
   removeFromWishlist: (productId: number): Promise<WishlistActionResponse> => {
-    return axiosClient.delete(`${API_ENDPOINTS.WISHLIST.BASE}/${productId}`);
+    return axiosClient.delete(buildRoute(API_ENDPOINTS.WISHLIST.BASE, productId));
   },
 
   getCount: (): Promise<WishlistCountDataResponse> => {

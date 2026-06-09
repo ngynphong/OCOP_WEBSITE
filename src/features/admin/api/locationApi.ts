@@ -1,5 +1,7 @@
 import { axiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
+import { buildRoute } from '@/lib/routeBuilder';
+
 import {
   ProvinceListResponse,
   DistrictListResponse,
@@ -15,11 +17,11 @@ export const locationApi = {
   },
 
   getDistricts: (provinceId: number | string): Promise<DistrictListResponse> => {
-    return axiosClient.get(`${API_ENDPOINTS.LOCATION.PROVINCES}/${provinceId}/districts`);
+    return axiosClient.get(buildRoute(API_ENDPOINTS.LOCATION.PROVINCES, provinceId, 'districts'));
   },
 
   getWards: (districtId: number | string): Promise<WardListResponse> => {
-    return axiosClient.get(`${API_ENDPOINTS.LOCATION.DISTRICTS}/${districtId}/wards`);
+    return axiosClient.get(buildRoute(API_ENDPOINTS.LOCATION.DISTRICTS, districtId, 'wards'));
   },
 
   importLocations: (file: File): Promise<ResponseBase<Record<string, number>>> => {

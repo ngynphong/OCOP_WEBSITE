@@ -3,7 +3,7 @@ import { QrCode, ScanLine } from 'lucide-react';
 export function QRTraceabilitySection() {
   return (
     <section className="w-full max-w-7xl mx-auto px-6 py-12 md:py-20">
-      <div className="w-full relative bg-red-100 rounded-[32px] md:rounded-[56px] overflow-hidden flex flex-col md:flex-row items-center justify-between p-8 md:p-16 lg:p-24 gap-12 shadow-sm border border-red-200">
+      <div className="w-full relative bg-red-100 rounded-xl md:rounded-[56px] overflow-hidden flex flex-col md:flex-row items-center justify-between p-8 md:p-16 lg:p-24 gap-12 shadow-sm border border-red-200">
         {/* Background decorations */}
         <div className="w-96 h-96 absolute -left-24 -top-24 bg-green-900/5 rounded-full blur-3xl mix-blend-multiply" />
         <div className="w-96 h-96 absolute -right-24 -bottom-24 bg-stone-700/5 rounded-full blur-3xl mix-blend-multiply" />
@@ -47,7 +47,7 @@ export function QRTraceabilitySection() {
 
         {/* Mobile Graphic */}
         <div className="relative z-10 w-full md:w-auto flex flex-col items-center justify-center gap-6 group">
-          <div className="relative w-64 h-64 p-6 bg-white rounded-[32px] shadow-2xl rotate-3 group-hover:rotate-0 transition-transform duration-500 flex flex-col justify-center items-center">
+          <div className="relative w-64 h-64 p-6 bg-white rounded-xl shadow-2xl rotate-3 group-hover:rotate-0 transition-transform duration-500 flex flex-col justify-center items-center">
             <div
               className="w-full h-full relative"
               style={{

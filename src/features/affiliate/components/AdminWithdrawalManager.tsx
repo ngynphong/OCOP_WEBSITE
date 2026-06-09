@@ -99,16 +99,16 @@ export const AdminWithdrawalManager: React.FC<AdminWithdrawalManagerProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-3xl shadow-sm border border-stone-100 overflow-hidden p-4">
+    <div className="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden p-4">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
         <h3 className="text-xl font-bold text-emerald-900 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-emerald-600 flex items-center justify-center text-white shadow-lg">
+          <div className="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white shadow-lg">
             <FiDollarSign size={20} />
           </div>
           Quản lý lệnh rút tiền
         </h3>
 
-        <div className="flex items-center gap-2 bg-stone-100/50 p-1.5 rounded-2xl border border-stone-200 overflow-x-auto no-scrollbar">
+        <div className="flex items-center gap-2 bg-stone-100/50 p-1.5 rounded-xl border border-stone-200 overflow-x-auto no-scrollbar">
           {FILTER_OPTIONS.map((opt) => (
             <button
               key={opt.value}

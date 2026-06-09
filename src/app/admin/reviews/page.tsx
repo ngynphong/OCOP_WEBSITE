@@ -202,7 +202,7 @@ export default function AdminReviewsPage() {
       {activeTab === 'REVIEWS' ? (
         <div className="space-y-6">
           {/* Reviews Filters */}
-          <div className="flex flex-wrap items-center gap-4 bg-white p-4 rounded-3xl border border-stone-100 shadow-sm">
+          <div className="flex flex-wrap items-center gap-4 bg-white p-4 rounded-xl border border-stone-100 shadow-sm">
             <div className="flex gap-2">
               {['PENDING', 'APPROVED', 'REJECTED', 'HIDDEN'].map((s) => (
                 <button
@@ -215,7 +215,7 @@ export default function AdminReviewsPage() {
                     }))
                   }
                   className={cn(
-                    'px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border',
+                    'px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border',
                     reviewParams.status === s
                       ? 'bg-emerald-800 text-white border-emerald-800 shadow-lg shadow-emerald-200'
                       : 'bg-white text-stone-400 border-stone-100 hover:border-emerald-800',
@@ -242,7 +242,7 @@ export default function AdminReviewsPage() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Tìm theo sản phẩm hoặc user..."
-                className="w-full pl-10 pr-4 py-2.5 bg-stone-50 text-gray-700 border border-stone-100 rounded-2xl text-xs focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
+                className="w-full pl-10 pr-4 py-2.5 bg-stone-50 text-gray-700 border border-stone-100 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
               />
             </div>
           </div>
@@ -252,7 +252,7 @@ export default function AdminReviewsPage() {
               <Loader2 className="w-10 h-10 text-emerald-800 animate-spin" />
             </div>
           ) : reviews.length > 0 ? (
-            <div className="bg-white rounded-3xl border border-stone-100 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden">
               <div className="divide-y divide-stone-50">
                 {reviews.map((review) => (
                   <div key={review.id} className="p-6 transition-colors hover:bg-stone-50/30">
@@ -295,7 +295,7 @@ export default function AdminReviewsPage() {
             </div>
           ) : (
             <div className="bg-emerald-50/30 rounded-4xl border border-dashed border-emerald-100 py-20 text-center">
-              <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 border border-stone-100 shadow-sm text-emerald-800">
+              <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center mx-auto mb-4 border border-stone-100 shadow-sm text-emerald-800">
                 <ShieldCheck size={32} />
               </div>
               <h3 className="text-lg font-bold text-stone-900">Hoàn tất kiểm duyệt</h3>
@@ -316,7 +316,7 @@ export default function AdminReviewsPage() {
       ) : activeTab === 'COMPLAINTS' && canViewComplaints ? (
         <div className="space-y-6">
           {/* Complaints Filters */}
-          <div className="flex flex-wrap items-center gap-4 bg-white p-4 rounded-3xl border border-stone-100 shadow-sm">
+          <div className="flex flex-wrap items-center gap-4 bg-white p-4 rounded-xl border border-stone-100 shadow-sm">
             <div className="flex gap-2">
               {['ALL', 'OPEN', 'INVESTIGATING', 'RESOLVED', 'REJECTED'].map((s) => (
                 <button
@@ -329,7 +329,7 @@ export default function AdminReviewsPage() {
                     }))
                   }
                   className={cn(
-                    'px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border',
+                    'px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border',
                     complaintParams.status === s
                       ? 'bg-emerald-800 text-white border-emerald-800 shadow-lg shadow-emerald-200'
                       : 'bg-white text-stone-400 border-stone-100 hover:border-emerald-800',
@@ -389,7 +389,7 @@ export default function AdminReviewsPage() {
           <div className="space-y-6">
             <div
               className={cn(
-                'p-4 rounded-2xl border flex gap-3',
+                'p-4 rounded-xl border flex gap-3',
                 moderatingReview.action === 'approve'
                   ? 'bg-green-50 border-green-100'
                   : 'bg-red-50 border-red-100',
@@ -427,7 +427,7 @@ export default function AdminReviewsPage() {
               <Button
                 variant="outline"
                 onClick={() => setModeratingReview(null)}
-                className="flex-1 py-4 rounded-2xl"
+                className="flex-1 py-4 rounded-xl"
               >
                 Hủy
               </Button>
@@ -435,7 +435,7 @@ export default function AdminReviewsPage() {
                 disabled={isApproving || isRejecting || isHiding}
                 onClick={handleConfirmModeration}
                 className={cn(
-                  'flex-2 py-4 rounded-2xl text-white text-xs font-black uppercase tracking-widest shadow-lg flex items-center justify-center gap-2',
+                  'flex-2 py-4 rounded-xl text-white text-xs font-black uppercase tracking-widest shadow-lg flex items-center justify-center gap-2',
                   moderatingReview.action === 'approve'
                     ? 'bg-emerald-800 hover:bg-emerald-900'
                     : 'bg-red-600 hover:bg-red-700',

@@ -47,7 +47,7 @@ export const ChatInput = ({ onSendMessage, onSendFile, isLoading }: ChatInputPro
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            className="absolute bottom-20 left-4 z-50 shadow-2xl rounded-2xl overflow-hidden"
+            className="absolute bottom-20 left-4 z-50 shadow-2xl rounded-xl overflow-hidden"
           >
             <EmojiPicker
               onEmojiClick={onEmojiClick}
@@ -101,7 +101,7 @@ export const ChatInput = ({ onSendMessage, onSendFile, isLoading }: ChatInputPro
           </AnimatePresence>
         </div>
 
-        <div className="flex-1 relative bg-stone-50 rounded-2xl border border-stone-200 focus-within:border-emerald-400 focus-within:bg-white transition-all overflow-hidden">
+        <div className="flex-1 relative bg-stone-50 rounded-xl border border-stone-200 focus-within:border-emerald-400 focus-within:bg-white transition-all overflow-hidden">
           <textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
@@ -132,7 +132,7 @@ export const ChatInput = ({ onSendMessage, onSendFile, isLoading }: ChatInputPro
           onClick={handleSend}
           disabled={!message.trim() || isLoading}
           className={cn(
-            'p-3 rounded-2xl transition-all duration-200 cursor-pointer',
+            'p-3 rounded-xl transition-all duration-200 cursor-pointer',
             message.trim() && !isLoading
               ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200 scale-100'
               : 'bg-stone-100 text-stone-300 scale-95',

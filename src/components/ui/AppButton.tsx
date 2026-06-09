@@ -30,14 +30,14 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     // Gradient styles for OCOP Brand
     const variants = {
       primary:
-        'bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg shadow-green-600/20 active:scale-95 border-none',
+        'bg-linear-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-md shadow-emerald-600/20 hover:shadow-xl hover:shadow-emerald-600/30 active:scale-[0.98] border-none',
       outline:
-        'bg-transparent border-2 border-green-600 text-green-600 hover:bg-green-50 active:scale-95',
-      ghost: 'bg-transparent text-stone-600 hover:bg-stone-50 active:scale-95 border-none',
+        'bg-transparent border-2 border-emerald-600 text-emerald-600 hover:bg-emerald-50 active:scale-[0.98]',
+      ghost: 'bg-transparent text-stone-600 hover:bg-stone-50 active:scale-[0.98] border-none',
       danger:
-        'bg-linear-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white shadow-lg shadow-red-500/20 active:scale-95 border-none',
+        'bg-linear-to-r from-red-500 to-rose-600 hover:from-red-400 hover:to-rose-500 text-white shadow-md shadow-red-500/20 hover:shadow-xl hover:shadow-red-500/30 active:scale-[0.98] border-none',
       success:
-        'bg-linear-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg shadow-emerald-500/20 active:scale-95 border-none',
+        'bg-linear-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white shadow-md shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30 active:scale-[0.98] border-none',
     };
 
     const sizes = {
@@ -51,7 +51,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || isLoading}
         className={cn(
-          'inline-flex items-center justify-center rounded-full font-bold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer',
+          'inline-flex items-center justify-center rounded-xl font-bold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-500/30',
           variants[variant],
           sizes[size],
           className,

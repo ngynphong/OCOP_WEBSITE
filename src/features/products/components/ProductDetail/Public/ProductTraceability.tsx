@@ -82,7 +82,7 @@ export function ProductTraceability({ journals = [], qrCode }: ProductTraceabili
         {/* QR Scanner Mock UI */}
         <div className="relative group">
           <div className="absolute -inset-4 bg-linear-to-r from-green-600 to-emerald-600 rounded-4xl opacity-5 blur-2xl group-hover:opacity-10 transition-opacity" />
-          <div className="relative bg-white p-4 rounded-2xl shadow-xl border border-stone-100 flex flex-col gap-3 overflow-hidden">
+          <div className="relative bg-white p-4 rounded-xl shadow-xl border border-stone-100 flex flex-col gap-3 overflow-hidden">
             <div className="flex items-center justify-between">
               <div className="flex flex-col">
                 <span className="text-[9px] font-black text-stone-400 uppercase tracking-widest">
@@ -93,7 +93,7 @@ export function ProductTraceability({ journals = [], qrCode }: ProductTraceabili
               <QrCode className="w-5 h-5 text-green-700" />
             </div>
 
-            <div className="aspect-square w-full max-w-[130px] mx-auto p-3 bg-white rounded-2xl border border-stone-200 flex items-center justify-center">
+            <div className="aspect-square w-full max-w-[130px] mx-auto p-3 bg-white rounded-xl border border-stone-200 flex items-center justify-center">
               {qrCode?.qrUrl ? (
                 <QRCode
                   value={`${typeof window !== 'undefined' ? window.location.origin : ''}${qrCode.qrUrl}`}

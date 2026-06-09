@@ -70,7 +70,7 @@ const ConfirmContent = () => {
             </div>
             <div className="grid grid-cols-1 gap-3">
               <Link href="/">
-                <button className="w-full bg-stone-900 text-white py-4 rounded-2xl text-sm font-black uppercase tracking-widest hover:bg-stone-800 transition-all cursor-pointer">
+                <button className="w-full bg-stone-900 text-white py-4 rounded-xl text-sm font-black uppercase tracking-widest hover:bg-stone-800 transition-all cursor-pointer">
                   Về trang chủ
                 </button>
               </Link>
@@ -94,7 +94,7 @@ const ConfirmContent = () => {
               </p>
             </div>
 
-            <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100/50">
+            <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-100/50">
               <p className="text-xs font-bold text-emerald-800 uppercase tracking-widest">
                 Tự động quay lại trang chủ sau{' '}
                 <span className="text-lg text-emerald-600 ml-1">{countdown}s</span>
@@ -103,7 +103,7 @@ const ConfirmContent = () => {
 
             <div className="space-y-4 pt-4">
               <Link href="/san-pham" className="block">
-                <button className="w-full bg-emerald-700 text-white py-5 rounded-[24px] text-sm font-black uppercase tracking-widest hover:bg-emerald-800 transition-all flex items-center justify-center gap-2 group cursor-pointer shadow-lg shadow-emerald-700/20">
+                <button className="w-full bg-emerald-700 text-white py-5 rounded-xl text-sm font-black uppercase tracking-widest hover:bg-emerald-800 transition-all flex items-center justify-center gap-2 group cursor-pointer shadow-lg shadow-emerald-700/20">
                   Khám phá đặc sản OCOP
                   <ArrowRight
                     size={18}

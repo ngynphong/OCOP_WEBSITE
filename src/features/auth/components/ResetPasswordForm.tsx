@@ -44,7 +44,7 @@ export function ResetPasswordForm() {
   };
 
   return (
-    <div className="relative z-20 w-full max-w-sm bg-white rounded-3xl overflow-hidden shadow-2xl p-6 lg:p-8 transform hover:scale-[1.01] transition-transform duration-500">
+    <div className="relative z-20 w-full max-w-sm bg-white rounded-xl overflow-hidden shadow-2xl p-6 lg:p-8 transform hover:scale-[1.01] transition-transform duration-500">
       <div className="flex flex-col items-center text-center mb-8">
         <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mb-4 text-green-600">
           <Lock className="w-8 h-8" />
@@ -68,7 +68,7 @@ export function ResetPasswordForm() {
               {...register('password')}
               type={showPassword ? 'text' : 'password'}
               placeholder="••••••••"
-              className={`w-full bg-stone-50 border-2 rounded-2xl py-3.5 pl-11 pr-11 text-sm font-medium focus:outline-none focus:bg-white transition-all ${
+              className={`w-full bg-stone-50 border-2 rounded-xl py-3.5 pl-11 pr-11 text-sm font-medium focus:outline-none focus:bg-white transition-all ${
                 errors.password
                   ? 'border-red-200 focus:border-red-500 text-red-600'
                   : 'border-stone-100 focus:border-green-600 text-stone-800'
@@ -100,7 +100,7 @@ export function ResetPasswordForm() {
               {...register('confirmPassword')}
               type={showConfirmPassword ? 'text' : 'password'}
               placeholder="••••••••"
-              className={`w-full bg-stone-50 border-2 rounded-2xl py-3.5 pl-11 pr-11 text-sm font-medium focus:outline-none focus:bg-white transition-all ${
+              className={`w-full bg-stone-50 border-2 rounded-xl py-3.5 pl-11 pr-11 text-sm font-medium focus:outline-none focus:bg-white transition-all ${
                 errors.confirmPassword
                   ? 'border-red-200 focus:border-red-500 text-red-600'
                   : 'border-stone-100 focus:border-green-600 text-stone-800'
@@ -125,7 +125,7 @@ export function ResetPasswordForm() {
           suppressHydrationWarning
           type="submit"
           disabled={isResettingPassword}
-          className="w-full bg-green-700 hover:bg-green-800 disabled:bg-stone-300 disabled:opacity-50 text-white font-bold py-4 rounded-2xl transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2 mt-2"
+          className="w-full bg-green-700 hover:bg-green-800 disabled:bg-stone-300 disabled:opacity-50 text-white font-bold py-4 rounded-xl transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2 mt-2"
         >
           {isResettingPassword ? (
             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

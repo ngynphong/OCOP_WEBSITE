@@ -73,11 +73,11 @@ const RoleListPage = () => {
           Array.from({ length: 3 }).map((_, i) => (
             <div
               key={i}
-              className="h-64 bg-stone-100 rounded-3xl animate-pulse border border-stone-200"
+              className="h-64 bg-stone-100 rounded-xl animate-pulse border border-stone-200"
             />
           ))
         ) : roles.length === 0 ? (
-          <div className="col-span-full py-20 text-center bg-white rounded-3xl border border-dashed border-stone-200">
+          <div className="col-span-full py-20 text-center bg-white rounded-xl border border-dashed border-stone-200">
             <FiShield className="mx-auto text-stone-200 mb-4" size={48} />
             <p className="text-stone-400 font-bold uppercase tracking-widest text-xs">
               Chưa có vai trò nào được định nghĩa
@@ -87,10 +87,10 @@ const RoleListPage = () => {
           roles.map((role) => (
             <div
               key={role.name}
-              className="bg-white rounded-3xl p-6 shadow-sm border border-stone-100 hover:shadow-xl hover:shadow-emerald-900/5 transition-all group flex flex-col h-full"
+              className="bg-white rounded-xl p-6 shadow-sm border border-stone-100 hover:shadow-xl hover:shadow-emerald-900/5 transition-all group flex flex-col h-full"
             >
               <div className="flex justify-between items-start mb-4">
-                <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-all">
+                <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-all">
                   <FiShield size={24} />
                 </div>
                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -145,7 +145,7 @@ const RoleListPage = () => {
       </div>
 
       {/* Info Card */}
-      <div className="bg-emerald-900 rounded-3xl p-8 text-white relative overflow-hidden">
+      <div className="bg-emerald-900 rounded-xl p-8 text-white relative overflow-hidden">
         <div className="relative z-10 max-w-2xl">
           <h4 className="text-lg font-black mb-2 flex items-center gap-2">
             <FiInfo /> Lưu ý về Phân quyền

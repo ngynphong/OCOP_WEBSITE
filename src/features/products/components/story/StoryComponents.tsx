@@ -89,10 +89,10 @@ export const StoryOrigin = ({
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          className="relative aspect-[4/5] rounded-[40px] overflow-hidden shadow-2xl"
+          className="relative aspect-[4/5] rounded-xl overflow-hidden shadow-2xl"
         >
           <Image src={subImage} alt="Heritage" fill className="object-cover" />
-          <div className="absolute inset-0 ring-1 ring-inset ring-black/10 rounded-[40px]" />
+          <div className="absolute inset-0 ring-1 ring-inset ring-black/10 rounded-xl" />
         </motion.div>
       </div>
     </div>
@@ -178,7 +178,7 @@ export const StoryTimeline = ({ steps }: { steps: StoryTimelineStep[] }) => (
               )}
             >
               <div className="flex-1 w-full">
-                <div className="relative aspect-video rounded-3xl overflow-hidden shadow-xl">
+                <div className="relative aspect-video rounded-xl overflow-hidden shadow-xl">
                   <Image src={step.image} alt={step.title} fill className="object-cover" />
                 </div>
               </div>
@@ -221,9 +221,9 @@ export const StoryImpact = ({ items }: { items: StoryImpactItem[] }) => (
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="bg-white p-10 rounded-[40px] shadow-sm text-center space-y-4 hover:shadow-xl transition-all border border-stone-100"
+            className="bg-white p-10 rounded-xl shadow-sm text-center space-y-4 hover:shadow-xl transition-all border border-stone-100"
           >
-            <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mx-auto mb-6">
               {item.icon}
             </div>
             <div className="text-4xl font-black text-[#113B28]">{item.value}</div>

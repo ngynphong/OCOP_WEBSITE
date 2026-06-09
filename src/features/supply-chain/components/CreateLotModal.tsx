@@ -105,7 +105,7 @@ export const CreateLotModal = ({ isOpen, onClose, onSuccess, onSubmit }: CreateL
               placeholder="Ví dụ: LOT-2026-001"
               value={formData.lotCode}
               onChange={handleChange}
-              className="w-full px-4 py-2.5 bg-stone-50 text-gray-700 border border-stone-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+              className="w-full px-4 py-2.5 bg-stone-50 text-gray-700 border border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
             />
           </div>
 
@@ -121,7 +121,7 @@ export const CreateLotModal = ({ isOpen, onClose, onSuccess, onSubmit }: CreateL
               value={formData.productId}
               onChange={handleChange}
               disabled={isLoading}
-              className="w-full px-4 py-2.5 bg-stone-50 border text-gray-700 border-stone-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none appearance-none"
+              className="w-full px-4 py-2.5 bg-stone-50 border text-gray-700 border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none appearance-none"
             >
               <option value={0}>Chọn sản phẩm...</option>
               {products.map((p) => (
@@ -146,7 +146,7 @@ export const CreateLotModal = ({ isOpen, onClose, onSuccess, onSubmit }: CreateL
                 required
                 value={formData.quantity}
                 onChange={handleChange}
-                className="flex-1 px-4 py-2.5 bg-stone-50 border text-gray-700 border-stone-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+                className="flex-1 px-4 py-2.5 bg-stone-50 border text-gray-700 border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
               />
               <input
                 type="text"
@@ -154,7 +154,7 @@ export const CreateLotModal = ({ isOpen, onClose, onSuccess, onSubmit }: CreateL
                 placeholder="Đơn vị (kg, hộp...)"
                 value={formData.unit}
                 onChange={handleChange}
-                className="w-24 px-4 py-2.5 bg-stone-50 border text-gray-700 border-stone-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+                className="w-24 px-4 py-2.5 bg-stone-50 border text-gray-700 border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
               />
             </div>
           </div>
@@ -170,7 +170,7 @@ export const CreateLotModal = ({ isOpen, onClose, onSuccess, onSubmit }: CreateL
               name="productionDate"
               value={formData.productionDate}
               onChange={handleChange}
-              className="w-full px-4 py-2.5 bg-stone-50 border text-gray-700 border-stone-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+              className="w-full px-4 py-2.5 bg-stone-50 border text-gray-700 border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
             />
           </div>
 
@@ -184,7 +184,7 @@ export const CreateLotModal = ({ isOpen, onClose, onSuccess, onSubmit }: CreateL
               name="expiryDate"
               value={formData.expiryDate}
               onChange={handleChange}
-              className="w-full px-4 py-2.5 bg-stone-50 border text-gray-700 border-stone-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+              className="w-full px-4 py-2.5 bg-stone-50 border text-gray-700 border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
             />
           </div>
         </div>
@@ -201,7 +201,7 @@ export const CreateLotModal = ({ isOpen, onClose, onSuccess, onSubmit }: CreateL
             placeholder="Mô tả thêm về lô hàng này..."
             value={formData.notes}
             onChange={handleChange}
-            className="w-full px-4 py-2.5 bg-stone-50 border text-gray-700 border-stone-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none resize-none"
+            className="w-full px-4 py-2.5 bg-stone-50 border text-gray-700 border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none resize-none"
           />
         </div>
 

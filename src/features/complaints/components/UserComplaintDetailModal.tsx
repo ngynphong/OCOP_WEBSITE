@@ -79,7 +79,7 @@ export const UserComplaintDetailModal = ({
         {/* Status Header */}
         <div
           className={cn(
-            'p-4 rounded-2xl border flex items-center justify-between',
+            'p-4 rounded-xl border flex items-center justify-between',
             status.bgColor,
             status.color,
           )}
@@ -108,7 +108,7 @@ export const UserComplaintDetailModal = ({
 
         {/* Info Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-stone-50 p-4 rounded-2xl border border-stone-100 space-y-3">
+          <div className="bg-stone-50 p-4 rounded-xl border border-stone-100 space-y-3">
             <div className="flex items-center gap-2 text-stone-500">
               <Hash size={14} />
               <span className="text-[10px] font-black uppercase tracking-widest">
@@ -131,7 +131,7 @@ export const UserComplaintDetailModal = ({
             )}
           </div>
 
-          <div className="bg-stone-50 p-4 rounded-2xl border border-stone-100 space-y-3">
+          <div className="bg-stone-50 p-4 rounded-xl border border-stone-100 space-y-3">
             <div className="flex items-center gap-2 text-stone-500">
               <Calendar size={14} />
               <span className="text-[10px] font-black uppercase tracking-widest">Ngày gửi:</span>
@@ -154,7 +154,7 @@ export const UserComplaintDetailModal = ({
               Nội dung bạn đã gửi
             </h4>
           </div>
-          <div className="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm">
+          <div className="bg-white p-5 rounded-xl border border-stone-100 shadow-sm">
             <h3 className="font-bold text-stone-900 mb-2">{complaint.subject}</h3>
             <p className="text-sm text-stone-600 leading-relaxed whitespace-pre-wrap">
               {complaint.description}
@@ -172,7 +172,7 @@ export const UserComplaintDetailModal = ({
           </div>
           <div
             className={cn(
-              'p-5 rounded-2xl border min-h-[100px]',
+              'p-5 rounded-xl border min-h-[100px]',
               complaint.resolutionNote
                 ? 'bg-emerald-50/50 border-emerald-100'
                 : 'bg-stone-50 border-dashed border-stone-200 flex items-center justify-center',
@@ -204,7 +204,7 @@ export const UserComplaintDetailModal = ({
         <div className="pt-2">
           <Button
             onClick={onClose}
-            className="w-full py-4 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all shadow-xl shadow-stone-200"
+            className="w-full py-4 text-white rounded-xl font-black text-[10px] uppercase tracking-widest transition-all shadow-xl shadow-stone-200"
           >
             Đóng cửa sổ
           </Button>

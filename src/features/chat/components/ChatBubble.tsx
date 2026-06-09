@@ -80,7 +80,7 @@ export const ChatBubble = ({ message }: ChatBubbleProps) => {
     <div className={cn('flex flex-col mb-4', isOwn ? 'items-end' : 'items-start')}>
       <div
         className={cn(
-          'max-w-[75%] px-4 py-2.5 rounded-2xl shadow-sm',
+          'max-w-[75%] px-4 py-2.5 rounded-xl shadow-sm',
           isOwn
             ? 'bg-emerald-600 text-white rounded-tr-none'
             : 'bg-white text-stone-800 border border-stone-100 rounded-tl-none',

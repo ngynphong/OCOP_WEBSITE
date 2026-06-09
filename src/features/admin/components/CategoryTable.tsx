@@ -195,19 +195,19 @@ const CategoryTable = ({ onEdit, onAdd }: CategoryTableProps) => {
             placeholder="Tìm kiếm danh mục..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-11 pr-4 py-2.5 bg-white border border-stone-200 rounded-2xl text-sm font-bold text-stone-800 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none shadow-sm"
+            className="w-full pl-11 pr-4 py-2.5 bg-white border border-stone-200 rounded-xl text-sm font-bold text-stone-800 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none shadow-sm"
           />
         </div>
         <Button
           variant="primary"
           onClick={() => onAdd()}
-          className="rounded-2xl! py-2.5! shadow-lg shadow-emerald-900/10"
+          className="rounded-xl! py-2.5! shadow-lg shadow-emerald-900/10"
         >
           <FiPlus className="mr-2" /> Thêm danh mục mới
         </Button>
       </div>
 
-      <div className="bg-white rounded-3xl shadow-sm border border-stone-100 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>

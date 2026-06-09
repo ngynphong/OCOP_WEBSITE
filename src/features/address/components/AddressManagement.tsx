@@ -51,7 +51,7 @@ const AddressManagement = () => {
         {[1, 2].map((i) => (
           <div
             key={i}
-            className="h-48 bg-stone-50 animate-pulse rounded-[32px] border border-stone-100"
+            className="h-48 bg-stone-50 animate-pulse rounded-xl border border-stone-100"
           />
         ))}
       </div>
@@ -67,7 +67,7 @@ const AddressManagement = () => {
             Địa chỉ của tôi
           </span>
         </div>
-        <Button onClick={handleAddNew} className="rounded-2xl px-6 h-12 flex items-center gap-2">
+        <Button onClick={handleAddNew} className="rounded-xl px-6 h-12 flex items-center gap-2">
           <FiPlus />
           Thêm địa chỉ mới
         </Button>
@@ -78,7 +78,7 @@ const AddressManagement = () => {
           <div
             key={addr.id}
             className={cn(
-              'relative bg-white p-8 rounded-[40px] border-2 transition-all group',
+              'relative bg-white p-8 rounded-xl border-2 transition-all group',
               addr.isDefault
                 ? 'border-green-600 shadow-xl shadow-green-500/10'
                 : 'border-stone-100 hover:border-stone-200 shadow-lg shadow-stone-200/40',
@@ -138,7 +138,7 @@ const AddressManagement = () => {
               <div className="flex-1" />
               <button
                 onClick={() => handleEdit(addr)}
-                className="p-3 text-stone-400 hover:text-green-600 hover:bg-green-50 rounded-2xl transition-all"
+                className="p-3 text-stone-400 hover:text-green-600 hover:bg-green-50 rounded-xl transition-all"
                 title="Chỉnh sửa"
               >
                 <FiEdit2 size={18} />
@@ -146,7 +146,7 @@ const AddressManagement = () => {
               {!addr.isDefault && (
                 <button
                   onClick={() => setAddressToDelete(addr.id)}
-                  className="p-3 text-stone-400 hover:text-red-600 hover:bg-red-50 rounded-2xl transition-all"
+                  className="p-3 text-stone-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
                   title="Xóa"
                 >
                   <FiTrash2 size={18} />
@@ -157,7 +157,7 @@ const AddressManagement = () => {
         ))}
 
         {(!addresses || addresses.length === 0) && (
-          <div className="col-span-full py-20 text-center bg-white rounded-[40px] border-2 border-dashed border-stone-100">
+          <div className="col-span-full py-20 text-center bg-white rounded-xl border-2 border-dashed border-stone-100">
             <div className="w-20 h-20 bg-stone-50 rounded-full flex items-center justify-center mx-auto mb-4 text-stone-300">
               <FiMapPin size={40} />
             </div>
@@ -165,7 +165,7 @@ const AddressManagement = () => {
             <p className="text-stone-500 text-sm mt-1 mb-6">
               Hãy thêm địa chỉ mới để đặt hàng thuận tiện hơn
             </p>
-            <Button onClick={handleAddNew} className="rounded-2xl px-8 h-12">
+            <Button onClick={handleAddNew} className="rounded-xl px-8 h-12">
               Thêm địa chỉ ngay
             </Button>
           </div>

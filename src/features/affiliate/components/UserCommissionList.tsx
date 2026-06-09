@@ -44,11 +44,11 @@ export const UserCommissionList: React.FC = () => {
   ];
 
   return (
-    <div className="bg-white rounded-3xl border border-stone-100 shadow-xl shadow-stone-200/50 overflow-hidden">
+    <div className="bg-white rounded-xl border border-stone-100 shadow-xl shadow-stone-200/50 overflow-hidden">
       <div className="p-6 border-b border-stone-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <h3 className="text-lg font-bold text-stone-900">Lịch sử Hoa hồng</h3>
 
-        <div className="flex items-center gap-1 bg-stone-100 p-1 rounded-2xl overflow-x-auto no-scrollbar">
+        <div className="flex items-center gap-1 bg-stone-100 p-1 rounded-xl overflow-x-auto no-scrollbar">
           {tabs.map((tab) => (
             <button
               key={tab.label}

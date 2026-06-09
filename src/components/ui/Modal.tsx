@@ -53,7 +53,7 @@ export const Modal = ({
       {/* Modal Dialog */}
       <div
         className={cn(
-          'relative z-[10000] w-full bg-white rounded-3xl shadow-2xl transform transition-all animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]',
+          'relative z-[10000] w-full bg-white rounded-xl shadow-2xl transform transition-all animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]',
           maxWidth,
         )}
       >

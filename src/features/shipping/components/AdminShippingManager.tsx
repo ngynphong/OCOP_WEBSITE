@@ -55,7 +55,7 @@ const AdminShippingManager = () => {
         <Button
           onClick={() => setActiveId('new')}
           variant="outline"
-          className="w-full rounded-2xl border-dashed border-slate-300 hover:border-emerald-500 hover:bg-emerald-50 py-6 mb-2 flex items-center justify-center gap-2 group"
+          className="w-full rounded-xl border-dashed border-slate-300 hover:border-emerald-500 hover:bg-emerald-50 py-6 mb-2 flex items-center justify-center gap-2 group"
         >
           <FiPlus className="text-slate-400 group-hover:text-emerald-600" />
           <span className="text-slate-500 group-hover:text-emerald-700 font-bold uppercase tracking-widest text-[10px]">
@@ -69,7 +69,7 @@ const AdminShippingManager = () => {
             key={provider.id}
             onClick={() => setActiveId(provider.id)}
             className={cn(
-              'p-4 rounded-2xl border transition-all cursor-pointer relative group',
+              'p-4 rounded-xl border transition-all cursor-pointer relative group',
               selectedProvider?.id === provider.id
                 ? 'border-emerald-600 bg-emerald-50/30 shadow-sm ring-1 ring-emerald-600'
                 : 'border-slate-100 bg-white hover:border-slate-300 hover:shadow-sm',
@@ -128,7 +128,7 @@ const AdminShippingManager = () => {
       </div>
 
       {/* Right side: Configuration Form */}
-      <div className="flex-1 bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden flex flex-col">
+      <div className="flex-1 bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden flex flex-col">
         <AnimatePresence mode="wait">
           {selectedProvider ? (
             <motion.div
@@ -141,7 +141,7 @@ const AdminShippingManager = () => {
               {/* Header */}
               <div className="p-6 border-b border-slate-50 flex items-center justify-between bg-slate-50/30">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 relative rounded-2xl border border-white bg-white shadow-sm p-3 flex items-center justify-center">
+                  <div className="w-14 h-14 relative rounded-xl border border-white bg-white shadow-sm p-3 flex items-center justify-center">
                     {selectedProvider.logoUrl && selectedProvider.logoUrl.trim() !== '' ? (
                       <Image
                         src={selectedProvider.logoUrl}
@@ -274,7 +274,7 @@ const ShippingConfigForm = ({ provider }: { provider: IAdminShippingProvider }) 
             value={formData.name || ''}
             onChange={(e) => handleFieldChange('name', e.target.value)}
             placeholder="Ví dụ: Giao Hàng Nhanh"
-            className="w-full px-5 py-3 rounded-2xl border border-slate-100 bg-stone-50/30 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-bold text-sm text-slate-700"
+            className="w-full px-5 py-3 rounded-xl border border-slate-100 bg-stone-50/30 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-bold text-sm text-slate-700"
           />
         </div>
         <div className="space-y-2">
@@ -284,7 +284,7 @@ const ShippingConfigForm = ({ provider }: { provider: IAdminShippingProvider }) 
             value={formData.code || ''}
             onChange={(e) => handleFieldChange('code', e.target.value)}
             placeholder="Ví dụ: GHN"
-            className="w-full px-5 py-3 rounded-2xl border border-slate-100 bg-stone-50/30 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-bold text-sm text-slate-700"
+            className="w-full px-5 py-3 rounded-xl border border-slate-100 bg-stone-50/30 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-bold text-sm text-slate-700"
           />
         </div>
       </div>
@@ -296,7 +296,7 @@ const ShippingConfigForm = ({ provider }: { provider: IAdminShippingProvider }) 
         <select
           value={formData.environment}
           onChange={(e) => handleFieldChange('environment', e.target.value)}
-          className="w-full px-5 py-3 rounded-2xl border border-slate-100 bg-stone-50/30 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-bold text-sm text-slate-700 appearance-none"
+          className="w-full px-5 py-3 rounded-xl border border-slate-100 bg-stone-50/30 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-bold text-sm text-slate-700 appearance-none"
         >
           <option value="SANDBOX">SANDBOX</option>
           <option value="PRODUCTION">PRODUCTION</option>
@@ -312,7 +312,7 @@ const ShippingConfigForm = ({ provider }: { provider: IAdminShippingProvider }) 
           value={formData.apiKey || ''}
           onChange={(e) => handleFieldChange('apiKey', e.target.value)}
           placeholder="Nhập API Key cung cấp bởi đơn vị vận chuyển"
-          className="w-full px-5 py-3 rounded-2xl border border-slate-100 bg-stone-50/30 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-bold text-sm text-slate-700"
+          className="w-full px-5 py-3 rounded-xl border border-slate-100 bg-stone-50/30 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-bold text-sm text-slate-700"
         />
       </div>
 
@@ -324,7 +324,7 @@ const ShippingConfigForm = ({ provider }: { provider: IAdminShippingProvider }) 
           type="number"
           value={formData.shopId || 0}
           onChange={(e) => handleFieldChange('shopId', parseInt(e.target.value))}
-          className="w-full px-5 py-3 rounded-2xl border border-slate-100 bg-stone-50/30 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-bold text-sm text-slate-700"
+          className="w-full px-5 py-3 rounded-xl border border-slate-100 bg-stone-50/30 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-bold text-sm text-slate-700"
         />
       </div>
 
@@ -337,7 +337,7 @@ const ShippingConfigForm = ({ provider }: { provider: IAdminShippingProvider }) 
           value={formData.logoUrl || ''}
           onChange={(e) => handleFieldChange('logoUrl', e.target.value)}
           placeholder="https://example.com/logo.png"
-          className="w-full px-5 py-3 rounded-2xl border border-slate-100 bg-stone-50/30 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-bold text-sm text-slate-700"
+          className="w-full px-5 py-3 rounded-xl border border-slate-100 bg-stone-50/30 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-bold text-sm text-slate-700"
         />
       </div>
 
@@ -370,7 +370,7 @@ const ShippingConfigForm = ({ provider }: { provider: IAdminShippingProvider }) 
               setIsChanged(isNew);
             }}
             disabled={(!isChanged && !isNew) || isPending}
-            className="rounded-2xl px-6 h-12"
+            className="rounded-xl px-6 h-12"
           >
             {isNew ? 'Xóa trắng' : 'Hủy thay đổi'}
           </Button>
@@ -378,7 +378,7 @@ const ShippingConfigForm = ({ provider }: { provider: IAdminShippingProvider }) 
             isLoading={isPending}
             onClick={handleSave}
             disabled={!isChanged}
-            className="rounded-2xl px-8 h-12 flex items-center gap-2 shadow-sm shadow-emerald-500/20"
+            className="rounded-xl px-8 h-12 flex items-center gap-2 shadow-sm shadow-emerald-500/20"
           >
             <FiSave /> {isNew ? 'Tạo mới' : 'Lưu cấu hình'}
           </Button>

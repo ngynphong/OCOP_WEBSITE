@@ -124,7 +124,7 @@ export default function SellerShopPage() {
         <div className="flex flex-col gap-3 w-full">
           <Link
             href="/dashboard/cua-hang/dang-ky"
-            className="flex items-center justify-center gap-2 px-8 py-3.5 bg-green-600 text-white rounded-2xl font-bold hover:bg-green-700 shadow-xl shadow-green-500/25 transition-all hover:-translate-y-0.5"
+            className="flex items-center justify-center gap-2 px-8 py-3.5 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 shadow-xl shadow-green-500/25 transition-all hover:-translate-y-0.5"
           >
             {hasDraft ? (
               <>
@@ -148,7 +148,7 @@ export default function SellerShopPage() {
           ].map((item) => (
             <div
               key={item.label}
-              className="flex flex-col items-center gap-2 p-4 bg-stone-50 rounded-2xl"
+              className="flex flex-col items-center gap-2 p-4 bg-stone-50 rounded-xl"
             >
               <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
                 <item.icon size={18} className="text-green-600" />
@@ -172,7 +172,7 @@ export default function SellerShopPage() {
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative rounded-2xl overflow-hidden border border-stone-100 shadow-sm bg-white"
+        className="relative rounded-xl overflow-hidden border border-stone-100 shadow-sm bg-white"
       >
         {/* Banner */}
         <div className="relative h-36 bg-linear-to-r from-green-600 to-emerald-500 overflow-hidden group">
@@ -201,7 +201,7 @@ export default function SellerShopPage() {
         </div>
 
         {/* Logo */}
-        <div className="absolute left-6 top-20 w-20 h-20 rounded-2xl border-4 border-white shadow-xl bg-white overflow-hidden group">
+        <div className="absolute left-6 top-20 w-20 h-20 rounded-xl border-4 border-white shadow-xl bg-white overflow-hidden group">
           {shop.logoUrl ? (
             <Image src={shop.logoUrl} fill alt="Logo" className="w-full h-full object-cover" />
           ) : (
@@ -209,7 +209,7 @@ export default function SellerShopPage() {
               <FiImage size={24} className="text-green-300" />
             </div>
           )}
-          <label className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer rounded-2xl">
+          <label className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer rounded-xl">
             {isUploadingLogo ? (
               <FiLoader size={16} className="animate-spin text-white" />
             ) : (
@@ -290,7 +290,7 @@ export default function SellerShopPage() {
           <button
             onClick={() => resubmitShop()}
             disabled={isResubmittingShop || missingRequiredDocuments}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-rose-600 text-white rounded-2xl text-xs font-black shadow-lg shadow-rose-900/20 hover:bg-rose-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-rose-600 text-white rounded-xl text-xs font-black shadow-lg shadow-rose-900/20 hover:bg-rose-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
           >
             {isResubmittingShop ? (
               <>
@@ -307,7 +307,7 @@ export default function SellerShopPage() {
 
       {/* Status Notice (General) */}
       {shop.status === 'PENDING' && (
-        <div className="flex gap-3 p-4 bg-amber-50 border border-amber-200 rounded-2xl">
+        <div className="flex gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl">
           <FiAlertCircle size={18} className="text-amber-600 mt-0.5 shrink-0" />
           <div>
             <p className="text-sm font-bold text-amber-800">Shop đang chờ xét duyệt</p>
@@ -320,7 +320,7 @@ export default function SellerShopPage() {
 
       {/* Missing Documents Warning */}
       {missingRequiredDocuments && (
-        <div className="flex gap-3 p-5 bg-rose-50 border border-rose-100 rounded-[24px] shadow-sm">
+        <div className="flex gap-3 p-5 bg-rose-50 border border-rose-100 rounded-xl shadow-sm">
           <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center shrink-0">
             <FiAlertCircle size={20} className="text-rose-500" />
           </div>
@@ -351,14 +351,14 @@ export default function SellerShopPage() {
             animate={{ opacity: 1, height: 'auto', overflow: 'visible' }}
             exit={{ opacity: 0, height: 0, overflow: 'hidden' }}
             transition={{ duration: 0.3 }}
-            className="bg-white rounded-2xl border border-stone-100 shadow-sm p-6"
+            className="bg-white rounded-xl border border-stone-100 shadow-sm p-6"
           >
             <ShopEditForm shop={shop} onCancel={() => setIsEditing(false)} />
           </motion.div>
         )}
       </AnimatePresence>
 
-      <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-5">
+      <div className="bg-white rounded-xl border border-stone-100 shadow-sm p-5">
         <h3 className="text-sm font-bold text-stone-700 mb-3 flex items-center gap-2">
           <FiTag size={15} className="text-green-600" /> Mô tả
         </h3>
@@ -368,7 +368,7 @@ export default function SellerShopPage() {
       {/* Shop Detail Info */}
       {!isEditing && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-5">
+          <div className="bg-white rounded-xl border border-stone-100 shadow-sm p-5">
             <h3 className="text-sm font-bold text-stone-700 mb-3 flex items-center gap-2">
               <FiTag size={15} className="text-green-600" /> Thông tin shop
             </h3>
@@ -378,7 +378,7 @@ export default function SellerShopPage() {
             <InfoRow label="Quận/Huyện" value={shop.districtName} />
             <InfoRow label="Tỉnh/TP" value={shop.provinceName} />
           </div>
-          <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-5">
+          <div className="bg-white rounded-xl border border-stone-100 shadow-sm p-5">
             <h3 className="text-sm font-bold text-stone-700 mb-3 flex items-center gap-2">
               <FiShoppingBag size={15} className="text-green-600" /> Hoạt động
             </h3>
@@ -405,7 +405,7 @@ export default function SellerShopPage() {
       )}
       {/* Current Subscription Card */}
       {!isEditing && currentSub && (
-        <div className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden">
           <div className="p-5 border-b border-stone-50 bg-stone-50/50 flex justify-between items-center">
             <h3 className="text-sm font-bold text-stone-700 flex items-center gap-2">
               <FiAward size={16} className="text-amber-500" /> Gói dịch vụ hiện tại

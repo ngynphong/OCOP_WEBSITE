@@ -1,5 +1,7 @@
 import { axiosClient, publicAxiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
+import { buildRoute } from '@/lib/routeBuilder';
+
 import {
   IPaymentGateway,
   IPaymentGatewayAdmin,
@@ -13,16 +15,16 @@ export const paymentApi = {
     axiosClient.get(API_ENDPOINTS.ADMIN.PAYMENT_GATEWAYS),
 
   getAdminGatewayById: (id: string): Promise<ApiResponse<IPaymentGatewayAdmin>> =>
-    axiosClient.get(`${API_ENDPOINTS.ADMIN.PAYMENT_GATEWAYS}/${id}`),
+    axiosClient.get(buildRoute(API_ENDPOINTS.ADMIN.PAYMENT_GATEWAYS, id)),
 
   toggleGateway: (id: string): Promise<ApiResponse<IPaymentGatewayAdmin>> =>
-    axiosClient.patch(`${API_ENDPOINTS.ADMIN.PAYMENT_GATEWAYS}/${id}/toggle`),
+    axiosClient.patch(buildRoute(API_ENDPOINTS.ADMIN.PAYMENT_GATEWAYS, id, 'toggle')),
 
   updateGatewayConfig: (
     id: string,
     data: IUpdatePaymentGatewayConfig,
   ): Promise<ApiResponse<IPaymentGatewayAdmin>> =>
-    axiosClient.patch(`${API_ENDPOINTS.ADMIN.PAYMENT_GATEWAYS}/${id}/config`, data),
+    axiosClient.patch(buildRoute(API_ENDPOINTS.ADMIN.PAYMENT_GATEWAYS, id, 'config'), data),
 
   // User APIs
   getUserGateways: (): Promise<ApiResponse<IPaymentGateway[]>> =>
@@ -33,5 +35,5 @@ export const paymentApi = {
     params: Record<string, string | string[] | undefined>,
     body: Record<string, unknown> = {},
   ): Promise<ApiResponse<unknown>> =>
-    publicAxiosClient.post(`${API_ENDPOINTS.WEBHOOKS.PAYMENT}/${gateway}`, body, { params }),
+    publicAxiosClient.post(buildRoute(API_ENDPOINTS.WEBHOOKS.PAYMENT, gateway), body, { params }),
 };

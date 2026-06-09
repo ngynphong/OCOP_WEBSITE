@@ -110,7 +110,7 @@ export const AdminTicketDetailModal = ({
           <div className="lg:col-span-8 flex flex-col min-h-0">
             <div className="flex-1 overflow-y-auto px-4 space-y-6 scroll-smooth">
               {/* User Original Request */}
-              <div className="bg-stone-50 rounded-3xl p-6 border border-stone-100 shadow-sm">
+              <div className="bg-stone-50 rounded-xl p-6 border border-stone-100 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-full bg-emerald-800 flex items-center justify-center text-white">
@@ -148,7 +148,7 @@ export const AdminTicketDetailModal = ({
                   >
                     <div
                       className={cn(
-                        'max-w-[90%] p-5 rounded-2xl shadow-xs',
+                        'max-w-[90%] p-5 rounded-xl shadow-xs',
                         isAdmin
                           ? 'bg-stone-900 text-white rounded-tr-none'
                           : 'bg-white border border-stone-100 text-stone-800 rounded-tl-none',
@@ -188,13 +188,13 @@ export const AdminTicketDetailModal = ({
                     value={replyContent}
                     onChange={(e) => setReplyContent(e.target.value)}
                     placeholder="Nhập nội dung phản hồi cho khách hàng..."
-                    className="w-full h-24 px-5 py-4 bg-stone-50 border border-stone-100 rounded-3xl text-sm font-medium focus:bg-white focus:border-emerald-500 outline-none transition-all resize-none shadow-sm"
+                    className="w-full h-24 px-5 py-4 bg-stone-50 border border-stone-100 rounded-xl text-sm font-medium focus:bg-white focus:border-emerald-500 outline-none transition-all resize-none shadow-sm"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={isReplying || !replyContent.trim()}
-                  className="w-16 h-24 bg-emerald-800 hover:bg-emerald-900 text-white rounded-3xl shadow-xl shadow-emerald-900/20 flex items-center justify-center cursor-pointer disabled:opacity-30 transition-all active:scale-95"
+                  className="w-16 h-24 bg-emerald-800 hover:bg-emerald-900 text-white rounded-xl shadow-xl shadow-emerald-900/20 flex items-center justify-center cursor-pointer disabled:opacity-30 transition-all active:scale-95"
                 >
                   {isReplying ? <Loader2 className="animate-spin" /> : <Send size={24} />}
                 </button>
@@ -203,7 +203,7 @@ export const AdminTicketDetailModal = ({
           </div>
 
           {/* Right Panel: Operations (4 cols) */}
-          <div className="lg:col-span-4 bg-stone-50/50 rounded-3xl p-6 border border-stone-100 flex flex-col gap-8">
+          <div className="lg:col-span-4 bg-stone-50/50 rounded-xl p-6 border border-stone-100 flex flex-col gap-8">
             {/* General Info */}
             <div className="space-y-4">
               <h4 className="text-[10px] font-black text-stone-400 uppercase tracking-widest flex items-center gap-2">
@@ -211,7 +211,7 @@ export const AdminTicketDetailModal = ({
               </h4>
 
               <div className="space-y-3">
-                <div className="bg-white p-4 rounded-2xl border border-stone-100 shadow-xs">
+                <div className="bg-white p-4 rounded-xl border border-stone-100 shadow-xs">
                   <p className="text-[10px] font-black text-stone-300 uppercase tracking-tight mb-1">
                     Xử lý bởi
                   </p>
@@ -239,7 +239,7 @@ export const AdminTicketDetailModal = ({
                   )}
                 </div>
 
-                <div className="bg-white p-4 rounded-2xl border border-stone-100 shadow-xs">
+                <div className="bg-white p-4 rounded-xl border border-stone-100 shadow-xs">
                   <p className="text-[10px] font-black text-stone-300 uppercase tracking-tight mb-2">
                     Trạng thái hệ thống
                   </p>
@@ -272,7 +272,7 @@ export const AdminTicketDetailModal = ({
               <h4 className="text-[10px] font-black text-stone-400 uppercase tracking-widest flex items-center gap-2">
                 <AlertCircle size={14} /> Thông tin khách hàng
               </h4>
-              <div className="bg-white rounded-2xl p-4 border border-stone-100 space-y-3">
+              <div className="bg-white rounded-xl p-4 border border-stone-100 space-y-3">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-stone-100 flex items-center justify-center text-stone-400">
                     <Mail size={18} />

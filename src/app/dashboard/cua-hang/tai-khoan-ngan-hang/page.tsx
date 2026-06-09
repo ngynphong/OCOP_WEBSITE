@@ -90,7 +90,7 @@ export default function BankAccountPage() {
 
   if (isError && !isNotFound) {
     return (
-      <div className="p-4 bg-rose-50 text-rose-600 rounded-2xl flex items-center gap-2">
+      <div className="p-4 bg-rose-50 text-rose-600 rounded-xl flex items-center gap-2">
         <FiAlertCircle /> Có lỗi xảy ra khi tải thông tin tài khoản ngân hàng.
       </div>
     );
@@ -115,7 +115,7 @@ export default function BankAccountPage() {
       </div>
 
       {!hasBankAccount && !isEditing ? (
-        <div className="flex flex-col items-center justify-center p-12 bg-amber-50/50 border border-amber-100 rounded-3xl text-center">
+        <div className="flex flex-col items-center justify-center p-12 bg-amber-50/50 border border-amber-100 rounded-xl text-center">
           <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-4">
             <FiAlertCircle size={32} className="text-amber-500" />
           </div>
@@ -132,7 +132,7 @@ export default function BankAccountPage() {
           </button>
         </div>
       ) : (
-        <div className="bg-white rounded-3xl border border-stone-200 shadow-xs overflow-hidden">
+        <div className="bg-white rounded-xl border border-stone-200 shadow-xs overflow-hidden">
           {!isEditing ? (
             <div className="p-6 sm:p-8">
               <div className="flex justify-between items-start mb-6">
@@ -153,7 +153,7 @@ export default function BankAccountPage() {
                 </button>
               </div>
 
-              <div className="bg-stone-50 rounded-2xl p-6 border border-stone-100">
+              <div className="bg-stone-50 rounded-xl p-6 border border-stone-100">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-8">
                   <div>
                     <span className="block text-xs text-stone-500 mb-1">Ngân hàng</span>

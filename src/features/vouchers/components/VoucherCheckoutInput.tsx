@@ -86,7 +86,7 @@ export const VoucherCheckoutInput = ({
       </div>
 
       {appliedVoucher ? (
-        <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-2xl px-4 py-3 group animate-in fade-in slide-in-from-top-1">
+        <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 group animate-in fade-in slide-in-from-top-1">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center">
               <CheckCircle2 className="w-4 h-4 text-emerald-600" />
@@ -109,7 +109,7 @@ export const VoucherCheckoutInput = ({
         <div className="space-y-2">
           <div className="relative group">
             <div
-              className={`flex items-center gap-3 bg-stone-50 border rounded-2xl px-4 py-3.5 transition-all duration-300 ${
+              className={`flex items-center gap-3 bg-stone-50 border rounded-xl px-4 py-3.5 transition-all duration-300 ${
                 error
                   ? 'border-red-200 bg-red-50/30 ring-4 ring-red-500/5'
                   : 'border-stone-200 focus-within:border-green-500 focus-within:ring-4 focus-within:ring-green-500/5'

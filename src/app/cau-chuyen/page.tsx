@@ -70,7 +70,7 @@ export default function StoryLandingPage() {
 
         {/* Product Selection Grid */}
         <section className="max-w-7xl mx-auto px-6 lg:px-8 mt-20 relative z-20">
-          <div className="bg-white rounded-[40px] shadow-2xl p-8 md:p-12">
+          <div className="bg-white rounded-xl shadow-2xl p-8 md:p-12">
             <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-6">
               <div>
                 <h2 className="text-3xl font-black text-[#113B28] mb-2">
@@ -101,7 +101,7 @@ export default function StoryLandingPage() {
                   >
                     <Link
                       href={`/cau-chuyen/${product.slug}`}
-                      className="group block bg-stone-50 rounded-3xl overflow-hidden hover:shadow-2xl transition-all duration-500 border border-stone-100"
+                      className="group block bg-stone-50 rounded-xl overflow-hidden hover:shadow-2xl transition-all duration-500 border border-stone-100"
                     >
                       <div className="relative aspect-square overflow-hidden">
                         <Image

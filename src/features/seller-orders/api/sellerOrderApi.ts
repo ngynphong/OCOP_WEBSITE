@@ -1,5 +1,7 @@
 import { axiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
+import { buildRoute } from '@/lib/routeBuilder';
+
 import {
   IConfirmOrderReq,
   IRejectOrderReq,
@@ -22,20 +24,20 @@ export const sellerOrderApi = {
 
   getOrderByCode: async (orderCode: string) => {
     return axiosClient.get<unknown, { data: ISellerOrderDetailsRes }>(
-      `${API_ENDPOINTS.SELLER.ORDERS}/${orderCode}`,
+      buildRoute(API_ENDPOINTS.SELLER.ORDERS, orderCode),
     );
   },
 
   confirmOrder: async (orderCode: string, data: IConfirmOrderReq) => {
     return axiosClient.post<unknown, { data: unknown }>(
-      `${API_ENDPOINTS.SELLER.ORDERS}/${orderCode}/confirm`,
+      buildRoute(API_ENDPOINTS.SELLER.ORDERS, orderCode, 'confirm'),
       data,
     );
   },
 
   rejectOrder: async (orderCode: string, data: IRejectOrderReq) => {
     return axiosClient.post<unknown, { data: unknown }>(
-      `${API_ENDPOINTS.SELLER.ORDERS}/${orderCode}/reject`,
+      buildRoute(API_ENDPOINTS.SELLER.ORDERS, orderCode, 'reject'),
       data,
     );
   },
@@ -63,14 +65,14 @@ export const sellerOrderApi = {
     data: { status: 'SHIPPING' | 'DELIVERED'; note?: string; trackingNumber?: string },
   ) => {
     return axiosClient.patch<unknown, { data: unknown }>(
-      `${API_ENDPOINTS.SELLER.ORDERS}/${orderCode}/shipping-status`,
+      buildRoute(API_ENDPOINTS.SELLER.ORDERS, orderCode, 'shipping-status'),
       data,
     );
   },
 
   getB2BOrderByCode: async (orderCode: string) => {
     return axiosClient.get<unknown, { data: ISellerOrderDetailsRes }>(
-      `${API_ENDPOINTS.SELLER.ORDERS_B2B}/${orderCode}`,
+      buildRoute(API_ENDPOINTS.SELLER.ORDERS_B2B, orderCode),
     );
   },
 
@@ -79,7 +81,7 @@ export const sellerOrderApi = {
     data: { type: 'DEPOSIT' | 'FINAL'; note?: string },
   ) => {
     return axiosClient.patch<unknown, { data: unknown }>(
-      `${API_ENDPOINTS.SELLER.ORDERS_B2B}/${orderCode}/confirm-payment`,
+      buildRoute(API_ENDPOINTS.SELLER.ORDERS_B2B, orderCode, 'confirm-payment'),
       data,
     );
   },
@@ -89,7 +91,7 @@ export const sellerOrderApi = {
     data: { status: 'PROCESSING' | 'SHIPPING' | 'COMPLETED' | 'CANCELLED'; reason?: string },
   ) => {
     return axiosClient.patch<unknown, { data: unknown }>(
-      `${API_ENDPOINTS.SELLER.ORDERS_B2B}/${orderCode}/status`,
+      buildRoute(API_ENDPOINTS.SELLER.ORDERS_B2B, orderCode, 'status'),
       data,
     );
   },
@@ -110,7 +112,7 @@ export const sellerOrderApi = {
     },
   ) => {
     return axiosClient.post<unknown, { data: unknown }>(
-      `${API_ENDPOINTS.SELLER.ORDERS_B2B}/${id}/shipping-info`,
+      buildRoute(API_ENDPOINTS.SELLER.ORDERS_B2B, id, 'shipping-info'),
       data,
     );
   },
@@ -126,7 +128,7 @@ export const sellerOrderApi = {
     data: { status: 'APPROVED' | 'REJECTED'; actionNote?: string },
   ) => {
     return axiosClient.patch<unknown, { data: unknown }>(
-      `${API_ENDPOINTS.SELLER.ORDERS_B2B_REFUNDS}/${refundId}/status`,
+      buildRoute(API_ENDPOINTS.SELLER.ORDERS_B2B_REFUNDS, refundId, 'status'),
       data,
     );
   },

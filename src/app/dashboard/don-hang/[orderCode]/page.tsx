@@ -211,7 +211,7 @@ function OrderDetailsContent({ params }: PageProps) {
         <div className="flex items-center gap-4">
           <Link
             href="/dashboard/don-hang"
-            className="w-10 h-10 rounded-2xl bg-stone-50 border border-stone-100 flex items-center justify-center text-stone-500 hover:text-stone-900 hover:bg-stone-100 hover:scale-105 active:scale-95 transition-all shadow-sm"
+            className="w-10 h-10 rounded-xl bg-stone-50 border border-stone-100 flex items-center justify-center text-stone-500 hover:text-stone-900 hover:bg-stone-100 hover:scale-105 active:scale-95 transition-all shadow-sm"
           >
             <ChevronLeft size={20} />
           </Link>
@@ -248,7 +248,7 @@ function OrderDetailsContent({ params }: PageProps) {
             </div>
             <div className="flex items-center justify-between pb-6 border-b border-stone-100 relative z-10">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-stone-50 rounded-2xl flex items-center justify-center border border-stone-100 shadow-inner">
+                <div className="w-14 h-14 bg-stone-50 rounded-xl flex items-center justify-center border border-stone-100 shadow-inner">
                   <Store size={28} className="text-stone-600" />
                 </div>
                 <div>
@@ -279,7 +279,7 @@ function OrderDetailsContent({ params }: PageProps) {
             <div className="pt-6 space-y-6 relative z-10">
               {orderItems.map((item: IOrderDetailsItem, idx: number) => (
                 <div key={idx} className="flex gap-5 group/item">
-                  <div className="relative w-24 h-24 rounded-2xl overflow-hidden bg-stone-50 border border-stone-100 shrink-0 shadow-sm">
+                  <div className="relative w-24 h-24 rounded-xl overflow-hidden bg-stone-50 border border-stone-100 shrink-0 shadow-sm">
                     {item.productImage ? (
                       <Image
                         src={item.productImage}
@@ -339,7 +339,7 @@ function OrderDetailsContent({ params }: PageProps) {
                   <Button
                     onClick={() => setShowB2BCancelModal(true)}
                     variant="outline"
-                    className="px-6 py-3 border-2 border-red-200 text-red-600 rounded-2xl hover:bg-red-50 text-xs font-black uppercase tracking-widest transition-all shadow-sm"
+                    className="px-6 py-3 border-2 border-red-200 text-red-600 rounded-xl hover:bg-red-50 text-xs font-black uppercase tracking-widest transition-all shadow-sm"
                   >
                     Hủy đơn hàng sỉ
                   </Button>
@@ -348,7 +348,7 @@ function OrderDetailsContent({ params }: PageProps) {
                   <Button
                     onClick={() => confirmB2BReceivedMut(order.id.toString())}
                     isLoading={isConfirmingB2B}
-                    className="px-6 py-3 bg-green-600 text-white rounded-2xl hover:bg-green-700 text-xs font-black uppercase tracking-widest transition-all shadow-sm"
+                    className="px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 text-xs font-black uppercase tracking-widest transition-all shadow-sm"
                   >
                     Xác nhận đã nhận hàng
                   </Button>
@@ -359,7 +359,7 @@ function OrderDetailsContent({ params }: PageProps) {
                       setShowB2BRefundModal(true);
                     }}
                     variant="outline"
-                    className="px-6 py-3 border-2 border-amber-200 text-amber-600 rounded-2xl hover:bg-amber-50 text-xs font-black uppercase tracking-widest transition-all shadow-sm"
+                    className="px-6 py-3 border-2 border-amber-200 text-amber-600 rounded-xl hover:bg-amber-50 text-xs font-black uppercase tracking-widest transition-all shadow-sm"
                   >
                     Khiếu nại / Hoàn tiền
                   </Button>
@@ -367,7 +367,7 @@ function OrderDetailsContent({ params }: PageProps) {
                 {order.status === 'COMPLETED' && (
                   <Button
                     onClick={() => setShowB2BReviewModal(true)}
-                    className="px-6 py-3 bg-green-600 text-white rounded-2xl hover:bg-green-700 text-xs font-black uppercase tracking-widest transition-all shadow-sm"
+                    className="px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 text-xs font-black uppercase tracking-widest transition-all shadow-sm"
                   >
                     Đánh giá đơn sỉ
                   </Button>
@@ -422,7 +422,7 @@ function OrderDetailsContent({ params }: PageProps) {
                   <Button
                     onClick={() => setShowB2BCancelModal(true)}
                     variant="outline"
-                    className="w-full py-3 border-2 border-red-200 text-red-600 rounded-2xl hover:bg-red-50 text-xs font-black uppercase tracking-widest transition-all shadow-sm"
+                    className="w-full py-3 border-2 border-red-200 text-red-600 rounded-xl hover:bg-red-50 text-xs font-black uppercase tracking-widest transition-all shadow-sm"
                   >
                     Hủy đơn hàng sỉ
                   </Button>
@@ -431,7 +431,7 @@ function OrderDetailsContent({ params }: PageProps) {
                   <Button
                     onClick={() => confirmB2BReceivedMut(order.id.toString())}
                     isLoading={isConfirmingB2B}
-                    className="w-full py-3 bg-green-600 text-white rounded-2xl hover:bg-green-700 text-xs font-black uppercase tracking-widest transition-all shadow-sm"
+                    className="w-full py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 text-xs font-black uppercase tracking-widest transition-all shadow-sm"
                   >
                     Xác nhận đã nhận hàng
                   </Button>
@@ -442,7 +442,7 @@ function OrderDetailsContent({ params }: PageProps) {
                       setShowB2BRefundModal(true);
                     }}
                     variant="outline"
-                    className="w-full py-3 border-2 border-amber-200 text-amber-600 rounded-2xl hover:bg-amber-50 text-xs font-black uppercase tracking-widest transition-all shadow-sm"
+                    className="w-full py-3 border-2 border-amber-200 text-amber-600 rounded-xl hover:bg-amber-50 text-xs font-black uppercase tracking-widest transition-all shadow-sm"
                   >
                     Khiếu nại / Hoàn tiền
                   </Button>
@@ -450,7 +450,7 @@ function OrderDetailsContent({ params }: PageProps) {
                 {order.status === 'COMPLETED' && (
                   <Button
                     onClick={() => setShowB2BReviewModal(true)}
-                    className="w-full py-3 bg-green-600 text-white rounded-2xl hover:bg-green-700 text-xs font-black uppercase tracking-widest transition-all shadow-sm"
+                    className="w-full py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 text-xs font-black uppercase tracking-widest transition-all shadow-sm"
                   >
                     Đánh giá đơn sỉ
                   </Button>

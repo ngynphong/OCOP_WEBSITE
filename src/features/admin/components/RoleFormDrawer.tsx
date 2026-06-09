@@ -174,7 +174,7 @@ const RoleFormDrawer = ({ isOpen, onClose, role }: RoleFormDrawerProps) => {
                           disabled={!!role}
                           placeholder="Ví dụ: QUẢN_LÝ_KHO"
                           className={cn(
-                            'w-full pl-11 pr-4 py-3 bg-stone-50 border rounded-2xl text-sm font-bold text-stone-800 transition-all outline-none',
+                            'w-full pl-11 pr-4 py-3 bg-stone-50 border rounded-xl text-sm font-bold text-stone-800 transition-all outline-none',
                             errors.name
                               ? 'border-red-300 ring-4 ring-red-50'
                               : 'border-stone-100 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500',
@@ -199,7 +199,7 @@ const RoleFormDrawer = ({ isOpen, onClose, role }: RoleFormDrawerProps) => {
                           rows={3}
                           placeholder="Mô tả tóm tắt về vai trò này..."
                           className={cn(
-                            'w-full pl-11 pr-4 py-3 bg-stone-50 border rounded-2xl text-sm font-bold text-stone-800 transition-all outline-none resize-none',
+                            'w-full pl-11 pr-4 py-3 bg-stone-50 border rounded-xl text-sm font-bold text-stone-800 transition-all outline-none resize-none',
                             errors.description
                               ? 'border-red-300 ring-4 ring-red-50'
                               : 'border-stone-100 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500',
@@ -243,7 +243,7 @@ const RoleFormDrawer = ({ isOpen, onClose, role }: RoleFormDrawerProps) => {
                         <div key={i} className="h-12 bg-stone-50 rounded-xl animate-pulse" />
                       ))
                     ) : filteredPermissions.length === 0 ? (
-                      <div className="p-10 text-center bg-stone-50 rounded-2xl border border-dashed border-stone-200">
+                      <div className="p-10 text-center bg-stone-50 rounded-xl border border-dashed border-stone-200">
                         <p className="text-[10px] font-black text-stone-300 uppercase italic">
                           Không tìm thấy quyền nào
                         </p>
@@ -256,7 +256,7 @@ const RoleFormDrawer = ({ isOpen, onClose, role }: RoleFormDrawerProps) => {
                             key={perm.name}
                             onClick={() => togglePermission(perm.name)}
                             className={cn(
-                              'group flex items-center gap-3 p-3 rounded-2xl border transition-all cursor-pointer select-none',
+                              'group flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer select-none',
                               isSelected
                                 ? 'bg-emerald-50 border-emerald-200 shadow-sm shadow-emerald-900/5'
                                 : 'bg-white border-stone-100 hover:border-emerald-200 hover:bg-stone-50/50',
@@ -298,7 +298,7 @@ const RoleFormDrawer = ({ isOpen, onClose, role }: RoleFormDrawerProps) => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-4 bg-emerald-900 text-white rounded-2xl text-sm font-black shadow-lg shadow-emerald-900/20 flex items-center justify-center gap-2 hover:bg-emerald-800 active:scale-[0.98] transition-all disabled:opacity-50"
+                  className="w-full py-4 bg-emerald-900 text-white rounded-xl text-sm font-black shadow-lg shadow-emerald-900/20 flex items-center justify-center gap-2 hover:bg-emerald-800 active:scale-[0.98] transition-all disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

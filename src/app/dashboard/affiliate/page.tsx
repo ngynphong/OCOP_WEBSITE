@@ -44,9 +44,9 @@ export default function UserAffiliatePage() {
 
   if (!account) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 bg-white rounded-3xl border border-stone-100 shadow-xl">
+      <div className="flex flex-col items-center justify-center p-12 bg-white rounded-xl border border-stone-100 shadow-xl">
         <p className="text-stone-500 font-medium">Bạn chưa đăng ký chương trình Affiliate.</p>
-        <Button variant="primary" className="mt-4 rounded-2xl">
+        <Button variant="primary" className="mt-4 rounded-xl">
           Đăng ký ngay
         </Button>
       </div>
@@ -65,14 +65,14 @@ export default function UserAffiliatePage() {
           <Button
             variant="outline"
             onClick={handleRefresh}
-            className="rounded-2xl w-12 h-12 p-0 flex items-center justify-center border-stone-200"
+            className="rounded-xl w-12 h-12 p-0 flex items-center justify-center border-stone-200"
           >
             <FiRefreshCcw className="text-stone-500" />
           </Button>
           <Button
             variant="primary"
             onClick={() => setIsModalOpen(true)}
-            className="rounded-2xl flex items-center gap-2 px-6 h-12 shadow-lg shadow-emerald-500/25"
+            className="rounded-xl flex items-center gap-2 px-6 h-12 shadow-lg shadow-emerald-500/25"
           >
             <FiPlus />
             Rút tiền ngay
@@ -85,7 +85,7 @@ export default function UserAffiliatePage() {
 
       {/* Main Tabs */}
       <div className="space-y-6">
-        <div className="flex items-center gap-2 p-1.5 bg-stone-100 w-fit rounded-2xl">
+        <div className="flex items-center gap-2 p-1.5 bg-stone-100 w-fit rounded-xl">
           <button
             onClick={() => setActiveTab('commissions')}
             className={cn(
@@ -119,7 +119,7 @@ export default function UserAffiliatePage() {
             <UserWithdrawalList withdrawals={withdrawals} />
 
             {pagination.totalPages > 1 && (
-              <div className="bg-white p-6 rounded-3xl border border-stone-100 shadow-sm">
+              <div className="bg-white p-6 rounded-xl border border-stone-100 shadow-sm">
                 <Pagination
                   currentPage={page}
                   totalPages={pagination.totalPages}

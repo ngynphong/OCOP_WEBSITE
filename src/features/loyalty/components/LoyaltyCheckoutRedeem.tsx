@@ -38,7 +38,7 @@ export const LoyaltyCheckoutRedeem = ({
 
   if (isLoading) {
     return (
-      <div className="flex items-center gap-3 p-4 bg-stone-50 rounded-2xl animate-pulse">
+      <div className="flex items-center gap-3 p-4 bg-stone-50 rounded-xl animate-pulse">
         <Loader2 className="w-5 h-5 animate-spin text-stone-300" />
         <div className="h-4 w-32 bg-stone-200 rounded" />
       </div>
@@ -49,7 +49,7 @@ export const LoyaltyCheckoutRedeem = ({
 
   return (
     <div
-      className={`transition-all duration-300 rounded-2xl p-4 border ${
+      className={`transition-all duration-300 rounded-xl p-4 border ${
         isUsed ? 'bg-green-50 border-green-200 shadow-sm' : 'bg-stone-50 border-stone-100'
       }`}
     >

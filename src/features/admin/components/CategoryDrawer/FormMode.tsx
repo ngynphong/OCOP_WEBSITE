@@ -84,7 +84,7 @@ const FormMode = ({
 
         {/* Global Settings (Only for Create) */}
         {!selectedCategory && (
-          <div className="p-5 bg-white rounded-3xl border border-emerald-100 shadow-sm mb-4">
+          <div className="p-5 bg-white rounded-xl border border-emerald-100 shadow-sm mb-4">
             <label className="block text-[10px] font-black text-emerald-800 uppercase mb-3 ml-1 tracking-wider">
               Cài đặt chung cho lô danh mục
             </label>
@@ -94,7 +94,7 @@ const FormMode = ({
                 {...register('commonParentId', {
                   setValueAs: (v) => (v === null || v === '' ? null : Number(v)),
                 })}
-                className="w-full pl-11 pr-4 py-3 bg-emerald-50/30 border border-emerald-100 rounded-2xl text-sm font-bold text-stone-800 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none appearance-none font-sans"
+                className="w-full pl-11 pr-4 py-3 bg-emerald-50/30 border border-emerald-100 rounded-xl text-sm font-bold text-stone-800 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none appearance-none font-sans"
               >
                 <option value="">-- Không có (Danh mục gốc) --</option>
                 {categoriesList.map((cat) => (
@@ -143,7 +143,7 @@ const FormMode = ({
               });
               setExpandedIndex(fields.length);
             }}
-            className="w-full py-4 border-2 border-dashed border-stone-200 rounded-3xl text-stone-400 hover:border-emerald-500 hover:text-emerald-500 hover:bg-emerald-50/50 transition-all flex items-center justify-center gap-2 font-black text-xs uppercase tracking-widest font-sans"
+            className="w-full py-4 border-2 border-dashed border-stone-200 rounded-xl text-stone-400 hover:border-emerald-500 hover:text-emerald-500 hover:bg-emerald-50/50 transition-all flex items-center justify-center gap-2 font-black text-xs uppercase tracking-widest font-sans"
           >
             <FiPlus size={18} />
             Thêm danh mục khác vào lô
@@ -156,7 +156,7 @@ const FormMode = ({
           type="submit"
           variant="primary"
           disabled={isSubmitting}
-          className="w-full py-4! shadow-xl shadow-emerald-900/20 rounded-2xl! flex items-center justify-center gap-2 font-black uppercase text-xs tracking-widest"
+          className="w-full py-4! shadow-xl shadow-emerald-900/20 rounded-xl! flex items-center justify-center gap-2 font-black uppercase text-xs tracking-widest"
         >
           {isSubmitting ? (
             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

@@ -67,7 +67,7 @@ export function B2BOrderSummary({ order, isB2B, itemCount, children }: B2BOrderS
         {isB2B && (
           <div className="grid grid-cols-2 gap-4 pt-2">
             {order.depositPaid ? (
-              <div className="bg-white/10 rounded-2xl p-4">
+              <div className="bg-white/10 rounded-xl p-4">
                 <span className="text-[10px] text-white/60 font-black uppercase tracking-widest block mb-1">
                   Đã đặt cọc:
                 </span>
@@ -76,7 +76,7 @@ export function B2BOrderSummary({ order, isB2B, itemCount, children }: B2BOrderS
                 </span>
               </div>
             ) : (
-              <div className="bg-white/10 rounded-2xl p-4">
+              <div className="bg-white/10 rounded-xl p-4">
                 <span className="text-[10px] text-white/60 font-black uppercase tracking-widest block mb-1">
                   Cần đặt cọc
                 </span>
@@ -87,7 +87,7 @@ export function B2BOrderSummary({ order, isB2B, itemCount, children }: B2BOrderS
             )}
 
             {order.paymentStatus === 'PAID' || order.status === 'COMPLETED' ? (
-              <div className="bg-white/10 rounded-2xl p-4 border border-green-500/20">
+              <div className="bg-white/10 rounded-xl p-4 border border-green-500/20">
                 <span className="text-[10px] text-white/60 font-black uppercase tracking-widest block mb-1">
                   Đã tất toán:
                 </span>
@@ -96,7 +96,7 @@ export function B2BOrderSummary({ order, isB2B, itemCount, children }: B2BOrderS
                 </span>
               </div>
             ) : (
-              <div className="bg-white/10 rounded-2xl p-4">
+              <div className="bg-white/10 rounded-xl p-4">
                 <span className="text-[10px] text-white/60 font-black uppercase tracking-widest block mb-1">
                   Cần thanh toán thêm
                 </span>
@@ -109,7 +109,7 @@ export function B2BOrderSummary({ order, isB2B, itemCount, children }: B2BOrderS
         )}
 
         <div className="pt-2">
-          <div className="bg-stone-900/40 rounded-2xl p-4 flex items-center justify-between backdrop-blur-sm">
+          <div className="bg-stone-900/40 rounded-xl p-4 flex items-center justify-between backdrop-blur-sm">
             <span className="text-xs text-white/80 font-bold uppercase">
               Phương thức thanh toán
             </span>

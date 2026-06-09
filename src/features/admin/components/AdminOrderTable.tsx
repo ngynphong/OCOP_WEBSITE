@@ -57,7 +57,7 @@ export const AdminOrderTable = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.keyword]);
   return (
-    <div className="bg-white rounded-3xl shadow-sm border border-stone-100 overflow-hidden mt-8">
+    <div className="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden mt-8">
       {/* Filters */}
       <div className="p-6 border-b border-stone-50 flex flex-wrap justify-between items-center gap-4">
         <div className="flex items-center gap-4">

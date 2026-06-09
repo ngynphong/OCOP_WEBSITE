@@ -25,12 +25,12 @@ export function ImagesTab({ productId }: ImagesTabProps) {
     e.target.value = '';
   };
 
-  if (isPending) return <div className="h-48 bg-stone-100 rounded-2xl animate-pulse" />;
+  if (isPending) return <div className="h-48 bg-stone-100 rounded-xl animate-pulse" />;
 
   return (
     <div className="space-y-4">
       {/* Upload button */}
-      <label className="flex items-center justify-center gap-2 w-full py-4 border-2 border-dashed border-stone-200 rounded-2xl cursor-pointer hover:border-emerald-300 transition">
+      <label className="flex items-center justify-center gap-2 w-full py-4 border-2 border-dashed border-stone-200 rounded-xl cursor-pointer hover:border-emerald-300 transition">
         <span className="text-sm font-bold text-stone-400">
           {isUploading ? ' Đang upload...' : '+ Upload ảnh mới'}
         </span>
@@ -45,7 +45,7 @@ export function ImagesTab({ productId }: ImagesTabProps) {
 
       {/* Images grid */}
       {images.length === 0 ? (
-        <div className="flex items-center justify-center h-24 bg-stone-50 rounded-2xl border border-dashed border-stone-200">
+        <div className="flex items-center justify-center h-24 bg-stone-50 rounded-xl border border-dashed border-stone-200">
           <p className="text-stone-400 text-sm">Chưa có ảnh nào</p>
         </div>
       ) : (
@@ -53,7 +53,7 @@ export function ImagesTab({ productId }: ImagesTabProps) {
           {images.map((img) => (
             <div
               key={img.id}
-              className={`relative group rounded-2xl overflow-hidden border-2 transition aspect-square ${
+              className={`relative group rounded-xl overflow-hidden border-2 transition aspect-square ${
                 img.isPrimary ? 'border-emerald-400' : 'border-transparent hover:border-stone-200'
               }`}
             >

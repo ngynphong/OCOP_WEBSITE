@@ -24,6 +24,7 @@ import { NotificationBell } from '@/features/notifications/components/Notificati
 import { SearchBox } from '@/features/products/components/SearchBox';
 import dynamic from 'next/dynamic';
 
+import { cn } from '@/lib/utils';
 const QRScannerModal = dynamic(() => import('@/components/ui/QRScannerModal'), { ssr: false });
 
 export function Header() {
@@ -33,6 +34,7 @@ export function Header() {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isQRModalOpen, setIsQRModalOpen] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const pathname = usePathname();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
@@ -46,7 +48,17 @@ export function Header() {
     const timer = setTimeout(() => {
       setIsHydrated(true);
     }, 0);
-    return () => clearTimeout(timer);
+
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   const handleLogoutClick = () => {
@@ -71,7 +83,14 @@ export function Header() {
           Kết nối tinh hoa nông sản Việt | OCOP chính hãng – Giao hàng toàn quốc
         </div>
       </div>
-      <div className="w-full relative z-[102] bg-green-700 flex flex-col justify-start items-center shadow-md">
+      <div
+        className={cn(
+          'w-full relative z-[102] flex flex-col justify-start items-center transition-all duration-300',
+          isScrolled
+            ? 'bg-emerald-800/85 backdrop-blur-xl border-b border-emerald-700/50 shadow-md'
+            : 'bg-emerald-700',
+        )}
+      >
         <div className="w-full max-w-7xl px-4 lg:px-6 py-3 md:py-4 flex justify-between items-center">
           <div className="flex justify-start items-center gap-4 lg:gap-8 lg:pl-4 relative z-[103]">
             <button

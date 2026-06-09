@@ -32,7 +32,7 @@ export function SellerActionButtons({
   onOpenRejectModal,
 }: SellerActionButtonsProps) {
   return (
-    <div className="bg-green-50 rounded-3xl p-6 border border-green-200 shadow-sm flex flex-col gap-3">
+    <div className="bg-green-50 rounded-xl p-6 border border-green-200 shadow-sm flex flex-col gap-3">
       <h3 className="font-black text-green-900">Thao tác xử lý</h3>
       {isB2B ? (
         <div className="space-y-3">

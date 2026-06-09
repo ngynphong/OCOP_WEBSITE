@@ -49,7 +49,7 @@ export const AdminComplaintTable = ({
   if (complaints.length === 0) {
     return (
       <div className="bg-emerald-50/30 rounded-4xl border border-dashed border-emerald-100 py-20 text-center">
-        <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 border border-stone-100 shadow-sm text-emerald-800">
+        <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center mx-auto mb-4 border border-stone-100 shadow-sm text-emerald-800">
           <MessageCircle size={32} />
         </div>
         <h3 className="text-lg font-bold text-stone-900">Chưa có khiếu nại nào</h3>
@@ -61,7 +61,7 @@ export const AdminComplaintTable = ({
   }
 
   return (
-    <div className="bg-white rounded-3xl border border-stone-100 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>

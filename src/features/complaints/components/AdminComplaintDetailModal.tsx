@@ -154,7 +154,7 @@ export const AdminComplaintDetailModal = ({
           </div>
 
           {/* Content */}
-          <div className="bg-stone-50 rounded-3xl p-6 border border-stone-100 space-y-4">
+          <div className="bg-stone-50 rounded-xl p-6 border border-stone-100 space-y-4">
             <div className="flex items-start gap-3">
               <FileText className="text-stone-400 shrink-0 mt-1" size={20} />
               <div>
@@ -241,7 +241,7 @@ export const AdminComplaintDetailModal = ({
                   value={resolutionNote}
                   onChange={(e) => setResolutionNote(e.target.value)}
                   placeholder="Nhập nội dung phản hồi hoặc phương án xử lý..."
-                  className="w-full h-[88px] px-4 py-3 bg-stone-50 text-gray-700 border border-stone-100 rounded-2xl text-sm font-medium outline-none focus:border-emerald-800 transition-all resize-none"
+                  className="w-full h-[88px] px-4 py-3 bg-stone-50 text-gray-700 border border-stone-100 rounded-xl text-sm font-medium outline-none focus:border-emerald-800 transition-all resize-none"
                 />
               </div>
             </div>
@@ -249,7 +249,7 @@ export const AdminComplaintDetailModal = ({
             <div className="flex gap-3 pt-2">
               <Button
                 variant="outline"
-                className="flex-1 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest"
+                className="flex-1 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest"
                 onClick={onClose}
               >
                 Đóng
@@ -257,7 +257,7 @@ export const AdminComplaintDetailModal = ({
               <Button
                 onClick={handleResolve}
                 disabled={isUpdating || !selectedStatus}
-                className="flex-2 py-4 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white font-black text-[10px] uppercase tracking-widest shadow-xl shadow-emerald-100 flex items-center justify-center gap-2"
+                className="flex-2 py-4 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-black text-[10px] uppercase tracking-widest shadow-xl shadow-emerald-100 flex items-center justify-center gap-2"
               >
                 {isUpdating ? (
                   <Loader2 size={16} className="animate-spin" />

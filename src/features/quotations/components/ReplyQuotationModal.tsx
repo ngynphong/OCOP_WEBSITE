@@ -70,7 +70,7 @@ export function ReplyQuotationModal({ isOpen, onClose, quotation }: ReplyQuotati
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Xử lý báo giá sỉ">
       <div className="space-y-4 mb-6">
-        <div className="p-4 bg-amber-50 rounded-2xl border border-amber-100">
+        <div className="p-4 bg-amber-50 rounded-xl border border-amber-100">
           <div className="flex justify-between items-start mb-2">
             <h4 className="font-bold text-stone-900">{quotation.productName}</h4>
             <span className="text-[10px] font-black bg-white px-2 py-1 rounded-lg border border-amber-200 uppercase tracking-widest">

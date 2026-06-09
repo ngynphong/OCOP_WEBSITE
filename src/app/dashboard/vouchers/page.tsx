@@ -78,7 +78,7 @@ export default function VoucherDashboardPage() {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden bg-linear-to-br from-green-50 to-white p-10 rounded-[40px] border border-green-100/50 shadow-xl shadow-green-900/5"
+        className="relative overflow-hidden bg-linear-to-br from-green-50 to-white p-10 rounded-xl border border-green-100/50 shadow-xl shadow-green-900/5"
       >
         <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-400/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-green-500/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
@@ -114,7 +114,7 @@ export default function VoucherDashboardPage() {
               onClick={handleOpenCreate}
               variant="primary"
               leftIcon={<Plus size={24} />}
-              className="rounded-[24px] px-10 py-8 shadow-2xl shadow-emerald-500/30 text-base h-16"
+              className="rounded-xl px-10 py-8 shadow-2xl shadow-emerald-500/30 text-base h-16"
             >
               Tạo Voucher mới
             </Button>
@@ -136,11 +136,11 @@ export default function VoucherDashboardPage() {
             placeholder={
               isSeller ? 'Tìm kiếm mã hoặc tên voucher...' : 'Tìm kiếm voucher trong ví...'
             }
-            className="w-full bg-white border border-stone-200 rounded-3xl pl-16 pr-6 py-2 outline-none text-stone-800 font-bold placeholder:text-stone-300 focus:border-emerald-500/50 focus:ring-8 focus:ring-emerald-500/5 transition-all shadow-sm shadow-stone-200/50"
+            className="w-full bg-white border border-stone-200 rounded-xl pl-16 pr-6 py-2 outline-none text-stone-800 font-bold placeholder:text-stone-300 focus:border-emerald-500/50 focus:ring-8 focus:ring-emerald-500/5 transition-all shadow-sm shadow-stone-200/50"
           />
         </div>
         <div className="lg:col-span-5 flex items-center gap-4">
-          <div className="flex-1 flex items-center gap-4 bg-white border border-stone-200 rounded-3xl px-6 py-2 shadow-sm shadow-stone-200/50">
+          <div className="flex-1 flex items-center gap-4 bg-white border border-stone-200 rounded-xl px-6 py-2 shadow-sm shadow-stone-200/50">
             <Filter size={20} className="text-stone-400" />
             <select className="flex-1 bg-transparent outline-none text-sm font-black text-stone-800 appearance-none cursor-pointer">
               <option>Tất cả trạng thái</option>
@@ -152,7 +152,7 @@ export default function VoucherDashboardPage() {
           <button
             onClick={() => refetch()}
             disabled={isFetching}
-            className="p-2 bg-white border border-stone-200 rounded-3xl text-stone-500 hover:text-emerald-600 hover:border-emerald-200 transition-all shadow-sm shadow-stone-200/50 active:scale-95 disabled:opacity-50 cursor-pointer"
+            className="p-2 bg-white border border-stone-200 rounded-xl text-stone-500 hover:text-emerald-600 hover:border-emerald-200 transition-all shadow-sm shadow-stone-200/50 active:scale-95 disabled:opacity-50 cursor-pointer"
           >
             <RefreshCw size={22} className={isFetching ? 'animate-spin' : ''} />
           </button>

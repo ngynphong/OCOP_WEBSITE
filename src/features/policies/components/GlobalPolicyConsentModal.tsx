@@ -74,11 +74,11 @@ export const GlobalPolicyConsentModal = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: -30 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="bg-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-2xl flex flex-col max-h-[90vh] border border-stone-100"
+            className="bg-white rounded-xl shadow-2xl overflow-hidden w-full max-w-2xl flex flex-col max-h-[90vh] border border-stone-100"
           >
             {/* Header */}
             <div className="px-6 py-5 border-b border-stone-100 flex items-center gap-4 bg-stone-50/50">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 shadow-inner">
+              <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 shadow-inner">
                 <FiAlertCircle className="text-2xl" />
               </div>
               <div className="flex-1">
@@ -126,14 +126,14 @@ export const GlobalPolicyConsentModal = () => {
               <div className="flex gap-3 w-full sm:w-auto shrink-0">
                 <Button
                   variant="outline"
-                  className="flex-1 sm:flex-none border-stone-200 text-stone-500 hover:bg-stone-100 hover:text-stone-700 h-12 px-6 rounded-2xl"
+                  className="flex-1 sm:flex-none border-stone-200 text-stone-500 hover:bg-stone-100 hover:text-stone-700 h-12 px-6 rounded-xl"
                   onClick={handleDecline}
                   disabled={isConsenting}
                 >
                   <FiX className="mr-2" /> Từ chối
                 </Button>
                 <Button
-                  className="flex-1 sm:flex-none h-12 px-8 rounded-2xl shadow-brand"
+                  className="flex-1 sm:flex-none h-12 px-8 rounded-xl shadow-brand"
                   onClick={handleAccept}
                   isLoading={isConsenting}
                 >

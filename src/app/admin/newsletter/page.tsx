@@ -20,7 +20,7 @@ export default function AdminNewsletterPage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-600/20">
+            <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-600/20">
               <FiMail size={24} />
             </div>
             <h1 className="text-3xl font-black text-stone-900 tracking-tight">Quản lý Bản tin</h1>
@@ -31,7 +31,7 @@ export default function AdminNewsletterPage() {
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex bg-white p-1.5 rounded-2xl shadow-sm border border-stone-100">
+        <div className="flex bg-white p-1.5 rounded-xl shadow-sm border border-stone-100">
           {TABS.map((tab) => (
             <button
               key={tab.id}

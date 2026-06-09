@@ -55,7 +55,7 @@ export function LocationImportSection() {
   };
 
   return (
-    <div className="bg-white p-8 rounded-3xl border border-stone-100 shadow-sm">
+    <div className="bg-white p-8 rounded-xl border border-stone-100 shadow-sm">
       <div className="mb-6">
         <h3 className="text-xl font-black text-stone-900 tracking-tight mb-2">
           Nhập dữ liệu Tỉnh thành
@@ -70,7 +70,7 @@ export function LocationImportSection() {
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
         onDrop={handleDrop}
-        className={`relative border-2 border-dashed rounded-2xl p-10 transition-all flex flex-col items-center justify-center ${
+        className={`relative border-2 border-dashed rounded-xl p-10 transition-all flex flex-col items-center justify-center ${
           dragActive ? 'border-emerald-500 bg-emerald-50' : 'border-stone-200 bg-stone-50/50'
         } ${file ? 'border-emerald-500 bg-emerald-50/30' : ''}`}
       >
@@ -90,7 +90,7 @@ export function LocationImportSection() {
               exit={{ opacity: 0, y: -10 }}
               className="text-center"
             >
-              <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm border border-stone-100">
+              <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center mx-auto mb-4 shadow-sm border border-stone-100">
                 <FiUpload className="text-stone-400 text-2xl" />
               </div>
               <p className="text-sm font-bold text-stone-700 mb-1">
@@ -106,7 +106,7 @@ export function LocationImportSection() {
               exit={{ opacity: 0, scale: 0.9 }}
               className="text-center"
             >
-              <div className="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-emerald-200">
+              <div className="w-16 h-16 bg-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-4 border border-emerald-200">
                 <FiFileText className="text-emerald-600 text-2xl" />
               </div>
               <p className="text-sm font-black text-emerald-900 mb-1">{file.name}</p>

@@ -18,7 +18,7 @@ const UserDetailHeader = ({ user, onLock, onDelete }: UserDetailHeaderProps) => 
       <div className="flex items-center gap-4">
         <Link
           href="/admin/users"
-          className="p-3 bg-white border border-stone-100 rounded-2xl hover:bg-stone-50 transition-colors shadow-sm text-stone-400 hover:text-stone-600 cursor-pointer"
+          className="p-3 bg-white border border-stone-100 rounded-xl hover:bg-stone-50 transition-colors shadow-sm text-stone-400 hover:text-stone-600 cursor-pointer"
         >
           <FiArrowLeft size={20} />
         </Link>
@@ -34,7 +34,7 @@ const UserDetailHeader = ({ user, onLock, onDelete }: UserDetailHeaderProps) => 
         <Button
           variant="outline"
           onClick={onLock}
-          className="bg-amber-50 text-amber-600 border-amber-100 hover:bg-amber-100 px-6 py-3 rounded-2xl text-sm font-black flex items-center gap-2 transition-all"
+          className="bg-amber-50 text-amber-600 border-amber-100 hover:bg-amber-100 px-6 py-3 rounded-xl text-sm font-black flex items-center gap-2 transition-all"
         >
           {user.status === 'LOCKED' ? (
             <>
@@ -49,7 +49,7 @@ const UserDetailHeader = ({ user, onLock, onDelete }: UserDetailHeaderProps) => 
         <Button
           variant="outline"
           onClick={onDelete}
-          className="bg-red-50 text-red-600 border-red-100 hover:bg-red-100 px-6 py-3 rounded-2xl text-sm font-black flex items-center gap-2 transition-all"
+          className="bg-red-50 text-red-600 border-red-100 hover:bg-red-100 px-6 py-3 rounded-xl text-sm font-black flex items-center gap-2 transition-all"
         >
           <FiTrash2 /> Xóa tài khoản
         </Button>

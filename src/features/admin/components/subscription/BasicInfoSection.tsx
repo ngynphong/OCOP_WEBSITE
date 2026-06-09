@@ -26,7 +26,7 @@ const BasicInfoSection = () => {
             <input
               {...register('name')}
               placeholder="Ví dụ: Gói Chuyên Nghiệp"
-              className={`w-full pl-11 pr-4 py-3 bg-stone-50 border ${errors.name ? 'border-red-300 ring-4 ring-red-50' : 'border-stone-100 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500'} rounded-2xl text-sm font-bold text-stone-800 transition-all outline-none`}
+              className={`w-full pl-11 pr-4 py-3 bg-stone-50 border ${errors.name ? 'border-red-300 ring-4 ring-red-50' : 'border-stone-100 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500'} rounded-xl text-sm font-bold text-stone-800 transition-all outline-none`}
             />
           </div>
           {errors.name && (
@@ -44,7 +44,7 @@ const BasicInfoSection = () => {
             <input
               {...register('slug')}
               placeholder="professional-plan"
-              className={`w-full pl-11 pr-4 py-3 bg-stone-50 border ${errors.slug ? 'border-red-300 ring-4 ring-red-50' : 'border-stone-100 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500'} rounded-2xl text-sm font-bold text-stone-800 transition-all outline-none`}
+              className={`w-full pl-11 pr-4 py-3 bg-stone-50 border ${errors.slug ? 'border-red-300 ring-4 ring-red-50' : 'border-stone-100 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500'} rounded-xl text-sm font-bold text-stone-800 transition-all outline-none`}
             />
           </div>
           {errors.slug && (
@@ -61,7 +61,7 @@ const BasicInfoSection = () => {
             <FiList className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-300" />
             <input
               {...register('sortOrder')}
-              className="w-full pl-11 pr-4 py-3 bg-stone-50 border border-stone-100 rounded-2xl text-sm font-bold text-stone-800 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+              className="w-full pl-11 pr-4 py-3 bg-stone-50 border border-stone-100 rounded-xl text-sm font-bold text-stone-800 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
             />
           </div>
         </div>

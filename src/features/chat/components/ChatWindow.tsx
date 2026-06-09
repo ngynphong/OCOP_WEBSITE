@@ -121,7 +121,7 @@ export const ChatWindow = ({ room, isLoading: isRoomLoading, role = 'USER' }: Ch
 
         {isUploading && (
           <div className="flex justify-end mb-4 animate-in fade-in slide-in-from-bottom-2">
-            <div className="bg-emerald-50 text-emerald-600 px-4 py-2 rounded-2xl flex items-center gap-2 border border-emerald-100">
+            <div className="bg-emerald-50 text-emerald-600 px-4 py-2 rounded-xl flex items-center gap-2 border border-emerald-100">
               <FiLoader className="animate-spin" size={16} />
               <span className="text-sm font-medium">Đang tải lên tập tin...</span>
             </div>

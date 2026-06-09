@@ -11,7 +11,7 @@ interface ShopDetailSubscriptionProps {
 const ShopDetailSubscription: React.FC<ShopDetailSubscriptionProps> = React.memo(({ shop }) => {
   return (
     <div className="space-y-8">
-      <div className="bg-emerald-900 text-white rounded-[40px] p-10 relative overflow-hidden shadow-2xl">
+      <div className="bg-emerald-900 text-white rounded-xl p-10 relative overflow-hidden shadow-2xl">
         <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-800 rounded-full -mr-32 -mt-32 opacity-20 transition-transform duration-1000 group-hover:scale-110"></div>
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
           <div>

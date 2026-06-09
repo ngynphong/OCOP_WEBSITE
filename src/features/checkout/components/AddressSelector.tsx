@@ -26,7 +26,7 @@ export const AddressSelector = memo(function AddressSelector({
         <div className="h-4 w-32 bg-stone-100 animate-pulse rounded" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {[1, 2].map((i) => (
-            <div key={i} className="h-28 bg-stone-50 animate-pulse rounded-2xl" />
+            <div key={i} className="h-28 bg-stone-50 animate-pulse rounded-xl" />
           ))}
         </div>
       </div>
@@ -56,7 +56,7 @@ export const AddressSelector = memo(function AddressSelector({
             key={addr.id}
             onClick={() => onSelect(addr)}
             className={cn(
-              'relative p-4 rounded-2xl border-2 transition-all cursor-pointer group',
+              'relative p-4 rounded-xl border-2 transition-all cursor-pointer group',
               selectedId === addr.id
                 ? 'border-green-600 bg-green-50/30 shadow-md'
                 : 'border-stone-100 bg-white hover:border-stone-200 shadow-sm',
@@ -95,7 +95,7 @@ export const AddressSelector = memo(function AddressSelector({
         ))}
 
         {!isLoading && (!addresses || addresses.length === 0) && (
-          <div className="col-span-full py-10 text-center border-2 border-dashed border-stone-100 rounded-[32px] bg-stone-50/50">
+          <div className="col-span-full py-10 text-center border-2 border-dashed border-stone-100 rounded-xl bg-stone-50/50">
             <p className="text-sm text-stone-400 font-medium">Bạn chưa có địa chỉ nhận hàng nào</p>
             <button
               onClick={() => setIsAddModalOpen(true)}

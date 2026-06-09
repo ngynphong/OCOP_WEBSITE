@@ -64,7 +64,7 @@ const AdminSubscriptionPage = () => {
         </div>
         <Button
           onClick={handleAdd}
-          className="px-6 py-3 bg-[#0D631B] text-white rounded-2xl text-sm font-black shadow-lg shadow-emerald-900/20 flex items-center gap-2 hover:translate-y-[-2px] active:scale-95 transition-all"
+          className="px-6 py-3 bg-[#0D631B] text-white rounded-xl text-sm font-black shadow-lg shadow-emerald-900/20 flex items-center gap-2 hover:translate-y-[-2px] active:scale-95 transition-all"
         >
           <FiPlus size={20} /> Thêm gói mới
         </Button>
@@ -72,7 +72,7 @@ const AdminSubscriptionPage = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 flex flex-col justify-between hover:shadow-md transition-all">
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-stone-100 flex flex-col justify-between hover:shadow-md transition-all">
           <FiPackage className="text-emerald-700 text-2xl mb-4" />
           <div>
             <p className="text-4xl font-black text-emerald-900 tracking-tighter">{plans.length}</p>
@@ -81,7 +81,7 @@ const AdminSubscriptionPage = () => {
             </p>
           </div>
         </div>
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 flex flex-col justify-between hover:shadow-md transition-all">
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-stone-100 flex flex-col justify-between hover:shadow-md transition-all">
           <FiCheckCircle className="text-emerald-500 text-2xl mb-4" />
           <div>
             <p className="text-4xl font-black text-emerald-600 tracking-tighter">
@@ -92,7 +92,7 @@ const AdminSubscriptionPage = () => {
             </p>
           </div>
         </div>
-        <div className="bg-[#00490E] p-6 rounded-2xl shadow-lg border border-emerald-800 text-white flex flex-col justify-between transition-all">
+        <div className="bg-[#00490E] p-6 rounded-xl shadow-lg border border-emerald-800 text-white flex flex-col justify-between transition-all">
           <FiTrendingUp className="text-emerald-300 text-2xl mb-4" />
           <div>
             <p className="text-lg font-bold mb-1">Cấu hình tối ưu</p>
@@ -104,7 +104,7 @@ const AdminSubscriptionPage = () => {
       </div>
 
       {/* Table Section */}
-      <div className="bg-white rounded-3xl shadow-sm border border-stone-100 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden">
         <div className="p-6 border-b border-stone-50">
           <h3 className="text-lg font-black text-[#00490E] uppercase tracking-wider">
             Danh sách các gói

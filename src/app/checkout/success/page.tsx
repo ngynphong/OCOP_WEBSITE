@@ -45,7 +45,7 @@ const SuccessContent = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-md w-full bg-white rounded-3xl shadow-sm border border-stone-100 p-8 md:p-12 text-center"
+        className="max-w-md w-full bg-white rounded-xl shadow-sm border border-stone-100 p-8 md:p-12 text-center"
       >
         {/* Status Icon */}
         <motion.div
@@ -77,7 +77,7 @@ const SuccessContent = () => {
         </p>
 
         {/* Order Info Card */}
-        <div className="bg-stone-50 rounded-2xl p-6 mb-8 text-left space-y-3">
+        <div className="bg-stone-50 rounded-xl p-6 mb-8 text-left space-y-3">
           <div className="flex justify-between items-center text-sm">
             <span className="text-stone-500 font-medium">Mã giao dịch:</span>
             <span className="text-stone-900 font-bold">#{orderId}</span>

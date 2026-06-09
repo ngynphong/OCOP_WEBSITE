@@ -72,7 +72,7 @@ export default function WishlistPage() {
             variant="primary"
             onClick={handleMoveAllToCart}
             disabled={moveToCartMutation.isPending}
-            className="flex items-center justify-center gap-2 bg-stone-900 text-white px-6 py-3 rounded-2xl font-bold hover:bg-stone-800 transition-all shadow-lg hover:shadow-stone-200/50 disabled:opacity-50"
+            className="flex items-center justify-center gap-2 bg-stone-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-stone-800 transition-all shadow-lg hover:shadow-stone-200/50 disabled:opacity-50"
           >
             <FiShoppingBag />
             <span>Chuyển tất cả vào giỏ</span>
@@ -81,7 +81,7 @@ export default function WishlistPage() {
       </div>
 
       {items.length === 0 ? (
-        <div className="bg-white rounded-[40px] p-12 border border-stone-100 shadow-xl shadow-stone-200/40 flex flex-col items-center text-center">
+        <div className="bg-white rounded-xl p-12 border border-stone-100 shadow-xl shadow-stone-200/40 flex flex-col items-center text-center">
           <div className="w-24 h-24 bg-stone-50 rounded-full flex items-center justify-center text-stone-200 mb-6">
             <FiHeart size={48} />
           </div>

@@ -76,8 +76,8 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ variant = 'header', classN
         className={cn(
           'flex items-center transition-all duration-300',
           variant === 'header'
-            ? 'px-4 py-2 bg-white/10 hover:bg-white/15 rounded-full border border-emerald-300/20 focus-within:border-emerald-300/50'
-            : 'bg-white rounded-xl md:rounded-full p-1.5 md:p-2 shadow-2xl border border-transparent focus-within:ring-4 focus-within:ring-white/20',
+            ? 'px-4 py-2 bg-white/10 hover:bg-white/15 rounded-full border border-emerald-300/20 focus-within:ring-4 focus-within:ring-emerald-500/20 focus-within:border-emerald-300/50'
+            : 'bg-white rounded-xl md:rounded-full p-1.5 md:p-2 shadow-xl border border-transparent focus-within:ring-4 focus-within:ring-emerald-500/20 focus-within:border-emerald-200',
         )}
       >
         <Search
@@ -132,8 +132,8 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ variant = 'header', classN
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.98 }}
             className={cn(
-              'absolute left-0 right-0 mt-3 bg-white rounded-2xl shadow-2xl border border-stone-100 overflow-hidden z-[200]',
-              variant === 'hero' ? 'md:rounded-3xl' : '',
+              'absolute left-0 right-0 mt-3 bg-white/95 backdrop-blur-xl rounded-xl shadow-2xl border border-stone-100 overflow-hidden z-[200]',
+              variant === 'hero' ? 'md:rounded-xl' : '',
             )}
           >
             <div className="max-h-[420px] overflow-y-auto custom-scrollbar">

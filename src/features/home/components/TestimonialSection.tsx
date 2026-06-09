@@ -48,7 +48,7 @@ export function TestimonialSection() {
           {testimonials.map((review, index) => (
             <div
               key={index}
-              className="w-full p-8 relative bg-white border border-stone-100 rounded-[32px] shadow-sm hover:shadow-md transition-shadow flex flex-col justify-start items-start gap-6"
+              className="w-full p-8 relative bg-white border border-stone-100 rounded-xl shadow-sm hover:shadow-md transition-shadow flex flex-col justify-start items-start gap-6"
             >
               <Quote className="absolute left-6 md:left-8 top-[-10px] md:top-[-16px] w-8 h-8 md:w-12 md:h-12 text-green-700/20 fill-green-700/20 rotate-180" />
 

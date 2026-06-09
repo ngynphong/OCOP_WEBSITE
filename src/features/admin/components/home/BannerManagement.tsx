@@ -71,7 +71,7 @@ export const BannerManagement = memo(function BannerManagement() {
     return (
       <div className="space-y-4">
         {[...Array(3)].map((_, i) => (
-          <div key={i} className="h-48 w-full bg-stone-100 animate-pulse rounded-3xl" />
+          <div key={i} className="h-48 w-full bg-stone-100 animate-pulse rounded-xl" />
         ))}
       </div>
     );
@@ -94,7 +94,7 @@ export const BannerManagement = memo(function BannerManagement() {
 
       <div className="grid grid-cols-1 gap-6">
         {banners.length === 0 ? (
-          <div className="py-20 text-center bg-stone-50 rounded-[32px] border-2 border-dashed border-stone-200">
+          <div className="py-20 text-center bg-stone-50 rounded-xl border-2 border-dashed border-stone-200">
             <p className="text-stone-400 font-medium">
               Chưa có banner nào. Hãy thêm banner đầu tiên!
             </p>
@@ -106,7 +106,7 @@ export const BannerManagement = memo(function BannerManagement() {
               layout
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white border border-stone-100 rounded-[32px] overflow-hidden shadow-sm hover:shadow-xl hover:shadow-emerald-900/5 transition-all duration-300 flex flex-col md:flex-row"
+              className="bg-white border border-stone-100 rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-emerald-900/5 transition-all duration-300 flex flex-col md:flex-row"
             >
               <div className="relative w-full md:w-80 h-48 md:h-auto shrink-0 bg-stone-100">
                 <Image src={banner.imageUrl} alt={banner.title} fill className="object-cover" />

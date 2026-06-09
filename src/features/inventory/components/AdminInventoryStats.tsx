@@ -47,7 +47,7 @@ export const AdminInventoryStats = ({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: idx * 0.1 }}
-          className={`bg-white p-6 rounded-2xl border ${stat.borderColor} shadow-sm flex items-center gap-5`}
+          className={`bg-white p-6 rounded-xl border ${stat.borderColor} shadow-sm flex items-center gap-5`}
         >
           <div
             className={`w-14 h-14 rounded-xl ${stat.color} flex items-center justify-center text-2xl shrink-0 shadow-sm`}

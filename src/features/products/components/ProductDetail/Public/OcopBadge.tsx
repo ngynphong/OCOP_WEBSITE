@@ -15,7 +15,7 @@ export function OcopBadge({ stars, className }: OcopBadgeProps) {
   return (
     <div
       className={cn(
-        'flex items-center gap-3 px-5 py-2.5 bg-white rounded-2xl shadow-sm border border-stone-100 w-fit',
+        'flex items-center gap-3 px-5 py-2.5 bg-white rounded-xl shadow-sm border border-stone-100 w-fit',
         className,
       )}
     >

@@ -85,7 +85,7 @@ export default function FlashSalePage() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2 }}
-                className="bg-white/95 backdrop-blur-xl min-w-sm p-8 md:p-10 rounded-[40px] shadow-2xl shadow-red-900/20 border border-white"
+                className="bg-white/95 backdrop-blur-xl min-w-sm p-8 md:p-10 rounded-xl shadow-2xl shadow-red-900/20 border border-white"
               >
                 <div className="flex flex-col items-center gap-4">
                   <div className="flex items-center gap-2 text-red-600 font-bold uppercase tracking-[0.3em] text-[10px] md:text-xs">
@@ -135,7 +135,7 @@ export default function FlashSalePage() {
           <section id="active-sales">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-3">
-                <div className="bg-red-100 p-2.5 rounded-2xl">
+                <div className="bg-red-100 p-2.5 rounded-xl">
                   <Flame className="w-6 h-6 text-red-600 fill-current" />
                 </div>
                 <div>
@@ -152,7 +152,7 @@ export default function FlashSalePage() {
             {activePending ? (
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
                 {[...Array(10)].map((_, i) => (
-                  <div key={i} className="bg-stone-200 animate-pulse rounded-2xl h-80" />
+                  <div key={i} className="bg-stone-200 animate-pulse rounded-xl h-80" />
                 ))}
               </div>
             ) : activeFlashSales.length > 0 ? (
@@ -185,7 +185,7 @@ export default function FlashSalePage() {
                 ))}
               </div>
             ) : (
-              <div className="w-full py-20 bg-white rounded-[32px] border border-stone-200 flex flex-col items-center justify-center text-center px-6">
+              <div className="w-full py-20 bg-white rounded-xl border border-stone-200 flex flex-col items-center justify-center text-center px-6">
                 <div className="bg-stone-100 p-6 rounded-full mb-6">
                   <LayoutGrid className="w-12 h-12 text-stone-300" />
                 </div>
@@ -201,7 +201,7 @@ export default function FlashSalePage() {
           <section id="upcoming-sales" className="pt-8 border-t border-stone-200">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-3">
-                <div className="bg-blue-100 p-2.5 rounded-2xl">
+                <div className="bg-blue-100 p-2.5 rounded-xl">
                   <Calendar className="w-6 h-6 text-blue-600 fill-current" />
                 </div>
                 <div>
@@ -218,14 +218,14 @@ export default function FlashSalePage() {
             {upcomingPending ? (
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
                 {[...Array(5)].map((_, i) => (
-                  <div key={i} className="bg-stone-200 animate-pulse rounded-2xl h-80" />
+                  <div key={i} className="bg-stone-200 animate-pulse rounded-xl h-80" />
                 ))}
               </div>
             ) : upcomingFlashSales.length > 0 ? (
               <div className="flex flex-col gap-12">
                 {upcomingFlashSales.map((sale) => (
                   <div key={sale.id} className="flex flex-col gap-6">
-                    <div className="flex items-center justify-between px-4 py-3 bg-blue-50 border border-blue-100 rounded-2xl">
+                    <div className="flex items-center justify-between px-4 py-3 bg-blue-50 border border-blue-100 rounded-xl">
                       <h3 className="text-sm font-black text-blue-800">{sale.name}</h3>
                       <span className="text-[10px] font-bold text-blue-600 bg-white px-3 py-1 rounded-full border border-blue-200 shadow-sm uppercase tracking-wider">
                         Bắt đầu lúc: {new Date(sale.startTime).toLocaleString('vi-VN')}
@@ -251,7 +251,7 @@ export default function FlashSalePage() {
                 ))}
               </div>
             ) : (
-              <div className="w-full py-16 bg-stone-100/50 rounded-[32px] border border-stone-200/50 flex flex-col items-center justify-center text-center px-6 grayscale">
+              <div className="w-full py-16 bg-stone-100/50 rounded-xl border border-stone-200/50 flex flex-col items-center justify-center text-center px-6 grayscale">
                 <p className="text-stone-400 font-bold uppercase tracking-widest text-xs">
                   Hiện chưa có lịch trình Flash Sale mới
                 </p>
@@ -271,10 +271,10 @@ export default function FlashSalePage() {
               kịch sàn. Tải app hoặc đăng ký nhận tin để không bao giờ bỏ lỡ Flash Sale!
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <button className="bg-white text-red-600 px-8 py-4 rounded-2xl font-black shadow-xl hover:scale-105 transition-transform">
+              <button className="bg-white text-red-600 px-8 py-4 rounded-xl font-black shadow-xl hover:scale-105 transition-transform">
                 XEM SẢN PHẨM MỚI
               </button>
-              <button className="bg-red-700 text-white border border-red-500 px-8 py-4 rounded-2xl font-black shadow-xl hover:bg-red-800 transition-all">
+              <button className="bg-red-700 text-white border border-red-500 px-8 py-4 rounded-xl font-black shadow-xl hover:bg-red-800 transition-all">
                 LIÊN HỆ HỖ TRỢ
               </button>
             </div>

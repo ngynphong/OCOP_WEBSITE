@@ -43,7 +43,7 @@ export const BroadcastForm = () => {
       <div className="lg:col-span-2 space-y-6">
         <form
           onSubmit={handleSubmit}
-          className="bg-white p-8 rounded-[40px] shadow-sm border border-stone-100 space-y-8"
+          className="bg-white p-8 rounded-xl shadow-sm border border-stone-100 space-y-8"
         >
           <div className="flex justify-between items-center border-b border-stone-50 pb-6">
             <h3 className="text-xl font-black text-stone-900 tracking-tight flex items-center gap-2">
@@ -64,7 +64,7 @@ export const BroadcastForm = () => {
 
           {isPreview ? (
             <div className="space-y-6 animate-in fade-in duration-300">
-              <div className="bg-stone-50 p-6 rounded-2xl border border-stone-100">
+              <div className="bg-stone-50 p-6 rounded-xl border border-stone-100">
                 <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest block mb-2">
                   Tiêu đề:
                 </span>
@@ -72,7 +72,7 @@ export const BroadcastForm = () => {
                   {formData.subject || '(Chưa có tiêu đề)'}
                 </h4>
               </div>
-              <div className="bg-white border border-stone-100 rounded-3xl p-8 min-h-[400px]">
+              <div className="bg-white border border-stone-100 rounded-xl p-8 min-h-[400px]">
                 <div
                   className="prose prose-stone max-w-none newsletter-preview"
                   dangerouslySetInnerHTML={{
@@ -94,7 +94,7 @@ export const BroadcastForm = () => {
                   value={formData.subject}
                   onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                   placeholder="Nhập tiêu đề thu hút người đọc..."
-                  className="w-full px-6 py-4 bg-stone-50 border border-stone-100 rounded-2xl outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 transition-all text-base font-bold text-stone-800 placeholder:text-stone-300"
+                  className="w-full px-6 py-4 bg-stone-50 border border-stone-100 rounded-xl outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 transition-all text-base font-bold text-stone-800 placeholder:text-stone-300"
                 />
               </div>
 
@@ -107,7 +107,7 @@ export const BroadcastForm = () => {
                   onChange={(e) => setFormData({ ...formData, htmlContent: e.target.value })}
                   rows={15}
                   placeholder="<h1>Xin chào các subscriber...</h1><p>Nội dung bản tin...</p>"
-                  className="w-full px-6 py-4 bg-stone-50 border border-stone-100 rounded-2xl outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 transition-all text-sm font-medium text-stone-700 leading-relaxed font-mono placeholder:text-stone-300"
+                  className="w-full px-6 py-4 bg-stone-50 border border-stone-100 rounded-xl outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 transition-all text-sm font-medium text-stone-700 leading-relaxed font-mono placeholder:text-stone-300"
                 />
               </div>
             </div>
@@ -117,7 +117,7 @@ export const BroadcastForm = () => {
             <Button
               type="submit"
               disabled={broadcastMutation.isPending}
-              className="bg-stone-900 text-white px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center gap-3 shadow-xl shadow-stone-900/10 hover:bg-stone-800 transition-all active:scale-95 disabled:opacity-50"
+              className="bg-stone-900 text-white px-10 py-5 rounded-xl font-black text-sm uppercase tracking-widest flex items-center gap-3 shadow-xl shadow-stone-900/10 hover:bg-stone-800 transition-all active:scale-95 disabled:opacity-50"
             >
               {broadcastMutation.isPending ? (
                 <>Đang gửi bản tin...</>
@@ -132,9 +132,9 @@ export const BroadcastForm = () => {
       </div>
 
       <div className="space-y-6">
-        <div className="bg-emerald-900 p-8 rounded-[40px] text-white space-y-6 relative overflow-hidden">
+        <div className="bg-emerald-900 p-8 rounded-xl text-white space-y-6 relative overflow-hidden">
           <div className="relative z-10 space-y-4">
-            <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-emerald-400 border border-white/10">
+            <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-emerald-400 border border-white/10">
               <FiCheckCircle size={24} />
             </div>
             <h3 className="text-xl font-black tracking-tight">Hướng dẫn gửi</h3>
@@ -158,12 +158,12 @@ export const BroadcastForm = () => {
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl" />
         </div>
 
-        <div className="bg-white p-8 rounded-[40px] border border-stone-100 space-y-4">
+        <div className="bg-white p-8 rounded-xl border border-stone-100 space-y-4">
           <h4 className="text-xs font-black text-stone-400 uppercase tracking-widest flex items-center gap-2">
             <FiFileText /> Gần đây
           </h4>
           <div className="space-y-3">
-            <div className="p-4 bg-stone-50 rounded-2xl border border-stone-100 flex items-center justify-between">
+            <div className="p-4 bg-stone-50 rounded-xl border border-stone-100 flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-1">
                   24/04/2026

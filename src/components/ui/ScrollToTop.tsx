@@ -37,7 +37,7 @@ export const ScrollToTop = memo(function ScrollToTop() {
           exit={{ opacity: 0, scale: 0.5, y: 20 }}
           onClick={scrollToTop}
           className={cn(
-            'fixed bottom-8 right-8 z-50 p-4 bg-green-700 text-white rounded-2xl shadow-2xl shadow-green-900/40 hover:bg-green-800 transition-all active:scale-95',
+            'fixed bottom-8 right-8 z-50 p-4 bg-green-700 text-white rounded-xl shadow-2xl shadow-green-900/40 hover:bg-green-800 transition-all active:scale-95',
           )}
           aria-label="Scroll to top"
         >

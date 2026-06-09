@@ -1,5 +1,7 @@
 import { axiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
+import { buildRoute } from '@/lib/routeBuilder';
+
 import {
   SupportTicketResponse,
   SupportTicketListResponse,
@@ -20,7 +22,7 @@ export const supportTicketApi = {
   },
 
   getTicketById: (id: number): Promise<SupportTicketResponse> => {
-    return axiosClient.get(`${API_ENDPOINTS.USERS.SUPPORT_TICKETS}/${id}`);
+    return axiosClient.get(buildRoute(API_ENDPOINTS.USERS.SUPPORT_TICKETS, id));
   },
 
   createTicket: (data: TicketRequest): Promise<SupportTicketResponse> => {
@@ -28,11 +30,11 @@ export const supportTicketApi = {
   },
 
   replyTicket: (id: number, data: ReplyRequest): Promise<SupportTicketResponse> => {
-    return axiosClient.post(`${API_ENDPOINTS.USERS.SUPPORT_TICKETS}/${id}/reply`, data);
+    return axiosClient.post(buildRoute(API_ENDPOINTS.USERS.SUPPORT_TICKETS, id, 'reply'), data);
   },
 
   closeTicket: (id: number): Promise<SupportTicketResponse> => {
-    return axiosClient.post(`${API_ENDPOINTS.USERS.SUPPORT_TICKETS}/${id}/close`);
+    return axiosClient.post(buildRoute(API_ENDPOINTS.USERS.SUPPORT_TICKETS, id, 'close'));
   },
 
   // ─── Admin APIs ────────────────────────────────────────────────────────────
@@ -47,20 +49,20 @@ export const supportTicketApi = {
   },
 
   adminGetTicketById: (id: number): Promise<SupportTicketResponse> => {
-    return axiosClient.get(`${API_ENDPOINTS.ADMIN.SUPPORT_TICKETS}/${id}`);
+    return axiosClient.get(buildRoute(API_ENDPOINTS.ADMIN.SUPPORT_TICKETS, id));
   },
 
   adminUpdateStatus: (id: number, status: TicketStatus): Promise<SupportTicketResponse> => {
-    return axiosClient.post(`${API_ENDPOINTS.ADMIN.SUPPORT_TICKETS}/${id}/status`, null, {
+    return axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.SUPPORT_TICKETS, id, 'status'), null, {
       params: { status },
     });
   },
 
   adminReplyTicket: (id: number, data: ReplyRequest): Promise<SupportTicketResponse> => {
-    return axiosClient.post(`${API_ENDPOINTS.ADMIN.SUPPORT_TICKETS}/${id}/reply`, data);
+    return axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.SUPPORT_TICKETS, id, 'reply'), data);
   },
 
   adminAssignTicket: (id: number): Promise<SupportTicketResponse> => {
-    return axiosClient.post(`${API_ENDPOINTS.ADMIN.SUPPORT_TICKETS}/${id}/assign`);
+    return axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.SUPPORT_TICKETS, id, 'assign'));
   },
 };

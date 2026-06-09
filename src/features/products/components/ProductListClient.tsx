@@ -257,7 +257,7 @@ export function ProductListClient() {
                 <div className="p-6 border-t border-stone-100 bg-stone-50">
                   <button
                     onClick={() => setIsSidebarOpen(false)}
-                    className="w-full bg-green-700 text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-green-800 transition-all active:scale-95"
+                    className="w-full bg-green-700 text-white py-4 rounded-xl font-bold shadow-lg hover:bg-green-800 transition-all active:scale-95"
                   >
                     Áp dụng bộ lọc
                   </button>
@@ -347,7 +347,7 @@ export function ProductListClient() {
 
             {/* Error state */}
             {isError && (
-              <div className="w-full h-64 flex flex-col items-center justify-center bg-red-50 rounded-2xl border border-red-100 border-dashed">
+              <div className="w-full h-64 flex flex-col items-center justify-center bg-red-50 rounded-xl border border-red-100 border-dashed">
                 <p className="text-red-500 text-lg font-medium">
                   Không thể tải danh sách sản phẩm.
                 </p>
@@ -399,7 +399,7 @@ export function ProductListClient() {
                     </div>
                   </>
                 ) : (
-                  <div className="w-full h-96 flex flex-col items-center justify-center bg-white rounded-3xl border border-stone-100 shadow-sm">
+                  <div className="w-full h-96 flex flex-col items-center justify-center bg-white rounded-xl border border-stone-100 shadow-sm">
                     <div className="w-20 h-20 bg-stone-50 rounded-full flex items-center justify-center mb-6">
                       <Search className="w-8 h-8 text-stone-300" />
                     </div>
@@ -411,7 +411,7 @@ export function ProductListClient() {
                     </p>
                     <button
                       onClick={handleClearFilters}
-                      className="mt-8 px-8 py-3 bg-green-700 text-white rounded-2xl font-bold text-sm shadow-lg hover:bg-green-800 transition-all active:scale-95"
+                      className="mt-8 px-8 py-3 bg-green-700 text-white rounded-xl font-bold text-sm shadow-lg hover:bg-green-800 transition-all active:scale-95"
                     >
                       Xóa tất cả bộ lọc
                     </button>

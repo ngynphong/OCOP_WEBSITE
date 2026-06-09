@@ -8,6 +8,8 @@ import {
   RegisterRequest,
   RegisterResponse,
   VerifyEmailRequest,
+  VerifyEmailTraditionalRequest,
+  Verify2FARequest,
   VerifyEmailResponse,
   RefreshTokenRequest,
   RefreshTokenResponse,
@@ -50,7 +52,15 @@ export const authApi = {
   },
 
   verifyEmail: (data: VerifyEmailRequest): Promise<VerifyEmailResponse> => {
+    return publicAxiosClient.post(API_ENDPOINTS.AUTH.SIMPLE_VERIFY, data);
+  },
+
+  verifyEmailTraditional: (data: VerifyEmailTraditionalRequest): Promise<VerifyEmailResponse> => {
     return publicAxiosClient.post(API_ENDPOINTS.AUTH.VERIFY_EMAIL, data);
+  },
+
+  verify2fa: (data: Verify2FARequest): Promise<LoginResponse> => {
+    return publicAxiosClient.post(API_ENDPOINTS.AUTH.VERIFY_2FA, data);
   },
 
   refreshToken: (data: RefreshTokenRequest): Promise<RefreshTokenResponse> => {

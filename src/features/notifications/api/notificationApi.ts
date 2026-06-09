@@ -1,5 +1,7 @@
 import { axiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
+import { buildRoute } from '@/lib/routeBuilder';
+
 import { NotificationResponse } from '@/features/notifications/types/notificationTypes';
 
 export const notificationApi = {
@@ -26,7 +28,9 @@ export const notificationApi = {
    * Đánh dấu một thông báo là đã đọc
    */
   markAsRead: (notificationId: string) => {
-    return axiosClient.patch<string>(`${API_ENDPOINTS.NOTIFICATIONS}/${notificationId}/read`);
+    return axiosClient.patch<string>(
+      buildRoute(API_ENDPOINTS.NOTIFICATIONS, notificationId, 'read'),
+    );
   },
 
   /**
@@ -40,7 +44,7 @@ export const notificationApi = {
    * Xóa một thông báo
    */
   deleteNotification: (notificationId: string) => {
-    return axiosClient.delete<string>(`${API_ENDPOINTS.NOTIFICATIONS}/${notificationId}`);
+    return axiosClient.delete<string>(buildRoute(API_ENDPOINTS.NOTIFICATIONS, notificationId));
   },
 
   /**

@@ -78,7 +78,7 @@ export function PolicyPageLayout({ children, title, lastUpdated }: PolicyPageLay
           {/* Sidebar */}
           <aside className="lg:col-span-4 space-y-6">
             <div className="sticky top-24 space-y-6">
-              <div className="bg-white/70 backdrop-blur-md border border-emerald-100 rounded-3xl p-8 shadow-sm">
+              <div className="bg-white/70 backdrop-blur-md border border-emerald-100 rounded-xl p-8 shadow-sm">
                 <h2 className="text-xl font-bold text-emerald-900 mb-6">Chính sách & Quy định</h2>
                 <div className="space-y-3">
                   {policies.map((policy) => {
@@ -89,7 +89,7 @@ export function PolicyPageLayout({ children, title, lastUpdated }: PolicyPageLay
                         key={policy.href}
                         href={policy.href}
                         className={cn(
-                          'group flex items-start gap-4 p-4 rounded-2xl transition-all duration-300',
+                          'group flex items-start gap-4 p-4 rounded-xl transition-all duration-300',
                           isActive
                             ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200'
                             : 'hover:bg-emerald-50 text-emerald-800',
@@ -129,7 +129,7 @@ export function PolicyPageLayout({ children, title, lastUpdated }: PolicyPageLay
               </div>
 
               {/* Help Card */}
-              <div className="bg-emerald-900 rounded-3xl p-8 text-white relative overflow-hidden group">
+              <div className="bg-emerald-900 rounded-xl p-8 text-white relative overflow-hidden group">
                 <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-emerald-800 rounded-full blur-3xl opacity-50 group-hover:scale-110 transition-transform duration-500" />
                 <h3 className="text-xl font-bold mb-3 relative z-10">Bạn cần hỗ trợ thêm?</h3>
                 <p className="text-emerald-100/80 text-sm mb-6 relative z-10 leading-relaxed">

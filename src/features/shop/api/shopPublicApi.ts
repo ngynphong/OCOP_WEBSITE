@@ -1,5 +1,7 @@
 import { publicAxiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
+import { buildRoute } from '@/lib/routeBuilder';
+
 import {
   ResponseBase,
   GetShopsPublicParams,
@@ -21,11 +23,11 @@ export const shopPublicApi = {
   },
 
   getShopBySlug: (slug: string): Promise<ShopPublicDetailResponse> => {
-    return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.SHOPS}/${slug}`);
+    return publicAxiosClient.get(buildRoute(API_ENDPOINTS.PUBLIC.SHOPS, slug));
   },
 
   getShopPolicy: (slug: string): Promise<ShopPolicyResponse> => {
-    return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.SHOPS}/${slug}/policy`);
+    return publicAxiosClient.get(buildRoute(API_ENDPOINTS.PUBLIC.SHOPS, slug, 'policy'));
   },
 
   getSubscriptionPlans: (): Promise<SubscriptionPlanListResponse> => {

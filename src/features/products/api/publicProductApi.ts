@@ -1,5 +1,7 @@
 import { publicAxiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
+import { buildRoute } from '@/lib/routeBuilder';
+
 import {
   PublicProductListParams,
   ProductDetailResponse,
@@ -18,11 +20,11 @@ export const publicProductApi = {
   },
 
   getProduct: (slugOrId: string | number): Promise<ProductDetailResponse> => {
-    return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.PRODUCTS}/${slugOrId}`);
+    return publicAxiosClient.get(buildRoute(API_ENDPOINTS.PUBLIC.PRODUCTS, slugOrId));
   },
 
   getRelatedProducts: (slug: string, limit = 6): Promise<ProductListResponse> => {
-    return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.PRODUCTS}/${slug}/related`, {
+    return publicAxiosClient.get(buildRoute(API_ENDPOINTS.PUBLIC.PRODUCTS, slug, 'related'), {
       params: { limit },
     });
   },
@@ -38,7 +40,7 @@ export const publicProductApi = {
   },
 
   traceQr: (qrCode: string): Promise<QrCodeResponse> => {
-    return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.TRACE}/${qrCode}`);
+    return publicAxiosClient.get(buildRoute(API_ENDPOINTS.PUBLIC.TRACE, qrCode));
   },
 
   getCategories: (): Promise<PublicCategoryListResponse> => {
@@ -46,15 +48,15 @@ export const publicProductApi = {
   },
 
   getCategoryBySlug: (slug: string): Promise<PublicCategoryDetailResponse> => {
-    return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.CATEGORIES}/${slug}`);
+    return publicAxiosClient.get(buildRoute(API_ENDPOINTS.PUBLIC.CATEGORIES, slug));
   },
 
   traceQrDetail: (qrCode: string): Promise<TraceDetailResponse> => {
-    return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.TRACE}/${qrCode}`);
+    return publicAxiosClient.get(buildRoute(API_ENDPOINTS.PUBLIC.TRACE, qrCode));
   },
 
   recordQrScan: (qrCode: string): Promise<ResponseBase<string>> => {
-    return publicAxiosClient.post(`${API_ENDPOINTS.PUBLIC.TRACE}/${qrCode}/scan`);
+    return publicAxiosClient.post(buildRoute(API_ENDPOINTS.PUBLIC.TRACE, qrCode, 'scan'));
   },
 
   getProvinces: (): Promise<ResponseBase<{ id: number; name: string }[]>> => {
@@ -72,8 +74,11 @@ export const publicProductApi = {
     productId: number,
     variantId?: number,
   ): Promise<ResponseBase<WholesalePrice[]>> => {
-    return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.PRODUCTS}/${productId}/tier-prices`, {
-      params: { variantId },
-    });
+    return publicAxiosClient.get(
+      buildRoute(API_ENDPOINTS.PUBLIC.PRODUCTS, productId, 'tier-prices'),
+      {
+        params: { variantId },
+      },
+    );
   },
 };

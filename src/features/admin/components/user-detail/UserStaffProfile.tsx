@@ -41,7 +41,7 @@ const Field = React.forwardRef<HTMLInputElement, FieldProps>(({ label, error, ..
         error
           ? 'border-red-400 ring-4 ring-red-400/20'
           : 'border-white/40 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500'
-      } rounded-2xl text-sm font-bold text-emerald-950 transition-all outline-none`}
+      } rounded-xl text-sm font-bold text-emerald-950 transition-all outline-none`}
       {...props}
     />
     {error && (
@@ -86,7 +86,7 @@ const UserStaffProfile = ({ staffProfile, onUpdate, isUpdating }: UserStaffProfi
   };
 
   return (
-    <div className="bg-emerald-900 text-white p-8 rounded-3xl shadow-xl shadow-emerald-900/10 relative overflow-hidden">
+    <div className="bg-emerald-900 text-white p-8 rounded-xl shadow-xl shadow-emerald-900/10 relative overflow-hidden">
       <FiBriefcase className="absolute -right-8 -bottom-8 text-[120px] text-white/5" />
       <div className="flex justify-between items-center mb-6 relative z-10">
         <h4 className="text-lg font-black tracking-tight flex items-center gap-2">Hồ sơ nhân sự</h4>

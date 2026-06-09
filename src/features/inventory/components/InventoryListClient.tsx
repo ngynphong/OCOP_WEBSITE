@@ -292,7 +292,7 @@ export default function InventoryListClient() {
           </div>
         ) : items.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
-            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-stone-50 text-stone-300">
+            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-xl bg-stone-50 text-stone-300">
               <FiPackage className="size-10" />
             </div>
             <h3 className="mb-2 text-lg font-bold text-stone-800">Chưa có dữ liệu tồn kho</h3>

@@ -25,7 +25,7 @@ export default function Error({
           <div className="absolute inset-0 flex items-center justify-center blur-2xl opacity-20">
             <div className="w-32 h-32 bg-green-600 rounded-full"></div>
           </div>
-          <div className="relative bg-white p-6 rounded-3xl shadow-xl border border-green-100">
+          <div className="relative bg-white p-6 rounded-xl shadow-xl border border-green-100">
             <FiAlertCircle className="w-16 h-16 text-green-600" />
           </div>
         </div>

@@ -200,7 +200,7 @@ export function FlashSaleFormDrawer({
             >
               <div className="flex-1 overflow-y-auto p-8 custom-scrollbar space-y-8">
                 {/* Selection Summary */}
-                <div className="flex items-center justify-between p-4 bg-stone-50 rounded-2xl border border-stone-100 italic">
+                <div className="flex items-center justify-between p-4 bg-stone-50 rounded-xl border border-stone-100 italic">
                   <span className="text-xs text-stone-500 font-bold">
                     Đã chọn <span className="text-emerald-600">{products.length}</span> sản phẩm
                     tham gia
@@ -242,7 +242,7 @@ export function FlashSaleFormDrawer({
                         {...register('name')}
                         placeholder="Ví dụ: Đại tiệc OCOP cuối tuần"
                         className={cn(
-                          'w-full px-4 py-3 bg-stone-50 border border-stone-100 rounded-2xl text-sm font-bold text-stone-800 outline-none focus:ring-4 focus:ring-red-500/5 focus:border-red-500 transition-all',
+                          'w-full px-4 py-3 bg-stone-50 border border-stone-100 rounded-xl text-sm font-bold text-stone-800 outline-none focus:ring-4 focus:ring-red-500/5 focus:border-red-500 transition-all',
                           errors.name && 'border-red-300',
                         )}
                       />
@@ -264,7 +264,7 @@ export function FlashSaleFormDrawer({
                             type="datetime-local"
                             {...register('startTime')}
                             className={cn(
-                              'w-full pl-11 pr-4 py-3 bg-stone-50 border border-stone-100 rounded-2xl text-sm font-bold text-stone-800 outline-none focus:border-red-500 transition-all',
+                              'w-full pl-11 pr-4 py-3 bg-stone-50 border border-stone-100 rounded-xl text-sm font-bold text-stone-800 outline-none focus:border-red-500 transition-all',
                               errors.startTime && 'border-red-300 bg-red-50/30',
                             )}
                           />
@@ -285,7 +285,7 @@ export function FlashSaleFormDrawer({
                             type="datetime-local"
                             {...register('endTime')}
                             className={cn(
-                              'w-full pl-11 pr-4 py-3 bg-stone-50 border border-stone-100 rounded-2xl text-sm font-bold text-stone-800 outline-none focus:border-red-500 transition-all',
+                              'w-full pl-11 pr-4 py-3 bg-stone-50 border border-stone-100 rounded-xl text-sm font-bold text-stone-800 outline-none focus:border-red-500 transition-all',
                               errors.endTime && 'border-red-300 bg-red-50/30',
                             )}
                           />
@@ -307,14 +307,14 @@ export function FlashSaleFormDrawer({
                   </h4>
                   <div className="space-y-3">
                     {isLoadingVariants ? (
-                      <div className="py-12 flex flex-col items-center justify-center gap-4 bg-stone-50 rounded-3xl border border-dashed border-stone-200">
+                      <div className="py-12 flex flex-col items-center justify-center gap-4 bg-stone-50 rounded-xl border border-dashed border-stone-200">
                         <div className="w-8 h-8 border-4 border-red-100 border-t-red-600 rounded-full animate-spin" />
                         <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest">
                           Đang tải thông tin phân loại...
                         </p>
                       </div>
                     ) : fields.length === 0 ? (
-                      <div className="py-12 text-center bg-stone-50 rounded-3xl border border-dashed border-stone-200">
+                      <div className="py-12 text-center bg-stone-50 rounded-xl border border-dashed border-stone-200">
                         <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest">
                           Không có phân loại nào khả dụng
                         </p>
@@ -324,7 +324,7 @@ export function FlashSaleFormDrawer({
                         return (
                           <div
                             key={field.id}
-                            className="p-4 bg-white border border-stone-100 rounded-3xl space-y-3 relative overflow-hidden group"
+                            className="p-4 bg-white border border-stone-100 rounded-xl space-y-3 relative overflow-hidden group"
                           >
                             {/* Item Header */}
                             <div className="flex justify-between items-start gap-4">
@@ -420,7 +420,7 @@ export function FlashSaleFormDrawer({
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full py-4 bg-red-600 text-white rounded-2xl text-sm font-black shadow-lg shadow-red-600/20 flex items-center justify-center gap-2 hover:bg-red-700 active:scale-[0.98] transition-all disabled:opacity-50 cursor-pointer"
+                  className="w-full py-4 bg-red-600 text-white rounded-xl text-sm font-black shadow-lg shadow-red-600/20 flex items-center justify-center gap-2 hover:bg-red-700 active:scale-[0.98] transition-all disabled:opacity-50 cursor-pointer"
                 >
                   {isLoading ? (
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

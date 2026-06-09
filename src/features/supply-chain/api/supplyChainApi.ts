@@ -1,5 +1,7 @@
 import { axiosClient, publicAxiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
+import { buildRoute } from '@/lib/routeBuilder';
+
 import {
   ISupplyChainLot,
   ICreateLotReq,
@@ -39,13 +41,13 @@ export const supplyChainApi = {
 
   getSellerLotDetail: async (id: number) => {
     return axiosClient.get<unknown, { data: ISupplyChainLot }>(
-      `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/${id}`,
+      buildRoute(API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS, id),
     );
   },
 
   updateLotStatus: async (id: number, status: TLotStatus) => {
     return axiosClient.patch<unknown, { data: ISupplyChainLot }>(
-      `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/${id}/status`,
+      buildRoute(API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS, id, 'status'),
       null,
       { params: { status } },
     );
@@ -96,7 +98,7 @@ export const supplyChainApi = {
 
   getPublicLotDetail: async (id: number) => {
     return publicAxiosClient.get<unknown, { data: ISupplyChainLot }>(
-      `${API_ENDPOINTS.PUBLIC.SUPPLY_CHAIN_LOTS}/${id}`,
+      buildRoute(API_ENDPOINTS.PUBLIC.SUPPLY_CHAIN_LOTS, id),
     );
   },
 

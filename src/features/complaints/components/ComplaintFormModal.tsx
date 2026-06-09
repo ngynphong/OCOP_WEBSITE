@@ -62,7 +62,7 @@ export const ComplaintFormModal = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Gửi khiếu nại / Báo cáo" maxWidth="max-w-xl">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div className="bg-amber-50 border border-amber-100 p-4 rounded-2xl flex gap-3">
+        <div className="bg-amber-50 border border-amber-100 p-4 rounded-xl flex gap-3">
           <AlertCircle className="text-amber-600 shrink-0" size={20} />
           <p className="text-xs text-amber-800 leading-relaxed font-medium">
             Chúng tôi luôn lắng nghe ý kiến của bạn. Vui lòng cung cấp chi tiết khiếu nại để đội ngũ
@@ -78,7 +78,7 @@ export const ComplaintFormModal = ({
             <select
               {...register('type')}
               className={cn(
-                'w-full px-4 py-3 bg-stone-50 text-gray-700 border rounded-2xl text-sm font-medium outline-none transition-all appearance-none cursor-pointer',
+                'w-full px-4 py-3 bg-stone-50 text-gray-700 border rounded-xl text-sm font-medium outline-none transition-all appearance-none cursor-pointer',
                 errors.type ? 'border-red-500' : 'border-stone-100 focus:border-emerald-800',
               )}
             >
@@ -98,7 +98,7 @@ export const ComplaintFormModal = ({
               {...register('subject')}
               placeholder="VD: Sản phẩm không đúng mô tả..."
               className={cn(
-                'w-full px-4 py-3 bg-stone-50 border text-gray-700 rounded-2xl text-sm font-medium outline-none transition-all',
+                'w-full px-4 py-3 bg-stone-50 border text-gray-700 rounded-xl text-sm font-medium outline-none transition-all',
                 errors.subject ? 'border-red-500' : 'border-stone-100 focus:border-emerald-800',
               )}
             />
@@ -117,7 +117,7 @@ export const ComplaintFormModal = ({
             rows={5}
             placeholder="Mô tả cụ thể vấn đề bạn gặp phải (tối thiểu 20 ký tự)..."
             className={cn(
-              'w-full px-4 py-3 bg-stone-50 border text-gray-700 rounded-2xl text-sm font-medium outline-none transition-all resize-none',
+              'w-full px-4 py-3 bg-stone-50 border text-gray-700 rounded-xl text-sm font-medium outline-none transition-all resize-none',
               errors.description ? 'border-red-500' : 'border-stone-100 focus:border-emerald-800',
             )}
           />
@@ -131,14 +131,14 @@ export const ComplaintFormModal = ({
             type="button"
             variant="outline"
             onClick={onClose}
-            className="flex-1 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest"
+            className="flex-1 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest"
           >
             Hủy bỏ
           </Button>
           <Button
             type="submit"
             disabled={isPending}
-            className="flex-2 py-4 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white font-black text-[10px] uppercase tracking-widest shadow-xl shadow-emerald-200 flex items-center justify-center gap-2"
+            className="flex-2 py-4 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-black text-[10px] uppercase tracking-widest shadow-xl shadow-emerald-200 flex items-center justify-center gap-2"
           >
             {isPending ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
             Gửi yêu cầu

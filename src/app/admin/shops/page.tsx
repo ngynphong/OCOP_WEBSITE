@@ -96,7 +96,7 @@ const ShopManagementPage = () => {
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 flex flex-col justify-between hover:shadow-md transition-all">
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-stone-100 flex flex-col justify-between hover:shadow-md transition-all">
           <FiShoppingBag className="text-[#00490E] text-2xl mb-4" />
           <div>
             <p className="text-4xl font-black text-[#00490E] tracking-tighter">
@@ -107,7 +107,7 @@ const ShopManagementPage = () => {
             </p>
           </div>
         </div>
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 flex flex-col justify-between hover:shadow-md transition-all">
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-stone-100 flex flex-col justify-between hover:shadow-md transition-all">
           <FiClock className="text-amber-600 text-2xl mb-4" />
           <div>
             <p className="text-4xl font-black text-amber-600 tracking-tighter">{pendingCount}</p>
@@ -116,7 +116,7 @@ const ShopManagementPage = () => {
             </p>
           </div>
         </div>
-        <div className="md:col-span-2 bg-[#0D631B] text-white p-8 rounded-2xl flex items-center gap-8 relative overflow-hidden shadow-lg shadow-emerald-900/20">
+        <div className="md:col-span-2 bg-[#0D631B] text-white p-8 rounded-xl flex items-center gap-8 relative overflow-hidden shadow-lg shadow-emerald-900/20">
           <div className="relative z-10">
             <h4 className="text-xl font-bold mb-2">Chất lượng là ưu tiên</h4>
             <p className="text-emerald-100/70 text-sm max-w-xs">
@@ -133,7 +133,7 @@ const ShopManagementPage = () => {
       </div>
 
       {/* Filters & Table Section */}
-      <div className="bg-white rounded-3xl shadow-sm border border-stone-100 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden">
         <div className="p-6 border-b border-stone-50 flex flex-wrap justify-between items-center gap-4">
           <h3 className="text-lg font-black text-[#00490E] uppercase tracking-wider">Hàng đợi</h3>
 

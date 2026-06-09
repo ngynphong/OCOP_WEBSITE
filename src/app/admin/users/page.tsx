@@ -83,7 +83,7 @@ const UserListPage = () => {
         <div className="flex gap-4">
           <Link
             href="/admin/roles"
-            className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white text-sm font-black rounded-2xl hover:bg-green-800 transition-all shadow-lg shadow-green-900/10 active:scale-95"
+            className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white text-sm font-black rounded-xl hover:bg-green-800 transition-all shadow-lg shadow-green-900/10 active:scale-95"
           >
             <FiShield size={18} /> Quản lý Vai trò
           </Link>
@@ -91,7 +91,7 @@ const UserListPage = () => {
       </div>
 
       {/* Filters & Search */}
-      <div className="bg-white p-4 rounded-2xl shadow-sm border border-stone-100 flex flex-wrap gap-4 items-center">
+      <div className="bg-white p-4 rounded-xl shadow-sm border border-stone-100 flex flex-wrap gap-4 items-center">
         <div className="relative flex-1 min-w-[300px]">
           <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" />
           <input
@@ -142,7 +142,7 @@ const UserListPage = () => {
       </div>
 
       {/* Users Table */}
-      <div className="bg-white rounded-3xl shadow-sm border border-stone-100 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>

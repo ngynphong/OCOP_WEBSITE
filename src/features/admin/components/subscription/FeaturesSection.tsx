@@ -70,7 +70,7 @@ const FeaturesSection = () => {
             <div
               key={option.id}
               onClick={() => toggleFeature(option.id)}
-              className={`group flex items-start gap-3 p-4 rounded-2xl border transition-all cursor-pointer select-none ${
+              className={`group flex items-start gap-3 p-4 rounded-xl border transition-all cursor-pointer select-none ${
                 isSelected
                   ? 'bg-emerald-50 border-emerald-200 shadow-sm'
                   : 'bg-white border-stone-100 hover:border-emerald-200 hover:bg-stone-50/50'

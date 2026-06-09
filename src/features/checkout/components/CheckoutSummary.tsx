@@ -54,7 +54,7 @@ export const CheckoutSummary = memo(function CheckoutSummary({
   );
 
   return (
-    <div className="bg-white rounded-[32px] p-8 border border-stone-100 shadow-xl shadow-stone-200/50 sticky top-28">
+    <div className="bg-white rounded-xl p-8 border border-stone-100 shadow-xl shadow-stone-200/50 sticky top-28">
       <h2 className="text-xl font-black text-stone-900 mb-6 tracking-tight">Tóm tắt thanh toán</h2>
 
       {/* Voucher Input */}
@@ -126,7 +126,7 @@ export const CheckoutSummary = memo(function CheckoutSummary({
         onClick={onConfirm}
         disabled={!canConfirm || isPending}
         className={cn(
-          'w-full py-4 rounded-2xl flex items-center justify-center gap-2',
+          'w-full py-4 rounded-xl flex items-center justify-center gap-2',
           canConfirm && !isPending
             ? 'bg-green-700 hover:bg-green-800 shadow-green-900/20'
             : 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none',
@@ -147,7 +147,7 @@ export const CheckoutSummary = memo(function CheckoutSummary({
       </Button>
 
       <div className="mt-8 pt-8 border-t border-stone-100 flex flex-col gap-4">
-        <div className="flex items-start gap-3 bg-stone-50/50 p-4 rounded-2xl border border-stone-100/50">
+        <div className="flex items-start gap-3 bg-stone-50/50 p-4 rounded-xl border border-stone-100/50">
           <ShieldCheck className="w-5 h-5 text-green-600 shrink-0" />
           <div className="space-y-1">
             <h4 className="text-[10px] font-black text-stone-800 uppercase tracking-widest">

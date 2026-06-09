@@ -54,7 +54,7 @@ export default function NotificationsPage() {
         )}
       </div>
 
-      <div className="bg-white rounded-3xl border border-stone-100 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden">
         {isLoading ? (
           <div className="divide-y divide-stone-50">
             {Array.from({ length: 5 }).map((_, i) => (

@@ -149,7 +149,7 @@ export const AdminProductsTable = () => {
     return (
       <div className="space-y-3 animate-pulse">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="h-16 bg-stone-100 rounded-2xl" />
+          <div key={i} className="h-16 bg-stone-100 rounded-xl" />
         ))}
       </div>
     );
@@ -157,7 +157,7 @@ export const AdminProductsTable = () => {
 
   if (isError) {
     return (
-      <div className="flex items-center justify-center h-48 bg-red-50 rounded-2xl border border-red-100">
+      <div className="flex items-center justify-center h-48 bg-red-50 rounded-xl border border-red-100">
         <p className="text-red-500 text-sm font-semibold">Không tải được danh sách sản phẩm</p>
       </div>
     );
@@ -229,7 +229,7 @@ export const AdminProductsTable = () => {
       )}
 
       {activeTab === 'PRODUCTS' && (
-        <div className="bg-white rounded-3xl border border-stone-100 overflow-hidden shadow-sm">
+        <div className="bg-white rounded-xl border border-stone-100 overflow-hidden shadow-sm">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-stone-100 bg-stone-50/50">
@@ -443,7 +443,7 @@ export const AdminProductsTable = () => {
       {/* Reject modal */}
       {rejectModal.open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-md mx-4">
+          <div className="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md mx-4">
             <h3 className="text-lg font-black text-stone-900 mb-4">Lý do từ chối</h3>
             <textarea
               value={rejectNote}
@@ -474,10 +474,10 @@ export const AdminProductsTable = () => {
       {/* Product Story Modal */}
       {storyModal.open && storyModal.product && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
-          <div className="bg-white rounded-[40px] shadow-2xl w-full max-w-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="bg-green-700 px-10 py-8 flex justify-between items-center text-white">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-emerald-500 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                <div className="w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
                   <FiBookOpen size={24} />
                 </div>
                 <div>
@@ -519,7 +519,7 @@ export const AdminProductsTable = () => {
                     onChange={(e) =>
                       setStoryFormData({ ...storyFormData, storyTitle: e.target.value })
                     }
-                    className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-6 py-4 text-sm font-bold text-stone-800 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 transition-all"
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-6 py-4 text-sm font-bold text-stone-800 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 transition-all"
                     placeholder="Mật ong rừng – Tinh túy ngọt lành từ đại ngàn..."
                   />
                 </div>
@@ -533,7 +533,7 @@ export const AdminProductsTable = () => {
                     onChange={(e) =>
                       setStoryFormData({ ...storyFormData, storyImage: e.target.value })
                     }
-                    className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-6 py-4 text-sm font-medium text-stone-600 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 transition-all"
+                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-6 py-4 text-sm font-medium text-stone-600 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 transition-all"
                     placeholder="https://images.unsplash.com/photo-1586106901017-b2d588f9c458..."
                   />
                 </div>
@@ -549,7 +549,7 @@ export const AdminProductsTable = () => {
                     setStoryFormData({ ...storyFormData, impactStats: e.target.value })
                   }
                   rows={4}
-                  className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-6 py-4 text-sm font-medium text-stone-600 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 transition-all resize-none"
+                  className="w-full bg-stone-50 border border-stone-200 rounded-xl px-6 py-4 text-sm font-medium text-stone-600 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/5 transition-all resize-none"
                   placeholder="Ví dụ: 500+ nông dân tham gia, 1000ha vùng nguyên liệu..."
                 />
                 <p className="text-[10px] text-stone-400 italic mt-2 ml-1">

@@ -28,20 +28,20 @@ export function B2BCancelModal({ isOpen, onClose, onConfirm, isLoading }: B2BCan
           value={reason}
           onChange={(e) => setReason(e.target.value)}
           placeholder="Nhập lý do hủy đơn hàng..."
-          className="w-full h-32 p-4 rounded-2xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-green-600/20 focus:border-green-600 text-sm resize-none mb-6"
+          className="w-full h-32 p-4 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-green-600/20 focus:border-green-600 text-sm resize-none mb-6"
         />
         <div className="flex gap-4">
           <Button
             onClick={onClose}
             variant="outline"
-            className="flex-1 py-3 rounded-2xl font-black uppercase text-xs tracking-wider"
+            className="flex-1 py-3 rounded-xl font-black uppercase text-xs tracking-wider"
           >
             Hủy bỏ
           </Button>
           <Button
             onClick={() => onConfirm(reason)}
             isLoading={isLoading}
-            className="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-black uppercase text-xs tracking-wider"
+            className="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-black uppercase text-xs tracking-wider"
           >
             Hủy đơn sỉ
           </Button>
@@ -172,14 +172,14 @@ export function B2BRefundModal({
           <Button
             onClick={onClose}
             variant="outline"
-            className="flex-1 py-3 rounded-2xl font-black uppercase text-xs tracking-wider"
+            className="flex-1 py-3 rounded-xl font-black uppercase text-xs tracking-wider"
           >
             Hủy bỏ
           </Button>
           <Button
             onClick={handleSubmit}
             isLoading={isLoading}
-            className="flex-1 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-2xl font-black uppercase text-xs tracking-wider"
+            className="flex-1 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-black uppercase text-xs tracking-wider"
           >
             Gửi yêu cầu
           </Button>
@@ -239,14 +239,14 @@ export function B2BReviewModal({ isOpen, onClose, onConfirm, isLoading }: B2BRev
           <Button
             onClick={onClose}
             variant="outline"
-            className="flex-1 py-3 rounded-2xl font-black uppercase text-xs tracking-wider"
+            className="flex-1 py-3 rounded-xl font-black uppercase text-xs tracking-wider"
           >
             Hủy bỏ
           </Button>
           <Button
             onClick={() => onConfirm({ rating, comment })}
             isLoading={isLoading}
-            className="flex-1 py-3 bg-green-600 hover:bg-green-700 text-white rounded-2xl font-black uppercase text-xs tracking-wider"
+            className="flex-1 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl font-black uppercase text-xs tracking-wider"
           >
             Gửi đánh giá
           </Button>

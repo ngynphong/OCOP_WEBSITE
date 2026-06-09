@@ -23,7 +23,7 @@ export const AdminPolicyTable = ({
 }: AdminPolicyTableProps) => {
   if (policies.length === 0) {
     return (
-      <div className="bg-white p-10 rounded-3xl border border-stone-100 flex flex-col items-center justify-center text-stone-400">
+      <div className="bg-white p-10 rounded-xl border border-stone-100 flex flex-col items-center justify-center text-stone-400">
         <FiCheckCircle className="text-4xl mb-4 text-stone-300" />
         <p className="font-bold">Chưa có chính sách nào được tạo.</p>
       </div>
@@ -31,7 +31,7 @@ export const AdminPolicyTable = ({
   }
 
   return (
-    <div className="bg-white rounded-3xl border border-stone-100 overflow-hidden shadow-sm">
+    <div className="bg-white rounded-xl border border-stone-100 overflow-hidden shadow-sm">
       <div className="overflow-x-auto">
         <table className="w-full text-left">
           <thead>

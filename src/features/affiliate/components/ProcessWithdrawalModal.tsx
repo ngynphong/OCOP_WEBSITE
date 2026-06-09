@@ -83,7 +83,7 @@ export const ProcessWithdrawalModal: React.FC<ProcessWithdrawalModalProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Cập nhật trạng thái yêu cầu">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div className="bg-stone-50 p-4 rounded-2xl border border-stone-200">
+        <div className="bg-stone-50 p-4 rounded-xl border border-stone-200">
           <div className="flex items-start gap-3 mb-3">
             <FiAlertTriangle className="text-amber-500 mt-1 shrink-0" />
             <p className="text-xs text-stone-500 leading-relaxed">
@@ -110,7 +110,7 @@ export const ProcessWithdrawalModal: React.FC<ProcessWithdrawalModalProps> = ({
                   type="button"
                   onClick={() => setValue('status', nextStatus)}
                   className={cn(
-                    'flex items-center justify-between px-5 py-4 rounded-2xl border transition-all duration-300 font-bold text-sm',
+                    'flex items-center justify-between px-5 py-4 rounded-xl border transition-all duration-300 font-bold text-sm',
                     selectedStatus === nextStatus
                       ? 'bg-emerald-50 border-emerald-500 text-emerald-700 shadow-sm shadow-emerald-500/10'
                       : 'bg-white border-stone-200 text-stone-500 hover:bg-stone-50',
@@ -130,7 +130,7 @@ export const ProcessWithdrawalModal: React.FC<ProcessWithdrawalModalProps> = ({
                 type="button"
                 onClick={() => setValue('status', 'REJECTED')}
                 className={cn(
-                  'flex items-center gap-2 px-5 py-4 rounded-2xl border transition-all duration-300 font-bold text-sm',
+                  'flex items-center gap-2 px-5 py-4 rounded-xl border transition-all duration-300 font-bold text-sm',
                   selectedStatus === 'REJECTED'
                     ? 'bg-red-50 border-red-500 text-red-700 shadow-sm shadow-red-500/10'
                     : 'bg-white border-stone-200 text-stone-500 hover:bg-stone-50',
@@ -149,7 +149,7 @@ export const ProcessWithdrawalModal: React.FC<ProcessWithdrawalModalProps> = ({
               {...register('adminNote')}
               rows={3}
               placeholder="VD: Đã chuyển khoản qua Vietcombank..."
-              className="w-full px-5 py-4 rounded-2xl bg-stone-50 text-gray-700 border border-stone-200 transition-all duration-300 focus:outline-hidden focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 resize-none"
+              className="w-full px-5 py-4 rounded-xl bg-stone-50 text-gray-700 border border-stone-200 transition-all duration-300 focus:outline-hidden focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 resize-none"
             />
           </div>
         </div>
@@ -158,7 +158,7 @@ export const ProcessWithdrawalModal: React.FC<ProcessWithdrawalModalProps> = ({
           <Button
             type="button"
             variant="outline"
-            className="flex-1 rounded-2xl py-4 h-auto font-bold"
+            className="flex-1 rounded-xl py-4 h-auto font-bold"
             onClick={onClose}
           >
             Đóng
@@ -166,7 +166,7 @@ export const ProcessWithdrawalModal: React.FC<ProcessWithdrawalModalProps> = ({
           <Button
             type="submit"
             variant={selectedStatus === 'REJECTED' ? 'danger' : 'primary'}
-            className="flex-1 rounded-2xl py-4 h-auto font-bold shadow-lg"
+            className="flex-1 rounded-xl py-4 h-auto font-bold shadow-lg"
             isLoading={isProcessing}
           >
             Xác nhận cập nhật

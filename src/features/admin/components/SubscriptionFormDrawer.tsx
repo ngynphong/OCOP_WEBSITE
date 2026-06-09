@@ -197,7 +197,7 @@ const SubscriptionFormDrawer = ({ isOpen, onClose, planId }: SubscriptionFormDra
                   <Button
                     type="submit"
                     disabled={isSubmitting || isLoadingDetail}
-                    className="w-full py-4 bg-[#0D631B] text-white rounded-2xl text-sm font-black shadow-lg shadow-emerald-900/20 flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all disabled:opacity-50"
+                    className="w-full py-4 bg-[#0D631B] text-white rounded-xl text-sm font-black shadow-lg shadow-emerald-900/20 flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all disabled:opacity-50"
                   >
                     {isSubmitting ? (
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

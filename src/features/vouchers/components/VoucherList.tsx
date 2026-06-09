@@ -38,8 +38,8 @@ export function VoucherList({
 
   if (vouchers.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 px-6 bg-stone-50 rounded-[32px] border border-dashed border-stone-200">
-        <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-sm mb-4">
+      <div className="flex flex-col items-center justify-center py-20 px-6 bg-stone-50 rounded-xl border border-dashed border-stone-200">
+        <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-sm mb-4">
           <Ticket className="text-stone-300 w-8 h-8" />
         </div>
         <h4 className="text-stone-900 font-black text-lg">Chưa có mã giảm giá</h4>

@@ -298,7 +298,7 @@ export function VoucherFormDrawer({
             </div>
           </div>
 
-          <div className="flex items-center gap-2 p-4 bg-amber-50 rounded-2xl border border-amber-100">
+          <div className="flex items-center gap-2 p-4 bg-amber-50 rounded-xl border border-amber-100">
             <AlertCircle size={16} className="text-amber-600 shrink-0" />
             <p className="text-xs text-amber-700 leading-relaxed font-medium">
               Voucher sau khi tạo sẽ mặc định ở trạng thái <strong>ACTIVE</strong>. Bạn có thể tạm

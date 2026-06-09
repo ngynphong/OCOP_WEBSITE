@@ -63,7 +63,7 @@ export const ShippingSelector = memo(function ShippingSelector({
                   })
                 }
                 className={cn(
-                  'flex items-center justify-between p-4 rounded-2xl border transition-all cursor-pointer hover:shadow-sm',
+                  'flex items-center justify-between p-4 rounded-xl border transition-all cursor-pointer hover:shadow-sm',
                   selectedId === provider.id
                     ? 'border-green-600 bg-green-50/20'
                     : 'border-stone-100 bg-white hover:border-stone-200',
@@ -107,7 +107,7 @@ export const ShippingSelector = memo(function ShippingSelector({
             );
           })
         ) : (
-          <div className="p-8 rounded-2xl bg-stone-50 border border-stone-100 text-center">
+          <div className="p-8 rounded-xl bg-stone-50 border border-stone-100 text-center">
             <p className="text-sm font-bold text-stone-400 uppercase tracking-widest">
               Không có đơn vị vận chuyển khả dụng
             </p>

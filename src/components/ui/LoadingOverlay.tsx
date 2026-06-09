@@ -20,7 +20,7 @@ export const LoadingOverlay = memo(function LoadingOverlay() {
 
   return (
     <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-stone-900/40 backdrop-blur-md transition-all duration-500">
-      <div className="bg-white/95 p-5 sm:p-6 rounded-[28px] sm:rounded-[32px] shadow-[0_20px_50px_rgba(0,0,0,0.2)] flex flex-col items-center gap-4 sm:gap-6 border border-white/50 relative overflow-hidden mx-4">
+      <div className="bg-white/95 p-5 sm:p-6 rounded-[28px] sm:rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] flex flex-col items-center gap-4 sm:gap-6 border border-white/50 relative overflow-hidden mx-4">
         {/* Decorative Background Glow */}
         <div className="absolute -top-10 -left-10 w-20 h-20 sm:w-24 bg-green-500/10 blur-3xl rounded-full" />
         <div className="absolute -bottom-10 -right-10 w-20 h-20 sm:w-24 bg-emerald-500/10 blur-3xl rounded-full" />
