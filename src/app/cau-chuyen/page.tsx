@@ -33,7 +33,7 @@ export default function StoryLandingPage() {
 
       <main className="pb-24">
         {/* Hero Section */}
-        <section className="relative h-[60vh] flex items-center justify-center bg-[#113B28] z-30">
+        <section className="relative min-h-[60vh] py-32 md:py-0 flex items-center justify-center bg-[#113B28] z-30">
           <div className="absolute inset-0 opacity-40">
             <Image
               src="/images/story-bg.jpg"

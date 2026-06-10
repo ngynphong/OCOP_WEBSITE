@@ -31,7 +31,7 @@ export const BlogArticle = () => {
   return (
     <article className="bg-white min-h-screen pb-24">
       {/* Header / Hero */}
-      <header className="relative h-[60vh] md:h-[70vh] bg-stone-900 flex items-center">
+      <header className="relative min-h-[60vh] md:min-h-[70vh] py-32 md:py-0 bg-stone-900 flex items-center">
         {blog.thumbnailUrl && (
           <div className="absolute inset-0 opacity-50">
             <Image

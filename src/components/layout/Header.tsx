@@ -404,6 +404,17 @@ export function Header() {
                 >
                   Câu Chuyện
                 </Link>
+                <Link
+                  href="/bai-viet"
+                  onClick={() => setIsMenuOpen(false)}
+                  className={
+                    isHydrated && pathname.startsWith('/bai-viet')
+                      ? 'text-white text-base font-semibold'
+                      : 'text-emerald-100 text-base font-semibold'
+                  }
+                >
+                  Bài Viết
+                </Link>
 
                 <div className="h-px bg-emerald-700/50 my-2" />
 

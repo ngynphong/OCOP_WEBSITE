@@ -24,6 +24,7 @@ interface B2BShipmentProgressProps {
 
 const translateShipmentStatus = (status: string) => {
   const map: Record<string, string> = {
+    AWAITING_PICKUP: 'Chờ lấy hàng',
     PICKED_UP: 'Đã lấy hàng',
     IN_TRANSIT: 'Đang luân chuyển',
     OUT_FOR_DELIVERY: 'Đang đi phát',
@@ -47,7 +48,7 @@ export function B2BShipmentProgress({ shipment, isB2B }: B2BShipmentProgressProp
             <Truck size={24} className="text-green-600" />
           </div>
           <div>
-            <h3 className="font-black text-stone-900 text-lg">Tiến độ vận chuyển</h3>
+            <h3 className="font-black text-stone-900 text-md md:text-lg">Tiến độ vận chuyển</h3>
             <div className="flex items-center gap-2 mt-1">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
               <p className="text-xs text-green-700 font-black uppercase tracking-wider">
@@ -69,16 +70,24 @@ export function B2BShipmentProgress({ shipment, isB2B }: B2BShipmentProgressProp
         </div>
       </div>
 
-      <div className="flex w-full items-start mt-4 mb-2 scrollbar-hide overflow-x-auto pb-6">
+      <div className="flex flex-col md:flex-row w-full md:items-start mt-4 mb-2 scrollbar-hide overflow-x-auto pb-6 gap-6 p-1 md:gap-0">
         {[...shipment.timeline]
           .sort((a, b) => new Date(a.loggedAt).getTime() - new Date(b.loggedAt).getTime())
           .map((event, idx, arr) => {
             const isLast = idx === arr.length - 1;
             return (
-              <div key={idx} className="flex items-start min-w-[240px] relative">
+              <div
+                key={idx}
+                className="flex items-start md:min-w-[240px] relative w-full md:w-auto"
+              >
                 {/* Connector Line */}
                 {!isLast && (
-                  <div className="absolute left-6 top-6 right-0 h-0.5 bg-stone-100 -z-10" />
+                  <>
+                    {/* Vertical line for mobile */}
+                    <div className="absolute left-[23px] top-6 bottom-[-48px] w-0.5 bg-stone-200 -z-10 md:hidden" />
+                    {/* Horizontal line for desktop */}
+                    <div className="absolute left-6 top-6 right-0 h-0.5 bg-stone-200 -z-10 hidden md:block" />
+                  </>
                 )}
                 <div className="flex flex-col items-center shrink-0 w-12 mr-4">
                   <div
@@ -103,7 +112,7 @@ export function B2BShipmentProgress({ shipment, isB2B }: B2BShipmentProgressProp
                       isLast ? 'text-green-700' : 'text-stone-700'
                     }`}
                   >
-                    {event.status}
+                    {translateShipmentStatus(event.status)}
                   </h4>
                   <p className="text-xs font-black text-stone-900 mb-1 leading-snug">
                     {event.description}
