@@ -4,10 +4,12 @@ import { memo, useMemo, useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Heart } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useAppSelector } from '@/store/hooks';
 import { useAddToWishlist, useRemoveFromWishlist } from '@/features/wishlist/hooks/useWishlist';
 import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
+import { publicProductApi } from '@/features/products/api/publicProductApi';
 
 interface ProductCardProps {
   name: string;
@@ -44,6 +46,16 @@ export const ProductCard = memo(function ProductCard({
   isWholesale = false,
 }: ProductCardProps) {
   const [isMounted, setIsMounted] = useState(false);
+  const queryClient = useQueryClient();
+
+  // Prefetch logic
+  const handleMouseEnter = () => {
+    queryClient.prefetchQuery({
+      queryKey: ['products', 'public', slug],
+      queryFn: () => publicProductApi.getProduct(slug),
+      staleTime: 60 * 1000, // 1 minute
+    });
+  };
 
   // Hydration
   useEffect(() => {
@@ -74,6 +86,7 @@ export const ProductCard = memo(function ProductCard({
   return (
     <Link
       href={`/san-pham/${slug}`}
+      onMouseEnter={handleMouseEnter}
       className="block group focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-500/30 rounded-xl"
     >
       <div className="w-full flex flex-col justify-start items-start gap-4 cursor-pointer">

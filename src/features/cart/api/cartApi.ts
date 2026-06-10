@@ -23,21 +23,32 @@ export const cartApi = {
   },
 
   addItem: (data: AddToCartRequest): Promise<CartResponse> => {
-    return axiosClient.post(API_ENDPOINTS.CART.ITEMS, data);
+    return axiosClient.post(API_ENDPOINTS.CART.ITEMS, data, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   updateItem: (itemId: number, data: UpdateCartItemRequest): Promise<CartResponse> => {
-    return axiosClient.patch(buildRoute(API_ENDPOINTS.CART.ITEMS, itemId), data);
+    return axiosClient.patch(buildRoute(API_ENDPOINTS.CART.ITEMS, itemId), data, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
   removeItem: (itemId: number): Promise<CartResponse> => {
-    return axiosClient.delete(buildRoute(API_ENDPOINTS.CART.ITEMS, itemId));
+    return axiosClient.delete(buildRoute(API_ENDPOINTS.CART.ITEMS, itemId), {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   removeItems: (data: DeleteCartItemsRequest): Promise<CartResponse> => {
-    return axiosClient.delete(API_ENDPOINTS.CART.ITEMS, { data });
+    return axiosClient.delete(API_ENDPOINTS.CART.ITEMS, {
+      data,
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
   clearCart: (): Promise<CartResponse> => {
-    return axiosClient.delete(API_ENDPOINTS.CART.BASE);
+    return axiosClient.delete(API_ENDPOINTS.CART.BASE, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   validate: (): Promise<CartValidateResponse> => {

@@ -76,9 +76,9 @@ interface QtyStepperProps {
   isPending?: boolean;
 }
 
-function QtyStepper({ qty, max, disabled, onDecrease, onIncrease, isPending }: QtyStepperProps) {
-  const isDecDisabled = qty <= 1 || disabled || isPending;
-  const isIncDisabled = qty >= max || disabled || isPending;
+function QtyStepper({ qty, max, disabled, onDecrease, onIncrease }: QtyStepperProps) {
+  const isDecDisabled = qty <= 1 || disabled;
+  const isIncDisabled = qty >= max || disabled;
 
   return (
     <div
@@ -103,15 +103,8 @@ function QtyStepper({ qty, max, disabled, onDecrease, onIncrease, isPending }: Q
         <Minus className="w-3.5 h-3.5" />
       </button>
 
-      {/* Số lượng + loading */}
-      <span
-        className={cn(
-          'w-8 text-center text-sm font-bold text-stone-800 tabular-nums',
-          isPending && 'animate-pulse text-stone-400',
-        )}
-      >
-        {qty}
-      </span>
+      {/* Số lượng */}
+      <span className="w-8 text-center text-sm font-bold text-stone-800 tabular-nums">{qty}</span>
 
       {/* Nút Tăng */}
       <button
@@ -149,16 +142,13 @@ export const CartItemCard = React.memo(function CartItemCard({
   isSelected,
   onToggleSelect,
 }: CartItemCardProps) {
-  const { mutate: updateItem, isPending: isUpdating } = useUpdateCartItem();
+  const { mutate: updateItem } = useUpdateCartItem();
   const { mutate: removeItem, isPending: isRemoving } = useRemoveCartItem();
 
-  // Local qty: optimistic UI — cập nhật ngay khi click, debounce API 400ms
   const [localQty, setLocalQty] = useState(item.qty);
   const [prevQty, setPrevQty] = useState(item.qty);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Sync với server value khi data refetch xong (sau khi API response)
-  // Sử dụng pattern reset state trong render để tránh cascading renders (Lighthouse/Lint error)
   if (item.qty !== prevQty) {
     setLocalQty(item.qty);
     setPrevQty(item.qty);
@@ -170,17 +160,14 @@ export const CartItemCard = React.memo(function CartItemCard({
     (newQty: number) => {
       if (newQty < 1 || newQty > item.maxQty) return;
 
-      // Optimistic: cập nhật UI ngay
       setLocalQty(newQty);
 
-      // Debounce API call 400ms — tránh gọi liên tục khi bấm nhanh
       if (debounceRef.current) clearTimeout(debounceRef.current);
       debounceRef.current = setTimeout(() => {
         updateItem(
           { itemId: item.id, data: { qty: newQty } },
           {
             onError: () => {
-              // Rollback về server value nếu API lỗi
               setLocalQty(item.qty);
             },
           },
@@ -274,7 +261,6 @@ export const CartItemCard = React.memo(function CartItemCard({
             qty={localQty}
             max={item.maxQty}
             disabled={isDisabled}
-            isPending={isUpdating}
             onDecrease={() => handleQtyChange(localQty - 1)}
             onIncrease={() => handleQtyChange(localQty + 1)}
           />
