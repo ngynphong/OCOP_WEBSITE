@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
-import { QuickLinkManagement } from '@/features/admin/components/home/QuickLinkManagement';
-import AdminHeader from '@/features/admin/components/AdminHeader';
+import { QuickLinkManagement } from '@/features/admin/components/dashboard/QuickLinkManagement';
+import AdminHeader from '@/features/admin/components/core/AdminHeader';
 
 export const metadata: Metadata = {
   title: 'Quản lý Liên kết nhanh | OCOP Admin',

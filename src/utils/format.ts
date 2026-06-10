@@ -3,6 +3,14 @@ const vndFormatter = new Intl.NumberFormat('vi-VN', {
   currency: 'VND',
 });
 
+const dateFormatter = new Intl.DateTimeFormat('vi-VN', {
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+});
+
 /**
  * @param amount - Giá trị tiền tệ (hỗ trợ cả string và number)
  * @returns Chuỗi tiền tệ đã format (VD: "1.000.000 ₫")
@@ -37,11 +45,5 @@ export const parseVNDInput = (formattedValue: string): number => {
 export const formatDate = (date: string | Date): string => {
   if (!date) return '-';
   const d = typeof date === 'string' ? new Date(date) : date;
-  return new Intl.DateTimeFormat('vi-VN', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(d);
+  return dateFormatter.format(d);
 };

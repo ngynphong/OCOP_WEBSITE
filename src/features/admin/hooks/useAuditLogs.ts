@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { adminApi } from '../api/adminApi';
-import { GetAuditLogsParams } from '../types/adminTypes';
+import { adminApi } from '@/features/admin/api/adminApi';
+import { GetAuditLogsParams } from '@/features/admin/types/adminTypes';
 
 export const useAuditLogsQuery = (params: GetAuditLogsParams) => {
   return useQuery({

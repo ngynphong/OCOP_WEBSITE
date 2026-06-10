@@ -13,7 +13,7 @@ import {
   IPayoutProcessReq,
   IRefundApproveReq,
   IAdminPayoutParams,
-} from '../types/adminTypes';
+} from '@/features/admin/types/adminTypes';
 
 export const adminOrderApi = {
   getOrders: (params: {

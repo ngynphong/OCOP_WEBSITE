@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
-import { BannerManagement } from '@/features/admin/components/home/BannerManagement';
-import AdminHeader from '@/features/admin/components/AdminHeader';
+import { BannerManagement } from '@/features/admin/components/dashboard/BannerManagement';
+import AdminHeader from '@/features/admin/components/core/AdminHeader';
 
 export const metadata: Metadata = {
   title: 'Quản lý Banners | OCOP Admin',

@@ -1,13 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { adminOrderApi } from '../api/adminOrderApi';
+import { adminOrderApi } from '@/features/admin/api/adminOrderApi';
 import {
   IAdminOrderParams,
   IAdminRefundParams,
   IPayoutProcessReq,
   IRefundApproveReq,
   IAdminPayoutParams,
-} from '../types/adminTypes';
+} from '@/features/admin/types/adminTypes';
 
 export const adminOrderKeys = {
   all: ['admin-orders'] as const,

@@ -13,13 +13,13 @@ import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 
 // Modular Components
-import ShopDetailHeader from '@/features/admin/components/ShopDetailHeader';
-import ShopDetailSidebar from '@/features/admin/components/ShopDetailSidebar';
-import ShopDetailTabs from '@/features/admin/components/ShopDetailTabs';
-import ShopDetailOverview from '@/features/admin/components/ShopDetailOverview';
-import ShopDetailLegality from '@/features/admin/components/ShopDetailLegality';
-import ShopDetailSubscription from '@/features/admin/components/ShopDetailSubscription';
-import ShopDetailHistory from '@/features/admin/components/ShopDetailHistory';
+import ShopDetailHeader from '@/features/admin/components/shops/ShopDetailHeader';
+import ShopDetailSidebar from '@/features/admin/components/shops/ShopDetailSidebar';
+import ShopDetailTabs from '@/features/admin/components/shops/ShopDetailTabs';
+import ShopDetailOverview from '@/features/admin/components/shops/ShopDetailOverview';
+import ShopDetailLegality from '@/features/admin/components/shops/ShopDetailLegality';
+import ShopDetailSubscription from '@/features/admin/components/shops/ShopDetailSubscription';
+import ShopDetailHistory from '@/features/admin/components/shops/ShopDetailHistory';
 
 const ShopDetailPage = () => {
   const params = useParams();

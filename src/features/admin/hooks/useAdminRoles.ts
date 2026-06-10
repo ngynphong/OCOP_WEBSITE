@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { adminApi } from '../api/adminApi';
-import { CreateRoleRequest, RolePermissionsRequest } from '../types/adminTypes';
+import { adminApi } from '@/features/admin/api/adminApi';
+import { CreateRoleRequest, RolePermissionsRequest } from '@/features/admin/types/adminTypes';
 import toast from 'react-hot-toast';
 
 // ─── Standalone Query Hooks ────────────────────────────────────────────────────

@@ -1,9 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { adminHomeApi } from '../api/adminHomeApi';
+import { adminHomeApi } from '@/features/admin/api/adminHomeApi';
 import toast from 'react-hot-toast';
 import { AxiosError } from 'axios';
 import { ResponseBase } from '@/features/auth/types';
-import { CreateQuickLinkRequest, UpdateQuickLinkRequest } from '../types/adminHomeTypes';
+import {
+  CreateQuickLinkRequest,
+  UpdateQuickLinkRequest,
+} from '@/features/admin/types/adminHomeTypes';
 
 // ─── Banner Hooks ────────────────────────────────────────────────────────────
 

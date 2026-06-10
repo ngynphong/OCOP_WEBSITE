@@ -1,11 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { adminApi } from '../api/adminApi';
+import { adminApi } from '@/features/admin/api/adminApi';
 import {
   GetShopsParams,
   ShopActionRequest,
   OverridePlanRequest,
   UpdateShopOwnerRequest,
-} from '../types/adminTypes';
+} from '@/features/admin/types/adminTypes';
 import toast from 'react-hot-toast';
 
 type ApiError = { response?: { data?: { message?: string } } };

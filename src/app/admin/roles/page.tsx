@@ -14,7 +14,7 @@ import { useRolesQuery, useAdminRoleMutations } from '@/features/admin/hooks/use
 import { AdminRole } from '@/features/admin/types/adminTypes';
 import Link from 'next/link';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
-import RoleFormDrawer from '@/features/admin/components/RoleFormDrawer';
+import RoleFormDrawer from '@/features/admin/components/roles/RoleFormDrawer';
 import { Button } from '@/components/ui/AppButton';
 
 const RoleListPage = () => {

@@ -19,7 +19,7 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { Pagination } from '@/components/ui/Pagination';
-import ShopStatusBadge from '@/features/admin/components/ShopStatusBadge';
+import ShopStatusBadge from '@/features/admin/components/shops/ShopStatusBadge';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 
 const ShopManagementPage = () => {

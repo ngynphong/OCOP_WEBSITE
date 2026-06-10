@@ -6,8 +6,8 @@ import {
   ProvinceListResponse,
   DistrictListResponse,
   WardListResponse,
-} from '../types/locationTypes';
-import { ResponseBase } from '../types/adminTypes';
+} from '@/features/admin/types/locationTypes';
+import { ResponseBase } from '@/features/admin/types/adminTypes';
 
 export const locationApi = {
   getProvinces: (region?: string): Promise<ProvinceListResponse> => {

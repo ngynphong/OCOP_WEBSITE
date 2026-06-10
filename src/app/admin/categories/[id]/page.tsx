@@ -22,7 +22,7 @@ import {
   useAdminCategoryDetailQuery,
   useAdminCategoryMutations,
 } from '@/features/admin/hooks/useAdminCategories';
-import CategoryFormDrawer from '@/features/admin/components/CategoryDrawer';
+import CategoryFormDrawer from '@/features/admin/components/categories/CategoryDrawer';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 import { Category } from '@/features/admin/types/adminTypes';

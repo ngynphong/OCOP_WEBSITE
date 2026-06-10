@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import AdminSidebar from '@/features/admin/components/AdminSidebar';
-import AdminHeader from '@/features/admin/components/AdminHeader';
+import AdminSidebar from '@/features/admin/components/core/AdminSidebar';
+import AdminHeader from '@/features/admin/components/core/AdminHeader';
 import { useAuthProfile } from '@/features/auth/hooks/useAuth';
 import { usePermission } from '@/features/auth/hooks/usePermission';
 import { useRouter } from 'next/navigation';

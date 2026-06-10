@@ -1,5 +1,5 @@
 import React from 'react';
-import { AuditLogTable } from '@/features/admin/components/AuditLogTable';
+import { AuditLogTable } from '@/features/admin/components/audit-logs/AuditLogTable';
 
 export const metadata = {
   title: 'Nhật ký hệ thống | OCOP Admin',

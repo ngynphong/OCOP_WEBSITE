@@ -3,10 +3,10 @@
 import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FiBox, FiLayers } from 'react-icons/fi';
-import CategoryTable from '@/features/admin/components/CategoryTable';
-import CategoryFormDrawer from '@/features/admin/components/CategoryDrawer';
+import CategoryTable from '@/features/admin/components/categories/CategoryTable';
+import CategoryFormDrawer from '@/features/admin/components/categories/CategoryDrawer';
 import { Category } from '@/features/admin/types/adminTypes';
-import { AdminProductsTable } from '@/features/admin/components/AdminProductsTable';
+import { AdminProductsTable } from '@/features/admin/components/products/AdminProductsTable';
 import { PermissionGuard } from '@/components/guards/PermissionGuard';
 import { usePermission } from '@/features/auth/hooks/usePermission';
 import { PERMISSIONS } from '@/features/auth/constants/permissions';

@@ -8,10 +8,10 @@ import {
   useAdminOrderMutations,
   useAdminPayoutsQuery,
 } from '@/features/admin/hooks/useAdminOrders';
-import { AdminOrderTable } from '@/features/admin/components/AdminOrderTable';
-import { AdminOrderStats } from '@/features/admin/components/AdminOrderStats';
-import { AdminRefundTable } from '@/features/admin/components/AdminRefundTable';
-import { AdminPayoutTable } from '@/features/admin/components/AdminPayoutTable';
+import { AdminOrderTable } from '@/features/admin/components/orders/AdminOrderTable';
+import { AdminOrderStats } from '@/features/admin/components/orders/AdminOrderStats';
+import { AdminRefundTable } from '@/features/admin/components/orders/AdminRefundTable';
+import { AdminPayoutTable } from '@/features/admin/components/payouts/AdminPayoutTable';
 import {
   IAdminOrderParams,
   IAdminRefundParams,

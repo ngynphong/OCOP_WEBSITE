@@ -11,7 +11,7 @@ import {
   AdminQuickLinkListResponse,
   CreateQuickLinkRequest,
   UpdateQuickLinkRequest,
-} from '../types/adminHomeTypes';
+} from '@/features/admin/types/adminHomeTypes';
 import { ResponseBase } from '@/features/auth/types';
 
 export const adminHomeApi = {

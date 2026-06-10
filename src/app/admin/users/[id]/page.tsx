@@ -13,12 +13,12 @@ import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 
 // Modular Components
-import UserDetailHeader from '@/features/admin/components/user-detail/UserDetailHeader';
-import UserDetailSidebar from '@/features/admin/components/user-detail/UserDetailSidebar';
-import UserRoleManagement from '@/features/admin/components/user-detail/UserRoleManagement';
-import UserPermissionManagement from '@/features/admin/components/user-detail/UserPermissionManagement';
-import UserStaffProfile from '@/features/admin/components/user-detail/UserStaffProfile';
-import UserLoyaltyPoints from '@/features/admin/components/user-detail/UserLoyaltyPoints';
+import UserDetailHeader from '@/features/admin/components/users/UserDetailHeader';
+import UserDetailSidebar from '@/features/admin/components/users/UserDetailSidebar';
+import UserRoleManagement from '@/features/admin/components/users/UserRoleManagement';
+import UserPermissionManagement from '@/features/admin/components/users/UserPermissionManagement';
+import UserStaffProfile from '@/features/admin/components/users/UserStaffProfile';
+import UserLoyaltyPoints from '@/features/admin/components/users/UserLoyaltyPoints';
 
 const UserDetailPage = () => {
   const { id } = useParams();

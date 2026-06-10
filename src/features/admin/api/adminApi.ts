@@ -37,7 +37,7 @@ import {
   CategoryCheckSlugResponse,
   AdminAuditLogResponse,
   GetAuditLogsParams,
-} from '../types/adminTypes';
+} from '@/features/admin/types/adminTypes';
 import { CategorySchemaType, CategoryFormSchemaType } from '../types/categorySchema';
 
 export const adminApi = {

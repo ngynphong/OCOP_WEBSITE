@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { adminApi } from '../api/adminApi';
-import { CategorySchemaType, CategoryFormSchemaType } from '../types/categorySchema';
+import { adminApi } from '@/features/admin/api/adminApi';
+import { CategorySchemaType, CategoryFormSchemaType } from '@/features/admin/types/categorySchema';
 import toast from 'react-hot-toast';
 
 type ApiError = { response?: { data?: { message?: string } } };

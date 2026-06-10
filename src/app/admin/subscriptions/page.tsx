@@ -15,8 +15,8 @@ import {
   useAdminSubscriptionMutations,
 } from '@/features/admin/hooks/useAdminSubscriptions';
 import { SubscriptionPlan } from '@/features/admin/types/adminTypes';
-import PlanStatusBadge from '@/features/admin/components/PlanStatusBadge';
-import SubscriptionFormDrawer from '@/features/admin/components/SubscriptionFormDrawer';
+import PlanStatusBadge from '@/features/admin/components/subscriptions/PlanStatusBadge';
+import SubscriptionFormDrawer from '@/features/admin/components/subscriptions/SubscriptionFormDrawer';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { Button } from '@/components/ui/AppButton';
 

@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { locationApi } from '../api/locationApi';
+import { locationApi } from '@/features/admin/api/locationApi';
 
 export const useLocation = () => {
   const useProvinces = (region?: string) => {

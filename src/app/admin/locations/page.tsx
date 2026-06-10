@@ -1,4 +1,4 @@
-import { LocationImportSection } from '@/features/admin/components/LocationImportSection';
+import { LocationImportSection } from '@/features/admin/components/locations/LocationImportSection';
 
 export default function LocationsPage() {
   return (
