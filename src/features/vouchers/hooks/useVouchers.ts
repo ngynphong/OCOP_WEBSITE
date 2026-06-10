@@ -126,8 +126,28 @@ export const useSaveVoucherMutations = () => {
 
   const saveVoucher = useMutation({
     mutationFn: (voucherId: number) => voucherApi.saveVoucher(voucherId),
-    onSuccess: (_, voucherId) => {
+    onMutate: async (voucherId: number) => {
+      await queryClient.cancelQueries({ queryKey: ['vouchers', 'isSaved', voucherId] });
+      const previousValue = queryClient.getQueryData(['vouchers', 'isSaved', voucherId]);
+      queryClient.setQueryData(['vouchers', 'isSaved', voucherId], (old: unknown) => {
+        if (typeof old === 'object' && old !== null && 'data' in old) {
+          return { ...old, data: true };
+        }
+        // fallback in case it directly returns boolean or API response format
+        return { data: true };
+      });
+      return { previousValue };
+    },
+    onError: (err: Error, voucherId: number, context?: { previousValue: unknown }) => {
+      if (context?.previousValue !== undefined) {
+        queryClient.setQueryData(['vouchers', 'isSaved', voucherId], context.previousValue);
+      }
+      toast.error('Lỗi khi lưu mã giảm giá');
+    },
+    onSuccess: () => {
       toast.success('Đã lưu mã giảm giá vào ví');
+    },
+    onSettled: (_, __, voucherId) => {
       queryClient.invalidateQueries({ queryKey: ['vouchers', 'saved'] });
       queryClient.invalidateQueries({ queryKey: ['vouchers', 'isSaved', voucherId] });
     },
@@ -135,8 +155,27 @@ export const useSaveVoucherMutations = () => {
 
   const unsaveVoucher = useMutation({
     mutationFn: (voucherId: number) => voucherApi.unsaveVoucher(voucherId),
-    onSuccess: (_, voucherId) => {
+    onMutate: async (voucherId: number) => {
+      await queryClient.cancelQueries({ queryKey: ['vouchers', 'isSaved', voucherId] });
+      const previousValue = queryClient.getQueryData(['vouchers', 'isSaved', voucherId]);
+      queryClient.setQueryData(['vouchers', 'isSaved', voucherId], (old: unknown) => {
+        if (typeof old === 'object' && old !== null && 'data' in old) {
+          return { ...old, data: false };
+        }
+        return { data: false };
+      });
+      return { previousValue };
+    },
+    onError: (err: Error, voucherId: number, context?: { previousValue: unknown }) => {
+      if (context?.previousValue !== undefined) {
+        queryClient.setQueryData(['vouchers', 'isSaved', voucherId], context.previousValue);
+      }
+      toast.error('Lỗi khi bỏ lưu mã giảm giá');
+    },
+    onSuccess: () => {
       toast.success('Đã bỏ lưu mã giảm giá');
+    },
+    onSettled: (_, __, voucherId) => {
       queryClient.invalidateQueries({ queryKey: ['vouchers', 'saved'] });
       queryClient.invalidateQueries({ queryKey: ['vouchers', 'isSaved', voucherId] });
     },

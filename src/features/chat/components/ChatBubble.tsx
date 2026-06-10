@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { FiFile, FiCheck, FiCheckCircle } from 'react-icons/fi';
 import Image from 'next/image';
-import { useAuthProfile } from '@/features/auth/hooks/useAuth';
+import { useAuthProfile } from '@/features/auth/hooks/useAuthProfile';
 
 interface ChatBubbleProps {
   message: ChatMessage;

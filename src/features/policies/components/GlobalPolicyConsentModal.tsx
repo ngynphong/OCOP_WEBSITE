@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { usePendingPolicies, useConsentPolicy } from '../hooks/usePolicies';
-import { useLogout } from '@/features/auth/hooks/useAuth';
+import { useLogout } from '@/features/auth/hooks/useLogout';
 import { Button } from '@/components/ui/AppButton';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiAlertCircle, FiCheck, FiX } from 'react-icons/fi';

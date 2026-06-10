@@ -4,7 +4,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { CheckCircle2, XCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/AppButton';
-import { useVerify } from '@/features/auth/hooks/useAuth';
+import { useVerify } from '@/features/auth/hooks/useVerify';
 import Link from 'next/link';
 
 function VerifyEmailContent() {

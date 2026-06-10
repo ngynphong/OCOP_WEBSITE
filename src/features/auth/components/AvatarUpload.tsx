@@ -3,7 +3,7 @@
 import React, { useRef } from 'react';
 import Image from 'next/image';
 import { FiCamera, FiTrash2, FiLoader } from 'react-icons/fi';
-import { useProfileMutations } from '../hooks/useAuth';
+import { useProfileMutations } from '../hooks/useProfileMutations';
 
 interface AvatarUploadProps {
   currentAvatar?: string;

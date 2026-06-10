@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { useAuthProfile } from '@/features/auth/hooks/useAuth';
+import { useAuthProfile } from '@/features/auth/hooks/useAuthProfile';
 import { useAppSelector } from '@/store/hooks';
 import Link from 'next/link';
 import {

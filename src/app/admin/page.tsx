@@ -23,6 +23,15 @@ const AdminRevenueChart = dynamic(
 
 const AdminOverview = () => {
   const [isMounted, setIsMounted] = useState(false);
+
+  // Default to last 30 days
+  const [fromDate, setFromDate] = useState(() => {
+    const d = new Date();
+    d.setDate(d.getDate() - 30);
+    return d.toISOString().split('T')[0];
+  });
+  const [toDate, setToDate] = useState(() => new Date().toISOString().split('T')[0]);
+
   const { data: dashboardData, isPending, isError } = useAdminDashboard();
 
   useEffect(() => {
@@ -59,7 +68,7 @@ const AdminOverview = () => {
   return (
     <div className="space-y-10">
       {/* Page Header */}
-      <div className="flex justify-between items-end">
+      <div className="flex flex-col md:flex-row justify-between md:items-end gap-4">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
           <h2 className="text-3xl font-black text-emerald-900 tracking-tight leading-none mb-3">
             Quản trị viên Tổng quan
@@ -67,6 +76,33 @@ const AdminOverview = () => {
           <p className="text-stone-500 text-sm font-medium">
             Giám sát tăng trưởng khu vực và chỉ số thị trường OCOP.
           </p>
+        </motion.div>
+
+        {/* Date Filters */}
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex items-center gap-3 bg-white p-3 rounded-xl shadow-sm border border-stone-100"
+        >
+          <div className="flex flex-col">
+            <label className="text-xs text-stone-500 font-medium ml-1">Từ ngày</label>
+            <input
+              type="date"
+              value={fromDate}
+              onChange={(e) => setFromDate(e.target.value)}
+              className="px-3 py-1.5 text-sm text-gray-500 bg-stone-50 border-none rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
+            />
+          </div>
+          <span className="text-stone-300 mt-4">-</span>
+          <div className="flex flex-col">
+            <label className="text-xs text-stone-500 font-medium ml-1">Đến ngày</label>
+            <input
+              type="date"
+              value={toDate}
+              onChange={(e) => setToDate(e.target.value)}
+              className="px-3 py-1.5 text-sm text-gray-500 bg-stone-50 border-none rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
+            />
+          </div>
         </motion.div>
       </div>
 

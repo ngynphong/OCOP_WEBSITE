@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useLogin } from '@/features/auth/hooks/useAuth';
+import { useLogin } from '@/features/auth/hooks/useLogin';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 

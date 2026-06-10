@@ -20,7 +20,7 @@ import {
   FiAward,
 } from 'react-icons/fi';
 import { useSellerShop } from '@/features/shop/hooks/useSellerShop';
-import { useAuthProfile } from '@/features/auth/hooks/useAuth';
+import { useAuthProfile } from '@/features/auth/hooks/useAuthProfile';
 import { ShopEditForm } from '@/features/shop/components/ShopEditForm';
 import { ShopStatus } from '@/features/shop/types/shopTypes';
 import { cn } from '@/lib/utils';

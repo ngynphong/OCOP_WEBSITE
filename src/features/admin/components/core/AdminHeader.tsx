@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { FiChevronRight, FiUser } from 'react-icons/fi';
-import { useAuthProfile, useLogout } from '@/features/auth/hooks/useAuth';
+import { useAuthProfile } from '@/features/auth/hooks/useAuthProfile';
+import { useLogout } from '@/features/auth/hooks/useLogout';
 import Image from 'next/image';
 import { LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';

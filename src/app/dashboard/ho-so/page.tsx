@@ -4,7 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import ProfileForm from '@/features/auth/components/ProfileForm';
 import AvatarUpload from '@/features/auth/components/AvatarUpload';
-import { useAuthProfile } from '@/features/auth/hooks/useAuth';
+import { useAuthProfile } from '@/features/auth/hooks/useAuthProfile';
 
 const ProfilePage = () => {
   const { profile, isLoadingProfile } = useAuthProfile();

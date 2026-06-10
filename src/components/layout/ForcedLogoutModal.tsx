@@ -4,7 +4,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiLogOut, FiCheckCircle } from 'react-icons/fi';
 import { useAppSelector } from '@/store/hooks';
-import { useLogout } from '@/features/auth/hooks/useAuth';
+import { useLogout } from '@/features/auth/hooks/useLogout';
 
 export const ForcedLogoutModal = () => {
   const { isForcedLogout } = useAppSelector((state) => state.auth);

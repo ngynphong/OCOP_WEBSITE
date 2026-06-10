@@ -30,9 +30,6 @@ export function createStompClient(accessToken: string): Client {
     try {
       const ticket = await fetchWsTicket(accessToken);
       client.brokerURL = `${WS_BASE_URL}?ticket=${ticket}`;
-      client.connectHeaders = {
-        Authorization: `Bearer ${accessToken}`,
-      };
     } catch (err) {
       console.error('[STOMP] Failed to fetch WS ticket, aborting connection:', err);
       await client.deactivate();

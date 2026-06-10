@@ -7,7 +7,8 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { ShieldCheck, RefreshCw, CheckCircle2, ArrowLeft } from 'lucide-react';
 import { verifyOtpSchema, VerifyOtpFormData } from '../types';
-import { useVerify, usePassword } from '../hooks/useAuth';
+import { useVerify } from '../hooks/useVerify';
+import { usePassword } from '../hooks/usePassword';
 import { Button } from '@/components/ui/AppButton';
 
 export function VerifyOtpForm() {

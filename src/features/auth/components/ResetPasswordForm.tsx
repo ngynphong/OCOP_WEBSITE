@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Lock, CheckCircle2, ShieldAlert, Eye, EyeOff } from 'lucide-react';
 import { resetPasswordSchema, ResetPasswordFormData } from '../types';
-import { usePassword } from '../hooks/useAuth';
+import { usePassword } from '../hooks/usePassword';
 
 export function ResetPasswordForm() {
   const searchParams = useSearchParams();

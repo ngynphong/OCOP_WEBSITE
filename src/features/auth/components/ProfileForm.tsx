@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FiUser, FiPhone, FiCalendar, FiCheck } from 'react-icons/fi';
 import { updateProfileSchema, UpdateProfileFormData, UserProfile } from '../types';
-import { useProfileMutations } from '../hooks/useAuth';
+import { useProfileMutations } from '../hooks/useProfileMutations';
 
 interface ProfileFormProps {
   initialData?: UserProfile;

@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
 import { changePasswordSchema, ChangePasswordFormData } from '../types';
-import { usePassword } from '../hooks/useAuth';
+import { usePassword } from '../hooks/usePassword';
 import { Button } from '@/components/ui/AppButton';
 
 export const ChangePasswordForm = () => {

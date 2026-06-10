@@ -1,4 +1,4 @@
-import { useAuthProfile } from './useAuth';
+import { useAuthProfile } from './useAuthProfile';
 import { PermissionValue } from '../constants/permissions';
 
 export const usePermission = () => {

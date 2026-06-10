@@ -16,7 +16,8 @@ import {
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useAppSelector } from '@/store/hooks';
-import { useAuthProfile, useLogout } from '@/features/auth/hooks/useAuth';
+import { useAuthProfile } from '@/features/auth/hooks/useAuthProfile';
+import { useLogout } from '@/features/auth/hooks/useLogout';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { useCart } from '@/features/cart/hooks/useCart';

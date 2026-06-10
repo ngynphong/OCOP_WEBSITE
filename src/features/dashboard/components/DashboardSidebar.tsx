@@ -21,7 +21,7 @@ import {
 } from 'react-icons/fi';
 import { BiSupport } from 'react-icons/bi';
 import { FaWarehouse } from 'react-icons/fa';
-import { useAuthProfile } from '@/features/auth/hooks/useAuth';
+import { useAuthProfile } from '@/features/auth/hooks/useAuthProfile';
 import { useAppSelector } from '@/store/hooks';
 import { useDispatch } from 'react-redux';
 import { setDashboardMode } from '@/store/features/authSlice';

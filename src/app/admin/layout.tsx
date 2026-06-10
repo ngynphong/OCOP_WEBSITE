@@ -3,7 +3,7 @@
 import React from 'react';
 import AdminSidebar from '@/features/admin/components/core/AdminSidebar';
 import AdminHeader from '@/features/admin/components/core/AdminHeader';
-import { useAuthProfile } from '@/features/auth/hooks/useAuth';
+import { useAuthProfile } from '@/features/auth/hooks/useAuthProfile';
 import { usePermission } from '@/features/auth/hooks/usePermission';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';

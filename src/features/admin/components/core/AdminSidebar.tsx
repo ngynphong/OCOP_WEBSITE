@@ -62,6 +62,13 @@ const MENU_GROUPS: MenuGroup[] = [
     icon: CiShop,
     items: [
       {
+        label: 'Thống kê',
+        icon: FiTrendingUp,
+        href: '/admin/analytics',
+        id: 'analytics',
+        permissions: [PERMISSIONS.ANALYTICS_VIEW],
+      },
+      {
         label: 'Cửa hàng',
         icon: CiShop,
         href: '/admin/shops',
