@@ -2,14 +2,14 @@
 
 import { useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useAuth } from '@/features/auth/hooks/useAuth';
+import { useLogin } from '@/features/auth/hooks/useAuth';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 
 function GoogleCallbackHandler() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { googleLogin } = useAuth();
+  const { googleLogin } = useLogin();
   const hasCalled = useRef(false);
 
   useEffect(() => {

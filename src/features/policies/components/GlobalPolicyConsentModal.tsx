@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { usePendingPolicies, useConsentPolicy } from '../hooks/usePolicies';
-import { useAuth } from '@/features/auth/hooks/useAuth';
+import { useLogout } from '@/features/auth/hooks/useAuth';
 import { Button } from '@/components/ui/AppButton';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiAlertCircle, FiCheck, FiX } from 'react-icons/fi';
@@ -10,7 +10,7 @@ import toast from 'react-hot-toast';
 import { useAppSelector } from '@/store/hooks';
 
 export const GlobalPolicyConsentModal = () => {
-  const { handleClientLogout } = useAuth();
+  const { handleClientLogout } = useLogout();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const { data: pendingPolicies = [], isLoading } = usePendingPolicies(isAuthenticated);
   const { mutate: consentPolicy, isPending: isConsenting } = useConsentPolicy();

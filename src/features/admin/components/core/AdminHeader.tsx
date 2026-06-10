@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { FiChevronRight, FiUser } from 'react-icons/fi';
-import { useAuth, useAuthProfile } from '@/features/auth/hooks/useAuth';
+import { useAuthProfile, useLogout } from '@/features/auth/hooks/useAuth';
 import Image from 'next/image';
 import { LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -32,7 +32,7 @@ const BREADCRUMB_MAP: Record<string, string> = {
 const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
   const pathname = usePathname();
   const { profile } = useAuthProfile();
-  const { logout, isLoggingOut, handleClientLogout } = useAuth();
+  const { logout, isLoggingOut, handleClientLogout } = useLogout();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
 

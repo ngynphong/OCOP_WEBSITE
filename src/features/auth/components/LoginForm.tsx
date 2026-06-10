@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import Image from 'next/image';
 import { loginSchema, LoginFormData, simpleRegisterSchema, SimpleRegisterFormData } from '../types';
-import { useAuth } from '../hooks/useAuth';
+import { useLogin, useRegister, useVerify } from '../hooks/useAuth';
 import { useState, useMemo } from 'react';
 import { Eye, EyeOff, ArrowRight, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/AppButton';
@@ -15,16 +15,9 @@ import { FcGoogle } from 'react-icons/fc';
 type FormPhase = 'IDENTIFY' | 'AUTHENTICATE' | '2FA';
 
 export function LoginForm() {
-  const {
-    login,
-    isLoggingIn,
-    verifyAccount,
-    isVerifyingAccount,
-    simpleRegister,
-    isSimpleRegistering,
-    verify2fa,
-    isVerifying2fa,
-  } = useAuth();
+  const { login, isLoggingIn } = useLogin();
+  const { simpleRegister, isSimpleRegistering } = useRegister();
+  const { verifyAccount, isVerifyingAccount, verify2fa, isVerifying2fa } = useVerify();
 
   const [phase, setPhase] = useState<FormPhase>('IDENTIFY');
   const [accountExists, setAccountExists] = useState<boolean | null>(null);

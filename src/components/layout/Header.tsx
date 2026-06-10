@@ -16,7 +16,7 @@ import {
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useAppSelector } from '@/store/hooks';
-import { useAuth } from '@/features/auth/hooks/useAuth';
+import { useAuthProfile, useLogout } from '@/features/auth/hooks/useAuth';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { useCart } from '@/features/cart/hooks/useCart';
@@ -38,7 +38,8 @@ export function Header() {
 
   const pathname = usePathname();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
-  const { logout, isLoggingOut, handleClientLogout, profile } = useAuth();
+  const { profile } = useAuthProfile();
+  const { logout, isLoggingOut, handleClientLogout } = useLogout();
   const role = useAppSelector((state) => state.auth.roles);
 
   const { data: cartResp } = useCart();

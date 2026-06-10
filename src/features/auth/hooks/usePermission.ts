@@ -1,8 +1,8 @@
-import { useAuth } from './useAuth';
+import { useAuthProfile } from './useAuth';
 import { PermissionValue } from '../constants/permissions';
 
 export const usePermission = () => {
-  const { profile, isLoadingProfile } = useAuth();
+  const { profile, isLoadingProfile } = useAuthProfile();
 
   const permissions = profile?.permissions || [];
   const roles = profile?.roles || [];

@@ -6,6 +6,27 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
 import { makeStore } from '@/store/store';
 import { WebSocketProvider } from '@/features/notifications/providers/WebSocketProvider';
+import { GlobalAuthHandler } from './GlobalAuthHandler';
+
+function decodeJwt(token: string) {
+  try {
+    const base64Url = token.split('.')[1];
+    if (!base64Url) return null;
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map(function (c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join(''),
+    );
+    return JSON.parse(jsonPayload);
+  } catch (e) {
+    console.error('Failed to decode JWT', e);
+    return null;
+  }
+}
 
 // Lazy load non-critical components
 const Toaster = dynamic(() => import('react-hot-toast').then((mod) => mod.Toaster), {
@@ -46,10 +67,22 @@ export default function AppProvider({ children }: { children: React.ReactNode })
 
     if (token) {
       let roles: string[] = [];
-      try {
-        roles = rolesStr ? JSON.parse(rolesStr) : [];
-      } catch (e) {
-        console.error('Failed to parse roles from localStorage', e);
+
+      // Ưu tiên đọc roles từ JWT Payload để chống giả mạo localStorage
+      const decoded = decodeJwt(token);
+      if (decoded && decoded.roles && Array.isArray(decoded.roles)) {
+        roles = decoded.roles;
+      } else if (decoded && decoded.scope) {
+        roles = typeof decoded.scope === 'string' ? decoded.scope.split(' ') : decoded.scope;
+      }
+
+      // Fallback
+      if (roles.length === 0) {
+        try {
+          roles = rolesStr ? JSON.parse(rolesStr) : [];
+        } catch (e) {
+          console.error('Failed to parse roles from localStorage', e);
+        }
       }
 
       store.dispatch({
@@ -107,6 +140,7 @@ export default function AppProvider({ children }: { children: React.ReactNode })
           }}
         />
         <LoadingOverlay />
+        <GlobalAuthHandler />
         <GlobalPolicyConsentModal />
         {/* Bật Devtools ở góc dưới bên phải màn hình (chỉ hiện trong môi trường dev) */}
         <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />

@@ -189,7 +189,9 @@ const onResponseError = async (error: AxiosError) => {
       toast.error('Phiên đăng nhập hết hạn. Bạn sẽ được chuyển hướng về trang chủ.');
       if (typeof window !== 'undefined') {
         setTimeout(() => {
-          window.location.href = '/dang-nhap';
+          import('../utils/authEmitter').then(({ authEmitter }) => {
+            authEmitter.emit('UNAUTHORIZED');
+          });
         }, 1500);
       }
 

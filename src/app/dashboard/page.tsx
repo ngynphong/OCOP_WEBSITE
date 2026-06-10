@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { useAuth } from '@/features/auth/hooks/useAuth';
+import { useAuthProfile } from '@/features/auth/hooks/useAuth';
 import { useAppSelector } from '@/store/hooks';
 import Link from 'next/link';
 import {
@@ -29,7 +29,7 @@ const formatCurrency = (amount: number) => {
 };
 
 const DashboardPage = () => {
-  const { profile } = useAuth();
+  const { profile } = useAuthProfile();
   const { dashboardMode } = useAppSelector((state) => state.auth);
   const dispatch = useDispatch();
   const [isMounted, setIsMounted] = React.useState(false);

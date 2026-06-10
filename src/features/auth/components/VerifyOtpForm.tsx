@@ -7,7 +7,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { ShieldCheck, RefreshCw, CheckCircle2, ArrowLeft } from 'lucide-react';
 import { verifyOtpSchema, VerifyOtpFormData } from '../types';
-import { useAuth } from '../hooks/useAuth';
+import { useVerify, usePassword } from '../hooks/useAuth';
 import { Button } from '@/components/ui/AppButton';
 
 export function VerifyOtpForm() {
@@ -16,15 +16,9 @@ export function VerifyOtpForm() {
   const email = searchParams.get('email') || '';
   const purpose =
     (searchParams.get('purpose') as 'REGISTER' | 'RESET_PASSWORD' | null) || 'RESET_PASSWORD';
-  const {
-    verifyOtp,
-    isVerifyingOtp,
-    forgotPassword,
-    verifyEmail,
-    isVerifyingEmail,
-    resendOtp,
-    isResendingOtp,
-  } = useAuth();
+  const { verifyOtp, isVerifyingOtp, verifyEmail, isVerifyingEmail, resendOtp, isResendingOtp } =
+    useVerify();
+  const { forgotPassword } = usePassword();
 
   const [countdown, setCountdown] = useState(30);
   const [otp, setOtp] = useState(['', '', '', '', '', '']);

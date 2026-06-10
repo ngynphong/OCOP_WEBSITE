@@ -5,14 +5,14 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FiUser, FiPhone, FiCalendar, FiCheck } from 'react-icons/fi';
 import { updateProfileSchema, UpdateProfileFormData, UserProfile } from '../types';
-import { useAuth } from '../hooks/useAuth';
+import { useProfileMutations } from '../hooks/useAuth';
 
 interface ProfileFormProps {
   initialData?: UserProfile;
 }
 
 const ProfileForm: React.FC<ProfileFormProps> = ({ initialData }) => {
-  const { updateProfile, isUpdatingProfile } = useAuth();
+  const { updateProfile, isUpdatingProfile } = useProfileMutations();
 
   const {
     register,

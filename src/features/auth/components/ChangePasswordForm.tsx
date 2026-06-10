@@ -5,11 +5,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
 import { changePasswordSchema, ChangePasswordFormData } from '../types';
-import { useAuth } from '../hooks/useAuth';
+import { usePassword } from '../hooks/useAuth';
 import { Button } from '@/components/ui/AppButton';
 
 export const ChangePasswordForm = () => {
-  const { changePassword, isChangingPassword } = useAuth();
+  const { changePassword, isChangingPassword } = usePassword();
   const [showCurrent, setShowCurrent] = React.useState(false);
   const [showNew, setShowNew] = React.useState(false);
   const [showConfirm, setShowConfirm] = React.useState(false);

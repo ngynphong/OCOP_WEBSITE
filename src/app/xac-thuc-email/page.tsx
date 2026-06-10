@@ -4,13 +4,13 @@ import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { CheckCircle2, XCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/AppButton';
-import { useAuth } from '@/features/auth/hooks/useAuth';
+import { useVerify } from '@/features/auth/hooks/useAuth';
 import Link from 'next/link';
 
 function VerifyEmailContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { verifyEmailTraditional } = useAuth();
+  const { verifyEmailTraditional } = useVerify();
 
   const [status, setStatus] = useState<'LOADING' | 'SUCCESS' | 'ERROR'>('LOADING');
   const [errorMessage, setErrorMessage] = useState('');

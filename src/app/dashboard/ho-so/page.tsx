@@ -4,10 +4,10 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import ProfileForm from '@/features/auth/components/ProfileForm';
 import AvatarUpload from '@/features/auth/components/AvatarUpload';
-import { useAuth } from '@/features/auth/hooks/useAuth';
+import { useAuthProfile } from '@/features/auth/hooks/useAuth';
 
 const ProfilePage = () => {
-  const { profile, isLoadingProfile } = useAuth();
+  const { profile, isLoadingProfile } = useAuthProfile();
 
   if (isLoadingProfile) {
     return (

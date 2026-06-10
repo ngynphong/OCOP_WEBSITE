@@ -21,7 +21,7 @@ import {
 } from 'react-icons/fi';
 import { BiSupport } from 'react-icons/bi';
 import { FaWarehouse } from 'react-icons/fa';
-import { useAuth } from '@/features/auth/hooks/useAuth';
+import { useAuthProfile } from '@/features/auth/hooks/useAuth';
 import { useAppSelector } from '@/store/hooks';
 import { useDispatch } from 'react-redux';
 import { setDashboardMode } from '@/store/features/authSlice';
@@ -276,7 +276,7 @@ const COMMON_ITEMS: MenuItem[] = [
 const DashboardSidebar = ({ onMobileClose }: { onMobileClose?: () => void }) => {
   const pathname = usePathname();
   const dispatch = useDispatch();
-  const { profile } = useAuth();
+  const { profile } = useAuthProfile();
   const { dashboardMode } = useAppSelector((state) => state.auth);
   const mounted = useSyncExternalStore(
     () => () => {},

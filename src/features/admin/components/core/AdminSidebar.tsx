@@ -256,13 +256,13 @@ const MENU_GROUPS: MenuGroup[] = [
         id: 'roles-manage',
         permissions: [PERMISSIONS.PERMISSION_MANAGE],
       },
-      {
-        label: 'Nhân viên',
-        icon: FiUserCheck,
-        href: '/admin/staff',
-        id: 'staff',
-        permissions: [PERMISSIONS.STAFF_VIEW, PERMISSIONS.STAFF_MANAGE],
-      },
+      // {
+      //   label: 'Nhân viên',
+      //   icon: FiUserCheck,
+      //   href: '/admin/staff',
+      //   id: 'staff',
+      //   permissions: [PERMISSIONS.STAFF_VIEW, PERMISSIONS.STAFF_MANAGE],
+      // },
     ],
   },
 ];

@@ -7,7 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useAppSelector } from '@/store/hooks';
 import { useDispatch } from 'react-redux';
 import { setDashboardMode } from '@/store/features/authSlice';
-import { useAuth } from '@/features/auth/hooks/useAuth';
+import { useLogout, useAuthProfile } from '@/features/auth/hooks/useAuth';
 import { cn } from '@/lib/utils';
 import { setLoading } from '@/store/features/uiSlice';
 import { NotificationBell } from '@/features/notifications/components/NotificationBell';
@@ -18,7 +18,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useDispatch();
-  const { profile, logout, handleClientLogout, isLoggingOut } = useAuth();
+  const { logout, handleClientLogout, isLoggingOut } = useLogout();
+  const { profile } = useAuthProfile();
   const { dashboardMode, isInitialized } = useAppSelector((state) => state.auth);
   const [isMounted, setIsMounted] = React.useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = React.useState(false);

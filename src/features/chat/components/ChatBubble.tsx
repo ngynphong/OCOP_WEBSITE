@@ -7,14 +7,14 @@ import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { FiFile, FiCheck, FiCheckCircle } from 'react-icons/fi';
 import Image from 'next/image';
-import { useAuth } from '@/features/auth/hooks/useAuth';
+import { useAuthProfile } from '@/features/auth/hooks/useAuth';
 
 interface ChatBubbleProps {
   message: ChatMessage;
 }
 
 export const ChatBubble = ({ message }: ChatBubbleProps) => {
-  const { profile } = useAuth(); // [MỚI] - Lấy profile từ React Query cache
+  const { profile } = useAuthProfile(); // [MỚI] - Lấy profile từ React Query cache
   const currentUserEmail = profile?.email;
   const isOwn = message.senderEmail === currentUserEmail;
 

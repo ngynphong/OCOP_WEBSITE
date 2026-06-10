@@ -3,7 +3,7 @@
 import React, { useRef } from 'react';
 import Image from 'next/image';
 import { FiCamera, FiTrash2, FiLoader } from 'react-icons/fi';
-import { useAuth } from '../hooks/useAuth';
+import { useProfileMutations } from '../hooks/useAuth';
 
 interface AvatarUploadProps {
   currentAvatar?: string;
@@ -12,7 +12,7 @@ interface AvatarUploadProps {
 
 const AvatarUpload: React.FC<AvatarUploadProps> = ({ currentAvatar, name }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { updateAvatar, deleteAvatar, isUpdatingAvatar, isDeletingAvatar } = useAuth();
+  const { updateAvatar, deleteAvatar, isUpdatingAvatar, isDeletingAvatar } = useProfileMutations();
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

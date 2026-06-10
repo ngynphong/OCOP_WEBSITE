@@ -5,11 +5,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { Mail, ArrowLeft, Send } from 'lucide-react';
 import { forgotPasswordSchema, ForgotPasswordFormData } from '../types';
-import { useAuth } from '../hooks/useAuth';
+import { usePassword } from '../hooks/useAuth';
 
 export function ForgotPasswordForm() {
   const router = useRouter();
-  const { forgotPassword, isForgottingPassword } = useAuth();
+  const { forgotPassword, isForgottingPassword } = usePassword();
 
   const {
     register,
