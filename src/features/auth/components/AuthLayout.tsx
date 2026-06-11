@@ -86,7 +86,7 @@ export function AuthLayout({
       </div>
 
       {/* Right Section - Form & Hero Background */}
-      <div className="w-full md:w-1/2 relative bg-green-950 min-h-[600px] md:min-h-0 h-full flex flex-col items-center justify-center p-6 lg:p-12 overflow-hidden shadow-[-10px_0_30px_rgba(0,0,0,0.1)]">
+      <div className="w-full md:w-1/2 relative bg-green-950 min-h-[600px] md:min-h-0 h-full flex flex-col items-center justify-center p-6 lg:p-12 overflow-y-auto overflow-x-hidden shadow-[-10px_0_30px_rgba(0,0,0,0.1)]">
         {/* Background Image corresponding to the right side */}
         <Image
           src="/images/login-component.jpg"

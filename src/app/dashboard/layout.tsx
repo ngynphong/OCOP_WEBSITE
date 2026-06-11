@@ -44,6 +44,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     return null;
   }
 
+  // Redirect to login if not authenticated
+  if (isInitialized && !profile) {
+    router.push('/dang-nhap?redirect=/dashboard');
+    return null;
+  }
+
   const isSeller = profile?.roles?.includes('SELLER');
 
   const getPageTitle = () => {

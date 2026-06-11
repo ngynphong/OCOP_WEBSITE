@@ -4,12 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbo",
-    "clean": "rm -rf .next node_modules/.cache",
+    "clean": "node -e \"fs.rmSync('.next', {recursive:true, force:true}); fs.rmSync('node_modules/.cache', {recursive:true, force:true})\"",
     "reset": "npm run clean && npm i && npm run dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -47,6 +49,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@tailwindcss/postcss": "^4",
     "@tanstack/react-query-devtools": "^5.96.0",
     "@types/js-cookie": "^3.0.6",

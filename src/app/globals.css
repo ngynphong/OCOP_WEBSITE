@@ -178,3 +178,9 @@ button:hover .animate-hover-spin {
   scrollbar-width: thin;
   scrollbar-color: #e5e7eb transparent;
 }
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}

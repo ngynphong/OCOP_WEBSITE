@@ -48,9 +48,6 @@ export const AmbientBackground = memo(function AmbientBackground() {
             </div>
           </div>
 
-          {/* Subtle noise texture */}
-          <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('/images/stardust.png')]" />
-
           {/* Darker overlay to ensure text readability */}
           <div className="absolute inset-0 bg-stone-900/5" />
         </motion.div>

@@ -61,7 +61,7 @@ export const OcopMallSection = memo(function OcopMallSection() {
                     className="object-cover opacity-60 group-hover:scale-110 transition-transform duration-700"
                   />
                 ) : (
-                  <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]" />
+                  <div className="absolute inset-0 opacity-10 bg-[url(https://www.transparenttextures.com/patterns/stardust.png)]" />
                 )}
                 <div className="absolute top-4 right-6 flex items-center gap-1.5 bg-black/20 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
                   <Star className="w-3 h-3 text-[#D4AF37] fill-[#D4AF37]" />
