@@ -20,8 +20,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter();
   const dispatch = useDispatch();
   const { logout, handleClientLogout, isLoggingOut } = useLogout();
-  const { profile } = useAuthProfile();
-  const { dashboardMode, isInitialized } = useAppSelector((state) => state.auth);
+  const { profile, isLoadingProfile, isErrorProfile } = useAuthProfile();
+  const { dashboardMode, isInitialized, isAuthenticated } = useAppSelector((state) => state.auth);
   const [isMounted, setIsMounted] = React.useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = React.useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = React.useState(false);
@@ -40,14 +40,41 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     setIsLogoutModalOpen(false);
   };
 
-  if (!isMounted || !isInitialized) {
+  React.useEffect(() => {
+    if (isInitialized && !isLoadingProfile) {
+      if (!isAuthenticated) {
+        router.push('/dang-nhap?redirect=/dashboard');
+      } else if (!profile && !isErrorProfile) {
+        // Only redirect if there's no profile and NO error (e.g. somehow missing)
+        router.push('/dang-nhap?redirect=/dashboard');
+      }
+    }
+  }, [isInitialized, isLoadingProfile, profile, isAuthenticated, isErrorProfile, router]);
+
+  if (!isMounted || !isInitialized || isLoadingProfile) {
     return null;
   }
 
   // Redirect to login if not authenticated
-  if (isInitialized && !profile) {
-    router.push('/dang-nhap?redirect=/dashboard');
+  if (isInitialized && !isLoadingProfile && !isAuthenticated) {
     return null;
+  }
+
+  if (isErrorProfile && !profile) {
+    return (
+      <div className="h-screen w-full flex flex-col items-center justify-center bg-stone-50">
+        <h2 className="text-xl font-bold text-stone-900 mb-2">Lỗi kết nối máy chủ</h2>
+        <p className="text-stone-500 mb-4">
+          Không thể tải thông tin tài khoản. Vui lòng thử lại sau.
+        </p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
+        >
+          Tải lại trang
+        </button>
+      </div>
+    );
   }
 
   const isSeller = profile?.roles?.includes('SELLER');
@@ -57,15 +84,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     if (pathname.includes('/don-hang')) return 'Đơn hàng của tôi';
     if (pathname.includes('/dia-chi')) return 'Địa chỉ nhận hàng';
     if (pathname.includes('/bao-mat')) return 'Bảo mật';
-    if (pathname.includes('/cua-hang/chat')) return 'Tin nhắn cửa hàng';
-    if (pathname.includes('/cua-hang/dang-ky')) return 'Đăng ký mở shop';
     if (pathname.includes('/cua-hang/ho-so-phap-ly')) return 'Hồ sơ pháp lý';
     if (pathname.includes('/cua-hang/tai-khoan-ngan-hang')) return 'Tài khoản ngân hàng';
+    if (pathname.includes('/cua-hang/dang-ky')) return 'Đăng ký mở shop';
+    if (pathname.includes('/cua-hang/chat')) return 'Tin nhắn cửa hàng';
     if (pathname.includes('/cua-hang')) return 'Cửa hàng của tôi';
     if (pathname.match(/\/san-pham\/\d+/)) return 'Chi tiết sản phẩm';
     if (pathname.includes('/san-pham/tao-moi')) return 'Tạo sản phẩm mới';
     if (pathname.includes('/san-pham')) return 'Sản phẩm của tôi';
     if (pathname.includes('/chat')) return 'Tin nhắn';
+    if (pathname.includes('/cai-dat-thong-bao')) return 'Cài đặt thông báo';
     if (pathname.includes('/thong-bao')) return 'Thông báo';
     return 'Tổng quan';
   };

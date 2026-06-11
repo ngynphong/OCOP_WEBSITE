@@ -231,13 +231,6 @@ const MENU_GROUPS: MenuGroup[] = [
         roles: ['SELLER'],
         permission: 'seller.shop.manage',
       },
-      {
-        id: 'seller-chat',
-        label: 'Tin nhắn CSKH',
-        icon: FiMessageSquare,
-        href: '/dashboard/cua-hang/chat',
-        roles: ['SELLER'],
-      },
     ],
   },
 ];
@@ -270,6 +263,13 @@ const COMMON_ITEMS: MenuItem[] = [
     icon: FiBell,
     href: '/dashboard/thong-bao',
     roles: ['USER', 'SELLER'],
+  },
+  {
+    id: 'seller-chat',
+    label: 'Tin nhắn CSKH',
+    icon: FiMessageSquare,
+    href: '/dashboard/cua-hang/chat',
+    roles: ['SELLER'],
   },
 ];
 
@@ -361,8 +361,16 @@ const DashboardSidebar = ({ onMobileClose }: { onMobileClose?: () => void }) => 
       <nav className="bg-white rounded-xl p-3 border border-stone-100 shadow-xl shadow-stone-200/50 flex flex-col gap-1">
         {/* Common Items */}
         {filteredCommon.map((item) => {
-          const isActive = pathname === item.href;
-          const unreadCount = item.id === 'notifications' ? unreadNotificationCount : 0;
+          const isActive =
+            pathname === item.href ||
+            (item.id === 'seller-chat' && pathname.startsWith('/dashboard/cua-hang/chat'));
+          const unreadCount =
+            item.id === 'notifications'
+              ? unreadNotificationCount
+              : item.id === 'seller-chat'
+                ? unreadChatCount
+                : 0;
+
           return (
             <Link
               key={item.id}
@@ -389,6 +397,9 @@ const DashboardSidebar = ({ onMobileClose }: { onMobileClose?: () => void }) => 
                 >
                   {unreadCount > 99 ? '99+' : unreadCount}
                 </div>
+              )}
+              {isActive && unreadCount === 0 && item.id === 'seller-chat' && (
+                <div className="w-1.5 h-1.5 rounded-full bg-white ml-auto" />
               )}
             </Link>
           );

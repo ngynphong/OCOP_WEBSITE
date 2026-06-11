@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDown, X, Search } from 'lucide-react';
+import { X, Search } from 'lucide-react';
 import { ProductSidebar } from '@/features/products/components/ProductSidebar';
 import { ProductPagination } from '@/features/products/components/ProductPagination';
 import { ProductCard } from '@/components/ui/ProductCard';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
+import { CustomSelect } from '@/components/ui/CustomSelect';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import {
@@ -133,22 +134,21 @@ export function ProductListClient() {
               <span className="hidden sm:inline text-sm font-semibold text-neutral-500 uppercase tracking-widest font-sans whitespace-nowrap">
                 Sắp xếp
               </span>
-              <div className="relative">
-                <select
+              <div className="w-[200px] z-50 relative">
+                <CustomSelect
                   value={sortBy}
-                  onChange={(e) => {
-                    setSortBy(e.target.value);
+                  onChange={(val) => {
+                    setSortBy(val as string);
                     setPage(0);
                   }}
-                  suppressHydrationWarning
-                  className="appearance-none bg-white px-6 py-3 pr-10 rounded-xl border border-stone-200 font-bold font-sans text-sm text-stone-700 hover:bg-stone-50 transition-colors shadow-sm outline-none cursor-pointer focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
-                >
-                  <option value="newest">Mới nhất</option>
-                  <option value="price-asc">Giá từ thấp đến cao</option>
-                  <option value="price-desc">Giá từ cao đến thấp</option>
-                  <option value="rating-desc">Đánh giá OCOP cao nhất</option>
-                </select>
-                <ChevronDown className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-stone-500" />
+                  options={[
+                    { label: 'Mới nhất', value: 'newest' },
+                    { label: 'Giá từ thấp đến cao', value: 'price-asc' },
+                    { label: 'Giá từ cao đến thấp', value: 'price-desc' },
+                    { label: 'Đánh giá OCOP cao nhất', value: 'rating-desc' },
+                  ]}
+                  className="w-full shadow-md"
+                />
               </div>
             </div>
           </div>

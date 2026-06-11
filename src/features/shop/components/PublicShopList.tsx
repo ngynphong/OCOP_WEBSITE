@@ -7,8 +7,9 @@ import { Star, Store, MapPin, Search, Sparkles, Filter, ChevronRight } from 'luc
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePublicShopsQuery } from '@/features/shop/hooks/usePublicShop';
 import { useLocationQuery } from '@/features/shop/hooks/useLocationQuery';
-import { ShopInfo, ShopStatus } from '@/features/shop/types/shopTypes';
+import { ShopInfo } from '@/features/shop/types/shopTypes';
 import { Button } from '@/components/ui/AppButton';
+import { CustomSelect } from '@/components/ui/CustomSelect';
 
 interface FeaturedShop extends ShopInfo {
   ocopStar?: number;
@@ -19,7 +20,6 @@ export function PublicShopList() {
   const [keyword, setKeyword] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProvinceId, setSelectedProvinceId] = useState<number | undefined>();
-  const [selectedStatus, setSelectedStatus] = useState<ShopStatus | ''>('ACTIVE');
   const pageSize = 12;
 
   const {
@@ -31,7 +31,6 @@ export function PublicShopList() {
     pageSize,
     keyword: searchQuery || undefined,
     provinceId: selectedProvinceId,
-    status: selectedStatus === '' ? undefined : selectedStatus,
   });
 
   const { provinces } = useLocationQuery();
@@ -65,8 +64,7 @@ export function PublicShopList() {
     setSearchQuery(keyword);
   };
 
-  const handleProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const val = e.target.value;
+  const handleProvinceChange = (val: string | number) => {
     setSelectedProvinceId(val ? Number(val) : undefined);
     setPageNo(1);
   };
@@ -75,7 +73,6 @@ export function PublicShopList() {
     setKeyword('');
     setSearchQuery('');
     setSelectedProvinceId(undefined);
-    setSelectedStatus('ACTIVE');
     setPageNo(1);
   };
 
@@ -153,21 +150,22 @@ export function PublicShopList() {
 
         {/* Categories / Filters */}
         <div className="flex flex-col sm:flex-row items-center gap-4 pb-4 mb-8">
-          <div className="flex items-center gap-3 bg-white/50 backdrop-blur-sm p-2 rounded-2xl border border-white shadow-xs w-full sm:w-auto">
-            <Filter className="w-5 h-5 text-emerald-600 ml-2" />
+          <div className="flex items-center gap-3 bg-white/50 backdrop-blur-sm p-2 rounded-2xl border border-white shadow-xs w-full sm:w-auto relative z-20">
+            <Filter className="w-5 h-5 text-emerald-600 ml-2 flex-shrink-0" />
 
-            <select
+            <CustomSelect
               value={selectedProvinceId || ''}
               onChange={handleProvinceChange}
-              className="bg-white text-stone-700 text-sm font-medium border-none rounded-xl px-4 py-2 focus:ring-2 focus:ring-emerald-500/50 outline-none cursor-pointer w-full sm:w-48 shadow-sm"
-            >
-              <option value="">Tất cả khu vực</option>
-              {provinces?.data?.data?.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
+              options={[
+                { label: 'Tất cả khu vực', value: '' },
+                ...(provinces?.data?.data?.map((p) => ({
+                  label: p.name,
+                  value: p.id,
+                })) || []),
+              ]}
+              placeholder="Chọn khu vực"
+              className="sm:w-48"
+            />
           </div>
         </div>
 

@@ -13,6 +13,8 @@ import {
   FiInfo,
   FiTrash2,
   FiCircle,
+  FiStar,
+  FiDollarSign,
 } from 'react-icons/fi';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -23,8 +25,16 @@ import { useRouter } from 'next/navigation';
 //   onDelete: (id: string) => void;
 // }
 
-const getEventIcon = (type: string) => {
-  switch (type) {
+const getEventIcon = (eventType: string, entityType?: string) => {
+  if (entityType === 'REVIEW' || eventType === 'NEW_REVIEW_RECEIVED') {
+    return <FiStar className="text-amber-500 fill-amber-500/20" />;
+  }
+
+  if (entityType === 'WHOLESALE_ORDER' || eventType === 'WHOLESALE_PAYMENT_RECEIVED') {
+    return <FiDollarSign className="text-violet-500" />;
+  }
+
+  switch (eventType) {
     case 'ORDER_PLACED':
       return <FiShoppingBag className="text-blue-500" />;
     case 'ORDER_SHIPPED':
@@ -34,6 +44,7 @@ const getEventIcon = (type: string) => {
     case 'ORDER_CANCELLED':
       return <FiXCircle className="text-red-500" />;
     default:
+      if (entityType === 'ORDER') return <FiShoppingBag className="text-blue-500" />;
       return <FiInfo className="text-stone-400" />;
   }
 };
@@ -94,7 +105,7 @@ export const NotificationItem = React.memo<{
           )}
         </div>
         <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-lg bg-white shadow-sm border border-stone-100 flex items-center justify-center text-xs">
-          {getEventIcon(eventType)}
+          {getEventIcon(eventType, notification.entityType)}
         </div>
       </div>
 

@@ -11,13 +11,14 @@ export const NOTIFICATION_KEYS = {
   count: () => [...NOTIFICATION_KEYS.all, 'unread-count'] as const,
 };
 
-export const useInfiniteNotifications = (pageSize = 10) => {
+export const useInfiniteNotifications = (pageSize = 10, entityType?: string) => {
   return useInfiniteQuery({
-    queryKey: NOTIFICATION_KEYS.lists(),
+    queryKey: [...NOTIFICATION_KEYS.lists(), entityType],
     queryFn: ({ pageParam = 1 }) => {
       return notificationApi.getNotifications({
         pageNo: pageParam as number,
         pageSize,
+        entityType: entityType === 'ALL' ? undefined : entityType,
         sorts: 'createdAt:desc',
       });
     },

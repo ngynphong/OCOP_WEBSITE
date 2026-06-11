@@ -12,6 +12,8 @@ export const notificationApi = {
     pageNo: number;
     pageSize: number;
     isRead?: boolean;
+    entityType?: string;
+    eventType?: string;
     sorts?: string;
   }) => {
     return axiosClient.get<NotificationResponse>(API_ENDPOINTS.NOTIFICATIONS, { params });

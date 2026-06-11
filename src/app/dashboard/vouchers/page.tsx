@@ -12,6 +12,7 @@ import { VoucherList } from '@/features/vouchers/components/VoucherList';
 import { VoucherFormDrawer } from '@/features/vouchers/components/VoucherFormDrawer';
 import { Voucher, VoucherFormValues } from '@/features/vouchers/types';
 import { Pagination } from '@/components/ui/Pagination';
+import { CustomSelect } from '@/components/ui/CustomSelect';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppSelector } from '@/store/hooks';
 
@@ -20,6 +21,7 @@ export default function VoucherDashboardPage() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [editingVoucher, setEditingVoucher] = useState<Voucher | null>(null);
   const [isMounted, setIsMounted] = useState(false);
+  const [statusFilter, setStatusFilter] = useState('');
 
   const { dashboardMode } = useAppSelector((state) => state.auth);
   const isSeller = dashboardMode === 'SELLER';
@@ -140,14 +142,19 @@ export default function VoucherDashboardPage() {
           />
         </div>
         <div className="lg:col-span-5 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 md:gap-4">
-          <div className="flex-1 flex items-center gap-3 md:gap-4 bg-white border border-stone-200 rounded-xl px-4 md:px-6 py-2 shadow-sm shadow-stone-200/50 min-h-[42px] md:min-h-[48px]">
-            <Filter size={18} className="text-stone-400 shrink-0" />
-            <select className="flex-1 bg-transparent outline-none text-xs md:text-sm font-black text-stone-800 appearance-none cursor-pointer">
-              <option>Tất cả trạng thái</option>
-              <option>Có thể sử dụng</option>
-              <option>Đã sử dụng</option>
-              <option>Đã hết hạn</option>
-            </select>
+          <div className="flex-1 flex items-center min-h-[42px] md:min-h-[48px] relative z-20">
+            <CustomSelect
+              value={statusFilter}
+              onChange={(val) => setStatusFilter(String(val))}
+              options={[
+                { label: 'Tất cả trạng thái', value: '' },
+                { label: 'Có thể sử dụng', value: 'ACTIVE' },
+                { label: 'Đã sử dụng', value: 'USED' },
+                { label: 'Đã hết hạn', value: 'EXPIRED' },
+              ]}
+              icon={<Filter size={18} />}
+              className="w-full"
+            />
           </div>
           <button
             onClick={() => refetch()}

@@ -1,14 +1,23 @@
 import { z } from 'zod';
 
-export type NotificationEventType =
-  | 'ORDER_PLACED'
-  | 'ORDER_PAID'
-  | 'ORDER_SHIPPED'
-  | 'ORDER_DELIVERED'
-  | 'ORDER_CANCELLED'
-  | 'SYSTEM_ALERT';
+export type NotificationEventType = string;
 
-export type NotificationEntityType = 'ORDER' | 'USER' | 'PROMOTION' | 'SYSTEM';
+export type NotificationEntityType =
+  | 'ORDER'
+  | 'PRODUCT'
+  | 'SHOP'
+  | 'REVIEW'
+  | 'FLASH_SALE'
+  | 'VOUCHER'
+  | 'SHIPMENT'
+  | 'AFFILIATE'
+  | 'LOYALTY'
+  | 'USER_WALLET'
+  | 'CHAT_ROOM'
+  | 'QUOTATION'
+  | 'WHOLESALE_ORDER'
+  | 'SYSTEM_LINK'
+  | string;
 
 export interface NotificationActor {
   id: string;

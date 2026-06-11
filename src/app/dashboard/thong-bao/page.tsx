@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   useInfiniteNotifications,
   useNotificationMutations,
@@ -10,17 +10,21 @@ import {
   NotificationSkeleton,
 } from '@/features/notifications/components/NotificationItem';
 import { useInView } from 'react-intersection-observer';
-import { FiBell, FiCheck, FiInbox } from 'react-icons/fi';
+import { FiBell, FiCheck, FiInbox, FiSettings } from 'react-icons/fi';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 export default function NotificationsPage() {
+  const [filterType, setFilterType] = useState('ALL');
+
   const {
     data: notifications,
     isLoading,
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-  } = useInfiniteNotifications(15);
+  } = useInfiniteNotifications(15, filterType);
 
   const { markAsRead, markAllAsRead, deleteOne, isReadingAll } = useNotificationMutations();
   const { ref, inView } = useInView();
@@ -42,16 +46,50 @@ export default function NotificationsPage() {
           <p className="text-sm text-stone-500 mt-1">Cập nhật tin tức và hoạt động mới nhất</p>
         </div>
 
-        {notifications && notifications.length > 0 && (
-          <button
-            onClick={() => markAllAsRead()}
-            disabled={isReadingAll}
-            className="flex items-center gap-2 px-4 py-2 text-xs md:text-sm font-bold text-emerald-600 bg-emerald-50 rounded-xl hover:bg-emerald-100 transition-colors disabled:opacity-50"
+        <div className="flex items-center gap-3">
+          {notifications && notifications.length > 0 && (
+            <button
+              onClick={() => markAllAsRead()}
+              disabled={isReadingAll}
+              className="flex items-center gap-2 px-4 py-2 text-xs md:text-sm font-bold text-emerald-600 bg-emerald-50 rounded-xl hover:bg-emerald-100 transition-colors disabled:opacity-50"
+            >
+              <FiCheck />
+              <span className="hidden sm:inline">Đánh dấu tất cả đã đọc</span>
+              <span className="sm:hidden">Đã đọc tất cả</span>
+            </button>
+          )}
+
+          <Link
+            href="/dashboard/cai-dat-thong-bao"
+            className="flex items-center gap-2 p-2 sm:px-4 sm:py-2 text-xs md:text-sm font-bold text-stone-600 bg-stone-100 rounded-xl hover:bg-stone-200 transition-colors"
           >
-            <FiCheck />
-            Đánh dấu tất cả đã đọc
+            <FiSettings size={18} />
+            <span className="hidden sm:inline">Cài đặt</span>
+          </Link>
+        </div>
+      </div>
+
+      <div className="flex gap-2 overflow-x-auto pb-4 mb-2 scrollbar-hide">
+        {[
+          { label: 'Tất cả', value: 'ALL' },
+          { label: 'Đơn hàng', value: 'ORDER' },
+          { label: 'Đánh giá', value: 'REVIEW' },
+          { label: 'Đơn sỉ', value: 'WHOLESALE_ORDER' },
+          { label: 'Hệ thống', value: 'SYSTEM_LINK' },
+        ].map((tab) => (
+          <button
+            key={tab.value}
+            onClick={() => setFilterType(tab.value)}
+            className={cn(
+              'px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-colors border',
+              filterType === tab.value
+                ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+                : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50 hover:border-stone-300',
+            )}
+          >
+            {tab.label}
           </button>
-        )}
+        ))}
       </div>
 
       <div className="bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden">
