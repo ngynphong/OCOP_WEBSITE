@@ -22,6 +22,7 @@ interface TipTapEditorProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
+  onUploadImage?: (file: File) => Promise<string | undefined>;
 }
 
 const ToolbarButton = ({
@@ -54,15 +55,45 @@ const ToolbarButton = ({
   </button>
 );
 
-const MenuBar = ({ editor }: { editor: Editor | null }) => {
+const MenuBar = ({
+  editor,
+  onUploadImage,
+}: {
+  editor: Editor | null;
+  onUploadImage?: (file: File) => Promise<string | undefined>;
+}) => {
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
   if (!editor) {
     return null;
   }
 
   const addImage = () => {
-    const url = window.prompt('URL hình ảnh:');
-    if (url) {
-      editor.chain().focus().setImage({ src: url }).run();
+    if (onUploadImage) {
+      fileInputRef.current?.click();
+    } else {
+      const url = window.prompt('URL hình ảnh:');
+      if (url) {
+        editor.chain().focus().setImage({ src: url }).run();
+      }
+    }
+  };
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && onUploadImage) {
+      try {
+        const url = await onUploadImage(file);
+        if (url) {
+          editor.chain().focus().setImage({ src: url }).run();
+        }
+      } catch (error) {
+        console.error('Lỗi khi tải ảnh:', error);
+      }
+    }
+    // Reset input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -143,6 +174,13 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
       <ToolbarButton onClick={addImage} title="Chèn hình ảnh">
         <ImageIcon className="w-4 h-4" />
       </ToolbarButton>
+      <input
+        type="file"
+        accept="image/*"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        className="hidden"
+      />
 
       <div className="w-px h-6 bg-stone-300 mx-1" />
 
@@ -164,7 +202,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
   );
 };
 
-export function TipTapEditor({ value, onChange }: TipTapEditorProps) {
+export function TipTapEditor({ value, onChange, onUploadImage }: TipTapEditorProps) {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -195,7 +233,7 @@ export function TipTapEditor({ value, onChange }: TipTapEditorProps) {
 
   return (
     <div className="flex flex-col border border-stone-200 rounded-xl focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-50 overflow-hidden transition-all duration-300 shadow-sm">
-      <MenuBar editor={editor} />
+      <MenuBar editor={editor} onUploadImage={onUploadImage} />
       <EditorContent editor={editor} className="cursor-text" />
     </div>
   );

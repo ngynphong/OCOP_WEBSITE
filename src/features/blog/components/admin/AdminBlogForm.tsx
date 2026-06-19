@@ -20,7 +20,8 @@ interface AdminBlogFormProps {
 
 export const AdminBlogForm = ({ initialData, isEdit }: AdminBlogFormProps) => {
   const router = useRouter();
-  const { createBlog, updateBlog, isCreating, isUpdating } = useAdminBlogMutations();
+  const { createBlog, updateBlog, isCreating, isUpdating, uploadBlogImage, isUploadingImage } =
+    useAdminBlogMutations();
   const { data: tagsRes } = useAdminTagsQuery();
   const { createTag, isCreating: isCreatingTag } = useAdminTagMutations();
   const tagsList = tagsRes?.data || [];
@@ -176,7 +177,14 @@ export const AdminBlogForm = ({ initialData, isEdit }: AdminBlogFormProps) => {
                 name="content"
                 control={control}
                 render={({ field }) => (
-                  <TipTapEditor value={field.value} onChange={field.onChange} />
+                  <TipTapEditor
+                    value={field.value}
+                    onChange={field.onChange}
+                    onUploadImage={async (file) => {
+                      const res = await uploadBlogImage(file);
+                      return res?.url;
+                    }}
+                  />
                 )}
               />
               {errors.content && (
@@ -230,10 +238,40 @@ export const AdminBlogForm = ({ initialData, isEdit }: AdminBlogFormProps) => {
             )}
 
             <div className="space-y-1 mt-2">
+              <div className="flex gap-2">
+                <input
+                  {...register('thumbnailUrl')}
+                  placeholder="Dán URL ảnh hoặc tải lên..."
+                  className="w-full px-3 py-2 text-sm rounded-lg border text-gray-700 border-stone-200 focus:border-emerald-500 outline-none"
+                />
+                <Button
+                  type="button"
+                  onClick={() => document.getElementById('thumbnail-upload')?.click()}
+                  disabled={isUploadingImage}
+                  className="px-3 py-2 bg-stone-100 hover:bg-stone-200 text-stone-600 rounded-lg text-sm font-bold flex-shrink-0"
+                >
+                  {isUploadingImage ? <FiLoader className="animate-spin" /> : 'Tải lên'}
+                </Button>
+              </div>
               <input
-                {...register('thumbnailUrl')}
-                placeholder="Dán URL ảnh vào đây..."
-                className="w-full px-3 py-2 text-sm rounded-lg border text-gray-700 border-stone-200 focus:border-emerald-500 outline-none"
+                id="thumbnail-upload"
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    try {
+                      const res = await uploadBlogImage(file);
+                      if (res?.url) {
+                        setValue('thumbnailUrl', res.url, { shouldValidate: true });
+                      }
+                    } catch (error) {
+                      console.error(error);
+                    }
+                  }
+                  e.target.value = '';
+                }}
               />
               {errors.thumbnailUrl && (
                 <p className="text-[10px] text-red-500 font-bold">{errors.thumbnailUrl.message}</p>

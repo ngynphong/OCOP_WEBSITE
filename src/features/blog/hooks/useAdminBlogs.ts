@@ -79,6 +79,16 @@ export const useAdminBlogMutations = () => {
     },
   });
 
+  const uploadBlogImage = useMutation({
+    mutationFn: (file: File) => adminBlogApi.uploadImage(file),
+    onSuccess: () => {
+      toast.success('Tải ảnh lên thành công');
+    },
+    onError: () => {
+      toast.error('Có lỗi xảy ra khi tải ảnh lên');
+    },
+  });
+
   return {
     createBlog: createBlog.mutateAsync,
     isCreating: createBlog.isPending,
@@ -90,5 +100,7 @@ export const useAdminBlogMutations = () => {
     isPublishing: publishBlog.isPending,
     archiveBlog: archiveBlog.mutateAsync,
     isArchiving: archiveBlog.isPending,
+    uploadBlogImage: uploadBlogImage.mutateAsync,
+    isUploadingImage: uploadBlogImage.isPending,
   };
 };

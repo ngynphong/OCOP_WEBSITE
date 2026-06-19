@@ -38,4 +38,15 @@ export const adminBlogApi = {
   archiveBlog: async (id: number): Promise<BlogDetailResponse> => {
     return await axiosClient.post(`${ADMIN_BLOG_API_URL}/${id}/archive`);
   },
+
+  uploadImage: async (file: File): Promise<{ url: string }> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await axiosClient.post(`${ADMIN_BLOG_API_URL}/upload-image`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return res.data;
+  },
 };
