@@ -41,8 +41,10 @@ export function LoginForm() {
     sessionStorage.setItem('oauth_redirect_path', currentPath);
 
     const redirectUri =
-      process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI ||
-      `${window.location.origin}/auth/google/callback`;
+      typeof window !== 'undefined'
+        ? `${window.location.origin}/auth/google/callback`
+        : process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI ||
+          'http://localhost:3000/auth/google/callback';
 
     const scope = 'openid email profile';
     const responseType = 'code';
