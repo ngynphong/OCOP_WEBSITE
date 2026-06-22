@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, Suspense } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useLogin } from '@/features/auth/hooks/useLogin';
 import Image from 'next/image';
@@ -10,12 +10,8 @@ function GoogleCallbackHandler() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { googleLogin } = useLogin();
-  const hasCalled = useRef(false);
 
   useEffect(() => {
-    // Ngăn chặn gọi trùng lặp do React 18+ StrictMode trong môi trường phát triển
-    if (hasCalled.current) return;
-
     const code = searchParams.get('code');
     const state = searchParams.get('state');
     const error = searchParams.get('error');
@@ -32,15 +28,22 @@ function GoogleCallbackHandler() {
       return;
     }
 
+    // Dùng sessionStorage để ngăn gọi trùng lặp — bền vững hơn useRef
+    // qua các chu kỳ mount/unmount của React 18 StrictMode
+    const processedKey = `oauth_code_processed_${code}`;
+    if (sessionStorage.getItem(processedKey)) {
+      return;
+    }
+    sessionStorage.setItem(processedKey, '1');
+
     // Xác thực State để phòng chống CSRF
     const savedState = sessionStorage.getItem('oauth_state');
     if (!savedState || savedState !== state) {
       toast.error('Lỗi xác thực bảo mật (CSRF State Mismatch).');
+      sessionStorage.removeItem(processedKey);
       router.replace('/dang-nhap');
       return;
     }
-
-    hasCalled.current = true;
 
     // Xóa các thông tin state tạm
     sessionStorage.removeItem('oauth_state');
@@ -51,13 +54,15 @@ function GoogleCallbackHandler() {
         await googleLogin(code);
       } catch (err) {
         console.error('Lỗi khi đăng nhập bằng Google:', err);
+        sessionStorage.removeItem(processedKey);
         // Lỗi chi tiết đã được axios interceptor hiển thị toast.error, chúng ta chỉ cần redirect
         router.replace('/dang-nhap');
       }
     };
 
     doLogin();
-  }, [searchParams, googleLogin, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Chỉ chạy 1 lần duy nhất khi component mount
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-stone-900/40 backdrop-blur-md transition-all duration-500">
