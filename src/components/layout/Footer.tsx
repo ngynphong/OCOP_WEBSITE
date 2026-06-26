@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { MapPin, Phone, Mail, Globe } from 'lucide-react';
-import { FaFacebook, FaInstagram } from 'react-icons/fa';
+import { FaFacebook } from 'react-icons/fa';
 import Script from 'next/script';
 import { usePublicCategoriesQuery } from '@/features/products/hooks/usePublicProducts';
 import Image from 'next/image';
@@ -30,24 +30,18 @@ export function Footer() {
             </span>
           </div>
           <div className="pt-[1.20px] inline-flex justify-start items-start gap-4">
-            <a
-              href="#"
+            <Link
+              href="https://ies-edu.vn"
               className="w-10 h-10 bg-green-900 rounded-full flex justify-center items-center hover:bg-green-800 transition-colors"
             >
               <Globe className="w-4 h-4 text-white" />
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              href="https://www.facebook.com/ies.focus.lms"
               className="w-10 h-10 bg-green-900 rounded-full flex justify-center items-center hover:bg-green-800 transition-colors"
             >
               <FaFacebook className="w-4 h-4 text-white" />
-            </a>
-            <a
-              href="#"
-              className="w-10 h-10 bg-green-900 rounded-full flex justify-center items-center hover:bg-green-800 transition-colors"
-            >
-              <FaInstagram className="w-4 h-4 text-white" />
-            </a>
+            </Link>
           </div>
         </div>
         <div className="w-72 pb-3.5 inline-flex flex-col justify-start items-start gap-3.5">
