@@ -31,7 +31,7 @@ export function ProductListClient() {
   const [selectedBrandIds, setSelectedBrandIds] = useState<number[]>([]);
   const [minPrice, setMinPrice] = useState<number>(0);
   const [maxPrice, setMaxPrice] = useState<number>(MAX_PRICE_LIMIT);
-  const [sortBy, setSortBy] = useState('createdAt:desc');
+  const [sort, setSort] = useState('newest');
   const [page, setPage] = useState(0);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { isAuthenticated } = useAppSelector((state) => state.auth);
@@ -53,7 +53,7 @@ export function ProductListClient() {
     ocopStar: selectedRatings.length === 1 ? selectedRatings[0] : undefined,
     minPrice: debouncedMinPrice > 0 ? debouncedMinPrice : undefined,
     maxPrice: debouncedMaxPrice < MAX_PRICE_LIMIT ? debouncedMaxPrice : undefined,
-    sortBy: sortBy !== 'createdAt:desc' ? sortBy : undefined,
+    sort: sort,
     categoryIds: selectedCategoryIds.length > 0 ? selectedCategoryIds : undefined,
     provinceId: selectedProvinceId || undefined,
     brandIds: selectedBrandIds.length > 0 ? selectedBrandIds : undefined,
@@ -136,16 +136,16 @@ export function ProductListClient() {
               </span>
               <div className="w-[200px] z-50 relative">
                 <CustomSelect
-                  value={sortBy}
+                  value={sort}
                   onChange={(val) => {
-                    setSortBy(val as string);
+                    setSort(val as string);
                     setPage(0);
                   }}
                   options={[
                     { label: 'Mới nhất', value: 'newest' },
-                    { label: 'Giá từ thấp đến cao', value: 'price-asc' },
-                    { label: 'Giá từ cao đến thấp', value: 'price-desc' },
-                    { label: 'Đánh giá OCOP cao nhất', value: 'rating-desc' },
+                    { label: 'Giá từ thấp đến cao', value: 'price_asc' },
+                    { label: 'Giá từ cao đến thấp', value: 'price_desc' },
+                    { label: 'Đánh giá OCOP cao nhất', value: 'rating' },
                   ]}
                   className="w-full shadow-md"
                 />

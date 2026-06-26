@@ -317,7 +317,7 @@ export interface ProductListParams {
   status?: ProductStatus;
   categoryId?: number;
   search?: string;
-  sortBy?: string;
+  sort?: string;
 }
 
 export interface AdminProductListParams extends ProductListParams {
@@ -335,7 +335,7 @@ export interface PublicProductListParams {
   minPrice?: number;
   maxPrice?: number;
   keyword?: string;
-  sortBy?: string;
+  sort?: string;
   brandIds?: number[];
 }
 

@@ -19,7 +19,7 @@ export default function StoryLandingPage() {
     pageSize: 12,
     provinceId: selectedProvince,
     // We want products that likely have stories
-    sortBy: 'viewCount,desc',
+    sort: 'viewCount,desc',
   });
 
   const { data: featuredStoryRes } = useFeaturedStoryQuery();
