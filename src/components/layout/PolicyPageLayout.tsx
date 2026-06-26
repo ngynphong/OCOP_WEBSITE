@@ -137,7 +137,7 @@ export function PolicyPageLayout({ children, title, lastUpdated }: PolicyPageLay
                   hệ với đội ngũ hỗ trợ.
                 </p>
                 <Link
-                  href="#"
+                  href="/ho-tro#contact"
                   className="inline-flex items-center justify-center px-6 py-3 bg-white text-emerald-900 font-bold rounded-xl hover:bg-emerald-50 transition-colors relative z-10 w-full"
                 >
                   Liên hệ chúng tôi

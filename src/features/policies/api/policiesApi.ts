@@ -19,6 +19,13 @@ export const policiesApi = {
     return response.data;
   },
 
+  getPolicyBySlug: async (slug: string): Promise<IPolicy> => {
+    const response = (await axiosClient.get(
+      `${API_ENDPOINTS.POLICIES}/slug/${slug}`,
+    )) as IPolicyApiResponse<IPolicy>;
+    return response.data;
+  },
+
   getPendingPolicies: async (): Promise<IPolicy[]> => {
     const response = (await axiosClient.get(
       `${API_ENDPOINTS.POLICIES}/pending`,

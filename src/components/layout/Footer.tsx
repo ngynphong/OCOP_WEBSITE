@@ -88,7 +88,7 @@ export function Footer() {
           </div>
           <div className="flex flex-col justify-start items-start gap-1.5">
             <Link
-              href="#"
+              href="/ho-tro#contact"
               className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900"
             >
               Liên hệ chúng tôi

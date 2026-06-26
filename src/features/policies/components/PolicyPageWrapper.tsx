@@ -1,17 +1,74 @@
 'use client';
 
-import React from 'react';
-import { usePolicyDetail } from '../hooks/usePolicies';
+import React, { useMemo } from 'react';
+import DOMPurify from 'dompurify';
+import { usePolicyDetailBySlug } from '../hooks/usePolicies';
 import { PolicyPageLayout } from '@/components/layout/PolicyPageLayout';
 import { FiLoader } from 'react-icons/fi';
 
 interface PolicyPageWrapperProps {
-  id: number;
+  slug: string;
   fallbackTitle: string;
 }
 
-export const PolicyPageWrapper = ({ id, fallbackTitle }: PolicyPageWrapperProps) => {
-  const { data: policy, isLoading, isError } = usePolicyDetail(id);
+export const PolicyPageWrapper = ({ slug, fallbackTitle }: PolicyPageWrapperProps) => {
+  const { data: policy, isLoading, isError } = usePolicyDetailBySlug(slug);
+
+  const content = policy?.content;
+
+  // Sanitize HTML content to prevent XSS
+  const sanitizedContent = useMemo(() => {
+    if (!content) return '';
+    const rawHtml = content.replace(/\n/g, '<br/>');
+    return DOMPurify.sanitize(rawHtml, {
+      ALLOWED_TAGS: [
+        'h1',
+        'h2',
+        'h3',
+        'h4',
+        'h5',
+        'h6',
+        'p',
+        'br',
+        'ul',
+        'ol',
+        'li',
+        'strong',
+        'em',
+        'a',
+        'span',
+        'div',
+        'section',
+        'table',
+        'thead',
+        'tbody',
+        'tr',
+        'th',
+        'td',
+        'blockquote',
+        'code',
+        'pre',
+        'hr',
+        'img',
+        'b',
+        'i',
+        'u',
+      ],
+      ALLOWED_ATTR: [
+        'href',
+        'target',
+        'rel',
+        'class',
+        'id',
+        'src',
+        'alt',
+        'width',
+        'height',
+        'style',
+      ],
+      ALLOW_DATA_ATTR: false,
+    });
+  }, [content]);
 
   if (isLoading) {
     return (
@@ -27,7 +84,7 @@ export const PolicyPageWrapper = ({ id, fallbackTitle }: PolicyPageWrapperProps)
     return (
       <PolicyPageLayout title={fallbackTitle}>
         <div className="py-20 text-center text-red-500 font-bold">
-          Không thể tải nội dung chính sách (ID: {id}). Vui lòng thử lại sau.
+          Không thể tải nội dung chính sách (Mã: {slug}). Vui lòng thử lại sau.
         </div>
       </PolicyPageLayout>
     );
@@ -49,7 +106,7 @@ export const PolicyPageWrapper = ({ id, fallbackTitle }: PolicyPageWrapperProps)
         [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:space-y-2 [&_ol]:mb-4 [&_ol]:text-emerald-800
         [&_li]:leading-relaxed
         [&_strong]:text-emerald-900 [&_strong]:font-semibold"
-        dangerouslySetInnerHTML={{ __html: policy.content.replace(/\n/g, '<br/>') }}
+        dangerouslySetInnerHTML={{ __html: sanitizedContent }}
       />
     </PolicyPageLayout>
   );

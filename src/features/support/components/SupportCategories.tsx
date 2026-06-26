@@ -12,6 +12,7 @@ const CATEGORIES = [
     color: 'text-blue-600',
     bgColor: 'bg-blue-50',
     borderColor: 'group-hover:border-blue-200',
+    href: '/chinh-sach-dat-hang',
   },
   {
     id: 'returns',
@@ -21,6 +22,7 @@ const CATEGORIES = [
     color: 'text-orange-600',
     bgColor: 'bg-orange-50',
     borderColor: 'group-hover:border-orange-200',
+    href: '/chinh-sach-dat-hang',
   },
   {
     id: 'payment',
@@ -30,6 +32,7 @@ const CATEGORIES = [
     color: 'text-green-600',
     bgColor: 'bg-green-50',
     borderColor: 'group-hover:border-green-200',
+    href: '#faq',
   },
   {
     id: 'account',
@@ -39,6 +42,7 @@ const CATEGORIES = [
     color: 'text-purple-600',
     bgColor: 'bg-purple-50',
     borderColor: 'group-hover:border-purple-200',
+    href: '/chinh-sach-bao-mat',
   },
   {
     id: 'products',
@@ -48,6 +52,7 @@ const CATEGORIES = [
     color: 'text-amber-600',
     bgColor: 'bg-amber-50',
     borderColor: 'group-hover:border-amber-200',
+    href: '#faq',
   },
   {
     id: 'policies',
@@ -57,6 +62,7 @@ const CATEGORIES = [
     color: 'text-stone-600',
     bgColor: 'bg-stone-100',
     borderColor: 'group-hover:border-stone-300',
+    href: '/dieu-khoan-dich-vu',
   },
 ];
 
@@ -75,7 +81,7 @@ export const SupportCategories = () => {
           {CATEGORIES.map((category) => (
             <Link
               key={category.id}
-              href={`#`}
+              href={category.href}
               className="group flex flex-col bg-white p-6 rounded-xl border border-stone-200 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1"
             >
               <div

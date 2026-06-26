@@ -11,6 +11,9 @@ import { IPolicy } from '../../types/policies';
 
 const policySchema = z.object({
   title: z.string().min(3, 'Tiêu đề quá ngắn').max(200, 'Tiêu đề quá dài'),
+  slug: z.enum(['chinh-sach-bao-mat', 'chinh-sach-dat-hang', 'dieu-khoan-dich-vu'], {
+    message: 'Vui lòng chọn loại chính sách',
+  }),
   content: z.string().min(10, 'Nội dung quá ngắn'),
   version: z.string().min(1, 'Vui lòng nhập phiên bản (ví dụ: v1.0)'),
   effectiveDate: z.string().min(1, 'Vui lòng chọn ngày hiệu lực'),
@@ -34,6 +37,12 @@ const ROLES = [
   { label: 'Người bán', value: 'SELLER' },
 ];
 
+const POLICY_TYPES = [
+  { slug: 'chinh-sach-bao-mat', title: 'Chính sách bảo mật' },
+  { slug: 'chinh-sach-dat-hang', title: 'Chính sách đặt hàng / vận chuyển' },
+  { slug: 'dieu-khoan-dich-vu', title: 'Điều khoản dịch vụ' },
+];
+
 export const PolicyFormModal = ({
   isOpen,
   onClose,
@@ -46,11 +55,13 @@ export const PolicyFormModal = ({
     handleSubmit,
     control,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<PolicyFormData>({
     resolver: zodResolver(policySchema),
     defaultValues: {
       title: '',
+      slug: '' as PolicyFormData['slug'],
       content: '',
       version: 'v1.0',
       effectiveDate: new Date().toISOString().split('T')[0],
@@ -64,6 +75,7 @@ export const PolicyFormModal = ({
       if (initialData) {
         reset({
           title: initialData.title,
+          slug: (initialData.slug || '') as PolicyFormData['slug'],
           content: initialData.content,
           version: initialData.version,
           effectiveDate: initialData.effectiveDate,
@@ -73,6 +85,7 @@ export const PolicyFormModal = ({
       } else {
         reset({
           title: '',
+          slug: '' as PolicyFormData['slug'],
           content: '',
           version: 'v1.0',
           effectiveDate: new Date().toISOString().split('T')[0],
@@ -109,20 +122,35 @@ export const PolicyFormModal = ({
           <div className="p-6 overflow-y-auto flex-1 custom-scrollbar">
             <form id="policy-form" onSubmit={handleSubmit(onSubmit)} className="space-y-5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div className="space-y-1">
+                <div className="space-y-1 col-span-1 md:col-span-2">
                   <label className="text-xs font-bold text-stone-500 uppercase tracking-wider">
-                    Tiêu đề
+                    Loại Chính sách
                   </label>
-                  <input
-                    {...register('title')}
+                  <select
+                    {...register('slug', {
+                      onChange: (e) => {
+                        const selectedType = POLICY_TYPES.find((t) => t.slug === e.target.value);
+                        if (selectedType) {
+                          setValue('title', selectedType.title);
+                        } else {
+                          setValue('title', '');
+                        }
+                      },
+                    })}
                     className="w-full px-4 py-2 bg-stone-50 text-gray-700 border border-stone-200 rounded-xl text-sm font-medium focus:outline-none focus:border-emerald-500 transition-colors"
-                    placeholder="VD: Điều khoản dịch vụ"
-                  />
-                  {errors.title && (
-                    <p className="text-[10px] font-bold text-red-500 mt-1">
-                      {errors.title.message}
-                    </p>
+                  >
+                    <option value="">-- Chọn loại chính sách --</option>
+                    {POLICY_TYPES.map((type) => (
+                      <option key={type.slug} value={type.slug}>
+                        {type.title} ({type.slug})
+                      </option>
+                    ))}
+                  </select>
+                  {errors.slug && (
+                    <p className="text-[10px] font-bold text-red-500 mt-1">{errors.slug.message}</p>
                   )}
+                  {/* Hidden field cho title */}
+                  <input type="hidden" {...register('title')} />
                 </div>
 
                 <div className="space-y-1">

@@ -6,6 +6,18 @@ import { FiAward, FiTrendingUp, FiClock, FiMinusCircle, FiPlusCircle } from 'rea
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 
+const getTransactionTypeLabel = (type: string) => {
+  const map: Record<string, string> = {
+    EARN: 'Tích điểm',
+    REDEEM: 'Sử dụng điểm',
+    EXPIRE: 'Hết hạn',
+    REVIEW_REWARD: 'Thưởng đánh giá',
+    REFERRAL: 'Thưởng giới thiệu',
+    ADMIN_ADJUST: 'Quản trị điều chỉnh',
+  };
+  return map[type] || type;
+};
+
 const UserLoyaltyDashboard = () => {
   const { data: accountRes, isLoading: isAccountLoading } = useUserLoyaltyAccount();
   const { data: transactionsRes, isLoading: isTransLoading } = useUserTransactions({
@@ -87,6 +99,57 @@ const UserLoyaltyDashboard = () => {
         </div>
       </div>
 
+      {/* Cơ chế tích luỹ và sử dụng điểm */}
+      <div className="bg-white rounded-xl border border-stone-100 shadow-xl shadow-stone-200/50 p-5 md:p-6">
+        <h3 className="text-base md:text-lg font-bold text-stone-900 mb-4">
+          Cơ chế tích luỹ & sử dụng điểm
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+          <div className="bg-green-50/50 p-4 rounded-xl border border-green-100/50">
+            <h4 className="font-bold text-green-800 mb-3 flex items-center gap-2">
+              <FiPlusCircle className="text-green-600" /> Tích luỹ điểm
+            </h4>
+            <ul className="space-y-2.5 text-[13px] md:text-sm text-stone-600">
+              <li className="flex items-start gap-2">
+                <span className="text-green-500 mt-0.5">•</span>
+                <span>
+                  <strong>Mua sắm:</strong> Nhận 1 điểm cho mỗi 1.000đ giá trị thanh toán của đơn
+                  hàng.
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-green-500 mt-0.5">•</span>
+                <span>
+                  <strong>Đánh giá sản phẩm:</strong> Nhận điểm thưởng tương đương 0.1% giá trị sản
+                  phẩm khi đánh giá.
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="bg-orange-50/50 p-4 rounded-xl border border-orange-100/50">
+            <h4 className="font-bold text-orange-800 mb-3 flex items-center gap-2">
+              <FiMinusCircle className="text-orange-600" /> Sử dụng điểm
+            </h4>
+            <ul className="space-y-2.5 text-[13px] md:text-sm text-stone-600">
+              <li className="flex items-start gap-2">
+                <span className="text-orange-500 mt-0.5">•</span>
+                <span>
+                  <strong>Quy đổi:</strong> 1 điểm có giá trị tương đương 10đ.
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-orange-500 mt-0.5">•</span>
+                <span>
+                  <strong>Thanh toán:</strong> Có thể sử dụng điểm để giảm tối đa 20% tổng giá trị
+                  thanh toán của đơn hàng.
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
       {/* Transaction History */}
       <div className="bg-white rounded-xl border border-stone-100 shadow-xl shadow-stone-200/50 overflow-hidden">
         <div className="p-4 md:p-6 border-b border-stone-50 flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4">
@@ -156,7 +219,7 @@ const UserLoyaltyDashboard = () => {
                             isPositive ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'
                           }`}
                         >
-                          {trans.type}
+                          {getTransactionTypeLabel(trans.type)}
                         </span>
                       </td>
                       <td className="px-4 md:px-6 py-3 md:py-4 text-right whitespace-nowrap">

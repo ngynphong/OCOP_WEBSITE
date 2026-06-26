@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function PrivacyPolicyPage() {
-  return <PolicyPageWrapper id={2} fallbackTitle="Chính sách bảo mật" />;
+  return <PolicyPageWrapper slug="chinh-sach-bao-mat" fallbackTitle="Chính sách bảo mật" />;
 }

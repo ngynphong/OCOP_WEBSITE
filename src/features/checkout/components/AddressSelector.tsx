@@ -35,7 +35,7 @@ export const AddressSelector = memo(function AddressSelector({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mr-6">
         <h3 className="text-sm font-bold text-stone-800 flex items-center gap-2">
           <MapPin className="w-4 h-4 text-green-600" />
           Địa chỉ nhận hàng

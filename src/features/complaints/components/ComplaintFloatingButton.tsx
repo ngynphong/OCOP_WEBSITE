@@ -20,9 +20,6 @@ export const ComplaintFloatingButton = () => {
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
       setIsMounted(true);
-      if (sessionStorage.getItem('hideComplaintButton')) {
-        setIsVisible(false);
-      }
     });
     return () => cancelAnimationFrame(frame);
   }, []);
@@ -55,7 +52,6 @@ export const ComplaintFloatingButton = () => {
   const handleHide = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsVisible(false);
-    sessionStorage.setItem('hideComplaintButton', 'true');
   };
 
   if (!isMounted || isAdminPage || !isVisible) return null;

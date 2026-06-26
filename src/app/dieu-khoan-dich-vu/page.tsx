@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function TermsOfServicePage() {
-  return <PolicyPageWrapper id={1} fallbackTitle="Điều khoản dịch vụ" />;
+  return <PolicyPageWrapper slug="dieu-khoan-dich-vu" fallbackTitle="Điều khoản dịch vụ" />;
 }

@@ -1,14 +1,18 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { supportFormSchema, SupportFormData } from '../types';
 import toast from 'react-hot-toast';
 import { Loader2, Send } from 'lucide-react';
+import { useMutation } from '@tanstack/react-query';
+import { supportApi } from '../api/supportApi';
 
 export const ContactForm = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const mutation = useMutation({
+    mutationFn: supportApi.submitContactForm,
+  });
 
   const {
     register,
@@ -19,22 +23,19 @@ export const ContactForm = () => {
     resolver: zodResolver(supportFormSchema),
   });
 
-  const onSubmit = async () => {
-    setIsSubmitting(true);
-    // Fake API call
+  const onSubmit = async (data: SupportFormData) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await mutation.mutateAsync(data);
       toast.success('Yêu cầu hỗ trợ đã được gửi thành công! Chúng tôi sẽ phản hồi sớm nhất.');
       reset();
     } catch (error: unknown) {
-      const err = error as { message?: string };
-      const errorMessage = err?.message || 'Có lỗi xảy ra, vui lòng thử lại sau.';
+      const err = error as { response?: { data?: { message?: string } } };
+      const errorMessage = err?.response?.data?.message || 'Có lỗi xảy ra, vui lòng thử lại sau.';
       toast.error(errorMessage);
-      console.error(error);
-    } finally {
-      setIsSubmitting(false);
     }
   };
+
+  const isSubmitting = mutation.isPending;
 
   return (
     <div className="bg-white p-8 rounded-xl border border-stone-200 shadow-lg">

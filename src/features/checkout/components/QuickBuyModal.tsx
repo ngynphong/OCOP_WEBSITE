@@ -202,11 +202,6 @@ export function QuickBuyModal({ isOpen, onClose, product, selectedVariant }: Qui
 
           {/* Left Side: Summary & Product */}
           <div className="w-full md:w-1/3 bg-stone-50 p-8 border-r border-stone-100 overflow-y-auto custom-scrollbar">
-            <div className="flex items-center gap-2 mb-8 bg-green-700 text-white px-4 py-2 rounded-xl w-fit shadow-md shadow-green-700/20">
-              <Zap className="w-4 h-4 fill-current" />
-              <span className="text-[10px] font-black uppercase tracking-widest">Mua Ngay</span>
-            </div>
-
             <div className="relative aspect-square w-full rounded-xl overflow-hidden border border-stone-200 shadow-sm mb-6 bg-white">
               <Image
                 src={

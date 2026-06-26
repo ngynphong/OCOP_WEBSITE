@@ -19,11 +19,51 @@ import {
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
-// interface NotificationItemProps {
-//   notification: INotification;
-//   onRead: (id: string) => void;
-//   onDelete: (id: string) => void;
-// }
+const getEventMessage = (
+  eventType: string,
+  payload: Record<string, string | number | undefined>,
+) => {
+  if (payload?.message) return payload.message as string;
+
+  const productName = payload?.productName || '';
+
+  switch (eventType) {
+    case 'QUOTATION_RECEIVED':
+      return `đã gửi yêu cầu báo giá sỉ cho sản phẩm "${productName}".`;
+    case 'QUOTATION_REPLIED':
+      return `đã phản hồi báo giá sỉ cho sản phẩm "${productName}".`;
+    case 'QUOTATION_REJECTED':
+      return `đã từ chối báo giá sỉ cho sản phẩm "${productName}".`;
+
+    case 'WHOLESALE_ORDER_PLACED':
+      return `đã đặt một đơn hàng sỉ mới.`;
+    case 'WHOLESALE_ORDER_CONFIRMED':
+      return `đã xác nhận đơn hàng sỉ của bạn.`;
+    case 'WHOLESALE_PAYMENT_RECEIVED':
+      return `đã thanh toán cho đơn hàng sỉ.`;
+    case 'WHOLESALE_ORDER_SHIPPED':
+      return `đã giao đơn hàng sỉ cho đơn vị vận chuyển.`;
+    case 'WHOLESALE_ORDER_CANCELLED':
+      return `đã hủy đơn hàng sỉ.`;
+
+    case 'ORDER_PLACED':
+      return 'đã đặt một đơn hàng mới.';
+    case 'ORDER_CONFIRMED':
+      return 'đã xác nhận đơn hàng của bạn.';
+    case 'ORDER_SHIPPING':
+      return 'đã giao đơn hàng cho đơn vị vận chuyển.';
+    case 'ORDER_DELIVERED':
+      return 'đã giao hàng thành công.';
+    case 'ORDER_CANCELED':
+      return 'đã hủy đơn hàng.';
+
+    case 'NEW_REVIEW_RECEIVED':
+      return 'đã gửi một đánh giá mới.';
+
+    default:
+      return 'đã thực hiện một hành động.';
+  }
+};
 
 const getEventIcon = (eventType: string, entityType?: string) => {
   if (entityType === 'REVIEW' || eventType === 'NEW_REVIEW_RECEIVED') {
@@ -119,7 +159,7 @@ export const NotificationItem = React.memo<{
             )}
           >
             <span className="text-stone-950">{actorName}: </span>{' '}
-            {payload?.message || 'đã thực hiện một hành động.'}
+            {getEventMessage(eventType, payload)}
           </div>
         </div>
         <p className="text-[11px] text-stone-400 font-medium">

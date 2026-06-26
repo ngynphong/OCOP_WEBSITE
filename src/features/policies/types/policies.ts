@@ -1,6 +1,7 @@
 export interface IPolicy {
   id: number;
   title: string;
+  slug: string;
   content: string;
   version: string;
   effectiveDate: string; // YYYY-MM-DD
@@ -13,6 +14,7 @@ export interface IPolicy {
 
 export interface ICreatePolicyRequest {
   title: string;
+  slug: string;
   content: string;
   version: string;
   effectiveDate: string;
@@ -22,6 +24,7 @@ export interface ICreatePolicyRequest {
 
 export interface IUpdatePolicyRequest {
   title: string;
+  slug: string;
   content: string;
   version: string;
   effectiveDate: string;

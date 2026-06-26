@@ -11,6 +11,7 @@ const POLICIES_KEYS = {
   admin: () => [...POLICIES_KEYS.all, 'admin'] as const,
   pending: () => [...POLICIES_KEYS.all, 'pending'] as const,
   detail: (id: number) => [...POLICIES_KEYS.all, 'detail', id] as const,
+  detailBySlug: (slug: string) => [...POLICIES_KEYS.all, 'detail-slug', slug] as const,
 };
 
 // ========================
@@ -23,6 +24,16 @@ export const usePolicyDetail = (id: number, enabled = true) => {
     queryFn: () => policiesApi.getPolicy(id),
     enabled: !!id && enabled,
     staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+};
+
+export const usePolicyDetailBySlug = (slug: string, enabled = true) => {
+  return useQuery({
+    queryKey: POLICIES_KEYS.detailBySlug(slug),
+    queryFn: () => policiesApi.getPolicyBySlug(slug),
+    enabled: !!slug && enabled,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    retry: 1, // Don't retry too much if 404
   });
 };
 

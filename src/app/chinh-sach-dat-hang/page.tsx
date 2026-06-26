@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function OrderingPolicyPage() {
-  return <PolicyPageWrapper id={3} fallbackTitle="Chính sách đặt hàng" />;
+  return <PolicyPageWrapper slug="chinh-sach-dat-hang" fallbackTitle="Chính sách đặt hàng" />;
 }
