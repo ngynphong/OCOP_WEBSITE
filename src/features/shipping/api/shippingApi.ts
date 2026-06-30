@@ -41,5 +41,7 @@ export const shippingApi = {
     axiosClient.get(API_ENDPOINTS.SHIPPING.PROVIDERS),
 
   estimateFee: (req: IEstimateFeeRequest): Promise<ApiResponse<IEstimateFeeResponse>> =>
-    axiosClient.post(API_ENDPOINTS.SHIPPING.ESTIMATE_FEE, req),
+    axiosClient.post(API_ENDPOINTS.SHIPPING.ESTIMATE_FEE, req, {
+      headers: { 'X-Silent-Loading': 'true' },
+    }),
 };

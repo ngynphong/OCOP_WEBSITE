@@ -267,6 +267,9 @@ export const adminApi = {
   checkCategorySlug: (slug: string): Promise<CategoryCheckSlugResponse> => {
     return axiosClient.post(`${API_ENDPOINTS.ADMIN.CATEGORIES}/check-slug`, null, {
       params: { slug },
+      headers: {
+        'X-Silent-Loading': 'true',
+      },
     });
   },
 

@@ -17,11 +17,15 @@ export const wishlistApi = {
   },
 
   addToWishlist: (productId: number): Promise<WishlistActionResponse> => {
-    return axiosClient.post(buildRoute(API_ENDPOINTS.WISHLIST.BASE, productId));
+    return axiosClient.post(buildRoute(API_ENDPOINTS.WISHLIST.BASE, productId), {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   removeFromWishlist: (productId: number): Promise<WishlistActionResponse> => {
-    return axiosClient.delete(buildRoute(API_ENDPOINTS.WISHLIST.BASE, productId));
+    return axiosClient.delete(buildRoute(API_ENDPOINTS.WISHLIST.BASE, productId), {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   getCount: (): Promise<WishlistCountDataResponse> => {
@@ -31,7 +35,10 @@ export const wishlistApi = {
   checkStatus: (productIds: number[]): Promise<WishlistStatusDataResponse> => {
     const params = new URLSearchParams();
     productIds.forEach((id) => params.append('productIds', id.toString()));
-    return axiosClient.get(API_ENDPOINTS.WISHLIST.CHECK, { params });
+    return axiosClient.get(API_ENDPOINTS.WISHLIST.CHECK, {
+      params,
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   moveToCart: (data: MoveToCartRequest): Promise<MoveToCartResponse> => {

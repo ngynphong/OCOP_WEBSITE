@@ -60,7 +60,7 @@ export const usePublicProductsInfiniteQuery = (
 };
 
 export const useInfiniteDiscoveryProductsQuery = (
-  params?: { pageSize?: number; sort?: string },
+  params?: { pageSize?: number; sort?: string; categoryId?: number },
   options?: Record<string, unknown>,
 ) => {
   return useInfiniteQuery({

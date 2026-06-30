@@ -13,15 +13,26 @@ export const locationApi = {
   getProvinces: (region?: string): Promise<ProvinceListResponse> => {
     return axiosClient.get(API_ENDPOINTS.LOCATION.PROVINCES, {
       params: { region },
+      headers: {
+        'X-Silent-Loading': 'true',
+      },
     });
   },
 
   getDistricts: (provinceId: number | string): Promise<DistrictListResponse> => {
-    return axiosClient.get(buildRoute(API_ENDPOINTS.LOCATION.PROVINCES, provinceId, 'districts'));
+    return axiosClient.get(buildRoute(API_ENDPOINTS.LOCATION.PROVINCES, provinceId, 'districts'), {
+      headers: {
+        'X-Silent-Loading': 'true',
+      },
+    });
   },
 
   getWards: (districtId: number | string): Promise<WardListResponse> => {
-    return axiosClient.get(buildRoute(API_ENDPOINTS.LOCATION.DISTRICTS, districtId, 'wards'));
+    return axiosClient.get(buildRoute(API_ENDPOINTS.LOCATION.DISTRICTS, districtId, 'wards'), {
+      headers: {
+        'X-Silent-Loading': 'true',
+      },
+    });
   },
 
   importLocations: (file: File): Promise<ResponseBase<Record<string, number>>> => {

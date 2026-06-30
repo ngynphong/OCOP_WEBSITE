@@ -66,6 +66,7 @@ export const publicProductApi = {
     pageNo?: number;
     pageSize?: number;
     sort?: string;
+    categoryId?: number;
   }): Promise<ProductListResponse> => {
     return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.PRODUCTS}/discovery`, { params });
   },

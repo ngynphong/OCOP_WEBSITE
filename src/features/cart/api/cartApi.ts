@@ -15,7 +15,9 @@ import type {
 
 export const cartApi = {
   getCart: (): Promise<CartResponse> => {
-    return axiosClient.get(API_ENDPOINTS.CART.BASE);
+    return axiosClient.get(API_ENDPOINTS.CART.BASE, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   getCount: (): Promise<CartCountResponse> => {
@@ -52,11 +54,15 @@ export const cartApi = {
   },
 
   validate: (): Promise<CartValidateResponse> => {
-    return axiosClient.post(API_ENDPOINTS.CART.VALIDATE);
+    return axiosClient.post(API_ENDPOINTS.CART.VALIDATE, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   syncPrices: (): Promise<SyncPricesResponse> => {
-    return axiosClient.post(API_ENDPOINTS.CART.SYNC_PRICES);
+    return axiosClient.post(API_ENDPOINTS.CART.SYNC_PRICES, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   mergeCart: (data: MergeCartRequest): Promise<CartResponse> => {

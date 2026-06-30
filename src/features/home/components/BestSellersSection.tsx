@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowLeft, ArrowRight, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useWishlistStatus } from '@/features/wishlist/hooks/useWishlist';
 import { useAppSelector } from '@/store/hooks';
 import { useFeaturedProductsQuery } from '@/features/products/hooks/usePublicProducts';
@@ -22,20 +22,6 @@ export function BestSellersSection() {
     <section className="w-full max-w-7xl mx-auto px-6 py-8 flex flex-col justify-start items-start gap-8">
       <div className="w-full flex justify-between items-center">
         <h2 className="text-stone-900 text-3xl font-bold font-sans leading-9">Bán chạy nhất</h2>
-        <div className="flex justify-start items-start gap-3">
-          <button
-            suppressHydrationWarning
-            className="w-10 h-10 rounded-full border border-stone-300 flex justify-center items-center hover:bg-stone-100 transition-colors text-stone-900"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <button
-            suppressHydrationWarning
-            className="w-10 h-10 rounded-full border border-stone-300 flex justify-center items-center hover:bg-stone-100 transition-colors text-stone-900"
-          >
-            <ArrowRight className="w-5 h-5" />
-          </button>
-        </div>
       </div>
 
       {isLoading ? (

@@ -26,6 +26,7 @@ export const DailyDiscoverFeed = memo(function DailyDiscoverFeed() {
     useInfiniteDiscoveryProductsQuery({
       pageSize: 18,
       sort: sortBy,
+      categoryId: activeCategoryId || undefined,
     });
 
   // Gỡ bỏ auto-fetch scroll

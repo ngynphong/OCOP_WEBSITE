@@ -39,6 +39,10 @@ export const loyaltyApi = {
   },
 
   checkRedeem: (data: ICheckRedeemRequest): Promise<CheckRedeemResponse> => {
-    return axiosClient.post(`${API_ENDPOINTS.LOYALTY}/check-redeem`, data);
+    return axiosClient.post(`${API_ENDPOINTS.LOYALTY}/check-redeem`, data, {
+      headers: {
+        'X-Silent-Loading': 'true',
+      },
+    });
   },
 };
