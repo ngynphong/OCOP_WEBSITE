@@ -108,6 +108,18 @@ export const useAdminProductMutations = () => {
     },
   });
 
+  const updateCategoryMutation = useMutation({
+    mutationFn: ({ id, categoryId }: { id: number; categoryId: number }) =>
+      adminProductApi.updateCategory(id, categoryId),
+    onSuccess: (_, { id }) => {
+      toast.success('Cập nhật danh mục thành công');
+      invalidate(id);
+    },
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data?.message || 'Có lỗi khi cập nhật danh mục');
+    },
+  });
+
   return {
     approveProduct: approveProductMutation.mutateAsync,
     isApproving: approveProductMutation.isPending,
@@ -121,5 +133,7 @@ export const useAdminProductMutations = () => {
     isHiding: hideProductMutation.isPending,
     updateProductStory: updateProductStoryMutation.mutateAsync,
     isUpdatingStory: updateProductStoryMutation.isPending,
+    updateCategory: updateCategoryMutation.mutateAsync,
+    isUpdatingCategory: updateCategoryMutation.isPending,
   };
 };

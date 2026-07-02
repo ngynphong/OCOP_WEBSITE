@@ -49,4 +49,10 @@ export const adminProductApi = {
   ): Promise<ProductDetailResponse> => {
     return axiosClient.patch(buildRoute(API_ENDPOINTS.ADMIN.PRODUCTS, id, 'story'), data);
   },
+
+  updateCategory: (id: number, categoryId: number): Promise<ProductDetailResponse> => {
+    return axiosClient.patch(buildRoute(API_ENDPOINTS.ADMIN.PRODUCTS, id, 'category'), null, {
+      params: { categoryId },
+    });
+  },
 };

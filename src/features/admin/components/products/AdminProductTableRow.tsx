@@ -20,6 +20,7 @@ interface AdminProductTableRowProps {
   onOpenStory: (product: Product) => void;
   onToggleFeaturedStory: (product: Product) => void;
   onHide: (id: number) => void;
+  onOpenCategory: (product: Product) => void;
 }
 
 export const AdminProductTableRow = memo(function AdminProductTableRow({
@@ -35,6 +36,7 @@ export const AdminProductTableRow = memo(function AdminProductTableRow({
   onOpenStory,
   onToggleFeaturedStory,
   onHide,
+  onOpenCategory,
 }: AdminProductTableRowProps) {
   return (
     <tr className="hover:bg-stone-50/50 transition-colors">
@@ -60,8 +62,15 @@ export const AdminProductTableRow = memo(function AdminProductTableRow({
               {product.name}
             </p>
             <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-              <span className="text-[11px] font-bold text-stone-500 bg-stone-100 px-2 py-0.5 rounded-full whitespace-nowrap">
+              <span className="group relative text-[11px] font-bold text-stone-500 bg-stone-100 px-2 py-0.5 rounded-full flex items-center gap-1">
                 {product.categoryName || 'Chưa phân loại'}
+                <button
+                  onClick={() => onOpenCategory(product)}
+                  className="opacity-0 group-hover:opacity-100 text-stone-400 hover:text-emerald-600 transition-all cursor-pointer"
+                  title="Đổi danh mục"
+                >
+                  <FiEdit3 size={10} />
+                </button>
               </span>
               {product.ocopStar > 0 && (
                 <span className="text-[11px] font-bold text-amber-500 bg-amber-50 px-2 py-0.5 rounded-full flex items-center gap-0.5">

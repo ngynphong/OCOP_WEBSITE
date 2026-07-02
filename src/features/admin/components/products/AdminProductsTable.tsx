@@ -17,6 +17,7 @@ import { PERMISSIONS } from '@/features/auth/constants/permissions';
 import { AdminProductRejectModal } from './AdminProductRejectModal';
 import { AdminProductStoryModal } from './AdminProductStoryModal';
 import { AdminProductTableRow } from './AdminProductTableRow';
+import { AdminProductCategoryModal } from './AdminProductCategoryModal';
 
 // ─── Status configuration ─────────────────────────────────────────────────────
 
@@ -64,10 +65,18 @@ export const AdminProductsTable = () => {
     updateProductStory,
     isUpdatingStory,
     isSettingFeaturedStory,
+    updateCategory,
+    isUpdatingCategory,
   } = useAdminProductMutations();
 
   // Story Editing State
   const [storyModal, setStoryModal] = useState<{ open: boolean; product: Product | null }>({
+    open: false,
+    product: null,
+  });
+
+  // Category Editing State
+  const [categoryModal, setCategoryModal] = useState<{ open: boolean; product: Product | null }>({
     open: false,
     product: null,
   });
@@ -151,6 +160,18 @@ export const AdminProductsTable = () => {
     await updateProductStory({ id: storyModal.product.id, data: storyFormData });
     setStoryModal({ open: false, product: null });
   }, [storyModal.product, storyFormData, updateProductStory]);
+
+  const handleOpenCategory = useCallback((product: Product) => {
+    setCategoryModal({ open: true, product });
+  }, []);
+
+  const handleSaveCategory = useCallback(
+    async (productId: number, categoryId: number) => {
+      await updateCategory({ id: productId, categoryId });
+      setCategoryModal({ open: false, product: null });
+    },
+    [updateCategory],
+  );
 
   if (isPending) {
     return (
@@ -280,6 +301,7 @@ export const AdminProductsTable = () => {
                     onOpenStory={handleOpenStory}
                     onToggleFeaturedStory={handleToggleFeaturedStory}
                     onHide={handleHide}
+                    onOpenCategory={handleOpenCategory}
                   />
                 ))
               )}
@@ -308,6 +330,15 @@ export const AdminProductsTable = () => {
         isUpdatingStory={isUpdatingStory}
         onClose={() => setStoryModal({ open: false, product: null })}
         onSave={handleSaveStory}
+      />
+
+      {/* Product Category Modal */}
+      <AdminProductCategoryModal
+        isOpen={categoryModal.open}
+        product={categoryModal.product}
+        isSaving={isUpdatingCategory}
+        onClose={() => setCategoryModal({ open: false, product: null })}
+        onSave={handleSaveCategory}
       />
     </div>
   );
