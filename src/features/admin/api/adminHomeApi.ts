@@ -26,7 +26,9 @@ export const adminHomeApi = {
   },
 
   createBanner: (formData: FormData): Promise<AdminBannerDetailResponse> => {
-    return axiosClient.post(API_ENDPOINTS.ADMIN.BANNERS, formData);
+    return axiosClient.post(API_ENDPOINTS.ADMIN.BANNERS, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
   },
 
   updateBanner: (id: number, formData: FormData): Promise<AdminBannerDetailResponse> => {

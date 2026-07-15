@@ -58,6 +58,19 @@ export const MainBanner = memo(function MainBanner() {
           >
             <Link href={banners[currentIndex].link || '#'}>
               <div className="relative w-full h-full">
+                {/* Ambient Background Effect */}
+                {banners[currentIndex].isAmbientBackground && (
+                  <div className="absolute inset-0 w-full h-full -z-10 overflow-hidden">
+                    <Image
+                      src={banners[currentIndex].imageUrl}
+                      alt="Ambient Background"
+                      fill
+                      className="object-cover scale-110 blur-3xl opacity-60"
+                    />
+                    <div className="absolute inset-0 bg-black/10" />
+                  </div>
+                )}
+
                 {/* Desktop Image */}
                 <div className="hidden md:block w-full h-full">
                   <Image
@@ -66,7 +79,9 @@ export const MainBanner = memo(function MainBanner() {
                     fill
                     sizes="(max-width: 768px) 100vw, 100vw"
                     priority
-                    className="object-cover"
+                    className={
+                      banners[currentIndex].isAmbientBackground ? 'object-contain' : 'object-cover'
+                    }
                   />
                 </div>
                 {/* Mobile Image */}
@@ -77,7 +92,9 @@ export const MainBanner = memo(function MainBanner() {
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     priority
-                    className="object-cover"
+                    className={
+                      banners[currentIndex].isAmbientBackground ? 'object-contain' : 'object-cover'
+                    }
                   />
                 </div>
 

@@ -11,6 +11,7 @@ export interface Banner {
   link: string;
   type: 'MAIN' | 'SUB';
   displayOrder: number;
+  isAmbientBackground?: boolean;
 }
 
 export interface QuickLink {

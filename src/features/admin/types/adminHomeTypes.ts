@@ -16,6 +16,7 @@ export interface AdminBanner {
   startDate?: string;
   endDate?: string;
   isActive?: boolean;
+  isAmbientBackground?: boolean;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -28,6 +29,7 @@ export interface CreateBannerRequest {
   displayOrder: number;
   startDate: string;
   endDate: string;
+  isAmbientBackground?: boolean;
 }
 
 export type UpdateBannerRequest = Partial<CreateBannerRequest>;

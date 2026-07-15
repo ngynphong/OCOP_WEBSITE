@@ -16,8 +16,8 @@ import Image from 'next/image';
 import toast from 'react-hot-toast';
 
 const bannerSchema = z.object({
-  title: z.string().min(5, 'Tiêu đề phải có ít nhất 5 ký tự'),
-  description: z.string().min(10, 'Mô tả phải có ít nhất 10 ký tự'),
+  title: z.string().min(1, 'Tiêu đề không được để trống'),
+  description: z.string().optional(),
   image: z.any().optional(),
   imageMobile: z.any().optional(),
   link: z.string().url('Đường dẫn đích không hợp lệ'),
@@ -25,6 +25,7 @@ const bannerSchema = z.object({
   displayOrder: z.number().min(0, 'Thứ tự không được âm'),
   startDate: z.string().min(1, 'Vui lòng chọn ngày bắt đầu'),
   endDate: z.string().min(1, 'Vui lòng chọn ngày kết thúc'),
+  isAmbientBackground: z.boolean().optional(),
 });
 
 type BannerFormData = z.infer<typeof bannerSchema>;
@@ -67,13 +68,13 @@ export const BannerFormModal = memo(function BannerFormModal({
       displayOrder: 0,
       startDate: '',
       endDate: '',
+      isAmbientBackground: false,
     },
   });
 
   const selectedImage = useWatch({ control, name: 'image' });
   const selectedImageMobile = useWatch({ control, name: 'imageMobile' });
 
-  // Derive display images: prioritize file preview over existing banner image
   const displayImage = filePreview || banner?.imageUrl || null;
   const displayImageMobile = filePreviewMobile || banner?.imageMobileUrl || null;
 
@@ -87,6 +88,7 @@ export const BannerFormModal = memo(function BannerFormModal({
         displayOrder: banner.displayOrder,
         startDate: banner.startDate ? new Date(banner.startDate).toISOString().slice(0, 16) : '',
         endDate: banner.endDate ? new Date(banner.endDate).toISOString().slice(0, 16) : '',
+        isAmbientBackground: banner.isAmbientBackground || false,
       });
     } else {
       reset({
@@ -97,6 +99,7 @@ export const BannerFormModal = memo(function BannerFormModal({
         displayOrder: 0,
         startDate: '',
         endDate: '',
+        isAmbientBackground: false,
       });
     }
   }, [banner, reset]);
@@ -136,14 +139,17 @@ export const BannerFormModal = memo(function BannerFormModal({
 
       const payload = {
         ...metadata,
-        startDate: new Date(metadata.startDate).toISOString(),
-        endDate: new Date(metadata.endDate).toISOString(),
+        startDate: metadata.startDate || '',
+        endDate: metadata.endDate || '',
+        isAmbientBackground: metadata.isAmbientBackground || false,
       };
 
-      // Gửi metadata dưới dạng JSON string để Backend dễ dàng parse
-      formData.append('request', JSON.stringify(payload));
+      Object.entries(payload).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+          formData.append(key, value.toString());
+        }
+      });
 
-      // Thêm các file ảnh
       if (image && image instanceof FileList && image.length > 0) {
         formData.append('image', image[0]);
       }
@@ -242,6 +248,21 @@ export const BannerFormModal = memo(function BannerFormModal({
               placeholder="https://ocop.vn/..."
             />
             {errors.link && <p className="text-xs text-red-500 font-bold">{errors.link.message}</p>}
+          </div>
+
+          <div className="space-y-1 md:col-span-2 lg:col-span-6 flex items-center gap-3">
+            <input
+              type="checkbox"
+              id="isAmbientBackground"
+              {...register('isAmbientBackground')}
+              className="w-5 h-5 text-emerald-600 rounded focus:ring-emerald-500 cursor-pointer"
+            />
+            <label
+              htmlFor="isAmbientBackground"
+              className="text-sm font-bold text-stone-600 cursor-pointer"
+            >
+              Sử dụng Ambient Background (Hiệu ứng mờ cho ảnh nền)
+            </label>
           </div>
 
           {/* Hình ảnh */}

@@ -13,7 +13,9 @@ export const AmbientBackground = memo(function AmbientBackground() {
     <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden select-none">
       <AnimatePresence mode="wait">
         <motion.div
-          key={activeBanner?.imageUrl || 'default'}
+          key={
+            activeBanner?.isAmbientBackground ? activeBanner?.imageUrl || 'default' : 'default_bg'
+          }
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.5 }}
           exit={{ opacity: 0 }}
@@ -25,7 +27,11 @@ export const AmbientBackground = memo(function AmbientBackground() {
             {/* Desktop Background */}
             <div className="hidden md:block absolute inset-0">
               <Image
-                src={activeBanner?.imageUrl || '/images/background.jpg'}
+                src={
+                  activeBanner?.isAmbientBackground
+                    ? activeBanner?.imageUrl || '/images/background.jpg'
+                    : '/images/background.jpg'
+                }
                 alt="Event Background"
                 fill
                 priority
@@ -37,7 +43,11 @@ export const AmbientBackground = memo(function AmbientBackground() {
             <div className="block md:hidden absolute inset-0">
               <Image
                 src={
-                  activeBanner?.imageMobileUrl || activeBanner?.imageUrl || '/images/background.jpg'
+                  activeBanner?.isAmbientBackground
+                    ? activeBanner?.imageMobileUrl ||
+                      activeBanner?.imageUrl ||
+                      '/images/background.jpg'
+                    : '/images/background.jpg'
                 }
                 alt="Event Background Mobile"
                 fill

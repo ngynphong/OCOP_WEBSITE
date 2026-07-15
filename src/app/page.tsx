@@ -19,7 +19,6 @@ import { QuickLinksRow } from '@/features/home/components/QuickLinksRow';
 import { VoucherHomeSection } from '@/features/home/components/VoucherHomeSection';
 import { OcopMallSection } from '@/features/home/components/OcopMallSection';
 import { DailyDiscoverFeed } from '@/features/home/components/DailyDiscoverFeed';
-import { MainBanner } from '@/features/home/components/MainBanner';
 import { SubBanners } from '@/features/home/components/SubBanners';
 import { AmbientBackground } from '@/features/home/components/AmbientBackground';
 import { ComplaintFloatingButton } from '@/features/complaints/components/ComplaintFloatingButton';
@@ -35,10 +34,8 @@ export default function Home() {
 
       <main className="relative z-10 flex-1 flex flex-col justify-start items-center w-full overflow-x-hidden">
         <div className="w-full pb-12 flex flex-col justify-start items-center">
-          <HeroSection />
-
-          <div className="w-full max-w-7xl px-6 lg:px-8 mt-10 relative z-20">
-            <MainBanner />
+          <div className="w-full">
+            <HeroSection />
           </div>
 
           <div className="w-full flex flex-col gap-10 md:gap-16 mt-6 relative z-20">

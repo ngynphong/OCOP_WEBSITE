@@ -1,34 +1,19 @@
 'use client';
 
 import { useState, useEffect, memo } from 'react';
-import Image from 'next/image';
 import {
-  ShoppingCart,
-  Star,
-  Leaf,
-  Heart,
   Apple,
   Citrus,
   Grape,
   Carrot,
-  Loader2,
   Package,
   Store,
   Map,
   LucideIcon,
   QrCode,
+  Leaf,
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useFeaturedProductsQuery } from '@/features/products/hooks/usePublicProducts';
-import {
-  useWishlistStatus,
-  useAddToWishlist,
-  useRemoveFromWishlist,
-} from '@/features/wishlist/hooks/useWishlist';
-import { useAppSelector } from '@/store/hooks';
-import { cn } from '@/lib/utils';
-import toast from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
+import { MainBanner } from './MainBanner';
 
 const floatingIcons = [
   { Icon: Apple, top: '10%', left: '5%', size: 40, delay: '0s', duration: '4s' },
@@ -40,59 +25,12 @@ const floatingIcons = [
 ];
 
 export const HeroSection = memo(function HeroSection() {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [isMounted, setIsMounted] = useState(false);
-  const router = useRouter();
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMounted(true);
   }, []);
-
-  const { data: featuredResp, isLoading: isProductsLoading } = useFeaturedProductsQuery(12);
-
-  // Handle both direct array data and paginated data structure
-  const products = Array.isArray(featuredResp?.data)
-    ? featuredResp.data
-    : featuredResp?.data?.items || [];
-
-  const productIds = products.map((p) => p.id);
-  const { data: wishlistStatusData } = useWishlistStatus(isAuthenticated ? productIds : []);
-  const wishlistStatusMap = wishlistStatusData?.data || {};
-
-  const addToWishlist = useAddToWishlist();
-  const removeFromWishlist = useRemoveFromWishlist();
-  const isWishlistLoading = addToWishlist.isPending || removeFromWishlist.isPending;
-
-  useEffect(() => {
-    if (products.length > 0) {
-      const timer = setInterval(() => {
-        setCurrentIndex((prev) => (prev + 1) % products.length);
-      }, 5000);
-      return () => clearInterval(timer);
-    }
-  }, [products.length]);
-
-  const handleWishlistToggle = (e: React.MouseEvent, productId: number) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (!isAuthenticated) {
-      toast.error('Vui lòng đăng nhập để yêu thích sản phẩm');
-      return;
-    }
-
-    if (wishlistStatusMap[productId]) {
-      removeFromWishlist.mutate(productId);
-    } else {
-      addToWishlist.mutate(productId);
-    }
-  };
-
-  const handleBuyNow = (slug: string) => {
-    router.push(`/san-pham/${slug}`);
-  };
 
   return (
     <section className="relative w-full bg-[#113B28] overflow-hidden">
@@ -136,7 +74,7 @@ export const HeroSection = memo(function HeroSection() {
 
       <div className="relative w-full max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20 flex flex-col lg:flex-row items-center gap-16 z-10">
         {/* Left Column */}
-        <div className="w-full lg:w-7/12 flex flex-col justify-start items-start">
+        <div className="w-full lg:w-4/12 flex flex-col justify-start items-start">
           <div className="px-4 py-1.5 bg-white/10 border border-white/20 rounded-full inline-flex items-center gap-2 mb-8 backdrop-blur-sm">
             <Leaf className="w-4 h-4 text-green-400" />
             <span className="text-white/90 text-[10px] md:text-xs font-bold tracking-widest uppercase">
@@ -144,18 +82,17 @@ export const HeroSection = memo(function HeroSection() {
             </span>
           </div>
 
-          <h1 className="text-white text-5xl md:text-6xl lg:text-7xl font-bold font-sans leading-[1.1] md:leading-[1.15] mb-6">
+          <h1 className="text-white text-5xl md:text-6xl font-black font-sans tracking-tight leading-none mb-4">
             OCOP
-            <br />
-            <span className="text-[#D4AF37]">IES Connect</span>
+            <span className="text-[#D4AF37] text-3xl md:text-4xl block mt-1">IES Connect</span>
           </h1>
 
-          <p className="text-emerald-50/80 text-base md:text-lg max-w-lg mb-12 font-sans leading-relaxed">
-            Kết nối nông dân • Nghệ nhân • Người tiêu dùng
+          <p className="text-emerald-50/80 text-sm md:text-base max-w-sm mb-10 font-sans leading-relaxed">
+            Kết nối nông dân • Người tiêu dùng
             <br />
             Truy xuất nguồn gốc qua QR
           </p>
-          <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+          <div className="w-full grid grid-cols-2 gap-y-6 gap-x-4">
             <StatItem value="12K+" label="Sản phẩm OCOP" icon={Package} />
             <StatItem value="3.400+" label="Cửa hàng" icon={Store} />
             <StatItem value="63" label="Tỉnh thành" icon={Map} />
@@ -163,131 +100,9 @@ export const HeroSection = memo(function HeroSection() {
           </div>
         </div>
 
-        {/* Right Carousel Column */}
-        <div className="w-full lg:w-5/12 flex justify-center lg:justify-end items-center mt-12 lg:mt-0 relative h-[520px]">
-          {!isMounted || isProductsLoading ? (
-            <div className="w-full max-w-[400px] h-[480px] bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl flex items-center justify-center">
-              <Loader2 className="w-10 h-10 text-[#D4AF37] animate-spin" />
-            </div>
-          ) : (
-            <AnimatePresence mode="wait">
-              {products.length > 0 &&
-                products.map(
-                  (item, idx) =>
-                    idx === currentIndex && (
-                      <motion.div
-                        key={item.id}
-                        initial={{ opacity: 0, x: 40, scale: 0.95 }}
-                        animate={{ opacity: 1, x: 0, scale: 1 }}
-                        exit={{ opacity: 0, x: -40, scale: 0.95 }}
-                        transition={{ duration: 0.6, ease: 'easeOut' }}
-                        className="absolute right-0 top-0 w-full max-w-[400px] md:max-w-[440px] bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6 shadow-2xl origin-right z-20"
-                      >
-                        <div
-                          className="relative rounded-xl bg-[#FCF8F2] h-[240px] w-full flex items-center justify-center p-6 overflow-hidden shadow-inner group cursor-pointer"
-                          onClick={() => router.push(`/san-pham/${item.slug}`)}
-                        >
-                          {/* OCOP Badge */}
-                          <div className="absolute top-3 right-3 bg-[#113B28] text-white text-[10px] md:text-xs font-black px-3 py-1.5 flex flex-col items-center rounded-full z-10 border border-green-800/20 shadow-lg">
-                            <span>OCOP</span>
-                            <span className="flex items-center gap-0.5 text-[#D4AF37]">
-                              {item.ocopStar}
-                              <Star className="w-2.5 h-2.5 fill-current" />
-                            </span>
-                          </div>
-                          {/* Product Image */}
-                          <div className="relative w-full h-full transform group-hover:scale-110 transition-transform duration-700 ease-out">
-                            <Image
-                              src={item.thumbnailUrl || '/images/tra-do-uong.jpg'}
-                              alt={item.name}
-                              fill
-                              sizes="(max-width: 768px) 100vw, 400px"
-                              className="object-contain drop-shadow-2xl"
-                              priority={idx === 0}
-                            />
-                          </div>
-                        </div>
-
-                        <div className="mt-6 flex flex-col">
-                          <h3 className="text-white font-sans text-xl md:text-2xl font-bold leading-tight line-clamp-1">
-                            {item.name}
-                          </h3>
-                          <p className="text-white/60 text-xs md:text-sm font-sans mt-1.5 flex items-center gap-1.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] inline-block" />
-                            {item.shopName || 'Chủ thể OCOP'}
-                          </p>
-
-                          <div className="flex items-center gap-1 mt-2 mb-4">
-                            {[...Array(5)].map((_, i) => (
-                              <Star
-                                key={i}
-                                className={cn(
-                                  'w-3.5 h-3.5',
-                                  i < Math.round(item.ratingAvg)
-                                    ? 'text-[#D4AF37] fill-[#D4AF37]'
-                                    : 'text-white/20 fill-white/20',
-                                )}
-                              />
-                            ))}
-                            <span className="text-[#D4AF37] font-bold text-xs md:text-sm ml-1.5">
-                              {item.ratingAvg.toFixed(1)}
-                            </span>
-                          </div>
-
-                          <div className="flex flex-col mb-6">
-                            <span className="text-[#D4AF37] font-bold text-2xl md:text-3xl font-sans">
-                              {item.minPrice.toLocaleString('vi-VN')}₫
-                            </span>
-                          </div>
-
-                          <div className="flex items-center gap-3">
-                            <button
-                              onClick={() => handleBuyNow(item.slug)}
-                              className="flex-1 bg-linear-to-r from-[#D4AF37] to-[#C2A052] hover:brightness-110 text-[#133D29] py-3.5 rounded-xl font-bold text-sm md:text-base border-none outline-none shadow-xl transition-all flex items-center justify-center gap-2 group active:scale-95 cursor-pointer"
-                            >
-                              <ShoppingCart className="w-4 h-4 md:w-5 md:h-5 group-hover:-rotate-12 transition-transform" />{' '}
-                              Mua ngay
-                            </button>
-                            <button
-                              onClick={(e) => handleWishlistToggle(e, item.id)}
-                              disabled={isWishlistLoading}
-                              className={cn(
-                                'px-5 py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center group active:scale-95 cursor-pointer',
-                                wishlistStatusMap[item.id]
-                                  ? 'bg-red-500 text-white'
-                                  : 'bg-white/10 hover:bg-white/20 text-white',
-                              )}
-                            >
-                              <Heart
-                                className={cn(
-                                  'w-4 h-4 md:w-5 md:h-5 transition-colors',
-                                  wishlistStatusMap[item.id] && 'fill-current',
-                                )}
-                              />
-                              <span className="sr-only">Yêu thích</span>
-                            </button>
-                          </div>
-                        </div>
-                      </motion.div>
-                    ),
-                )}
-            </AnimatePresence>
-          )}
-
-          {/* Dots Indicator */}
-          {!isProductsLoading && products.length > 0 && (
-            <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2">
-              {products.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setCurrentIndex(idx)}
-                  className={`transition-all duration-300 rounded-full cursor-pointer 
-                    ${idx === currentIndex ? 'w-8 h-2 bg-[#D4AF37]' : 'w-2 h-2 bg-white/20 hover:bg-white/40'}`}
-                  aria-label={`Go to slide ${idx + 1}`}
-                />
-              ))}
-            </div>
-          )}
+        {/* Right Carousel Column (now MainBanner) */}
+        <div className="w-full lg:w-8/12 flex justify-center lg:justify-end items-center mt-12 lg:mt-0 relative h-[300px] md:h-[400px] lg:h-[500px]">
+          <MainBanner />
         </div>
       </div>
     </section>
