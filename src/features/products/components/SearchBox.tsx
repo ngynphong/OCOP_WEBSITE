@@ -6,9 +6,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useDebounce } from '@/hooks/useDebounce';
-import { usePublicProductsQuery } from '@/features/products/hooks/usePublicProducts';
+import {
+  usePublicProductsQuery,
+  useAiSearchQuery,
+} from '@/features/products/hooks/usePublicProducts';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/AppButton';
+import { Switch } from '@/components/ui/Switch';
+import { Sparkles } from 'lucide-react';
 
 interface SearchBoxProps {
   variant?: 'header' | 'hero';
@@ -18,18 +23,26 @@ interface SearchBoxProps {
 
 export const SearchBox: React.FC<SearchBoxProps> = ({ variant = 'header', className, onClose }) => {
   const [query, setQuery] = useState('');
+  const [isAiMode, setIsAiMode] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const debouncedQuery = useDebounce(query, 300);
+  const debouncedQuery = useDebounce(query, 800);
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { data: productsRes, isFetching } = usePublicProductsQuery(
+  const { data: regularProductsRes, isFetching: isFetchingRegular } = usePublicProductsQuery(
     { keyword: debouncedQuery, pageSize: 6 },
-    { enabled: debouncedQuery.length >= 2 },
+    { enabled: debouncedQuery.length >= 2 && !isAiMode },
   );
 
-  const products = productsRes?.data?.items || [];
+  const { data: aiProductsRes, isFetching: isFetchingAi } = useAiSearchQuery(
+    debouncedQuery,
+    6,
+    isAiMode,
+  );
+
+  const isFetching = isAiMode ? isFetchingAi : isFetchingRegular;
+  const products = isAiMode ? aiProductsRes || [] : regularProductsRes?.data?.items || [];
 
   // Handle click outside
   useEffect(() => {
@@ -45,11 +58,13 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ variant = 'header', classN
   const handleSearch = useCallback(
     (keyword: string) => {
       if (!keyword.trim()) return;
-      router.push(`/san-pham?keyword=${encodeURIComponent(keyword.trim())}`);
+      router.push(
+        `/san-pham?keyword=${encodeURIComponent(keyword.trim())}${isAiMode ? '&aiSearch=true' : ''}`,
+      );
       setIsOpen(false);
       if (onClose) onClose();
     },
-    [router, onClose],
+    [router, onClose, isAiMode],
   );
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -98,8 +113,12 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ variant = 'header', classN
           onFocus={() => setIsOpen(true)}
           placeholder={
             variant === 'header'
-              ? 'Tìm kiếm sản phẩm...'
-              : 'Tìm mật ong, trà, gạo ST25, lụa Bảo Lộc...'
+              ? isAiMode
+                ? 'Hỏi AI tìm sản phẩm...'
+                : 'Tìm kiếm sản phẩm...'
+              : isAiMode
+                ? 'Ví dụ: Tặng quà gì cho sếp nam ở Hà Nội?'
+                : 'Tìm mật ong, trà, gạo ST25, lụa Bảo Lộc...'
           }
           className={cn(
             'flex-1 bg-transparent border-none outline-none px-3 py-1 font-sans text-sm md:text-base',
@@ -136,16 +155,41 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ variant = 'header', classN
               variant === 'hero' ? 'md:rounded-xl' : '',
             )}
           >
-            <div className="max-h-[420px] overflow-y-auto custom-scrollbar">
+            <div className="max-h-[450px] overflow-y-auto custom-scrollbar">
+              {/* AI Toggle Header */}
+              <div className="px-4 py-3 border-b border-stone-100 flex items-center justify-between bg-stone-50/50">
+                <div className="flex items-center gap-2">
+                  <Sparkles
+                    className={cn('w-4 h-4', isAiMode ? 'text-amber-500' : 'text-stone-400')}
+                  />
+                  <span
+                    className={cn(
+                      'text-xs font-bold uppercase tracking-wider',
+                      isAiMode ? 'text-amber-600' : 'text-stone-500',
+                    )}
+                  >
+                    Tìm kiếm thông minh
+                  </span>
+                </div>
+                <Switch checked={isAiMode} onCheckedChange={setIsAiMode} />
+              </div>
+
               {isFetching && products.length === 0 ? (
-                <div className="p-12 flex flex-col items-center gap-3 text-stone-400">
-                  <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
-                  <p className="text-xs font-bold uppercase tracking-widest">Đang tìm kiếm...</p>
+                <div className="p-12 flex flex-col items-center gap-4 text-stone-400">
+                  <Loader2
+                    className={cn(
+                      'w-8 h-8 animate-spin',
+                      isAiMode ? 'text-amber-500' : 'text-emerald-600',
+                    )}
+                  />
+                  <p className="text-xs font-bold uppercase tracking-widest text-center">
+                    {isAiMode ? 'AI Đang suy nghĩ...' : 'Đang tìm kiếm...'}
+                  </p>
                 </div>
               ) : products.length > 0 ? (
                 <div className="p-2">
                   <div className="px-3 py-2 text-[10px] font-black text-stone-400 uppercase tracking-widest border-b border-stone-50 mb-1">
-                    Sản phẩm gợi ý
+                    {isAiMode ? 'Gợi ý từ AI' : 'Sản phẩm gợi ý'}
                   </div>
                   {products.map((product, index) => (
                     <button

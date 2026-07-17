@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { DM_Sans, Inter } from 'next/font/google';
+import { DM_Sans, Inter, Playfair_Display } from 'next/font/google';
 import './globals.css';
 import AppProvider from '../providers/AppProvider';
 
@@ -12,6 +12,12 @@ const dmSans = DM_Sans({
 
 const inter = Inter({
   variable: '--font-inter',
+  subsets: ['vietnamese', 'latin'],
+  display: 'swap',
+});
+
+const playfair = Playfair_Display({
+  variable: '--font-playfair',
   subsets: ['vietnamese', 'latin'],
   display: 'swap',
 });
@@ -37,7 +43,7 @@ export default function RootLayout({
     <html
       lang="vi"
       suppressHydrationWarning
-      className={`${dmSans.variable} ${inter.variable} h-full antialiased`}
+      className={`${dmSans.variable} ${inter.variable} ${playfair.variable} h-full antialiased`}
     >
       <body suppressHydrationWarning className="min-h-full flex flex-col">
         <AppProvider>

@@ -77,9 +77,9 @@ const CategorySection = memo(({ category, index }: { category: PublicCategory; i
         </div>
       ) : (
         /* Featured / Editorial Layout */
-        <div className="w-full flex flex-col lg:flex-row gap-6 md:gap-8">
+        <div className="w-full grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
           {/* Big Featured Card */}
-          <div className="flex-1 relative min-h-[400px] md:min-h-[500px] rounded-xl md:rounded-[48px] overflow-hidden group shadow-2xl shadow-stone-200">
+          <div className="col-span-2 lg:row-span-2 relative min-h-[400px] md:min-h-[500px] rounded-2xl overflow-hidden group shadow-2xl shadow-stone-200">
             <Image
               src={category.bannerUrl || '/images/fresh-green-produce.jpg'}
               alt={category.name}
@@ -113,10 +113,9 @@ const CategorySection = memo(({ category, index }: { category: PublicCategory; i
           </div>
 
           {/* Grid of remaining products */}
-          <div className="lg:w-[420px] grid grid-cols-2 lg:grid-cols-1 gap-4 md:gap-6">
-            {products.slice(0, 2).map((product) => (
+          {products.slice(0, 3).map((product) => (
+            <div key={product.id} className="col-span-1">
               <ProductCard
-                key={product.id}
                 id={product.id}
                 name={product.name}
                 slug={product.slug}
@@ -130,8 +129,8 @@ const CategorySection = memo(({ category, index }: { category: PublicCategory; i
                 location={product.provinceName || 'Việt Nam'}
                 inStock={product.inStock}
               />
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       )}
     </motion.section>

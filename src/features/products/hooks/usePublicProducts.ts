@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useInfiniteQuery, UseQueryOptions } from '@tanstack/react-query';
 import { publicProductApi } from '@/features/products/api/publicProductApi';
 import { brandApi } from '@/features/products/api/brandApi';
+import { aiChatApi } from '@/features/ai-chat/api/aiChatApi';
 import {
   TraceDetailResponse,
   PublicProductListParams,
@@ -175,5 +176,36 @@ export const usePublicTierPricesQuery = (productId: number, variantId?: number) 
     queryFn: () => publicProductApi.getTierPrices(productId, variantId),
     enabled: !!productId,
     staleTime: 5 * 60 * 1000,
+  });
+};
+
+// ─── AI Semantic Search & Recommendations ──────────────────────────────────────────
+
+export const useAiSearchQuery = (query: string, limit = 5, enabled = true) => {
+  return useQuery({
+    queryKey: ['ai-search', query, limit],
+    queryFn: async () => {
+      // API Backend giờ đã trả về trực tiếp danh sách ProductListResponse
+      return await aiChatApi.semanticSearch(query, limit);
+    },
+    enabled: enabled && query.length >= 2,
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useAiRecommendationsQuery = (
+  productId: string | number | null | undefined,
+  limit = 4,
+) => {
+  return useQuery({
+    queryKey: ['ai-recommendations', productId, limit],
+    queryFn: async () => {
+      if (!productId) return [];
+
+      // API Backend giờ đã trả về trực tiếp danh sách ProductListResponse
+      return await aiChatApi.getRecommendations(productId.toString(), limit);
+    },
+    enabled: !!productId,
+    staleTime: 10 * 60 * 1000,
   });
 };

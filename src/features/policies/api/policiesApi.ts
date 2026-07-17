@@ -37,6 +37,7 @@ export const policiesApi = {
     const response = (await axiosClient.post(
       buildRoute(API_ENDPOINTS.POLICIES, id, 'consent'),
       data,
+      { headers: { 'X-Silent-Loading': 'true' } },
     )) as IPolicyApiResponse<string>;
     return response.data;
   },

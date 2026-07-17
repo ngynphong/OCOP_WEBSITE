@@ -22,6 +22,7 @@ import { DailyDiscoverFeed } from '@/features/home/components/DailyDiscoverFeed'
 import { SubBanners } from '@/features/home/components/SubBanners';
 import { AmbientBackground } from '@/features/home/components/AmbientBackground';
 import { ComplaintFloatingButton } from '@/features/complaints/components/ComplaintFloatingButton';
+import { FloatingChatbot } from '@/features/ai-chat/components/FloatingChatbot';
 
 export default function Home() {
   return (
@@ -59,6 +60,7 @@ export default function Home() {
         </div>
       </main>
       <ComplaintFloatingButton />
+      <FloatingChatbot />
       <Footer />
     </div>
   );

@@ -55,4 +55,8 @@ export const adminProductApi = {
       params: { categoryId },
     });
   },
+
+  syncAllToAi: (): Promise<{ message?: string }> => {
+    return axiosClient.post(`${API_ENDPOINTS.ADMIN.PRODUCTS}/sync-ai`);
+  },
 };

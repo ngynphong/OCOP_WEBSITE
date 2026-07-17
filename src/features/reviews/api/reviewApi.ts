@@ -34,18 +34,22 @@ export const reviewApi = {
   /** Gửi đánh giá sản phẩm mới (Multipart/FormData kèm ảnh) */
   submitReview: (formData: FormData): Promise<ReviewDetailResponse> => {
     return axiosClient.post(`${API_ENDPOINTS.REVIEWS}/product`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+      headers: { 'Content-Type': 'multipart/form-data', 'X-Silent-Loading': 'true' },
     });
   },
 
   /** Báo cáo vi phạm đánh giá */
   flagReview: (reviewId: number, data: FlagReviewPayload): Promise<ResponseBase<string>> => {
-    return axiosClient.post(buildRoute(API_ENDPOINTS.REVIEWS, reviewId, 'flag'), data);
+    return axiosClient.post(buildRoute(API_ENDPOINTS.REVIEWS, reviewId, 'flag'), data, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   /** Đánh dấu đánh giá là hữu ích */
   markHelpful: (reviewId: number): Promise<ResponseBase<string>> => {
-    return axiosClient.post(buildRoute(API_ENDPOINTS.REVIEWS, reviewId, 'helpful'));
+    return axiosClient.post(buildRoute(API_ENDPOINTS.REVIEWS, reviewId, 'helpful'), {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   // ─── Seller API ────────────────────────────────────────────────────────────
@@ -57,7 +61,9 @@ export const reviewApi = {
 
   /** Seller phản hồi đánh giá */
   replyToReview: (reviewId: number, data: SellerReplyPayload): Promise<ReviewDetailResponse> => {
-    return axiosClient.patch(buildRoute(API_ENDPOINTS.SELLER.REVIEWS, reviewId, 'reply'), data);
+    return axiosClient.patch(buildRoute(API_ENDPOINTS.SELLER.REVIEWS, reviewId, 'reply'), data, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   // ─── Admin API ─────────────────────────────────────────────────────────────
@@ -72,17 +78,23 @@ export const reviewApi = {
     reviewId: number,
     data: AdminModerationPayload,
   ): Promise<ReviewDetailResponse> => {
-    return axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.REVIEWS, reviewId, 'approve'), data);
+    return axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.REVIEWS, reviewId, 'approve'), data, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   /** Admin từ chối đánh giá */
   rejectReview: (reviewId: number, data: AdminModerationPayload): Promise<ReviewDetailResponse> => {
-    return axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.REVIEWS, reviewId, 'reject'), data);
+    return axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.REVIEWS, reviewId, 'reject'), data, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   /** Admin ẩn đánh giá */
   hideReview: (reviewId: number, data: AdminModerationPayload): Promise<ReviewDetailResponse> => {
-    return axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.REVIEWS, reviewId, 'hide'), data);
+    return axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.REVIEWS, reviewId, 'hide'), data, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   /** Admin danh sách các báo cáo vi phạm nội dung */
@@ -101,6 +113,7 @@ export const reviewApi = {
       null,
       {
         params: { action },
+        headers: { 'X-Silent-Loading': 'true' },
       },
     );
   },

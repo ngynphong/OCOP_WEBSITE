@@ -120,6 +120,16 @@ export const useAdminProductMutations = () => {
     },
   });
 
+  const syncAllToAiMutation = useMutation({
+    mutationFn: () => adminProductApi.syncAllToAi(),
+    onSuccess: (data) => {
+      toast.success(data?.message || 'Đã gửi yêu cầu đồng bộ toàn bộ sản phẩm lên AI.');
+    },
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data?.message || 'Có lỗi khi đồng bộ lên AI');
+    },
+  });
+
   return {
     approveProduct: approveProductMutation.mutateAsync,
     isApproving: approveProductMutation.isPending,
@@ -135,5 +145,7 @@ export const useAdminProductMutations = () => {
     isUpdatingStory: updateProductStoryMutation.isPending,
     updateCategory: updateCategoryMutation.mutateAsync,
     isUpdatingCategory: updateCategoryMutation.isPending,
+    syncAllToAi: syncAllToAiMutation.mutateAsync,
+    isSyncingToAi: syncAllToAiMutation.isPending,
   };
 };

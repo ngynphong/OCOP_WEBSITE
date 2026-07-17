@@ -1,129 +1,124 @@
 'use client';
 
 import { useState, useEffect, memo } from 'react';
-import {
-  Apple,
-  Citrus,
-  Grape,
-  Carrot,
-  Package,
-  Store,
-  Map,
-  LucideIcon,
-  QrCode,
-  Leaf,
-} from 'lucide-react';
-import { MainBanner } from './MainBanner';
-
-const floatingIcons = [
-  { Icon: Apple, top: '10%', left: '5%', size: 40, delay: '0s', duration: '4s' },
-  { Icon: Leaf, top: '25%', right: '10%', size: 30, delay: '1s', duration: '5s' },
-  { Icon: Carrot, bottom: '15%', left: '12%', size: 35, delay: '2s', duration: '4.5s' },
-  { Icon: Citrus, top: '60%', right: '5%', size: 45, delay: '0.5s', duration: '6s' },
-  { Icon: Grape, top: '40%', left: '48%', size: 25, delay: '1.5s', duration: '5.5s' },
-  { Icon: Leaf, bottom: '5%', right: '45%', size: 20, delay: '0s', duration: '4s' },
-];
+import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useBannersQuery } from '../hooks/useHome';
+import { Loader2, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 export const HeroSection = memo(function HeroSection() {
-  const [isMounted, setIsMounted] = useState(false);
+  const { data: bannersResp, isLoading } = useBannersQuery();
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAutoPlay, setIsAutoPlay] = useState(true);
+
+  const bannersData = bannersResp?.data;
+  const banners = (Array.isArray(bannersData) ? bannersData : []).filter((b) => b.type === 'MAIN');
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIsMounted(true);
-  }, []);
+    if (banners.length > 0 && isAutoPlay) {
+      const timer = setInterval(() => {
+        setCurrentIndex((prev) => (prev + 1) % banners.length);
+      }, 6000);
+      return () => clearInterval(timer);
+    }
+  }, [banners.length, isAutoPlay]);
+
+  if (isLoading) {
+    return (
+      <div className="w-full h-[85vh] min-h-[600px] max-h-[900px] bg-stone-900 animate-pulse flex items-center justify-center">
+        <Loader2 className="w-10 h-10 text-stone-500 animate-spin" />
+      </div>
+    );
+  }
+
+  if (banners.length === 0) return null;
 
   return (
-    <section className="relative w-full bg-[#113B28] overflow-hidden">
-      {/* Background Orbs */}
-      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-green-500/20 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-[#9C6644]/20 rounded-full blur-[120px] translate-x-1/3 translate-y-1/3 pointer-events-none" />
-
-      {/* Floating Icons */}
-      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        {isMounted &&
-          floatingIcons.map(({ Icon, top, left, right, bottom, size, delay, duration }, index) => (
-            <div
-              key={index}
-              className="absolute text-emerald-50/30 animate-float-y"
-              style={
-                {
-                  top,
-                  left,
-                  right,
-                  bottom,
-                  width: size,
-                  height: size,
-                  '--float-delay': delay,
-                  '--float-duration': duration,
-                } as React.CSSProperties
-              }
-            >
-              <div
-                className="animate-slow-rotate"
-                style={
-                  {
-                    '--float-duration': duration,
-                  } as React.CSSProperties
-                }
-              >
-                <Icon size={size} strokeWidth={2} />
-              </div>
-            </div>
-          ))}
-      </div>
-
-      <div className="relative w-full max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20 flex flex-col lg:flex-row items-center gap-16 z-10">
-        {/* Left Column */}
-        <div className="w-full lg:w-4/12 flex flex-col justify-start items-start">
-          <div className="px-4 py-1.5 bg-white/10 border border-white/20 rounded-full inline-flex items-center gap-2 mb-8 backdrop-blur-sm">
-            <Leaf className="w-4 h-4 text-green-400" />
-            <span className="text-white/90 text-[10px] md:text-xs font-bold tracking-widest uppercase">
-              Nền tảng TMĐT OCOP Việt Nam
-            </span>
+    <section className="relative w-full h-[calc(100vh-72px)] lg:h-[calc(100vh-80px)] min-h-[500px] max-h-[900px] overflow-hidden bg-[#113B28]">
+      {/* Background Slider */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentIndex}
+          initial={{ opacity: 0, scale: 1.05 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
+          className="absolute inset-0 z-0"
+        >
+          <div className="relative w-full h-full">
+            <Image
+              src={banners[currentIndex].imageUrl}
+              alt={banners[currentIndex].title || 'OCOP Banner'}
+              fill
+              priority
+              className="object-cover"
+              sizes="100vw"
+            />
+            {/* Gradient Overlay for text readability */}
+            <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-transparent to-black/60" />
           </div>
+        </motion.div>
+      </AnimatePresence>
 
-          <h1 className="text-white text-5xl md:text-6xl font-black font-sans tracking-tight leading-none mb-4">
-            OCOP
-            <span className="text-[#D4AF37] text-3xl md:text-4xl block mt-1">IES Connect</span>
-          </h1>
-
-          <p className="text-emerald-50/80 text-sm md:text-base max-w-sm mb-10 font-sans leading-relaxed">
-            Kết nối nông dân • Người tiêu dùng
-            <br />
-            Truy xuất nguồn gốc qua QR
-          </p>
-          <div className="w-full grid grid-cols-2 gap-y-6 gap-x-4">
-            <StatItem value="12K+" label="Sản phẩm OCOP" icon={Package} />
-            <StatItem value="3.400+" label="Cửa hàng" icon={Store} />
-            <StatItem value="63" label="Tỉnh thành" icon={Map} />
-            <StatItem value="QR" label="Truy xuất" icon={QrCode} />
-          </div>
+      {/* Content Overlay */}
+      <div className="absolute inset-0 z-10 flex flex-col justify-between w-full h-full py-8 md:py-12 lg:py-16 px-6 md:px-12 lg:px-24">
+        {/* Top Row */}
+        <div className="flex justify-end items-start w-full gap-8 pointer-events-none">
+          {/* Top Right - Stats & Description */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="flex flex-col items-start md:items-end md:text-right max-w-sm mt-4 md:mt-8 bg-black/30 backdrop-blur-md border border-white/10 p-6 rounded-2xl pointer-events-auto"
+          >
+            <p className="text-white/90 text-sm md:text-base font-sans tracking-wide leading-relaxed mb-6 drop-shadow-md">
+              Kết nối nông dân và người tiêu dùng qua nền tảng thương mại điện tử chuyên biệt. Truy
+              xuất nguồn gốc dễ dàng qua mã QR.
+            </p>
+            <Link href="/san-pham">
+              <span className="group inline-flex items-center gap-2 text-white/70 hover:text-white uppercase tracking-[0.2em] text-[10px] md:text-xs transition-colors cursor-pointer pb-1 border-b border-white/30 hover:border-white">
+                Khám phá sản phẩm
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </span>
+            </Link>
+          </motion.div>
         </div>
 
-        {/* Right Carousel Column (now MainBanner) */}
-        <div className="w-full lg:w-8/12 flex justify-center lg:justify-end items-center mt-12 lg:mt-0 relative h-[300px] md:h-[400px] lg:h-[500px]">
-          <MainBanner />
+        {/* Dynamic Center is removed to clear the center space for the banner */}
+        <div className="flex-1" />
+
+        {/* Bottom Row */}
+        <div className="flex flex-col md:flex-row justify-between items-end w-full gap-8">
+          {/* Bottom Left - Pagination */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="flex items-center gap-6 text-white/80 font-[family-name:var(--font-playfair)] tracking-widest"
+          >
+            <span className="text-sm md:text-base">
+              {String(currentIndex + 1).padStart(2, '0')}
+            </span>
+            <div
+              className="w-24 md:w-48 h-[1px] bg-white/30 overflow-hidden relative cursor-pointer"
+              onClick={() => {
+                setIsAutoPlay(false);
+                setCurrentIndex((prev) => (prev + 1) % banners.length);
+              }}
+            >
+              <motion.div
+                className="absolute top-0 left-0 h-full bg-white"
+                initial={{ width: '0%' }}
+                animate={{ width: isAutoPlay ? '100%' : '0%' }}
+                transition={{ duration: 6, ease: 'linear', repeat: isAutoPlay ? Infinity : 0 }}
+                key={`progress-${currentIndex}`}
+              />
+            </div>
+            <span className="text-sm md:text-base">{String(banners.length).padStart(2, '0')}</span>
+          </motion.div>
         </div>
       </div>
     </section>
   );
 });
-
-const StatItem = memo(
-  ({ value, label, icon: Icon }: { value: string; label: string; icon: LucideIcon }) => (
-    <div className="flex items-start gap-3">
-      <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
-        <Icon className="w-5 h-5 text-[#D4AF37]" />
-      </div>
-      <div className="flex flex-col">
-        <p className="text-[#D4AF37] text-xl md:text-2xl font-black font-sans tracking-tight leading-none">
-          {value}
-        </p>
-        <p className="text-white/70 text-[10px] md:text-xs mt-1 font-medium tracking-wide leading-tight">
-          {label}
-        </p>
-      </div>
-    </div>
-  ),
-);
-StatItem.displayName = 'StatItem';

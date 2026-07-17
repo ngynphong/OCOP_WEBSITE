@@ -6,6 +6,7 @@ import {
   usePublicProductDetailQuery,
   usePublicProductsQuery,
   useRelatedProductsQuery,
+  useAiRecommendationsQuery,
 } from '@/features/products/hooks/usePublicProducts';
 import { ProductGallery } from '@/features/products/components/ProductDetail/Public/ProductGallery';
 import { ProductInfo } from '@/features/products/components/ProductDetail/Public/ProductInfo';
@@ -16,7 +17,8 @@ import { ProductCard } from '@/components/ui/ProductCard';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
+import { useTracking } from '@/features/tracking/hooks/useTracking';
 import Link from 'next/link';
 import { Product } from '@/features/products/types/productTypes';
 import { useWishlistStatus } from '@/features/wishlist/hooks/useWishlist';
@@ -31,11 +33,19 @@ export function ProductDetailClient() {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const [isQuickBuyModalOpen, setIsQuickBuyModalOpen] = useState(false);
 
+  const { trackProductView } = useTracking();
+
   const { data: productResp, isLoading } = usePublicProductDetailQuery(slug);
   const product = productResp?.data;
 
+  React.useEffect(() => {
+    if (product?.id) {
+      trackProductView(product.id);
+    }
+  }, [product?.id, trackProductView]);
+
   const { data: relatedResp } = useRelatedProductsQuery(slug, 4);
-  const relatedProducts: Product[] = relatedResp?.data?.items || [];
+  const relatedProducts: Product[] = (relatedResp?.data as unknown as Product[]) || [];
 
   const { data: sameShopResp } = usePublicProductsQuery(
     {
@@ -53,11 +63,14 @@ export function ProductDetailClient() {
     { enabled: !!product?.province?.id },
   );
 
+  const { data: aiRecommendations } = useAiRecommendationsQuery(product?.id);
+
   const allVisibleProductIds = [
     ...(product?.id ? [product.id] : []),
     ...relatedProducts.map((p) => p.id),
     ...(sameShopResp?.data?.items?.map((p) => p.id) || []),
     ...(sameProvinceResp?.data?.items?.map((p) => p.id) || []),
+    ...(aiRecommendations?.map((p) => p.id) || []),
   ];
 
   const { data: wishlistStatusData } = useWishlistStatus(
@@ -167,11 +180,8 @@ export function ProductDetailClient() {
               <div className="flex items-end justify-between border-b border-stone-100 pb-5">
                 <div className="flex flex-col gap-1">
                   <span className="text-green-700 font-black uppercase tracking-[0.2em] text-[10px]">
-                    Đề xuất cho bạn
-                  </span>
-                  <h2 className="text-xl font-black text-stone-900 tracking-tight">
                     Sản phẩm liên quan
-                  </h2>
+                  </span>
                 </div>
                 <Link
                   href="/san-pham"
@@ -209,6 +219,46 @@ export function ProductDetailClient() {
 
         {/* Cross-selling Sections */}
         <div className="mt-12 flex flex-col gap-12 pb-12">
+          {/* AI Recommendations */}
+          {aiRecommendations && aiRecommendations.length > 0 && (
+            <section className="flex flex-col gap-6">
+              <div className="flex items-end justify-between border-b border-amber-200/50 pb-5">
+                <div className="flex flex-col gap-1">
+                  <span className="text-amber-600 flex items-center gap-1 font-black uppercase tracking-[0.2em] text-[10px]">
+                    <Sparkles className="w-3 h-3" /> Gợi ý cho bạn
+                  </span>
+                  <h2 className="text-xl font-black text-stone-900 tracking-tighter">
+                    Có thể bạn sẽ thích
+                  </h2>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
+                {aiRecommendations
+                  .filter((p) => p.id !== product?.id)
+                  .slice(0, 4)
+                  .map((p) => (
+                    <ProductCard
+                      key={p.id}
+                      id={p.id}
+                      name={p.name}
+                      slug={p.slug}
+                      price={p.minPrice}
+                      rating={p.ratingAvg || 0}
+                      reviewCount={p.totalReviews || 0}
+                      image={p.thumbnailUrl || null}
+                      ocopStar={p.ocopStar}
+                      location={p.provinceName || ''}
+                      shopName={p.shopName}
+                      categoryName={p.categoryName}
+                      isWishlisted={!!wishlistStatusMap[p.id]}
+                      inStock={p.inStock}
+                      isWholesale={p.variants?.some((v) => v.isWholesaleEnabled)}
+                    />
+                  ))}
+              </div>
+            </section>
+          )}
+
           {/* Same Shop Products */}
           {sameShopResp?.data?.items && sameShopResp.data.items.length > 1 && (
             <section className="flex flex-col gap-6">

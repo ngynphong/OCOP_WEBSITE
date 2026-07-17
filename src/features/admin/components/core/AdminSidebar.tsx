@@ -244,6 +244,13 @@ const MENU_GROUPS: MenuGroup[] = [
     icon: FiSettings,
     items: [
       {
+        label: 'Cấu hình AI',
+        icon: FiSettings,
+        href: '/admin/ai-settings',
+        id: 'ai-settings',
+        permissions: [PERMISSIONS.AUDIT_LOG_VIEW], // Hoặc PERMISSION_MANAGE tuỳ quyền AI
+      },
+      {
         label: 'Nhật ký hệ thống',
         icon: FiSettings,
         href: '/admin/logs',

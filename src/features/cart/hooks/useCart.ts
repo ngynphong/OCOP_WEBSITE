@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { cartApi } from '../api/cartApi';
+import { useTracking } from '@/features/tracking/hooks/useTracking';
 import { getSessionId, clearSessionId } from '../utils/cartSession';
 import type {
   AddToCartRequest,
@@ -34,10 +35,14 @@ export const useCartCount = () => {
 
 export const useAddToCart = () => {
   const queryClient = useQueryClient();
+  const { trackAddToCart } = useTracking();
 
   return useMutation({
-    mutationFn: (data: AddToCartRequest) => cartApi.addItem(data),
-    onMutate: async (data: AddToCartRequest) => {
+    mutationFn: (data: AddToCartRequest & { productId?: number }) => {
+      const { productId, ...apiData } = data;
+      return cartApi.addItem(apiData);
+    },
+    onMutate: async (data: AddToCartRequest & { productId?: number }) => {
       await queryClient.cancelQueries({ queryKey: CART_QUERY_KEYS.cart });
       await queryClient.cancelQueries({ queryKey: CART_QUERY_KEYS.count });
 
@@ -63,8 +68,11 @@ export const useAddToCart = () => {
       }
       toast.error('Lỗi khi thêm vào giỏ hàng');
     },
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
       toast.success('Đã thêm vào giỏ hàng');
+      if (variables?.productId) {
+        trackAddToCart(variables.productId);
+      }
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: CART_QUERY_KEYS.cart });

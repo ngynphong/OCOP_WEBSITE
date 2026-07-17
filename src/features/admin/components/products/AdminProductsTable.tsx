@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { FiZap } from 'react-icons/fi';
+import { Bot } from 'lucide-react';
 import {
   useAdminProductsQuery,
   useAdminProductMutations,
@@ -67,6 +68,8 @@ export const AdminProductsTable = () => {
     isSettingFeaturedStory,
     updateCategory,
     isUpdatingCategory,
+    syncAllToAi,
+    isSyncingToAi,
   } = useAdminProductMutations();
 
   // Story Editing State
@@ -104,7 +107,6 @@ export const AdminProductsTable = () => {
   }, [productDetail, storyModal.open]);
 
   const products: Product[] = data?.data?.items ?? [];
-  const total = data?.data?.totalElement ?? 0;
 
   const handleApprove = useCallback(
     async (id: number) => {
@@ -226,32 +228,43 @@ export const AdminProductsTable = () => {
         <FlashSaleManagementTab role="ADMIN" />
       ) : (
         <>
-          {/* Filter bar */}
-          <div className="flex flex-wrap gap-3 items-center">
-            {(['PENDING_REVIEW', 'APPROVED', 'REJECTED', 'DRAFT'] as ProductStatus[]).map((s) => (
-              <button
-                key={s}
-                onClick={() =>
-                  setParams((p) => ({ ...p, status: p.status === s ? undefined : s, page: 0 }))
-                }
-                className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider border transition-all cursor-pointer ${
-                  params.status === s
-                    ? 'bg-stone-900 text-white border-stone-900 shadow-sm'
-                    : 'bg-white text-stone-400 border-stone-100 hover:border-emerald-300'
-                }`}
-              >
-                {STATUS_LABELS[s]}
-              </button>
-            ))}
-            {params.status && (
-              <button
-                onClick={() => setParams((p) => ({ ...p, status: undefined, page: 0 }))}
-                className="text-xs text-stone-400 font-bold hover:text-stone-600"
-              >
-                Xóa lọc
-              </button>
-            )}
-            <span className="ml-auto text-xs text-stone-400 font-semibold">{total} sản phẩm</span>
+          {/* Filter bar and Actions */}
+          <div className="flex flex-wrap gap-3 items-center justify-between">
+            <div className="flex flex-wrap gap-3 items-center">
+              {(['PENDING_REVIEW', 'APPROVED', 'REJECTED', 'DRAFT'] as ProductStatus[]).map((s) => (
+                <button
+                  key={s}
+                  onClick={() =>
+                    setParams((p) => ({ ...p, status: p.status === s ? undefined : s, page: 0 }))
+                  }
+                  className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider border transition-all cursor-pointer ${
+                    params.status === s
+                      ? 'bg-stone-900 text-white border-stone-900 shadow-sm'
+                      : 'bg-white text-stone-400 border-stone-100 hover:border-emerald-300'
+                  }`}
+                >
+                  {STATUS_LABELS[s]}
+                </button>
+              ))}
+              {params.status && (
+                <button
+                  onClick={() => setParams((p) => ({ ...p, status: undefined, page: 0 }))}
+                  className="text-xs text-stone-400 font-bold hover:text-stone-600 cursor-pointer"
+                >
+                  Xoá lọc
+                </button>
+              )}
+            </div>
+
+            <button
+              onClick={() => syncAllToAi()}
+              disabled={isSyncingToAi}
+              className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-emerald-700 disabled:opacity-50 transition-colors cursor-pointer"
+              title="Đồng bộ tất cả sản phẩm hợp lệ lên cơ sở dữ liệu Vector của Pinecone để AI có thể tìm kiếm"
+            >
+              <Bot size={16} />
+              {isSyncingToAi ? 'Đang gửi yêu cầu...' : 'Đồng bộ lên AI (Pinecone)'}
+            </button>
           </div>
         </>
       )}

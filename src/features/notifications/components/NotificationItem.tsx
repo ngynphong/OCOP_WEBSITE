@@ -89,6 +89,14 @@ const getEventIcon = (eventType: string, entityType?: string) => {
   }
 };
 
+interface IRecommendedProduct {
+  id: number;
+  name: string;
+  slug: string;
+  minPrice: number;
+  thumbnailUrl?: string;
+}
+
 export const NotificationItem = React.memo<{
   notification: INotification;
   onRead: (id: string) => void;
@@ -165,6 +173,68 @@ export const NotificationItem = React.memo<{
         <p className="text-[11px] text-stone-400 font-medium">
           {formatDistanceToNow(new Date(createdAt), { addSuffix: true, locale: vi })}
         </p>
+
+        {/* Render Inline Recommended Products */}
+        {(() => {
+          let recommendedProducts: IRecommendedProduct[] = [];
+          if (payload?.products) {
+            try {
+              recommendedProducts = JSON.parse(payload.products);
+            } catch (e) {
+              console.error('Error parsing recommended products:', e);
+            }
+          }
+
+          if (recommendedProducts && recommendedProducts.length > 0) {
+            return (
+              <div
+                className="mt-3 grid grid-cols-3 gap-2 pt-2 border-t border-dashed border-stone-100"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                {recommendedProducts.map((prod: IRecommendedProduct) => (
+                  <div
+                    key={prod.id}
+                    onClick={() => {
+                      router.push(`/san-pham/${prod.slug}`);
+                    }}
+                    className="flex flex-col gap-1.5 p-2 rounded-xl bg-stone-50 border border-stone-100 hover:border-emerald-200 hover:bg-emerald-50/10 transition-all duration-200 group/prod cursor-pointer"
+                  >
+                    <div className="relative aspect-square w-full rounded-lg overflow-hidden bg-white border border-stone-200/50">
+                      {prod.thumbnailUrl ? (
+                        <Image
+                          src={prod.thumbnailUrl}
+                          alt={prod.name}
+                          fill
+                          sizes="60px"
+                          className="object-cover group-hover/prod:scale-105 transition-transform duration-300"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-stone-100 text-stone-400 text-[10px]">
+                          No image
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex flex-col gap-0.5">
+                      <h4 className="text-[10px] font-bold text-stone-800 line-clamp-1 group-hover/prod:text-emerald-700 transition-colors">
+                        {prod.name}
+                      </h4>
+                      <p className="text-[9px] font-black text-emerald-600">
+                        {new Intl.NumberFormat('vi-VN', {
+                          style: 'currency',
+                          currency: 'VND',
+                        }).format(prod.minPrice)}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            );
+          }
+          return null;
+        })()}
+
         {actionable && (
           <div className="pt-2">
             <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-100 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
