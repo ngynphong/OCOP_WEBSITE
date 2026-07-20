@@ -2,16 +2,59 @@
 
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { FiClock, FiEye, FiShare2, FiChevronLeft } from 'react-icons/fi';
+import { FiClock, FiChevronRight, FiHome } from 'react-icons/fi';
 import { usePublicBlogDetailQuery } from '../../hooks/usePublicBlogs';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
+import { BlogLeftSidebar } from './BlogLeftSidebar';
+import { BlogRightSidebar, TOCItem } from './BlogRightSidebar';
+
+const generateTOCAndProcessHTML = (html: string) => {
+  const toc: TOCItem[] = [];
+  const seenIds = new Set<string>();
+
+  const processedHtml = html.replace(/<h([2-3])[^>]*>(.*?)<\/h\1>/gi, (match, level, text) => {
+    const cleanText = text.replace(/<[^>]+>/g, '').trim();
+    // basic slugify for vietnamese
+    let id = cleanText
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/đ/g, 'd')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+
+    // Handle duplicate IDs
+    if (seenIds.has(id)) {
+      let suffix = 1;
+      while (seenIds.has(`${id}-${suffix}`)) {
+        suffix++;
+      }
+      id = `${id}-${suffix}`;
+    }
+    seenIds.add(id);
+
+    // Only push if there's text
+    if (cleanText) {
+      toc.push({ id, text: cleanText, level: parseInt(level) });
+    }
+
+    // add id attribute to the heading tag
+    return `<h${level} id="${id}">${text}</h${level}>`;
+  });
+  return { toc, processedHtml };
+};
 
 export const BlogArticle = () => {
   const params = useParams();
-  const router = useRouter();
   const slug = params.slug as string;
   const { data: blogRes, isLoading, isError } = usePublicBlogDetailQuery(slug);
+
+  const { toc, processedHtml } = (() => {
+    if (!blogRes?.data?.content) return { toc: [], processedHtml: '' };
+    return generateTOCAndProcessHTML(blogRes.data.content.replace(/\n/g, '<br/>'));
+  })();
 
   if (isLoading)
     return (
@@ -28,100 +71,138 @@ export const BlogArticle = () => {
 
   const blog = blogRes.data;
 
+  // Assuming 250 words per minute reading speed
+  const wordCount = blog.content.split(/\s+/).length;
+  const readTime = Math.max(1, Math.ceil(wordCount / 250));
+
   return (
-    <article className="bg-white min-h-screen pb-24">
-      {/* Header / Hero */}
-      <header className="relative min-h-[60vh] md:min-h-[70vh] py-32 md:py-0 bg-stone-900 flex items-center">
-        {blog.thumbnailUrl && (
-          <div className="absolute inset-0 opacity-50">
-            <Image
-              src={blog.thumbnailUrl}
-              alt={blog.title}
-              fill
-              className="object-cover"
-              priority
-            />
-            <div className="absolute inset-0 bg-linear-to-t from-stone-900 via-stone-900/40 to-transparent" />
+    <article className="bg-stone-50 min-h-screen pb-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+        {/* Breadcrumbs - Moved above the grid for better mobile flow */}
+        <nav className="flex items-center text-sm text-stone-500 font-medium mb-8 overflow-x-auto whitespace-nowrap pb-2">
+          <Link
+            href="/"
+            className="hover:text-emerald-600 transition-colors flex items-center gap-1"
+          >
+            <FiHome /> Trang chủ
+          </Link>
+          <FiChevronRight className="mx-2 text-stone-300" />
+          <Link href="/bai-viet" className="hover:text-emerald-600 transition-colors">
+            Bài viết
+          </Link>
+          <FiChevronRight className="mx-2 text-stone-300" />
+          <span className="text-slate-900 truncate max-w-[200px] md:max-w-md">{blog.title}</span>
+        </nav>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start relative">
+          {/* Left Column - Actions */}
+          <div className="lg:col-span-1 hidden lg:block sticky top-38 z-10">
+            <BlogLeftSidebar />
           </div>
-        )}
 
-        <div className="relative z-10 w-full max-w-4xl mx-auto px-6 p-10">
-          <div className="backdrop-blur-md bg-stone-900/40 p-8 md:p-12 rounded-3xl border border-white/10 shadow-2xl">
-            <button
-              onClick={() => router.back()}
-              className="flex items-center gap-2 text-stone-300 hover:text-white mb-8 transition-colors text-sm font-bold uppercase tracking-widest"
-            >
-              <FiChevronLeft /> Quay lại
-            </button>
+          {/* Center Column - Main Content */}
+          <div className="lg:col-span-8 bg-white rounded-3xl p-6 md:p-10 shadow-sm border border-stone-100">
+            {/* Tags / Categories */}
+            {blog.tags && blog.tags.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-6">
+                {blog.tags.map((tag) => (
+                  <span
+                    key={tag.id}
+                    className="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border border-emerald-100 flex items-center gap-1"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    {tag.name}
+                  </span>
+                ))}
+              </div>
+            )}
 
-            <div className="flex flex-wrap gap-2 mb-6">
-              {blog.tags?.map((tag) => (
-                <span
-                  key={tag.id}
-                  className="bg-[#D4AF37] text-[#113B28] px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest"
-                >
-                  {tag.name}
-                </span>
-              ))}
-            </div>
-
+            {/* Title */}
             <motion.h1
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-5xl lg:text-6xl font-black text-white  italic mb-6 leading-tight"
+              className="text-3xl md:text-4xl lg:text-[44px] font-black text-slate-900 mb-6 leading-[1.2]"
             >
               {blog.title}
             </motion.h1>
 
-            <div className="flex flex-wrap items-center gap-6 text-stone-300 text-sm font-medium border-t border-stone-700 pt-6">
-              <span className="flex items-center gap-2">
-                <FiClock /> {new Date(blog.createdAt).toLocaleDateString('vi-VN')}
+            {/* Unified Meta Info */}
+            <div className="flex flex-wrap items-center gap-4 text-stone-500 text-sm font-medium mb-8 pb-6 border-b border-stone-100">
+              <span className="flex items-center gap-2 text-slate-700">
+                <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-800 font-bold text-xs uppercase">
+                  {blog.authorEmail ? blog.authorEmail.charAt(0) : 'O'}
+                </div>
+                {blog.authorEmail?.split('@')[0] || 'OCOP Admin'}
               </span>
-              <span className="flex items-center gap-2">
-                <FiEye /> {blog.viewCount || 0} Lượt xem
+              <span className="hidden sm:flex items-center gap-1 text-stone-300">•</span>
+              <span className="flex items-center gap-1.5">
+                <FiClock className="text-emerald-600" />{' '}
+                {new Date(blog.createdAt).toLocaleDateString('vi-VN')}
               </span>
-              <span className="flex items-center gap-2">
-                Bởi: {blog.authorEmail || 'OCOP Admin'}
-              </span>
+              <span className="hidden sm:flex items-center gap-1 text-stone-300">•</span>
+              <span className="flex items-center gap-1.5">{readTime} phút đọc</span>
+              <span className="hidden sm:flex items-center gap-1 text-stone-300">•</span>
+              <span className="flex items-center gap-1.5">{blog.viewCount || 0} lượt xem</span>
             </div>
+
+            {/* Short Description */}
+            {blog.shortDesc && (
+              <p className="text-lg md:text-xl text-stone-600 font-medium leading-relaxed mb-10 border-l-4 border-emerald-500 pl-4 py-1">
+                {blog.shortDesc}
+              </p>
+            )}
+
+            {/* Hero Image */}
+            {blog.thumbnailUrl && (
+              <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden mb-12 shadow-sm border border-stone-100 group">
+                <Image
+                  src={blog.thumbnailUrl}
+                  alt={blog.title}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
+                  priority
+                />
+              </div>
+            )}
+
+            {/* Article Body */}
+            <div
+              className="prose prose-emerald prose-lg max-w-none text-stone-700 leading-loose
+              prose-headings:font-black prose-headings:text-slate-900 prose-headings:font-sans
+              prose-headings:scroll-mt-32
+              prose-a:text-emerald-600 prose-a:no-underline hover:prose-a:underline
+              prose-img:rounded-2xl prose-img:shadow-md prose-img:border prose-img:border-stone-100
+              prose-blockquote:border-l-4 prose-blockquote:border-emerald-500 prose-blockquote:bg-emerald-50/50 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:rounded-r-xl prose-blockquote:text-emerald-800 prose-blockquote:font-medium prose-blockquote:not-italic
+              prose-strong:text-slate-900 prose-strong:font-bold"
+              dangerouslySetInnerHTML={{ __html: processedHtml }}
+            />
+
+            {/* Bottom Tags */}
+            {blog.tags && blog.tags.length > 0 && (
+              <div className="mt-12 pt-8 border-t border-stone-100">
+                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-widest mb-4">
+                  Chủ đề bài viết
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {blog.tags.map((tag) => (
+                    <span
+                      key={`bottom-${tag.id}`}
+                      className="bg-stone-50 text-stone-600 px-4 py-2 rounded-xl text-sm font-medium border border-stone-200 hover:border-emerald-300 hover:text-emerald-700 hover:bg-emerald-50 transition-colors cursor-pointer"
+                    >
+                      {tag.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Right Column - Sidebar */}
+          <div className="lg:col-span-3 sticky top-38 z-10">
+            <BlogRightSidebar toc={toc} />
           </div>
         </div>
-      </header>
-
-      {/* Content */}
-      <main className="max-w-3xl mx-auto px-6 py-16">
-        <p className="text-xl md:text-2xl text-emerald-800 italic leading-relaxed mb-12 border-l-4 border-emerald-500 bg-emerald-50/50 p-6 md:p-8 rounded-r-2xl shadow-sm">
-          {blog.shortDesc}
-        </p>
-
-        {/* 
-          Dùng prose của Tailwind để format bài viết (yêu cầu @tailwindcss/typography).
-          Tạm thời dùng các class tuỳ chỉnh nếu chưa cài plugin typography. 
-        */}
-        <div
-          className="prose prose-emerald prose-lg max-w-none text-stone-800 leading-relaxed 
-          prose-headings:font-black prose-headings:font-sans
-          prose-a:text-emerald-600 prose-img:rounded-xl prose-img:shadow-lg"
-          dangerouslySetInnerHTML={{ __html: blog.content.replace(/\n/g, '<br/>') }}
-        />
-
-        {/* Share & Interaction */}
-        <div className="mt-16 pt-8 border-t border-stone-200 flex items-center justify-between">
-          <div className="flex gap-2">
-            {blog.tags?.map((tag) => (
-              <span
-                key={`bottom-${tag.id}`}
-                className="bg-stone-50 text-stone-500 px-3 py-1 rounded-full text-xs font-bold border border-stone-100"
-              >
-                #{tag.name}
-              </span>
-            ))}
-          </div>
-          <button className="w-12 h-12 rounded-full bg-stone-50 border border-stone-200 flex items-center justify-center text-stone-600 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 transition-colors shadow-sm">
-            <FiShare2 />
-          </button>
-        </div>
-      </main>
+      </div>
     </article>
   );
 };
