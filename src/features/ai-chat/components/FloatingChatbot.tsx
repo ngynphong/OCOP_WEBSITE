@@ -182,7 +182,7 @@ export const FloatingChatbot = () => {
                         <ReactMarkdown
                           urlTransform={(url) => url}
                           components={{
-                            a: ({ node, href, children, ...props }) => {
+                            a: ({ href, children, ...props }) => {
                               if (href?.startsWith('action://add-to-cart')) {
                                 const match = href.match(/productId=([^&]+)/);
                                 const productId = match ? match[1] : null;

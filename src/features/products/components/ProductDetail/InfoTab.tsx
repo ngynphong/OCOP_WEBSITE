@@ -3,7 +3,8 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FiSave } from 'react-icons/fi';
+import { FiSave, FiEdit3 } from 'react-icons/fi';
+import { useAiAssistantMutations } from '../../hooks/useAiAssistant';
 import {
   useSellerProductDetailQuery,
   useSellerProductMutations,
@@ -31,6 +32,7 @@ export function InfoTab({ productId }: InfoTabProps) {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<CreateProductFormData>({
     resolver: zodResolver(createProductSchema),
@@ -48,6 +50,21 @@ export function InfoTab({ productId }: InfoTabProps) {
         }
       : undefined,
   });
+
+  const { generateStory, isGeneratingStory } = useAiAssistantMutations();
+
+  const handleGenerateStory = async () => {
+    try {
+      const response = await generateStory({ productId });
+      if (response.data) {
+        if (response.data.description) {
+          setValue('description', response.data.description, { shouldDirty: true });
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const { data: categoriesData, isPending: isLoadingCategories } = usePublicCategoriesQuery();
   const categories = categoriesData?.data ?? [];
@@ -185,9 +202,20 @@ export function InfoTab({ productId }: InfoTabProps) {
       </div>
 
       <div>
-        <label className="text-xs font-bold text-stone-500 uppercase tracking-widest block mb-1.5">
-          Mô tả chi tiết
-        </label>
+        <div className="flex items-center justify-between mb-1.5">
+          <label className="text-xs font-bold text-stone-500 uppercase tracking-widest block">
+            Mô tả chi tiết / Câu chuyện sản phẩm
+          </label>
+          <button
+            type="button"
+            onClick={handleGenerateStory}
+            disabled={isGeneratingStory}
+            className="text-xs flex items-center gap-1 font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg hover:bg-emerald-100 transition disabled:opacity-50"
+          >
+            <FiEdit3 size={12} />
+            {isGeneratingStory ? 'Đang viết...' : 'Nhờ AI viết câu chuyện'}
+          </button>
+        </div>
         <textarea
           {...register('description')}
           rows={6}

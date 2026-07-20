@@ -15,6 +15,7 @@ import {
   FiCircle,
   FiStar,
   FiDollarSign,
+  FiGift,
 } from 'react-icons/fi';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -83,6 +84,10 @@ const getEventIcon = (eventType: string, entityType?: string) => {
       return <FiCheckCircle className="text-emerald-500" />;
     case 'ORDER_CANCELLED':
       return <FiXCircle className="text-red-500" />;
+    case 'PRODUCT_RECOMMENDATION':
+      return <FiGift className="text-pink-500" />;
+    case 'JOURNAL_REMINDER':
+      return <FiInfo className="text-emerald-500" />;
     default:
       if (entityType === 'ORDER') return <FiShoppingBag className="text-blue-500" />;
       return <FiInfo className="text-stone-400" />;

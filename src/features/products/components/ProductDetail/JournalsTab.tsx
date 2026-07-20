@@ -19,14 +19,17 @@ import {
   BLOCKCHAIN_LABELS,
 } from '../../utils/ProductConstants';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
-import { FiX, FiPlus } from 'react-icons/fi';
+import { FiX, FiPlus, FiMic } from 'react-icons/fi';
 import Image from 'next/image';
+import { AiChatWidget } from './AiChatWidget';
+import { toast } from 'react-toastify';
 
 interface JournalsTabProps {
   productId: number;
+  productName?: string;
 }
 
-export function JournalsTab({ productId }: JournalsTabProps) {
+export function JournalsTab({ productId, productName }: JournalsTabProps) {
   const [showForm, setShowForm] = useState(false);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const { data, isPending } = useSellerJournalsQuery(productId);
@@ -34,6 +37,21 @@ export function JournalsTab({ productId }: JournalsTabProps) {
     useSellerJournalMutations(productId);
 
   const journals: ProductJournal[] = data?.data ?? [];
+
+  // Logic tính missing groups
+  const existingSteps = new Set(journals.map((j) => j.stepType));
+  const missingGroups: string[] = [];
+  const hasSource =
+    existingSteps.has('PLANTING') ||
+    existingSteps.has('CARE') ||
+    existingSteps.has('HARVESTING') ||
+    existingSteps.has('OTHER');
+
+  if (!isPending) {
+    if (!hasSource) missingGroups.push('Nguồn gốc nguyên liệu (Tự trồng hoặc Thu mua)');
+    if (!existingSteps.has('PROCESSING')) missingGroups.push('Chế biến');
+    if (!existingSteps.has('PACKAGING')) missingGroups.push('Đóng gói');
+  }
 
   const {
     register,
@@ -174,6 +192,7 @@ export function JournalsTab({ productId }: JournalsTabProps) {
 
       {/* Add journal form */}
       {showForm ? (
+        // ... (rest of the form remains the same, I don't need to replace it here)
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="border border-stone-100 rounded-xl p-5 space-y-4 bg-stone-50/50"
@@ -286,13 +305,42 @@ export function JournalsTab({ productId }: JournalsTabProps) {
           </div>
         </form>
       ) : (
-        <button
-          onClick={() => setShowForm(true)}
-          className="w-full py-3 border border-dashed border-stone-200 rounded-xl text-sm font-bold text-stone-400 hover:border-emerald-300 hover:text-emerald-600 transition cursor-pointer"
-        >
-          + Thêm bước nhật ký
-        </button>
+        <div className="grid grid-cols-2 gap-4">
+          <button
+            onClick={() => setShowForm(true)}
+            className="w-full py-4 border border-dashed border-stone-200 rounded-xl text-sm font-bold text-stone-400 hover:border-emerald-300 hover:text-emerald-600 transition cursor-pointer"
+          >
+            + Thêm bước nhật ký
+          </button>
+
+          <button
+            onClick={() => {
+              const widgetBtn = document.getElementById('ai-chat-widget-btn');
+              if (widgetBtn) widgetBtn.click();
+            }}
+            className="w-full py-4 border border-emerald-200 bg-emerald-50 rounded-xl text-sm font-bold text-emerald-600 hover:bg-emerald-100 transition cursor-pointer flex items-center justify-center gap-2 shadow-sm"
+          >
+            <FiMic size={18} /> Trợ lý AI Ghi nhật ký
+          </button>
+        </div>
       )}
+
+      {/* Widget chat AI */}
+      <AiChatWidget
+        productId={productId}
+        productName={productName}
+        missingGroups={!isPending ? missingGroups : undefined}
+        onJournalSuggested={(payload) => {
+          reset({
+            stepType: payload.stepType,
+            title: payload.title,
+            description: payload.description,
+            stepOrder: journals.length + 1,
+          });
+          setShowForm(true);
+          toast.info('AI đã điền sẵn thông tin. Bác hãy thêm ngày, ảnh, địa điểm và lưu lại nhé!');
+        }}
+      />
     </div>
   );
 }

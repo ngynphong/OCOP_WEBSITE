@@ -132,7 +132,9 @@ export default function SellerProductDetailPage() {
         {activeTab === 'info' && <InfoTab productId={productId} />}
         {activeTab === 'variants' && <VariantsTab productId={productId} />}
         {activeTab === 'images' && <ImagesTab productId={productId} />}
-        {activeTab === 'journals' && <JournalsTab productId={productId} />}
+        {activeTab === 'journals' && (
+          <JournalsTab productId={productId} productName={product.name} />
+        )}
       </div>
     </div>
   );

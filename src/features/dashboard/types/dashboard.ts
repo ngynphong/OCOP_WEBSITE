@@ -31,10 +31,18 @@ export interface ISellerDashboardOverview {
   shopViews: number;
 }
 
+export interface IActionRequiredProduct {
+  id: number;
+  name: string;
+  thumbnailUrl: string;
+  missingGroups: string[];
+}
+
 export interface ISellerDashboard {
   sellerStats: ISellerDashboardStats;
   overview: ISellerDashboardOverview;
   recentOrders: IRecentOrder[];
+  actionRequiredProducts?: IActionRequiredProduct[];
 }
 
 export interface IAdminDashboardKpi {

@@ -23,6 +23,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { setLoading } from '@/store/features/uiSlice';
 import { useSellerDashboard, useUserDashboard } from '@/features/dashboard/hooks/useDashboard';
+import Image from 'next/image';
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
@@ -249,6 +250,55 @@ const DashboardPage = () => {
           </div>
         </div>
       )}
+
+      {isSellerMode &&
+        sellerData?.actionRequiredProducts &&
+        sellerData.actionRequiredProducts.length > 0 && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-stone-900 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                Sản phẩm thiếu Nhật ký nguồn gốc
+              </h3>
+            </div>
+            <div className="bg-white border border-red-100 rounded-xl overflow-hidden shadow-sm">
+              <div className="divide-y divide-red-50">
+                {sellerData.actionRequiredProducts.map((product) => (
+                  <div
+                    key={product.id}
+                    className="p-4 flex items-center justify-between hover:bg-red-50/50 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-stone-100 rounded-lg overflow-hidden relative shrink-0 border border-stone-200">
+                        {product.thumbnailUrl ? (
+                          <Image
+                            src={product.thumbnailUrl}
+                            alt={product.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <FiPackage className="w-5 h-5 text-stone-400 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+                        )}
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-stone-800">{product.name}</p>
+                        <p className="text-xs text-red-500 font-medium mt-0.5">
+                          Thiếu: {product.missingGroups.join(', ')}
+                        </p>
+                      </div>
+                    </div>
+                    <Link
+                      href={`/dashboard/san-pham`}
+                      className="shrink-0 px-3 py-1.5 bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700 rounded-lg text-xs font-bold transition-colors"
+                    >
+                      Bổ sung ngay
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Recent Activity */}

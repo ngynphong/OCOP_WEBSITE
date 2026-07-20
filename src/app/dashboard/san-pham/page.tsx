@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { FiPlus, FiTrash2, FiSend, FiCopy, FiSlash } from 'react-icons/fi';
+import { FiPlus, FiTrash2, FiSend, FiCopy, FiSlash, FiMic } from 'react-icons/fi';
 import { RiStarFill } from 'react-icons/ri';
 import {
   useSellerProductsQuery,
@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/AppButton';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { FlashSaleManagementTab } from '@/features/flash-sale/components/FlashSaleManagementTab';
 import { FlashSaleFormDrawer } from '@/features/flash-sale/components/FlashSaleFormDrawer';
+import { AiChatWidget } from '@/features/products/components/ProductDetail/AiChatWidget';
 import { FiZap } from 'react-icons/fi';
 import { cn } from '@/lib/utils';
 import { Eye } from 'lucide-react';
@@ -45,6 +46,7 @@ export default function SellerProductsPage() {
   const [activeTab, setActiveTab] = useState<'PRODUCTS' | 'FLASH_SALE'>('PRODUCTS');
   const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
   const [isFlashSaleDrawerOpen, setIsFlashSaleDrawerOpen] = useState(false);
+  const [activeChatProductId, setActiveChatProductId] = useState<number | null>(null);
 
   const { data, isPending, isError } = useSellerProductsQuery(params);
   const {
@@ -327,6 +329,26 @@ export default function SellerProductsPage() {
                           <Eye size={16} />
                         </button>
 
+                        {/* AI Chat Widget Action */}
+                        {(product.status === 'APPROVED' || product.status === 'PENDING_REVIEW') && (
+                          <button
+                            onClick={() =>
+                              setActiveChatProductId(
+                                activeChatProductId === product.id ? null : product.id,
+                              )
+                            }
+                            title="Trợ lý AI Ghi nhật ký"
+                            className={cn(
+                              'p-2 rounded-lg transition cursor-pointer',
+                              activeChatProductId === product.id
+                                ? 'bg-emerald-100 text-emerald-600 shadow-sm'
+                                : 'text-emerald-500 hover:bg-white hover:shadow-sm',
+                            )}
+                          >
+                            <FiMic size={16} />
+                          </button>
+                        )}
+
                         {(product.status === 'DRAFT' || product.status === 'REJECTED') && (
                           <button
                             onClick={() => submitProduct(product.id)}
@@ -418,6 +440,16 @@ export default function SellerProductsPage() {
         }}
         onCancel={() => setConfirmDelete(null)}
       />
+
+      {/* Render AI Chat Widget for the selected product */}
+      {activeChatProductId && (
+        <AiChatWidget
+          productId={activeChatProductId}
+          productName={products.find((p) => p.id === activeChatProductId)?.name}
+          initialOpen={true}
+          onClose={() => setActiveChatProductId(null)}
+        />
+      )}
     </div>
   );
 }
