@@ -31,6 +31,7 @@ import toast from 'react-hot-toast';
 export const FloatingChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
+  const [showTooltip, setShowTooltip] = useState(false);
   const { messages, isLoading, sendMessage } = useAiChat();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
@@ -41,6 +42,22 @@ export const FloatingChatbot = () => {
   const router = useRouter();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const isDismissed = localStorage.getItem('ai-chat-tooltip-dismissed');
+      if (!isDismissed) {
+        setShowTooltip(true);
+      }
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleDismissTooltip = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowTooltip(false);
+    localStorage.setItem('ai-chat-tooltip-dismissed', 'true');
+  };
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -120,7 +137,7 @@ export const FloatingChatbot = () => {
           </div>
           <button
             onClick={() => setIsOpen(false)}
-            className="rounded-full p-1.5 text-white/80 transition-colors hover:bg-white/20 hover:text-white"
+            className="rounded-full p-1.5 text-white/80 transition-colors hover:bg-white/20 hover:text-white cursor-pointer"
           >
             <X size={18} />
           </button>
@@ -480,6 +497,37 @@ export const FloatingChatbot = () => {
         {/* Pulse effect */}
         <span className="absolute -z-10 h-full w-full animate-ping rounded-full bg-emerald-500 opacity-40"></span>
       </button>
+
+      {/* Tooltip Message */}
+      {!isOpen && showTooltip && (
+        <div className="absolute right-[70px] bottom-1 w-max max-w-[250px] animate-in fade-in slide-in-from-right-4 duration-500">
+          <div className="relative flex items-start gap-2 rounded-2xl bg-white px-4 py-3 text-sm text-emerald-800 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.15)] border border-emerald-100">
+            <span
+              className="cursor-pointer font-medium text-xs leading-relaxed"
+              onClick={() => {
+                if (!isAuthenticated) {
+                  toast.error('Vui lòng đăng nhập để trò chuyện với OCOP Support');
+                  return;
+                }
+                setIsOpen(true);
+                setShowTooltip(false);
+              }}
+            >
+              Bạn cần tư vấn gì ạ ?
+            </span>
+            <button
+              onClick={handleDismissTooltip}
+              className="mt-0.5 shrink-0 text-gray-400 hover:text-gray-600 transition-colors p-0.5 rounded-full hover:bg-gray-100 cursor-pointer"
+              title="Đóng"
+            >
+              <X size={14} />
+            </button>
+            {/* Right arrow pointing to button */}
+            <div className="absolute right-[-6px] top-1/2 -translate-y-1/2 border-y-[6px] border-y-transparent border-l-[6px] border-l-white" />
+            <div className="absolute right-[-7px] top-1/2 -translate-y-1/2 border-y-[7px] border-y-transparent border-l-[7px] border-l-emerald-100 -z-10" />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

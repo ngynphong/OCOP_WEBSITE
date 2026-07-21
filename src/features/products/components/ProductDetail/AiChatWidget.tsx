@@ -16,6 +16,10 @@ export interface SuggestedJournalPayload {
   description: string;
 }
 
+interface LocalChatMessage extends ChatMessage {
+  payload?: SuggestedJournalPayload;
+}
+
 interface AiChatWidgetProps {
   productId: number;
   productName?: string;
@@ -65,10 +69,10 @@ export function AiChatWidget({
   onJournalSuggested,
 }: AiChatWidgetProps) {
   const [isOpen, setIsOpen] = useState(initialOpen);
-  const [hasDismissedTooltip, setHasDismissedTooltip] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
   const [input, setInput] = useState('');
   const [isRecording, setIsRecording] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<LocalChatMessage[]>([]);
   const [isSpeechSupported, setIsSpeechSupported] = useState(true);
 
   const { chat, isChatting } = useAiAssistantMutations();
@@ -80,8 +84,26 @@ export function AiChatWidget({
         setIsSpeechSupported('webkitSpeechRecognition' in window || 'SpeechRecognition' in window);
       }
     }, 0);
-    return () => clearTimeout(timer);
+
+    // Show tooltip after 2 seconds
+    const tooltipTimer = setTimeout(() => {
+      const isDismissed = localStorage.getItem('ai-journal-tooltip-dismissed');
+      if (!isDismissed) {
+        setShowTooltip(true);
+      }
+    }, 2000);
+
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(tooltipTimer);
+    };
   }, []);
+
+  const handleDismissTooltip = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowTooltip(false);
+    localStorage.setItem('ai-journal-tooltip-dismissed', 'true');
+  };
   const { data: journalsData } = useSellerJournalsQuery(productId);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -107,7 +129,7 @@ export function AiChatWidget({
 
   const missingGroups = calculatedMissingGroups;
 
-  const defaultGreeting: ChatMessage = {
+  const defaultGreeting: LocalChatMessage = {
     role: 'assistant',
     content:
       missingGroups && missingGroups.length > 0
@@ -163,7 +185,7 @@ export function AiChatWidget({
     const text = typeof overrideText === 'string' ? overrideText : input;
     if (!text.trim()) return;
 
-    const userMsg: ChatMessage = { role: 'user', content: text };
+    const userMsg: LocalChatMessage = { role: 'user', content: text };
     const currentHistory = messages.length === 0 ? [defaultGreeting] : messages;
     const newHistory = [...currentHistory, userMsg];
 
@@ -180,18 +202,22 @@ export function AiChatWidget({
       });
 
       if (response.data) {
+        const isSuggesting =
+          response.data.suggestedAction === 'CREATE_JOURNAL' && response.data.payload;
+
+        let replyContent = response.data.replyMessage || '';
+        if (isSuggesting) {
+          replyContent += '\n\n[Bấm vào đây để chuyển sang điền Nhật ký](action://open-form)';
+        }
+
         setMessages((prev) => [
           ...prev,
-          { role: 'assistant', content: response.data!.replyMessage },
+          {
+            role: 'assistant',
+            content: replyContent,
+            payload: isSuggesting ? (response.data.payload as SuggestedJournalPayload) : undefined,
+          },
         ]);
-
-        if (response.data.suggestedAction === 'CREATE_JOURNAL' && response.data.payload) {
-          if (onJournalSuggested) {
-            onJournalSuggested(response.data.payload as SuggestedJournalPayload);
-            setIsOpen(false);
-            if (onClose) onClose();
-          }
-        }
       }
     } catch (error) {
       console.error(error);
@@ -208,25 +234,39 @@ export function AiChatWidget({
   if (!isOpen) {
     return (
       <div className="fixed bottom-6 right-6 flex items-end gap-3 z-50">
-        {needsMoreJournals && !hasDismissedTooltip && (
-          <div className="bg-white border border-emerald-200 shadow-xl rounded-2xl p-4 mb-2 max-w-[280px] relative animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setHasDismissedTooltip(true);
-              }}
-              className="absolute top-2 right-2 text-stone-400 hover:text-stone-600 bg-stone-50 hover:bg-stone-100 rounded-full p-1 transition"
-            >
-              <FiX size={14} />
-            </button>
-            <p className="text-sm text-stone-700 leading-snug pr-4">
-              Sản phẩm <span className="font-bold text-emerald-700">{productName || 'này'}</span>{' '}
-              còn thiếu thông tin{' '}
-              <span className="font-bold text-red-500">{missingGroups.join(', ')}</span>. Bác hãy
-              tiếp tục cập nhật nhé!
-            </p>
-            {/* A small tail pointing to the button */}
-            <div className="absolute -right-2 bottom-4 w-4 h-4 bg-white border-r border-b border-emerald-200 transform rotate-[-45deg]" />
+        {showTooltip && (
+          <div className="relative mb-1 w-max max-w-[280px] animate-in fade-in slide-in-from-right-4 duration-500">
+            <div className="relative flex items-start gap-2 rounded-2xl bg-white px-4 py-3 text-sm text-emerald-800 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.15)] border border-emerald-100">
+              <div
+                className="cursor-pointer font-medium leading-relaxed pr-2"
+                onClick={() => {
+                  setIsOpen(true);
+                  setShowTooltip(false);
+                }}
+              >
+                {needsMoreJournals ? (
+                  <>
+                    Sản phẩm{' '}
+                    <span className="font-bold text-emerald-700">{productName || 'này'}</span> còn
+                    thiếu:{' '}
+                    <span className="font-bold text-red-500">{missingGroups.join(', ')}</span>. Bác
+                    cập nhật nhé! 👋
+                  </>
+                ) : (
+                  <>Chào bác! Bác cần ghi nhận hoạt động gì hôm nay ạ? 👋</>
+                )}
+              </div>
+              <button
+                onClick={handleDismissTooltip}
+                className="mt-0.5 shrink-0 text-gray-400 hover:text-gray-600 transition-colors p-0.5 rounded-full hover:bg-gray-100"
+                title="Đóng"
+              >
+                <FiX size={14} />
+              </button>
+              {/* Right arrow pointing to button */}
+              <div className="absolute right-[-6px] bottom-[22px] border-y-[6px] border-y-transparent border-l-[6px] border-l-white" />
+              <div className="absolute right-[-7px] bottom-[21px] border-y-[7px] border-y-transparent border-l-[7px] border-l-emerald-100 -z-10" />
+            </div>
           </div>
         )}
 
@@ -234,12 +274,12 @@ export function AiChatWidget({
           id="ai-chat-widget-btn"
           onClick={() => {
             setIsOpen(true);
-            if (needsMoreJournals) setHasDismissedTooltip(true);
+            setShowTooltip(false);
           }}
           className="w-14 h-14 bg-emerald-600 text-white rounded-full flex shrink-0 items-center justify-center shadow-lg hover:bg-emerald-700 transition relative animate-bounce cursor-pointer"
         >
           <FiMessageCircle size={24} />
-          {needsMoreJournals && !hasDismissedTooltip && (
+          {needsMoreJournals && showTooltip && (
             <span className="absolute top-0 right-0 w-3.5 h-3.5 bg-red-500 border-2 border-white rounded-full animate-pulse" />
           )}
         </button>
@@ -281,7 +321,43 @@ export function AiChatWidget({
               }`}
             >
               <div className="prose prose-sm prose-stone max-w-none prose-p:leading-relaxed prose-pre:p-0">
-                <ReactMarkdown>{msg.content}</ReactMarkdown>
+                <ReactMarkdown
+                  urlTransform={(url) => url}
+                  components={{
+                    a: ({ href, children }) => {
+                      if (href === 'action://open-form') {
+                        return (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              if (msg.payload && onJournalSuggested) {
+                                onJournalSuggested(msg.payload);
+                                setIsOpen(false);
+                                if (onClose) onClose();
+                              }
+                            }}
+                            className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-700 transition mt-2 shadow-md hover:shadow-lg active:scale-95 cursor-pointer"
+                          >
+                            {children}
+                          </button>
+                        );
+                      }
+                      return (
+                        <a
+                          href={href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-emerald-600 underline font-medium hover:text-emerald-700"
+                        >
+                          {children}
+                        </a>
+                      );
+                    },
+                  }}
+                >
+                  {msg.content}
+                </ReactMarkdown>
               </div>
             </div>
           </div>

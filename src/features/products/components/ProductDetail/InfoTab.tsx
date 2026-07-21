@@ -86,7 +86,7 @@ export function InfoTab({ productId }: InfoTabProps) {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       <div>
         <label className="text-xs font-bold text-stone-500 uppercase tracking-widest block mb-1.5">
-          Tên sản phẩm *
+          Tên sản phẩm <span className="text-red-500">*</span>
         </label>
         <input
           {...register('name')}
@@ -98,7 +98,7 @@ export function InfoTab({ productId }: InfoTabProps) {
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="text-xs font-bold text-stone-500 uppercase tracking-widest block mb-1.5">
-            Danh mục *
+            Danh mục <span className="text-red-500">*</span>
           </label>
           <select
             {...register('categoryId', { valueAsNumber: true })}

@@ -21,15 +21,25 @@ import {
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { FiX, FiPlus, FiMic } from 'react-icons/fi';
 import Image from 'next/image';
-import { AiChatWidget } from './AiChatWidget';
 import { toast } from 'react-toastify';
 
 interface JournalsTabProps {
   productId: number;
   productName?: string;
+  suggestedJournal?: {
+    stepType: JournalStepType;
+    title: string;
+    description: string;
+  } | null;
+  onSuggestionConsumed?: () => void;
 }
 
-export function JournalsTab({ productId, productName }: JournalsTabProps) {
+export function JournalsTab({
+  productId,
+  productName,
+  suggestedJournal,
+  onSuggestionConsumed,
+}: JournalsTabProps) {
   const [showForm, setShowForm] = useState(false);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const { data, isPending } = useSellerJournalsQuery(productId);
@@ -62,6 +72,27 @@ export function JournalsTab({ productId, productName }: JournalsTabProps) {
     resolver: zodResolver(createJournalSchema),
     defaultValues: { stepOrder: (journals.length ?? 0) + 1 },
   });
+
+  const formRef = React.useRef<HTMLFormElement>(null);
+
+  React.useEffect(() => {
+    if (suggestedJournal) {
+      reset({
+        stepType: suggestedJournal.stepType,
+        title: suggestedJournal.title,
+        description: suggestedJournal.description,
+        stepOrder: journals.length + 1,
+      });
+      setShowForm(true);
+      setTimeout(() => {
+        formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+      toast.info('AI đã điền sẵn thông tin. Bác hãy thêm ngày, ảnh, địa điểm và lưu lại nhé!');
+      if (onSuggestionConsumed) {
+        onSuggestionConsumed();
+      }
+    }
+  }, [suggestedJournal, reset, journals.length, onSuggestionConsumed]);
 
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
@@ -194,13 +225,16 @@ export function JournalsTab({ productId, productName }: JournalsTabProps) {
       {showForm ? (
         // ... (rest of the form remains the same, I don't need to replace it here)
         <form
+          ref={formRef}
           onSubmit={handleSubmit(onSubmit)}
           className="border border-stone-100 rounded-xl p-5 space-y-4 bg-stone-50/50"
         >
           <h4 className="text-sm font-black text-stone-700">Thêm bước nhật ký</h4>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-xs font-bold text-stone-500 block mb-1">Loại bước *</label>
+              <label className="text-xs font-bold text-stone-500 block mb-1">
+                Loại bước <span className="text-red-500">*</span>
+              </label>
               <select
                 {...register('stepType')}
                 className="w-full border border-stone-200 text-gray-700 rounded-xl px-3 py-2 text-sm outline-none focus:border-emerald-400 transition bg-white"
@@ -229,7 +263,9 @@ export function JournalsTab({ productId, productName }: JournalsTabProps) {
             </div>
           </div>
           <div>
-            <label className="text-xs font-bold text-stone-500 block mb-1">Tiêu đề *</label>
+            <label className="text-xs font-bold text-stone-500 block mb-1">
+              Tiêu đề <span className="text-red-500">*</span>
+            </label>
             <input
               {...register('title')}
               placeholder="Gieo trồng & Canh tác"
@@ -324,23 +360,6 @@ export function JournalsTab({ productId, productName }: JournalsTabProps) {
           </button>
         </div>
       )}
-
-      {/* Widget chat AI */}
-      <AiChatWidget
-        productId={productId}
-        productName={productName}
-        missingGroups={!isPending ? missingGroups : undefined}
-        onJournalSuggested={(payload) => {
-          reset({
-            stepType: payload.stepType,
-            title: payload.title,
-            description: payload.description,
-            stepOrder: journals.length + 1,
-          });
-          setShowForm(true);
-          toast.info('AI đã điền sẵn thông tin. Bác hãy thêm ngày, ảnh, địa điểm và lưu lại nhé!');
-        }}
-      />
     </div>
   );
 }

@@ -147,7 +147,7 @@ export function ProductListClient() {
                     { label: 'Giá từ cao đến thấp', value: 'price_desc' },
                     { label: 'Đánh giá OCOP cao nhất', value: 'rating' },
                   ]}
-                  className="w-full shadow-md"
+                  className="w-full"
                 />
               </div>
             </div>

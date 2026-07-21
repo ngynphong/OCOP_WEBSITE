@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import React, { useState, Suspense } from 'react';
+import { useParams, useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { FiArrowLeft, FiSend } from 'react-icons/fi';
 import {
   useSellerProductDetailQuery,
@@ -13,6 +13,10 @@ import { InfoTab } from '@/features/products/components/ProductDetail/InfoTab';
 import { VariantsTab } from '@/features/products/components/ProductDetail/VariantsTab';
 import { ImagesTab } from '@/features/products/components/ProductDetail/ImagesTab';
 import { JournalsTab } from '@/features/products/components/ProductDetail/JournalsTab';
+import {
+  AiChatWidget,
+  SuggestedJournalPayload,
+} from '@/features/products/components/ProductDetail/AiChatWidget';
 
 type TabId = 'info' | 'variants' | 'images' | 'journals';
 
@@ -24,11 +28,28 @@ const TABS: { id: TabId; label: string }[] = [
 ];
 
 export default function SellerProductDetailPage() {
+  return (
+    <Suspense fallback={<div className="h-48 bg-stone-100 rounded-xl animate-pulse" />}>
+      <SellerProductDetailContent />
+    </Suspense>
+  );
+}
+
+function SellerProductDetailContent() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
   const productId = Number(id);
 
-  const [activeTab, setActiveTab] = useState<TabId>('info');
+  const activeTab = (searchParams.get('tab') as TabId) || 'info';
+  const [suggestedJournal, setSuggestedJournal] = useState<SuggestedJournalPayload | null>(null);
+
+  const setActiveTab = (tab: TabId) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('tab', tab);
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
 
   const { data, isPending } = useSellerProductDetailQuery(productId);
   const { submitProduct, isSubmitting, withdrawProduct, isWithdrawing } =
@@ -133,9 +154,24 @@ export default function SellerProductDetailPage() {
         {activeTab === 'variants' && <VariantsTab productId={productId} />}
         {activeTab === 'images' && <ImagesTab productId={productId} />}
         {activeTab === 'journals' && (
-          <JournalsTab productId={productId} productName={product.name} />
+          <JournalsTab
+            productId={productId}
+            productName={product.name}
+            suggestedJournal={suggestedJournal}
+            onSuggestionConsumed={() => setSuggestedJournal(null)}
+          />
         )}
       </div>
+
+      {/* Widget chat AI */}
+      <AiChatWidget
+        productId={product.id}
+        productName={product.name}
+        onJournalSuggested={(payload) => {
+          setSuggestedJournal(payload);
+          setActiveTab('journals');
+        }}
+      />
     </div>
   );
 }

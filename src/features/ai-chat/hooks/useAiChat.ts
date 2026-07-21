@@ -15,7 +15,7 @@ export function useAiChat() {
       id: 'default-greeting',
       role: 'assistant',
       content:
-        'Xin chào! 👋\n\nTôi là OCOP Support. Hôm nay bạn muốn tìm hiểu về đặc sản nào, hay cần tôi giúp gì không?',
+        'Xin chào!\n\nTôi là OCOP Support. Hôm nay bạn muốn tìm hiểu về đặc sản nào, hay cần tôi giúp gì không?',
     },
   ]);
   const [isLoading, setIsLoading] = useState(false);

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { FiPlus, FiTrash2, FiSend, FiCopy, FiSlash, FiMic } from 'react-icons/fi';
+import { FiPlus, FiTrash2, FiSend, FiCopy, FiSlash } from 'react-icons/fi';
 import { RiStarFill } from 'react-icons/ri';
 import {
   useSellerProductsQuery,
@@ -328,26 +328,6 @@ export default function SellerProductsPage() {
                         >
                           <Eye size={16} />
                         </button>
-
-                        {/* AI Chat Widget Action */}
-                        {(product.status === 'APPROVED' || product.status === 'PENDING_REVIEW') && (
-                          <button
-                            onClick={() =>
-                              setActiveChatProductId(
-                                activeChatProductId === product.id ? null : product.id,
-                              )
-                            }
-                            title="Trợ lý AI Ghi nhật ký"
-                            className={cn(
-                              'p-2 rounded-lg transition cursor-pointer',
-                              activeChatProductId === product.id
-                                ? 'bg-emerald-100 text-emerald-600 shadow-sm'
-                                : 'text-emerald-500 hover:bg-white hover:shadow-sm',
-                            )}
-                          >
-                            <FiMic size={16} />
-                          </button>
-                        )}
 
                         {(product.status === 'DRAFT' || product.status === 'REJECTED') && (
                           <button
