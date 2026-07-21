@@ -83,7 +83,6 @@ export function AiChatWidget({
     return () => clearTimeout(timer);
   }, []);
   const { data: journalsData } = useSellerJournalsQuery(productId);
-  const queryClient = useQueryClient();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Calculate missing groups internally if not provided via props

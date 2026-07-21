@@ -4,9 +4,26 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 
 export const metadata = {
-  title: 'Đặc Sản Vùng Miền - OCOP',
+  title: 'Đặc Sản Vùng Miền - Tinh Hoa OCOP Việt Nam',
   description:
-    'Khám phá và mua sắm các sản phẩm OCOP đặc trưng từ khắp các tỉnh thành trên cả nước.',
+    'Khám phá và mua sắm các sản phẩm OCOP đặc trưng từ khắp các tỉnh thành trên cả nước. Trải nghiệm đặc sản Bắc, Trung, Nam với chất lượng tốt nhất.',
+  keywords: [
+    'đặc sản vùng miền',
+    'đặc sản 3 miền',
+    'OCOP',
+    'nông sản việt',
+    'đặc sản Bắc Trung Nam',
+  ],
+  alternates: {
+    canonical: '/vung-mien',
+  },
+  openGraph: {
+    title: 'Đặc Sản Vùng Miền - Tinh Hoa OCOP Việt Nam',
+    description:
+      'Khám phá và mua sắm các sản phẩm OCOP đặc trưng từ khắp các tỉnh thành trên cả nước.',
+    url: '/vung-mien',
+    type: 'website',
+  },
 };
 
 export default function VungMienPage() {

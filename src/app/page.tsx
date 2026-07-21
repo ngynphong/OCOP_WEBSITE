@@ -3,8 +3,28 @@ import { Footer } from '@/components/layout/Footer';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Trang chủ | Sàn OCOP',
-  description: 'Khám phá hàng ngàn sản phẩm đặc sản vùng miền, đạt chứng nhận OCOP.',
+  title: 'Trang chủ | Sàn thương mại điện tử OCOP',
+  description:
+    'Khám phá hàng ngàn sản phẩm đặc sản vùng miền, đạt chứng nhận OCOP, uy tín và chất lượng. Mua sắm đặc sản Việt Nam ngay hôm nay!',
+  keywords: ['OCOP', 'đặc sản vùng miền', 'nông sản', 'thương mại điện tử OCOP', 'mua sắm đặc sản'],
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: 'Trang chủ | Sàn thương mại điện tử OCOP',
+    description:
+      'Khám phá hàng ngàn sản phẩm đặc sản vùng miền, đạt chứng nhận OCOP, uy tín và chất lượng.',
+    url: '/',
+    type: 'website',
+    images: [
+      {
+        url: '/images/background.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Sàn thương mại điện tử OCOP',
+      },
+    ],
+  },
 };
 import { HeroSection } from '@/features/home/components/HeroSection';
 import { FeatureHighlights } from '@/features/home/components/FeatureHighlights';

@@ -30,15 +30,22 @@ export async function generateMetadata({
     };
   }
 
+  const ocopBadge = product.ocopStar ? ` - OCOP ${product.ocopStar} Sao` : '';
+  const metaTitle = `${product.name}${ocopBadge} | Sàn thương mại điện tử OCOP`;
+
   return {
-    title: `${product.name} | Sàn OCOP`,
+    title: metaTitle,
     description:
       product.shortDesc || `Mua ${product.name} chính hãng, đạt tiêu chuẩn OCOP tại Sàn OCOP.`,
     openGraph: {
-      title: product.name,
+      title: metaTitle,
       description:
         product.shortDesc || `Mua ${product.name} chính hãng, đạt tiêu chuẩn OCOP tại Sàn OCOP.`,
       images: product.thumbnailUrl ? [{ url: product.thumbnailUrl }] : [],
+      type: 'website',
+    },
+    alternates: {
+      canonical: `/san-pham/${slug}`,
     },
   };
 }
