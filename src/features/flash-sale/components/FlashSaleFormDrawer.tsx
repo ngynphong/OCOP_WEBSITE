@@ -103,10 +103,11 @@ export function FlashSaleFormDrawer({
             allItems.push({
               variantId: v.id,
               salePrice: Math.round(v.price * 0.8),
-              qtyLimit: 10,
+              qtyLimit: Math.min(10, Math.max(1, v.availableQty || 1)),
               _productName: product.name,
               _variantName: v.variantName,
               _originalPrice: v.price,
+              _availableQty: v.availableQty,
             });
           });
         });
@@ -397,14 +398,25 @@ export function FlashSaleFormDrawer({
                               </div>
                               <div>
                                 <label className="block text-[9px] font-black text-stone-400 uppercase mb-1 ml-1">
-                                  SL mở bán
+                                  SL mở bán{' '}
+                                  {field._availableQty !== undefined &&
+                                    `(Kho: ${field._availableQty})`}
                                 </label>
                                 <input
                                   type="number"
                                   {...register(`items.${index}.qtyLimit`, { valueAsNumber: true })}
                                   placeholder="Số lượng"
-                                  className="w-full px-4 py-2 bg-stone-50 border border-stone-100 rounded-xl text-xs font-black text-stone-800 outline-none focus:border-red-500"
+                                  className={cn(
+                                    'w-full px-4 py-2 bg-stone-50 border border-stone-100 rounded-xl text-xs font-black text-stone-800 outline-none focus:border-red-500',
+                                    errors.items?.[index]?.qtyLimit &&
+                                      'border-red-300 bg-red-50/30',
+                                  )}
                                 />
+                                {errors.items?.[index]?.qtyLimit && (
+                                  <p className="mt-1 text-[9px] text-red-500 font-bold uppercase italic ml-1">
+                                    {errors.items[index]?.qtyLimit?.message}
+                                  </p>
+                                )}
                               </div>
                             </div>
                           </div>

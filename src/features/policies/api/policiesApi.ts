@@ -1,4 +1,4 @@
-import { axiosClient } from '@/lib/axios';
+import { axiosClient, publicAxiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
 import { buildRoute } from '@/lib/routeBuilder';
 
@@ -20,7 +20,7 @@ export const policiesApi = {
   },
 
   getPolicyBySlug: async (slug: string): Promise<IPolicy> => {
-    const response = (await axiosClient.get(
+    const response = (await publicAxiosClient.get(
       `${API_ENDPOINTS.POLICIES}/slug/${slug}`,
     )) as IPolicyApiResponse<IPolicy>;
     return response.data;

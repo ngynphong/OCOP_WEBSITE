@@ -5,15 +5,26 @@ export type FlashSaleStatus = 'DRAFT' | 'UPCOMING' | 'ACTIVE' | 'FINISHED' | 'CA
 
 // ─── Zod Schemas ─────────────────────────────────────────────────────────────
 
-export const FlashSaleItemSchema = z.object({
-  variantId: z.number().int().positive('Variant ID không hợp lệ'),
-  salePrice: z.number().min(0, 'Giá khuyến mãi phải >= 0'),
-  qtyLimit: z.number().int().min(1, 'Số lượng giới hạn phải >= 1'),
-  // Các trường bổ trợ hiển thị (không gửi lên server)
-  _productName: z.string().optional(),
-  _variantName: z.string().optional(),
-  _originalPrice: z.number().optional(),
-});
+export const FlashSaleItemSchema = z
+  .object({
+    variantId: z.number().int().positive('Variant ID không hợp lệ'),
+    salePrice: z.number().min(0, 'Giá khuyến mãi phải >= 0'),
+    qtyLimit: z.number().int().min(1, 'Số lượng giới hạn phải >= 1'),
+    // Các trường bổ trợ hiển thị (không gửi lên server)
+    _productName: z.string().optional(),
+    _variantName: z.string().optional(),
+    _originalPrice: z.number().optional(),
+    _availableQty: z.number().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data._availableQty !== undefined && data.qtyLimit > data._availableQty) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Tối đa ${data._availableQty} (hiện có)`,
+        path: ['qtyLimit'],
+      });
+    }
+  });
 
 export const FlashSaleRequestSchema = z
   .object({
