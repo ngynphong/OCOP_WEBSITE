@@ -10,6 +10,7 @@ import {
   useSellerPayoutsQuery,
 } from '@/features/seller-orders/hooks/useSellerOrders';
 import { SellerOrderCard } from '@/features/seller-orders/components/SellerOrderCard';
+import { SellerOrderCardSkeleton } from '@/features/seller-orders/components/SellerOrderCardSkeleton';
 import { formatCurrencyVND } from '@/utils/format';
 import {
   RefundsTable,
@@ -220,8 +221,10 @@ function OrdersManagementContent() {
               </div>
 
               {isOrdersLoading ? (
-                <div className="flex justify-center items-center py-20 text-gray-700">
-                  Đang tải...
+                <div className="space-y-6">
+                  <SellerOrderCardSkeleton />
+                  <SellerOrderCardSkeleton />
+                  <SellerOrderCardSkeleton />
                 </div>
               ) : isOrdersError ? (
                 <div className="text-center py-20 text-red-500">

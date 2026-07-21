@@ -1,7 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { aiApi, GenerateStoryRequest, AiChatRequest } from '../api/aiApi';
-import { toast } from 'react-toastify';
-
+import { toast } from 'react-hot-toast';
 export const useAiAssistantMutations = () => {
   const generateStoryMutation = useMutation({
     mutationFn: (data: GenerateStoryRequest) => aiApi.generateStory(data),

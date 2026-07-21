@@ -21,7 +21,9 @@ export const cartApi = {
   },
 
   getCount: (): Promise<CartCountResponse> => {
-    return axiosClient.get(API_ENDPOINTS.CART.COUNT);
+    return axiosClient.get(API_ENDPOINTS.CART.COUNT, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   addItem: (data: AddToCartRequest): Promise<CartResponse> => {

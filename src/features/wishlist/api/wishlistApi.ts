@@ -29,7 +29,9 @@ export const wishlistApi = {
   },
 
   getCount: (): Promise<WishlistCountDataResponse> => {
-    return axiosClient.get(API_ENDPOINTS.WISHLIST.COUNT);
+    return axiosClient.get(API_ENDPOINTS.WISHLIST.COUNT, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   checkStatus: (productIds: number[]): Promise<WishlistStatusDataResponse> => {

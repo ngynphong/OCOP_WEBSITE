@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ChevronRight, Zap } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import { FlashSaleCard } from '@/components/ui/FlashSaleCard';
 import { useActiveFlashSales } from '@/features/flash-sale/hooks/useFlashSales';
@@ -55,9 +55,6 @@ export function FlashSaleSection() {
           <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div className="flex flex-col sm:flex-row justify-start items-start sm:items-center gap-4 sm:gap-6">
               <div className="flex items-center gap-2">
-                <div className="bg-red-600 p-2 rounded-xl shadow-lg shadow-red-600/30">
-                  <Zap className="text-white fill-current w-6 h-6" />
-                </div>
                 <h2 className="text-stone-800 text-3xl font-black tracking-tight">
                   GIÁ HỜI MỖI NGÀY
                 </h2>

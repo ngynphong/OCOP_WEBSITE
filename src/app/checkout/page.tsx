@@ -369,13 +369,21 @@ function CheckoutContent() {
                       </div>
                     ))
                   ) : (
-                    <div className="text-center py-10">
-                      <p className="text-stone-500">Giỏ hàng của bạn đang trống.</p>
+                    <div className="flex flex-col items-center justify-center py-16 px-4 text-center bg-stone-50 rounded-xl border border-dashed border-stone-200">
+                      <div className="w-20 h-20 bg-white rounded-full shadow-sm flex items-center justify-center mb-6">
+                        <ShoppingBag className="w-10 h-10 text-stone-300" />
+                      </div>
+                      <h3 className="text-lg font-bold text-stone-800 mb-2">
+                        Chưa có sản phẩm nào
+                      </h3>
+                      <p className="text-stone-500 text-sm max-w-sm mb-6">
+                        Vui lòng thêm sản phẩm vào giỏ hàng và chọn thanh toán để tiếp tục.
+                      </p>
                       <Link
                         href="/san-pham"
-                        className="text-green-600 font-bold hover:underline mt-2 inline-block"
+                        className="inline-flex items-center justify-center px-8 py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition-colors shadow-lg shadow-green-600/20"
                       >
-                        Tiếp tục mua sắm
+                        Khám phá sản phẩm
                       </Link>
                     </div>
                   )}

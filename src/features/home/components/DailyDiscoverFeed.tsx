@@ -165,7 +165,6 @@ export const DailyDiscoverFeed = memo(function DailyDiscoverFeed() {
                 </Button>
               ) : (
                 <div className="flex flex-col items-center gap-4 text-stone-400 font-bold text-sm bg-stone-50 w-full py-8 rounded-xl border border-dashed border-stone-200">
-                  <span className="text-2xl">😊</span>
                   Bạn đã xem hết các gợi ý hôm nay rồi
                 </div>
               )}

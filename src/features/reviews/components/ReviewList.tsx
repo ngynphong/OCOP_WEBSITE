@@ -8,6 +8,8 @@ import { Star, Image as ImageIcon, Filter, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ReviewQueryParams, Review } from '../types/reviewTypes';
 import { FlagReviewModal } from './FlagReviewModal';
+import { ReviewSkeleton } from './ReviewSkeleton';
+import { MessageSquarePlus } from 'lucide-react';
 
 interface ReviewListProps {
   productSlug: string;
@@ -56,9 +58,18 @@ export const ReviewList = ({ productSlug }: ReviewListProps) => {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center py-20">
-        <Loader2 className="w-10 h-10 text-green-600 animate-spin" />
-        <p className="mt-4 text-stone-500 font-medium">Đang tải đánh giá tinh hoa...</p>
+      <div className="py-12 scroll-mt-24" id="reviews" ref={reviewRef}>
+        <div className="flex flex-col gap-2 mb-8">
+          <span className="text-green-700 font-black uppercase tracking-[0.2em] text-[10px]">
+            Tiếng nói khách hàng
+          </span>
+          <h2 className="text-3xl font-black text-stone-900 tracking-tight">Đánh giá Sản phẩm</h2>
+        </div>
+        <div className="space-y-2">
+          <ReviewSkeleton />
+          <ReviewSkeleton />
+          <ReviewSkeleton />
+        </div>
       </div>
     );
   }
@@ -159,10 +170,13 @@ export const ReviewList = ({ productSlug }: ReviewListProps) => {
           )}
         </>
       ) : (
-        <div className="text-center py-20 bg-stone-50 rounded-xl border border-stone-100">
-          <p className="text-stone-500 font-medium">Sản phẩm chưa có đánh giá nào.</p>
-          <p className="text-sm text-stone-400 mt-2">
-            Hãy trở thành người đầu tiên trải nghiệm tinh hoa này!
+        <div className="flex flex-col items-center justify-center py-20 px-4 text-center bg-stone-50 rounded-xl border border-dashed border-stone-200">
+          <div className="w-20 h-20 bg-white rounded-full shadow-sm flex items-center justify-center mb-6">
+            <MessageSquarePlus className="w-10 h-10 text-stone-300" />
+          </div>
+          <h3 className="text-lg font-bold text-stone-800 mb-2">Chưa có đánh giá nào</h3>
+          <p className="text-stone-500 text-sm max-w-sm mb-6">
+            Sản phẩm chưa có đánh giá nào. Hãy trở thành người đầu tiên trải nghiệm tinh hoa này!
           </p>
         </div>
       )}

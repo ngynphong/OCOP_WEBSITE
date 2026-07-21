@@ -39,7 +39,9 @@ export const sellerProductApi = {
   },
 
   getProduct: (id: number): Promise<ProductDetailResponse> => {
-    return axiosClient.get(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, id));
+    return axiosClient.get(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, id), {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   updateProduct: (id: number, data: UpdateProductRequest): Promise<ProductDetailResponse> => {
@@ -157,7 +159,9 @@ export const sellerProductApi = {
   // ─── Journals ─────────────────────────────────────────────────────────────
 
   getJournals: (productId: number): Promise<JournalListResponse> => {
-    return axiosClient.get(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'journals'));
+    return axiosClient.get(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'journals'), {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   createJournal: (

@@ -13,23 +13,23 @@ import {
 export const policiesApi = {
   // Public/User APIs
   getPolicy: async (id: number): Promise<IPolicy> => {
-    const response = (await axiosClient.get(
-      buildRoute(API_ENDPOINTS.POLICIES, id),
-    )) as IPolicyApiResponse<IPolicy>;
+    const response = (await axiosClient.get(buildRoute(API_ENDPOINTS.POLICIES, id), {
+      headers: { 'X-Silent-Loading': 'true' },
+    })) as IPolicyApiResponse<IPolicy>;
     return response.data;
   },
 
   getPolicyBySlug: async (slug: string): Promise<IPolicy> => {
-    const response = (await publicAxiosClient.get(
-      `${API_ENDPOINTS.POLICIES}/slug/${slug}`,
-    )) as IPolicyApiResponse<IPolicy>;
+    const response = (await publicAxiosClient.get(`${API_ENDPOINTS.POLICIES}/slug/${slug}`, {
+      headers: { 'X-Silent-Loading': 'true' },
+    })) as IPolicyApiResponse<IPolicy>;
     return response.data;
   },
 
   getPendingPolicies: async (): Promise<IPolicy[]> => {
-    const response = (await axiosClient.get(
-      `${API_ENDPOINTS.POLICIES}/pending`,
-    )) as IPolicyApiResponse<IPolicy[]>;
+    const response = (await axiosClient.get(`${API_ENDPOINTS.POLICIES}/pending`, {
+      headers: { 'X-Silent-Loading': 'true' },
+    })) as IPolicyApiResponse<IPolicy[]>;
     return response.data;
   },
 
@@ -44,9 +44,9 @@ export const policiesApi = {
 
   // Admin APIs
   getAdminPolicies: async (): Promise<IPolicy[]> => {
-    const response = (await axiosClient.get(API_ENDPOINTS.ADMIN.POLICIES)) as IPolicyApiResponse<
-      IPolicy[]
-    >;
+    const response = (await axiosClient.get(API_ENDPOINTS.ADMIN.POLICIES, {
+      headers: { 'X-Silent-Loading': 'true' },
+    })) as IPolicyApiResponse<IPolicy[]>;
     return response.data;
   },
 

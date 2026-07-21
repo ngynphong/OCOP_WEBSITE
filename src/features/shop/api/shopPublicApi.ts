@@ -31,10 +31,15 @@ export const shopPublicApi = {
   },
 
   getSubscriptionPlans: (): Promise<SubscriptionPlanListResponse> => {
-    return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.SHOPS}/subscription-plans`);
+    return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.SHOPS}/subscription-plans`, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   getFeaturedShops: (limit = 6): Promise<ResponseBase<ShopInfo[]>> => {
-    return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.SHOPS}/featured`, { params: { limit } });
+    return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.SHOPS}/featured`, {
+      params: { limit },
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 };

@@ -1,15 +1,57 @@
 import React from 'react';
 import { IRefundItem, IPayoutItem } from '../types/sellerOrderTypes';
 import { formatCurrencyVND } from '@/utils/format';
+import { RotateCcw, Wallet } from 'lucide-react';
 
 export const RefundsTable: React.FC<{ refunds: IRefundItem[]; isLoading: boolean }> = ({
   refunds,
   isLoading,
 }) => {
   if (isLoading)
-    return <div className="p-8 text-center text-stone-500">Đang tải dữ liệu hoàn tiền...</div>;
+    return (
+      <div className="overflow-x-auto">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="bg-stone-50 text-stone-500 text-sm">
+              <th className="p-4 font-bold border-b border-stone-100 rounded-tl-2xl">
+                Mã hoàn tiền
+              </th>
+              <th className="p-4 font-bold border-b border-stone-100">Số tiền</th>
+              <th className="p-4 font-bold border-b border-stone-100">Lý do/Tin nhắn</th>
+              <th className="p-4 font-bold border-b border-stone-100 rounded-tr-2xl">Trạng thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[1, 2, 3].map((i) => (
+              <tr key={i} className="border-b border-stone-50">
+                <td className="p-4">
+                  <div className="h-4 w-20 bg-stone-200 rounded animate-pulse" />
+                </td>
+                <td className="p-4">
+                  <div className="h-4 w-24 bg-stone-200 rounded animate-pulse" />
+                </td>
+                <td className="p-4">
+                  <div className="h-4 w-48 bg-stone-200 rounded animate-pulse" />
+                </td>
+                <td className="p-4">
+                  <div className="h-6 w-20 bg-stone-200 rounded animate-pulse" />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
   if (!refunds.length)
-    return <div className="p-8 text-center text-stone-500">Chưa có yêu cầu hoàn tiền nào.</div>;
+    return (
+      <div className="flex flex-col items-center justify-center py-20 px-4 text-center bg-stone-50 rounded-xl border border-stone-100">
+        <RotateCcw className="w-12 h-12 text-stone-300 mb-4" />
+        <h3 className="text-lg font-bold text-stone-800 mb-1">Chưa có yêu cầu hoàn tiền nào</h3>
+        <p className="text-stone-500 max-w-sm">
+          Các yêu cầu trả hàng, hoàn tiền của người mua sẽ được hiển thị tại đây.
+        </p>
+      </div>
+    );
 
   return (
     <div className="overflow-x-auto">
@@ -48,9 +90,55 @@ export const PayoutsTable: React.FC<{ payouts: IPayoutItem[]; isLoading: boolean
   isLoading,
 }) => {
   if (isLoading)
-    return <div className="p-8 text-center text-stone-500">Đang tải dữ liệu quyết toán...</div>;
+    return (
+      <div className="overflow-x-auto">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="bg-stone-50 text-stone-500 text-sm">
+              <th className="p-4 font-bold border-b border-stone-100 rounded-tl-2xl">
+                Kỳ quyết toán
+              </th>
+              <th className="p-4 font-bold border-b border-stone-100">Doanh thu gộp</th>
+              <th className="p-4 font-bold border-b border-stone-100">Chiết khấu (Phí)</th>
+              <th className="p-4 font-bold border-b border-stone-100">Nhận thực tế</th>
+              <th className="p-4 font-bold border-b border-stone-100 rounded-tr-2xl">Trạng thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[1, 2, 3].map((i) => (
+              <tr key={i} className="border-b border-stone-50">
+                <td className="p-4">
+                  <div className="h-4 w-32 bg-stone-200 rounded animate-pulse mb-2" />
+                  <div className="h-3 w-24 bg-stone-100 rounded animate-pulse" />
+                </td>
+                <td className="p-4">
+                  <div className="h-4 w-24 bg-stone-200 rounded animate-pulse" />
+                </td>
+                <td className="p-4">
+                  <div className="h-4 w-20 bg-stone-200 rounded animate-pulse" />
+                </td>
+                <td className="p-4">
+                  <div className="h-4 w-28 bg-stone-200 rounded animate-pulse" />
+                </td>
+                <td className="p-4">
+                  <div className="h-6 w-20 bg-stone-200 rounded animate-pulse" />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
   if (!payouts.length)
-    return <div className="p-8 text-center text-stone-500">Chưa có kỳ quyết toán nào.</div>;
+    return (
+      <div className="flex flex-col items-center justify-center py-20 px-4 text-center bg-stone-50 rounded-xl border border-stone-100">
+        <Wallet className="w-12 h-12 text-stone-300 mb-4" />
+        <h3 className="text-lg font-bold text-stone-800 mb-1">Chưa có kỳ quyết toán nào</h3>
+        <p className="text-stone-500 max-w-sm">
+          Các giao dịch đã hoàn thành sẽ được hệ thống đối soát và chuyển vào số dư của bạn.
+        </p>
+      </div>
+    );
 
   return (
     <div className="overflow-x-auto">

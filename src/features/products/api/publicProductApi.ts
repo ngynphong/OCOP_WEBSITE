@@ -16,27 +16,36 @@ import {
 
 export const publicProductApi = {
   getProducts: (params?: PublicProductListParams): Promise<ProductListResponse> => {
-    return publicAxiosClient.get(API_ENDPOINTS.PUBLIC.PRODUCTS, { params });
+    return publicAxiosClient.get(API_ENDPOINTS.PUBLIC.PRODUCTS, {
+      params,
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   getProduct: (slugOrId: string | number): Promise<ProductDetailResponse> => {
-    return publicAxiosClient.get(buildRoute(API_ENDPOINTS.PUBLIC.PRODUCTS, slugOrId));
+    return publicAxiosClient.get(buildRoute(API_ENDPOINTS.PUBLIC.PRODUCTS, slugOrId), {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   getRelatedProducts: (slug: string, limit = 6): Promise<ProductListResponse> => {
     return publicAxiosClient.get(buildRoute(API_ENDPOINTS.PUBLIC.PRODUCTS, slug, 'related'), {
       params: { limit },
+      headers: { 'X-Silent-Loading': 'true' },
     });
   },
 
   getFeaturedProducts: (limit = 12): Promise<ProductListResponse> => {
     return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.PRODUCTS}/featured`, {
       params: { limit },
+      headers: { 'X-Silent-Loading': 'true' },
     });
   },
 
   getFeaturedStory: (): Promise<ProductDetailResponse> => {
-    return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.PRODUCTS}/featured-story`);
+    return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.PRODUCTS}/featured-story`, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   traceQr: (qrCode: string): Promise<QrCodeResponse> => {
@@ -44,11 +53,15 @@ export const publicProductApi = {
   },
 
   getCategories: (): Promise<PublicCategoryListResponse> => {
-    return publicAxiosClient.get(API_ENDPOINTS.PUBLIC.CATEGORIES);
+    return publicAxiosClient.get(API_ENDPOINTS.PUBLIC.CATEGORIES, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   getCategoryBySlug: (slug: string): Promise<PublicCategoryDetailResponse> => {
-    return publicAxiosClient.get(buildRoute(API_ENDPOINTS.PUBLIC.CATEGORIES, slug));
+    return publicAxiosClient.get(buildRoute(API_ENDPOINTS.PUBLIC.CATEGORIES, slug), {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   traceQrDetail: (qrCode: string): Promise<TraceDetailResponse> => {
@@ -60,7 +73,9 @@ export const publicProductApi = {
   },
 
   getProvinces: (): Promise<ResponseBase<{ id: number; name: string }[]>> => {
-    return publicAxiosClient.get(API_ENDPOINTS.LOCATION.PROVINCES);
+    return publicAxiosClient.get(API_ENDPOINTS.LOCATION.PROVINCES, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
   getDiscoveryProducts: (params?: {
     pageNo?: number;
@@ -68,7 +83,10 @@ export const publicProductApi = {
     sort?: string;
     categoryId?: number;
   }): Promise<ProductListResponse> => {
-    return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.PRODUCTS}/discovery`, { params });
+    return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.PRODUCTS}/discovery`, {
+      headers: { 'X-Silent-Loading': 'true' },
+      params,
+    });
   },
 
   getTierPrices: (
@@ -79,6 +97,7 @@ export const publicProductApi = {
       buildRoute(API_ENDPOINTS.PUBLIC.PRODUCTS, productId, 'tier-prices'),
       {
         params: { variantId },
+        headers: { 'X-Silent-Loading': 'true' },
       },
     );
   },

@@ -4,6 +4,7 @@ import React, { Suspense } from 'react';
 import { OrderCard } from '@/features/orders/components/OrderCard';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { PackageX, LifeBuoy, Plus } from 'lucide-react';
+import { OrderCardSkeleton } from '@/features/orders/components/OrderCardSkeleton';
 import { Button } from '@/components/ui/AppButton';
 import { IOrderItemList } from '@/features/orders/types/orderTypes';
 import { useInfiniteOrders } from '@/features/orders/hooks/useOrders';
@@ -113,7 +114,11 @@ function OrderListContent() {
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center text-gray-700 py-20">Đang tải...</div>
+        <div className="space-y-6">
+          <OrderCardSkeleton />
+          <OrderCardSkeleton />
+          <OrderCardSkeleton />
+        </div>
       ) : isError ? (
         <div className="text-center py-20 text-red-500 font-bold p-10 bg-red-50 rounded-xl border border-red-100">
           <LifeBuoy className="mx-auto mb-4 text-red-400" size={40} />

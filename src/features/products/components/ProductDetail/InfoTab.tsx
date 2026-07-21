@@ -24,7 +24,12 @@ interface InfoTabProps {
 }
 
 export function InfoTab({ productId }: InfoTabProps) {
-  const { data } = useSellerProductDetailQuery(productId);
+  const {
+    data,
+    isLoading: isLoadingProduct,
+    isError: isErrorProduct,
+    refetch: refetchProduct,
+  } = useSellerProductDetailQuery(productId);
   const { updateProduct, isUpdating } = useSellerProductMutations();
 
   const product = data?.data;
@@ -66,20 +71,74 @@ export function InfoTab({ productId }: InfoTabProps) {
     }
   };
 
-  const { data: categoriesData, isPending: isLoadingCategories } = usePublicCategoriesQuery();
+  const {
+    data: categoriesData,
+    isPending: isLoadingCategories,
+    isError: isErrorCategories,
+  } = usePublicCategoriesQuery();
   const categories = categoriesData?.data ?? [];
   const flatCategories = flattenCategories(categories);
 
   const { useProvinces } = useLocation();
-  const { data: provincesData, isPending: isLoadingProvinces } = useProvinces();
+  const {
+    data: provincesData,
+    isPending: isLoadingProvinces,
+    isError: isErrorProvinces,
+  } = useProvinces();
   const provinces = provincesData?.data ?? [];
 
   const onSubmit = async (formData: CreateProductFormData) => {
     await updateProduct({ id: productId, data: formData });
   };
 
-  if (isLoadingCategories || isLoadingProvinces) {
-    return <div className="h-64 bg-stone-100/50 rounded-xl animate-pulse" />;
+  if (isLoadingProduct || isLoadingCategories || isLoadingProvinces) {
+    return (
+      <div className="space-y-5 animate-pulse">
+        <div>
+          <div className="h-4 w-24 bg-stone-200 rounded mb-1.5" />
+          <div className="h-10 w-full bg-stone-100 rounded-xl" />
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <div className="h-4 w-24 bg-stone-200 rounded mb-1.5" />
+            <div className="h-10 w-full bg-stone-100 rounded-xl" />
+          </div>
+          <div>
+            <div className="h-4 w-24 bg-stone-200 rounded mb-1.5" />
+            <div className="h-10 w-full bg-stone-100 rounded-xl" />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <div className="h-4 w-24 bg-stone-200 rounded mb-1.5" />
+            <div className="h-10 w-full bg-stone-100 rounded-xl" />
+          </div>
+          <div>
+            <div className="h-4 w-24 bg-stone-200 rounded mb-1.5" />
+            <div className="h-10 w-full bg-stone-100 rounded-xl" />
+          </div>
+        </div>
+        <div>
+          <div className="h-4 w-48 bg-stone-200 rounded mb-1.5" />
+          <div className="h-32 w-full bg-stone-100 rounded-xl" />
+        </div>
+      </div>
+    );
+  }
+
+  if (isErrorProduct) {
+    return (
+      <div className="flex flex-col items-center justify-center h-64 bg-red-50 rounded-xl border border-red-100">
+        <p className="text-sm font-medium text-red-600 mb-3">Không thể tải thông tin sản phẩm</p>
+        <button
+          type="button"
+          onClick={() => refetchProduct()}
+          className="px-4 py-2 bg-white border border-red-200 text-red-600 rounded-lg text-sm font-medium hover:bg-red-50 transition"
+        >
+          Thử lại
+        </button>
+      </div>
+    );
   }
 
   return (
@@ -104,7 +163,9 @@ export function InfoTab({ productId }: InfoTabProps) {
             {...register('categoryId', { valueAsNumber: true })}
             className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-800 outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition bg-white"
           >
-            <option value="">-- Chọn danh mục --</option>
+            <option value="" disabled={isErrorCategories}>
+              {isErrorCategories ? 'Không thể tải danh mục' : '-- Chọn danh mục --'}
+            </option>
             {flatCategories.map((cat) => (
               <option key={cat.id} value={cat.id}>
                 {cat.name}
@@ -169,7 +230,9 @@ export function InfoTab({ productId }: InfoTabProps) {
             {...register('originProvinceId', { valueAsNumber: true })}
             className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-800 outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition bg-white"
           >
-            <option value="">-- Chọn tỉnh/thành --</option>
+            <option value="" disabled={isErrorProvinces}>
+              {isErrorProvinces ? 'Không thể tải tỉnh/thành' : '-- Chọn tỉnh/thành --'}
+            </option>
             {provinces.map((prov) => (
               <option key={prov.id} value={prov.id}>
                 {prov.name}

@@ -13,6 +13,7 @@ import { ProductInfo } from '@/features/products/components/ProductDetail/Public
 import { ProductTraceability } from '@/features/products/components/ProductDetail/Public/ProductTraceability';
 import { ProductStory } from '@/features/products/components/ProductDetail/Public/ProductStory';
 import { StickyBottomCTA } from '@/features/products/components/ProductDetail/Public/StickyBottomCTA';
+import { ProductDetailSkeleton } from '@/features/products/components/ProductDetail/Public/ProductDetailSkeleton';
 import { ProductCard } from '@/components/ui/ProductCard';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { Header } from '@/components/layout/Header';
@@ -87,7 +88,7 @@ export function ProductDetailClient() {
   }, [isAuthenticated]);
 
   if (isLoading) {
-    return null;
+    return <ProductDetailSkeleton />;
   }
 
   if (!product) {

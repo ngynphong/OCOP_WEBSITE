@@ -16,33 +16,10 @@ export function QRTraceabilitySection() {
           </h2>
 
           <p className="text-stone-600 text-lg md:text-xl font-normal font-sans leading-8">
-            Mỗi sản phẩm tại OCOP Market đều được gắn mã QR duy nhất. Chỉ cần một lần quét, bạn sẽ
-            biết rõ hành trình từ trang trại đến tay bạn, thông tin hộ nông dân và các chứng chỉ
+            Mỗi sản phẩm tại OCOP IES Connect đều được gắn mã QR duy nhất. Chỉ cần một lần quét, bạn
+            sẽ biết rõ hành trình từ trang trại đến tay bạn, thông tin hộ nông dân và các chứng chỉ
             kiểm định.
           </p>
-
-          <div className="w-full pt-4 grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-12 border-t border-stone-200/50 mt-4">
-            <div className="flex flex-col justify-start items-start gap-1 md:gap-2">
-              <div className="text-stone-700 text-2xl md:text-3xl font-bold font-sans">100%</div>
-              <div className="text-stone-500 text-xs md:text-sm font-bold font-sans uppercase tracking-wider">
-                Minh Bạch
-              </div>
-            </div>
-            <div className="flex flex-col justify-start items-start gap-1 md:gap-2">
-              <div className="text-stone-700 text-2xl md:text-3xl font-bold font-sans">
-                Real-time
-              </div>
-              <div className="text-stone-500 text-xs md:text-sm font-bold font-sans uppercase tracking-wider">
-                Theo dõi
-              </div>
-            </div>
-            <div className="flex flex-col justify-start items-start gap-1 md:gap-2">
-              <div className="text-stone-700 text-2xl md:text-3xl font-bold font-sans">Global</div>
-              <div className="text-stone-500 text-xs md:text-sm font-bold font-sans uppercase tracking-wider">
-                Tiêu chuẩn
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Mobile Graphic */}

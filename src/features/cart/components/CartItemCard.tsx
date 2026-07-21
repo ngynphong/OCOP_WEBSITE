@@ -256,14 +256,24 @@ export const CartItemCard = React.memo(function CartItemCard({
 
         {/* Quantity + Price */}
         <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-6 shrink-0">
-          {/* Qty Stepper — dùng localQty (optimistic) */}
-          <QtyStepper
-            qty={localQty}
-            max={item.maxQty}
-            disabled={isDisabled}
-            onDecrease={() => handleQtyChange(localQty - 1)}
-            onIncrease={() => handleQtyChange(localQty + 1)}
-          />
+          {/* Qty Stepper or Prominent Remove Button */}
+          {isDisabled ? (
+            <button
+              onClick={handleRemove}
+              disabled={isRemoving}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-red-100 text-red-700 rounded-lg font-bold text-xs hover:bg-red-200 transition-colors shrink-0"
+            >
+              <Trash2 className="w-4 h-4" /> Xóa sản phẩm
+            </button>
+          ) : (
+            <QtyStepper
+              qty={localQty}
+              max={item.maxQty}
+              disabled={isDisabled}
+              onDecrease={() => handleQtyChange(localQty - 1)}
+              onIncrease={() => handleQtyChange(localQty + 1)}
+            />
+          )}
 
           {/* Price block */}
           <div className="text-right min-w-[80px]">
@@ -287,15 +297,17 @@ export const CartItemCard = React.memo(function CartItemCard({
             )}
           </div>
 
-          {/* Remove */}
-          <button
-            onClick={handleRemove}
-            disabled={isRemoving}
-            className="p-1.5 text-stone-300 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors shrink-0"
-            aria-label="Xóa sản phẩm"
-          >
-            <Trash2 className="w-4 h-4" />
-          </button>
+          {/* Standard Remove Icon for Active Items */}
+          {!isDisabled && (
+            <button
+              onClick={handleRemove}
+              disabled={isRemoving}
+              className="p-1.5 text-stone-300 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors shrink-0"
+              aria-label="Xóa sản phẩm"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          )}
         </div>
       </div>
     </div>

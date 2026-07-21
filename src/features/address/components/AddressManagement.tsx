@@ -47,13 +47,35 @@ const AddressManagement = () => {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {[1, 2].map((i) => (
-          <div
-            key={i}
-            className="h-48 bg-stone-50 animate-pulse rounded-xl border border-stone-100"
-          />
-        ))}
+      <div className="space-y-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-0">
+          <div className="flex items-center gap-3 md:gap-4">
+            <IoIosPin className="w-8 h-8 md:w-9 md:h-9 text-stone-200 shrink-0" />
+            <div className="h-6 md:h-8 w-40 bg-stone-200 rounded-lg animate-pulse" />
+          </div>
+          <div className="h-10 md:h-12 w-full md:w-40 bg-stone-200 rounded-xl animate-pulse" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {[1, 2].map((i) => (
+            <div
+              key={i}
+              className="bg-white p-5 md:p-8 rounded-xl border border-stone-100 shadow-sm"
+            >
+              <div className="flex justify-between items-start mb-4 md:mb-6">
+                <div className="h-6 w-24 bg-stone-200 rounded-xl animate-pulse" />
+              </div>
+              <div className="space-y-2 mb-4 md:mb-8">
+                <div className="h-5 md:h-6 w-1/2 bg-stone-200 rounded animate-pulse" />
+                <div className="h-4 w-1/3 bg-stone-100 rounded animate-pulse" />
+                <div className="h-4 w-3/4 bg-stone-100 rounded animate-pulse mt-2" />
+              </div>
+              <div className="flex justify-end gap-2 md:gap-3 pt-4 border-t border-stone-50">
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-stone-100 rounded-xl animate-pulse" />
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-stone-100 rounded-xl animate-pulse" />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
@@ -62,7 +84,6 @@ const AddressManagement = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-0">
         <div className="flex items-center gap-3 md:gap-4">
-          <IoIosPin className="w-8 h-8 md:w-9 md:h-9 text-green-600 shrink-0" />
           <span className="text-xl md:text-2xl font-black text-stone-900 uppercase tracking-tight">
             Địa chỉ của tôi
           </span>

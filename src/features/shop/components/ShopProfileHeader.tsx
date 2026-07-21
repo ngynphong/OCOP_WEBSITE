@@ -66,7 +66,14 @@ export const ShopProfileHeader = ({ shop }: ShopProfileHeaderProps) => {
               sizes="100vw"
             />
           ) : (
-            <div className="absolute inset-0 bg-linear-to-r from-emerald-600 to-teal-500 opacity-80" />
+            <Image
+              src={'/images/background.jpg'}
+              alt={`Banner của ${shop.name}`}
+              fill
+              className="object-cover"
+              priority
+              sizes="100vw"
+            />
           )}
         </motion.div>
       </div>

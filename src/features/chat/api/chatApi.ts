@@ -27,6 +27,7 @@ export const chatApi = {
   getRooms: (pageNo = 1, pageSize = 20) =>
     axiosClient.get<never, ApiResponse<PaginatedResponse<ChatRoom>>>(API_ENDPOINTS.CHAT.ROOMS, {
       params: { pageNo, pageSize },
+      headers: { 'X-Silent-Loading': 'true' },
     }),
 
   // Seller: Get list of chat rooms
@@ -35,6 +36,7 @@ export const chatApi = {
       API_ENDPOINTS.SELLER.CHAT_ROOMS,
       {
         params: { pageNo, pageSize },
+        headers: { 'X-Silent-Loading': 'true' },
       },
     ),
 
@@ -44,6 +46,7 @@ export const chatApi = {
       buildRoute(API_ENDPOINTS.CHAT.ROOMS, roomId, 'messages'),
       {
         params: { pageNo, pageSize },
+        headers: { 'X-Silent-Loading': 'true' },
       },
     ),
 
@@ -51,6 +54,9 @@ export const chatApi = {
   markAsRead: (roomId: number | string) =>
     axiosClient.patch<never, ApiResponse<string>>(
       buildRoute(API_ENDPOINTS.CHAT.ROOMS, roomId, 'read'),
+      {
+        headers: { 'X-Silent-Loading': 'true' },
+      },
     ),
 
   // Upload attachment

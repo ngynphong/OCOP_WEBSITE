@@ -18,6 +18,7 @@ export const voucherApi = {
   getPublicFeaturedVouchers: (limit = 4) =>
     publicAxiosClient.get<Voucher[]>(`${API_ENDPOINTS.PUBLIC.VOUCHERS}/featured`, {
       params: { limit },
+      headers: { 'X-Silent-Loading': 'true' },
     }),
 
   validateVoucherPublic: (params: { code: string; shopId?: number; subtotal?: number }) =>
@@ -44,6 +45,7 @@ export const voucherApi = {
   validateVoucherUser: (params: { code: string; shopId?: number; subtotal?: number }) =>
     axiosClient.get<VoucherValidateResponse>(`${API_ENDPOINTS.USERS.VOUCHERS}/validate`, {
       params,
+      headers: { 'X-Silent-Loading': 'true' },
     }),
 
   // 3. Seller API

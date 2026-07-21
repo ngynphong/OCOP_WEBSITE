@@ -3,7 +3,7 @@
 import { memo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Star, ShieldCheck, ChevronRight, Store } from 'lucide-react';
+import { Star, ChevronRight, Store } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useFeaturedShopsQuery } from '@/features/shop/hooks/usePublicShop';
 import { ShopInfo } from '@/features/shop/types/shopTypes';
@@ -31,8 +31,7 @@ export const OcopMallSection = memo(function OcopMallSection() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 bg-[#113B28] text-white px-4 py-1.5 rounded-full shadow-lg">
-              <ShieldCheck className="w-5 h-5 text-[#D4AF37]" />
-              <span className="text-sm font-black tracking-widest uppercase">OCOP MALL</span>
+              <span className="text-sm font-black tracking-widest uppercase">OCOP SHOP</span>
             </div>
           </div>
           <Link
@@ -51,7 +50,7 @@ export const OcopMallSection = memo(function OcopMallSection() {
               className="group relative bg-white/60 backdrop-blur-md border border-white/40 rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-green-900/5 transition-all duration-500"
             >
               {/* Card Header Background - Using shop.bannerUrl if available */}
-              <div className="h-28 bg-linear-to-br from-[#113B28] to-[#1a4d35] relative overflow-hidden">
+              <div className="h-28 relative bg-green-900 overflow-hidden">
                 {shop.bannerUrl ? (
                   <Image
                     src={shop.bannerUrl}
@@ -61,7 +60,13 @@ export const OcopMallSection = memo(function OcopMallSection() {
                     className="object-cover opacity-60 group-hover:scale-110 transition-transform duration-700"
                   />
                 ) : (
-                  <div className="absolute inset-0 opacity-10 bg-[url(https://www.transparenttextures.com/patterns/stardust.png)]" />
+                  <Image
+                    src={'/images/background.jpg'}
+                    alt={shop.name}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover opacity-60 group-hover:scale-110 transition-transform duration-700"
+                  />
                 )}
                 <div className="absolute top-4 right-6 flex items-center gap-1.5 bg-black/20 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
                   <Star className="w-3 h-3 text-[#D4AF37] fill-[#D4AF37]" />
@@ -74,8 +79,8 @@ export const OcopMallSection = memo(function OcopMallSection() {
               {/* Shop Info Container */}
               <div className="px-6 pb-6 pt-0 relative">
                 {/* Logo Overlap */}
-                <div className="absolute -top-10 left-6 w-20 h-20 bg-white rounded-xl p-2 shadow-xl border border-stone-100 group-hover:scale-105 transition-transform duration-500">
-                  <div className="relative w-full h-full rounded-xl overflow-hidden">
+                <div className="absolute -top-10 left-6 w-20 h-20 bg-white rounded-full p-2 shadow-xl border border-stone-100 group-hover:scale-105 transition-transform duration-500">
+                  <div className="relative w-full h-full rounded-full overflow-hidden">
                     <Image
                       src={shop.logoUrl || '/images/logo.png'}
                       alt={shop.name}
@@ -114,12 +119,12 @@ export const OcopMallSection = memo(function OcopMallSection() {
                           className="w-9 h-9 rounded-full border-2 border-white bg-stone-100 overflow-hidden shadow-sm"
                         >
                           <Image
-                            src={`/images/tra-do-uong.jpg`}
+                            src={`/images/fresh-green-produce.jpg`}
                             alt="Product"
                             width={36}
                             height={36}
                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            className="object-cover"
+                            className="object-cover scale-200"
                           />
                         </div>
                       ))}

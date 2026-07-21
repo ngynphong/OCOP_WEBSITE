@@ -83,7 +83,9 @@ export const authApi = {
     return publicAxiosClient.post(API_ENDPOINTS.AUTH.RESET_PASSWORD, data);
   },
   getProfile: (): Promise<UserProfileResponse> => {
-    return axiosClient.get(API_ENDPOINTS.USERS.ME);
+    return axiosClient.get(API_ENDPOINTS.USERS.ME, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
   updateProfile: (data: UpdateProfileRequest): Promise<UserProfileResponse> => {
     return axiosClient.put(API_ENDPOINTS.USERS.ME, data);
