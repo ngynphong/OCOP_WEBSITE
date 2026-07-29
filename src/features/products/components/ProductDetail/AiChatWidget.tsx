@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { FiMessageCircle, FiX, FiMic, FiSend } from 'react-icons/fi';
 import { useAiAssistantMutations } from '../../hooks/useAiAssistant';
 import { useSellerJournalsQuery } from '../../hooks/useSellerJournals';
 import { ChatMessage } from '../../api/aiApi';
 import { JournalStepType } from '../../types/productTypes';
-import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import ReactMarkdown from 'react-markdown';
 
@@ -105,14 +104,15 @@ export function AiChatWidget({
     localStorage.setItem('ai-journal-tooltip-dismissed', 'true');
   };
   const { data: journalsData } = useSellerJournalsQuery(productId);
+  const journalEntries = journalsData?.data;
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Calculate missing groups internally if not provided via props
-  const calculatedMissingGroups = (() => {
+  const missingGroups = useMemo(() => {
     if (propMissingGroups) return propMissingGroups;
-    if (!journalsData?.data) return [];
+    if (!journalEntries) return [];
 
-    const existingSteps = new Set(journalsData.data.map((j) => j.stepType));
+    const existingSteps = new Set(journalEntries.map((j) => j.stepType));
     const missing: string[] = [];
     const hasSource =
       existingSteps.has('PLANTING') ||
@@ -125,19 +125,23 @@ export function AiChatWidget({
     if (!existingSteps.has('PACKAGING')) missing.push('Đóng gói');
 
     return missing;
-  })();
+  }, [journalEntries, propMissingGroups]);
 
-  const missingGroups = calculatedMissingGroups;
+  const defaultGreeting = useMemo<LocalChatMessage>(
+    () => ({
+      role: 'assistant',
+      content:
+        missingGroups && missingGroups.length > 0
+          ? `Chào bác! Hệ thống thấy sản phẩm còn thiếu thông tin: **${missingGroups.join(', ')}**. Hôm nay bác muốn ghi nhận hoạt động nào ạ?`
+          : 'Chào bác! Hôm nay bác muốn ghi nhận hoạt động gì cho sản phẩm?',
+    }),
+    [missingGroups],
+  );
 
-  const defaultGreeting: LocalChatMessage = {
-    role: 'assistant',
-    content:
-      missingGroups && missingGroups.length > 0
-        ? `Chào bác! Hệ thống thấy sản phẩm còn thiếu thông tin: **${missingGroups.join(', ')}**. Hôm nay bác muốn ghi nhận hoạt động nào ạ?`
-        : 'Chào bác! Hôm nay bác muốn ghi nhận hoạt động gì cho sản phẩm?',
-  };
-
-  const displayMessages = messages.length > 0 ? messages : [defaultGreeting];
+  const displayMessages = useMemo(
+    () => (messages.length > 0 ? messages : [defaultGreeting]),
+    [defaultGreeting, messages],
+  );
 
   // Auto scroll to bottom
   useEffect(() => {

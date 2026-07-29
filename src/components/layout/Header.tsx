@@ -97,8 +97,9 @@ export function Header() {
           <div className="flex justify-start items-center gap-4 lg:gap-8 lg:pl-4 relative z-[103]">
             <button
               suppressHydrationWarning
-              className="lg:hidden text-white p-1 cursor-pointer"
+              className="lg:hidden text-white p-3 -ml-2 cursor-pointer"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label={isMenuOpen ? 'Đóng menu' : 'Mở menu'}
             >
               {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -205,8 +206,9 @@ export function Header() {
           <div className="px-2 flex justify-start items-center gap-1 md:gap-2.5 relative z-[103]">
             <button
               suppressHydrationWarning
-              className="lg:hidden text-white p-2 hover:bg-white/10 rounded-full transition-colors cursor-pointer"
+              className="lg:hidden text-white p-3 -mr-2 hover:bg-white/10 rounded-full transition-colors cursor-pointer"
               onClick={() => setIsSearchOpen(!isSearchOpen)}
+              aria-label="Mở tìm kiếm"
             >
               <Search className="w-5 h-5" />
             </button>
@@ -292,7 +294,7 @@ export function Header() {
                 <Link
                   href="/dang-nhap"
                   suppressHydrationWarning
-                  className="md:hidden h-10 w-10 inline-flex flex-col justify-center items-center text-white hover:bg-white/10 rounded-full transition-colors cursor-pointer group"
+                  className="md:hidden h-12 w-12 flex justify-center items-center text-white hover:bg-white/10 rounded-full transition-colors cursor-pointer group"
                   aria-label="Đăng nhập"
                 >
                   <User className="w-5 h-5 group-hover:scale-110 transition-transform" />
@@ -310,7 +312,7 @@ export function Header() {
               onClick={() => setIsQRModalOpen(true)}
               suppressHydrationWarning
               aria-label="Quét mã QR"
-              className="h-10 w-10 inline-flex flex-col justify-center items-center text-white hover:bg-white/10 rounded-full transition-colors cursor-pointer group"
+              className="h-12 w-12 md:h-10 md:w-10 flex justify-center items-center text-white hover:bg-white/10 rounded-full transition-colors cursor-pointer group"
             >
               <ScanLine className="w-5 h-5 group-hover:scale-110 transition-transform" />
             </button>
@@ -319,7 +321,7 @@ export function Header() {
               href="/gio-hang"
               suppressHydrationWarning
               aria-label={`Giỏ hàng${cartCount > 0 ? ` (${cartCount} sản phẩm)` : ''}`}
-              className="h-10 py-px inline-flex flex-col justify-center items-start text-white hover:bg-white/10 rounded-full transition-colors p-2 relative cursor-pointer group"
+              className="h-12 w-12 md:h-10 md:w-10 flex justify-center items-center text-white hover:bg-white/10 rounded-full transition-colors relative cursor-pointer group"
             >
               <ShoppingCart className="w-5 h-5 group-hover:scale-110 transition-transform" />
               {cartCount > 0 && (

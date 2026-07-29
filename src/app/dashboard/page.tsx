@@ -170,7 +170,7 @@ const DashboardPage = () => {
         <Link
           href={isSellerMode ? '/dashboard/san-pham/tao-moi' : '/san-pham'}
           className={cn(
-            'px-6 py-2.5 text-sm font-bold rounded-full transition-all shadow-lg w-fit bg-green-600 text-white hover:bg-green-700 shadow-green-600/20',
+            'px-6 py-3 text-sm font-bold rounded-full transition-all shadow-lg w-fit bg-green-600 text-white hover:bg-green-700 shadow-green-600/20',
           )}
         >
           {isSellerMode ? '+ Thêm sản phẩm' : 'Khám phá ngay'}
@@ -289,7 +289,7 @@ const DashboardPage = () => {
                     </div>
                     <Link
                       href={`/dashboard/san-pham`}
-                      className="shrink-0 px-3 py-1.5 bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700 rounded-lg text-xs font-bold transition-colors"
+                      className="shrink-0 px-3 py-2.5 bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700 rounded-lg text-xs font-bold transition-colors"
                     >
                       Bổ sung ngay
                     </Link>
@@ -309,7 +309,7 @@ const DashboardPage = () => {
             </h3>
             <Link
               href={isSellerMode ? '/dashboard/don-hang-shop' : '/dashboard/don-hang'}
-              className="text-sm text-green-600 hover:text-green-700 font-semibold flex items-center gap-1 group"
+              className="text-sm text-green-600 hover:text-green-700 font-semibold flex items-center gap-1 group p-2 -mr-2"
             >
               Xem tất cả <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
             </Link>
@@ -380,7 +380,8 @@ const DashboardPage = () => {
               </div>
               <Link
                 href={isSellerMode ? '/dashboard/cua-hang' : '/dashboard/ho-so'}
-                className="ml-auto p-2 hover:bg-stone-50 rounded-full"
+                className="ml-auto w-12 h-12 flex items-center justify-center hover:bg-stone-50 rounded-full"
+                aria-label={isSellerMode ? 'Cài đặt Shop' : 'Cập nhật hồ sơ'}
               >
                 <FiArrowRight size={16} />
               </Link>
@@ -401,7 +402,8 @@ const DashboardPage = () => {
               </div>
               <Link
                 href={isSellerMode ? '/dashboard/cua-hang/chinh-sach' : '/dashboard/bao-mat'}
-                className="ml-auto p-2 hover:bg-stone-50 rounded-full"
+                className="ml-auto w-12 h-12 flex items-center justify-center hover:bg-stone-50 rounded-full"
+                aria-label={isSellerMode ? 'Chính sách bán hàng' : 'Bảo mật'}
               >
                 <FiArrowRight size={16} />
               </Link>

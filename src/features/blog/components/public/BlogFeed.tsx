@@ -126,13 +126,13 @@ export const BlogFeed = () => {
 
             {/* Category Filter - Refined */}
             <div className="flex flex-wrap gap-3 justify-center">
-              <button className="px-6 py-2.5 rounded-full text-xs font-bold bg-stone-900 text-white shadow-xl shadow-stone-900/10 transition-all hover:scale-105 active:scale-95">
+              <button className="px-6 py-3.5 rounded-full text-xs font-bold bg-stone-900 text-white shadow-xl shadow-stone-900/10 transition-all hover:scale-105 active:scale-95">
                 Tất cả chủ đề
               </button>
               {tags.map((tag) => (
                 <button
                   key={tag.id}
-                  className="px-6 py-2.5 rounded-full text-xs font-bold bg-white text-stone-500 border border-stone-200 hover:border-emerald-500 hover:text-emerald-700 hover:bg-emerald-50/50 transition-all hover:scale-105 active:scale-95"
+                  className="px-6 py-3.5 rounded-full text-xs font-bold bg-white text-stone-500 border border-stone-200 hover:border-emerald-500 hover:text-emerald-700 hover:bg-emerald-50/50 transition-all hover:scale-105 active:scale-95"
                 >
                   {tag.name}
                 </button>

@@ -105,8 +105,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <button
-              className="lg:hidden p-2 -ml-2 text-stone-500 hover:text-stone-900 focus:outline-none"
+              className="lg:hidden p-3 -ml-2 text-stone-500 hover:text-stone-900 focus:outline-none"
               onClick={() => setIsMobileSidebarOpen(true)}
+              aria-label="Mở menu"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -247,7 +248,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <span className="font-bold text-lg text-stone-900">Menu</span>
             <button
               onClick={() => setIsMobileSidebarOpen(false)}
-              className="p-2 hover:bg-stone-100 rounded-full transition-colors"
+              className="p-3 hover:bg-stone-100 rounded-full transition-colors"
+              aria-label="Đóng menu"
             >
               <svg
                 className="w-6 h-6 text-stone-500"

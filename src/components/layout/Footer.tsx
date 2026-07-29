@@ -22,22 +22,20 @@ export function Footer() {
           </div>
           <div className="flex flex-col justify-start items-start">
             <span className="text-emerald-900 text-sm font-normal font-sans leading-6">
-              Kết nối tinh hoa nông sản Việt từ khắp mọi
-              <br />
-              miền đất nước đến bàn ăn của mỗi gia
-              <br />
-              đình.
+              Kết nối tinh hoa nông sản Việt từ khắp mọi miền đất nước đến bàn ăn của mỗi gia đình.
             </span>
           </div>
           <div className="pt-[1.20px] inline-flex justify-start items-start gap-4">
             <Link
               href="https://ies-edu.vn"
+              aria-label="Trang chủ IES"
               className="w-10 h-10 bg-green-900 rounded-full flex justify-center items-center hover:bg-green-800 transition-colors"
             >
               <Globe className="w-4 h-4 text-white" />
             </Link>
             <Link
               href="https://www.facebook.com/ies.focus.lms"
+              aria-label="Facebook IES"
               className="w-10 h-10 bg-green-900 rounded-full flex justify-center items-center hover:bg-green-800 transition-colors"
             >
               <FaFacebook className="w-4 h-4 text-white" />
@@ -59,7 +57,7 @@ export function Footer() {
                     <Link
                       key={category.id}
                       href={`/danh-muc/${category.slug}`}
-                      className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900 transition-colors"
+                      className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900 transition-colors py-2 md:py-0 block w-full"
                     >
                       {category.name}
                     </Link>
@@ -69,7 +67,7 @@ export function Footer() {
                     <Link
                       key={item}
                       href="#"
-                      className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900"
+                      className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900 py-2 md:py-0 block w-full"
                     >
                       {item}
                     </Link>
@@ -83,31 +81,31 @@ export function Footer() {
           <div className="flex flex-col justify-start items-start gap-1.5">
             <Link
               href="/ho-tro#contact"
-              className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900"
+              className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900 py-2 md:py-0 block w-full"
             >
               Liên hệ chúng tôi
             </Link>
             <Link
               href="/chinh-sach-bao-mat"
-              className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900"
+              className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900 py-2 md:py-0 block w-full"
             >
               Chính sách bảo mật
             </Link>
             <Link
               href="/chinh-sach-dat-hang"
-              className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900"
+              className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900 py-2 md:py-0 block w-full"
             >
               Chính sách đặt hàng
             </Link>
             <Link
               href="/dieu-khoan-dich-vu"
-              className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900"
+              className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900 py-2 md:py-0 block w-full"
             >
               Điều khoản dịch vụ
             </Link>
             <Link
               href="/ho-tro"
-              className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900"
+              className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900 py-2 md:py-0 block w-full"
             >
               Trung tâm trợ giúp
             </Link>

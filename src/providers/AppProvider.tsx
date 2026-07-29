@@ -1,12 +1,17 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useSyncExternalStore } from 'react';
+import { createPortal } from 'react-dom';
 import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
 import { makeStore } from '@/store/store';
 import { WebSocketProvider } from '@/features/notifications/providers/WebSocketProvider';
 import { GlobalAuthHandler } from './GlobalAuthHandler';
+
+const emptySubscribe = () => () => {};
+const getSnapshot = () => true;
+const getServerSnapshot = () => false;
 
 function decodeJwt(token: string) {
   try {
@@ -59,6 +64,7 @@ const GlobalPolicyConsentModal = dynamic(
 
 export default function AppProvider({ children }: { children: React.ReactNode }) {
   const [store] = useState(() => makeStore());
+  const mounted = useSyncExternalStore(emptySubscribe, getSnapshot, getServerSnapshot);
 
   useEffect(() => {
     // 1. Initialize Auth from LocalStorage
@@ -126,19 +132,26 @@ export default function AppProvider({ children }: { children: React.ReactNode })
       <QueryClientProvider client={queryClient}>
         <WebSocketProvider>{children}</WebSocketProvider>
         {/* Cấu hình mặc định cho Toast toàn hệ thống */}
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 3000,
-            style: {
-              background: '#333',
-              color: '#fff',
-            },
-            success: {
-              duration: 3000,
-            },
-          }}
-        />
+        {mounted &&
+          createPortal(
+            <Toaster
+              position="top-right"
+              containerStyle={{ zIndex: 2147483647 }}
+              toastOptions={{
+                duration: 3000,
+                style: {
+                  position: 'relative',
+                  zIndex: 2147483647,
+                  background: '#333',
+                  color: '#fff',
+                },
+                success: {
+                  duration: 3000,
+                },
+              }}
+            />,
+            document.body,
+          )}
         <LoadingOverlay />
         <GlobalAuthHandler />
         <GlobalPolicyConsentModal />

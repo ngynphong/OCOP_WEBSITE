@@ -39,7 +39,8 @@ export const useAddToCart = () => {
 
   return useMutation({
     mutationFn: (data: AddToCartRequest & { productId?: number }) => {
-      const { productId, ...apiData } = data;
+      const apiData = { ...data };
+      delete apiData.productId;
       return cartApi.addItem(apiData);
     },
     onMutate: async (data: AddToCartRequest & { productId?: number }) => {

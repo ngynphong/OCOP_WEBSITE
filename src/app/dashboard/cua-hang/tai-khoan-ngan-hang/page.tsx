@@ -231,6 +231,8 @@ export default function BankAccountPage() {
                               <img
                                 src={bank.logo}
                                 alt={bank.shortName}
+                                loading="lazy"
+                                decoding="async"
                                 className="max-h-full max-w-full object-contain mix-blend-multiply"
                               />
                             </div>

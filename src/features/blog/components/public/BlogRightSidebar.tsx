@@ -108,7 +108,7 @@ export const BlogRightSidebar = ({ toc = [] }: BlogRightSidebarProps) => {
                   <a
                     href={`#${item.id}`}
                     onClick={(e) => handleScrollTo(e, item.id)}
-                    className="block w-full leading-snug"
+                    className="block w-full leading-snug py-2 -my-2"
                   >
                     {item.text}
                   </a>

@@ -82,12 +82,16 @@ export const useInfiniteDiscoveryProductsQuery = (
   });
 };
 
-export const usePublicProductDetailQuery = (slugOrId: string | number | null | undefined) => {
+export const usePublicProductDetailQuery = (
+  slugOrId: string | number | null | undefined,
+  options?: Record<string, unknown>,
+) => {
   return useQuery({
     queryKey: ['public-product', slugOrId],
     queryFn: () => publicProductApi.getProduct(slugOrId!),
     enabled: !!slugOrId,
     staleTime: 60 * 1000,
+    ...options,
   });
 };
 

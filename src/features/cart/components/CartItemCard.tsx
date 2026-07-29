@@ -93,7 +93,7 @@ function QtyStepper({ qty, max, disabled, onDecrease, onIncrease }: QtyStepperPr
         disabled={isDecDisabled}
         title={qty <= 1 ? 'Số lượng tối thiểu là 1' : undefined}
         className={cn(
-          'w-7 h-7 flex items-center justify-center rounded-full transition-all duration-300 text-stone-600',
+          'w-9 h-9 sm:w-7 sm:h-7 flex items-center justify-center rounded-full transition-all duration-300 text-stone-600',
           isDecDisabled
             ? 'opacity-30 cursor-not-allowed'
             : 'hover:bg-white hover:shadow-sm active:scale-90',
@@ -112,7 +112,7 @@ function QtyStepper({ qty, max, disabled, onDecrease, onIncrease }: QtyStepperPr
         disabled={isIncDisabled}
         title={qty >= max ? `Đã đạt số lượng tối đa (${max} sản phẩm)` : undefined}
         className={cn(
-          'w-7 h-7 flex items-center justify-center rounded-full transition-all duration-300 text-stone-600',
+          'w-9 h-9 sm:w-7 sm:h-7 flex items-center justify-center rounded-full transition-all duration-300 text-stone-600',
           isIncDisabled
             ? 'opacity-30 cursor-not-allowed'
             : 'hover:bg-white hover:shadow-sm active:scale-90',
@@ -255,7 +255,7 @@ export const CartItemCard = React.memo(function CartItemCard({
         </div>
 
         {/* Quantity + Price */}
-        <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-6 shrink-0">
+        <div className="flex flex-wrap items-center justify-between sm:justify-end gap-x-2 gap-y-3 sm:gap-6 shrink-0 mt-2 sm:mt-0">
           {/* Qty Stepper or Prominent Remove Button */}
           {isDisabled ? (
             <button
@@ -266,48 +266,52 @@ export const CartItemCard = React.memo(function CartItemCard({
               <Trash2 className="w-4 h-4" /> Xóa sản phẩm
             </button>
           ) : (
-            <QtyStepper
-              qty={localQty}
-              max={item.maxQty}
-              disabled={isDisabled}
-              onDecrease={() => handleQtyChange(localQty - 1)}
-              onIncrease={() => handleQtyChange(localQty + 1)}
-            />
+            <div className="shrink-0">
+              <QtyStepper
+                qty={localQty}
+                max={item.maxQty}
+                disabled={isDisabled}
+                onDecrease={() => handleQtyChange(localQty - 1)}
+                onIncrease={() => handleQtyChange(localQty + 1)}
+              />
+            </div>
           )}
 
-          {/* Price block */}
-          <div className="text-right min-w-[80px]">
-            <div className="text-base font-black text-green-700">
-              {item.subtotal.toLocaleString('vi-VN')}₫
+          <div className="flex items-center gap-2 sm:gap-6 justify-end flex-1 sm:flex-none">
+            {/* Price block */}
+            <div className="text-right">
+              <div className="text-sm sm:text-base font-black text-green-700">
+                {item.subtotal.toLocaleString('vi-VN')}₫
+              </div>
+              {item.qty > 1 && (
+                <div className="text-[10px] text-stone-400 mt-0.5">
+                  {item.priceSnapshot.toLocaleString('vi-VN')}₫ / sp
+                </div>
+              )}
+              {item.priceChanged && (
+                <div className="text-[10px] text-amber-600 line-through mt-0.5">
+                  Cũ: {item.currentPrice.toLocaleString('vi-VN')}₫
+                </div>
+              )}
+              {item.isWholesale && item.retailPrice && item.retailPrice > item.priceSnapshot && (
+                <div className="text-[10px] text-stone-400 line-through mt-0.5">
+                  Lẻ: {item.retailPrice.toLocaleString('vi-VN')}₫
+                </div>
+              )}
             </div>
-            {item.qty > 1 && (
-              <div className="text-[10px] text-stone-400 mt-0.5">
-                {item.priceSnapshot.toLocaleString('vi-VN')}₫ / sp
-              </div>
-            )}
-            {item.priceChanged && (
-              <div className="text-[10px] text-amber-600 line-through mt-0.5">
-                Cũ: {item.currentPrice.toLocaleString('vi-VN')}₫
-              </div>
-            )}
-            {item.isWholesale && item.retailPrice && item.retailPrice > item.priceSnapshot && (
-              <div className="text-[10px] text-stone-400 line-through mt-0.5">
-                Lẻ: {item.retailPrice.toLocaleString('vi-VN')}₫
-              </div>
+
+            {/* Standard Remove Icon for Active Items */}
+            {!isDisabled && (
+              <button
+                onClick={handleRemove}
+                disabled={isRemoving}
+                className="p-2 sm:p-1.5 text-stone-300 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors shrink-0"
+                aria-label="Xóa sản phẩm"
+              >
+                <Trash2 className="w-4 h-4 sm:w-4 sm:h-4" />
+              </button>
             )}
           </div>
-
-          {/* Standard Remove Icon for Active Items */}
-          {!isDisabled && (
-            <button
-              onClick={handleRemove}
-              disabled={isRemoving}
-              className="p-1.5 text-stone-300 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors shrink-0"
-              aria-label="Xóa sản phẩm"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
-          )}
         </div>
       </div>
     </div>

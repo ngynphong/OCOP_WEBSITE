@@ -9,6 +9,8 @@ import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/AppButton';
 import { AlertCircle, Loader2, Send } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAppSelector } from '@/store/hooks';
+import { toast } from 'react-hot-toast';
 
 interface ComplaintFormModalProps {
   isOpen: boolean;
@@ -35,6 +37,7 @@ export const ComplaintFormModal = ({
   orderId,
 }: ComplaintFormModalProps) => {
   const { mutate: createComplaint, isPending } = useCreateComplaint();
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
 
   const {
     register,
@@ -51,6 +54,19 @@ export const ComplaintFormModal = ({
   });
 
   const onSubmit = (data: ComplaintRequest) => {
+    if (!isAuthenticated) {
+      toast.error('Vui lòng đăng nhập để gửi khiếu nại!', {
+        icon: '🔒',
+        style: {
+          borderRadius: '16px',
+          background: '#333',
+          color: '#fff',
+          fontSize: '12px',
+          fontWeight: 'bold',
+        },
+      });
+      return;
+    }
     createComplaint(data, {
       onSuccess: () => {
         reset();

@@ -36,7 +36,6 @@ interface JournalsTabProps {
 
 export function JournalsTab({
   productId,
-  productName,
   suggestedJournal,
   onSuggestionConsumed,
 }: JournalsTabProps) {

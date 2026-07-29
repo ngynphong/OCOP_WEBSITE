@@ -32,7 +32,7 @@ export const FloatingChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [showTooltip, setShowTooltip] = useState(false);
-  const { messages, isLoading, sendMessage } = useAiChat();
+  const { messages, isLoading, sendMessage, setMessages } = useAiChat();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const { mutate: addToCart, mutateAsync: addToCartAsync } = useAddToCart();
@@ -70,12 +70,21 @@ export const FloatingChatbot = () => {
   useEffect(() => {
     const handleOpenAiChat = (e: Event) => {
       const customEvent = e as CustomEvent<{ message: string }>;
-      if (!isAuthenticated) {
-        toast.error('Vui lòng đăng nhập để trò chuyện với OCOP Support');
-        return;
-      }
       setIsOpen(true);
       if (customEvent.detail?.message && !isLoading) {
+        if (!isAuthenticated) {
+          const text = customEvent.detail.message;
+          setMessages((prev) => [
+            ...prev,
+            { id: Date.now().toString(), role: 'user', content: text },
+            {
+              id: (Date.now() + 1).toString(),
+              role: 'assistant',
+              content: 'Vui lòng đăng nhập để trò chuyện với OCOP Support.',
+            },
+          ]);
+          return;
+        }
         sendMessage(customEvent.detail.message);
       }
     };
@@ -83,7 +92,7 @@ export const FloatingChatbot = () => {
     return () => {
       window.removeEventListener('open-ai-chat', handleOpenAiChat);
     };
-  }, [sendMessage, isLoading, isAuthenticated, router]);
+  }, [sendMessage, isLoading, isAuthenticated, router, setMessages]);
 
   // Auto-resize textarea when input changes
   useEffect(() => {
@@ -95,6 +104,22 @@ export const FloatingChatbot = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isAuthenticated) {
+      if (inputValue.trim()) {
+        const text = inputValue.trim();
+        setInputValue('');
+        setMessages((prev) => [
+          ...prev,
+          { id: Date.now().toString(), role: 'user', content: text },
+          {
+            id: (Date.now() + 1).toString(),
+            role: 'assistant',
+            content: 'Vui lòng đăng nhập để trò chuyện với OCOP Support.',
+          },
+        ]);
+      }
+      return;
+    }
     if (inputValue.trim() && !isLoading) {
       sendMessage(inputValue);
       setInputValue('');
@@ -477,10 +502,6 @@ export const FloatingChatbot = () => {
       {/* Floating Button */}
       <button
         onClick={() => {
-          if (!isAuthenticated) {
-            toast.error('Vui lòng đăng nhập để trò chuyện với OCOP Support');
-            return;
-          }
           setIsOpen(!isOpen);
         }}
         className={`group relative flex h-14 w-14 items-center justify-center rounded-full bg-white text-white shadow-lg shadow-emerald-600/30 transition-transform hover:scale-105 active:scale-95 cursor-pointer ${
@@ -505,10 +526,6 @@ export const FloatingChatbot = () => {
             <span
               className="cursor-pointer font-medium text-xs leading-relaxed"
               onClick={() => {
-                if (!isAuthenticated) {
-                  toast.error('Vui lòng đăng nhập để trò chuyện với OCOP Support');
-                  return;
-                }
                 setIsOpen(true);
                 setShowTooltip(false);
               }}

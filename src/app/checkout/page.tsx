@@ -272,6 +272,7 @@ function CheckoutContent() {
             <Link
               href="/gio-hang"
               className="p-3 bg-white rounded-xl border border-stone-200 text-stone-600 hover:text-green-700 hover:border-green-200 transition-all shadow-sm"
+              aria-label="Quay lại giỏ hàng"
             >
               <ChevronLeft size={20} />
             </Link>

@@ -26,23 +26,60 @@ export const metadata: Metadata = {
     ],
   },
 };
+import dynamic from 'next/dynamic';
 import { HeroSection } from '@/features/home/components/HeroSection';
-import { FeatureHighlights } from '@/features/home/components/FeatureHighlights';
-import { CategoryList } from '@/features/home/components/CategoryList';
-import { FlashSaleSection } from '@/features/home/components/FlashSaleSection';
-import { BestSellersSection } from '@/features/home/components/BestSellersSection';
-import { CategoryShowcase } from '@/features/home/components/CategoryShowcase';
-import { TestimonialSection } from '@/features/home/components/TestimonialSection';
-import { QRTraceabilitySection } from '@/features/home/components/QRTraceabilitySection';
-import { NewsletterSection } from '@/features/home/components/NewsletterSection';
-import { QuickLinksRow } from '@/features/home/components/QuickLinksRow';
-import { VoucherHomeSection } from '@/features/home/components/VoucherHomeSection';
-import { OcopMallSection } from '@/features/home/components/OcopMallSection';
-import { DailyDiscoverFeed } from '@/features/home/components/DailyDiscoverFeed';
-import { SubBanners } from '@/features/home/components/SubBanners';
 import { AmbientBackground } from '@/features/home/components/AmbientBackground';
-import { ComplaintFloatingButton } from '@/features/complaints/components/ComplaintFloatingButton';
-import { FloatingChatbot } from '@/features/ai-chat/components/FloatingChatbot';
+
+const FeatureHighlights = dynamic(() =>
+  import('@/features/home/components/FeatureHighlights').then((mod) => mod.FeatureHighlights),
+);
+const CategoryList = dynamic(() =>
+  import('@/features/home/components/CategoryList').then((mod) => mod.CategoryList),
+);
+const FlashSaleSection = dynamic(() =>
+  import('@/features/home/components/FlashSaleSection').then((mod) => mod.FlashSaleSection),
+);
+const BestSellersSection = dynamic(() =>
+  import('@/features/home/components/BestSellersSection').then((mod) => mod.BestSellersSection),
+);
+const CategoryShowcase = dynamic(() =>
+  import('@/features/home/components/CategoryShowcase').then((mod) => mod.CategoryShowcase),
+);
+const TestimonialSection = dynamic(() =>
+  import('@/features/home/components/TestimonialSection').then((mod) => mod.TestimonialSection),
+);
+const QRTraceabilitySection = dynamic(() =>
+  import('@/features/home/components/QRTraceabilitySection').then(
+    (mod) => mod.QRTraceabilitySection,
+  ),
+);
+const NewsletterSection = dynamic(() =>
+  import('@/features/home/components/NewsletterSection').then((mod) => mod.NewsletterSection),
+);
+const QuickLinksRow = dynamic(() =>
+  import('@/features/home/components/QuickLinksRow').then((mod) => mod.QuickLinksRow),
+);
+const VoucherHomeSection = dynamic(() =>
+  import('@/features/home/components/VoucherHomeSection').then((mod) => mod.VoucherHomeSection),
+);
+const OcopMallSection = dynamic(() =>
+  import('@/features/home/components/OcopMallSection').then((mod) => mod.OcopMallSection),
+);
+const DailyDiscoverFeed = dynamic(() =>
+  import('@/features/home/components/DailyDiscoverFeed').then((mod) => mod.DailyDiscoverFeed),
+);
+const SubBanners = dynamic(() =>
+  import('@/features/home/components/SubBanners').then((mod) => mod.SubBanners),
+);
+
+const ComplaintFloatingButton = dynamic(() =>
+  import('@/features/complaints/components/ComplaintFloatingButton').then(
+    (mod) => mod.ComplaintFloatingButton,
+  ),
+);
+const FloatingChatbot = dynamic(() =>
+  import('@/features/ai-chat/components/FloatingChatbot').then((mod) => mod.FloatingChatbot),
+);
 
 export default function Home() {
   return (

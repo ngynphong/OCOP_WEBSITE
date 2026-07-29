@@ -196,7 +196,7 @@ export function LoginForm() {
               <button
                 type="button"
                 onClick={handleBack}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-600 hover:text-emerald-700 font-bold text-[10px] uppercase flex items-center gap-1 hover:bg-emerald-50 px-2 py-1 rounded-full transition-all cursor-pointer"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-emerald-600 hover:text-emerald-700 font-bold text-[10px] uppercase flex items-center gap-1 hover:bg-emerald-50 px-2 py-2 rounded-full transition-all cursor-pointer"
               >
                 <ArrowLeft className="w-3 h-3" /> Sửa
               </button>
@@ -243,7 +243,8 @@ export function LoginForm() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-emerald-600 transition-colors p-1 bg-transparent"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-stone-400 hover:text-emerald-600 transition-colors p-2 bg-transparent"
+                  aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -275,7 +276,10 @@ export function LoginForm() {
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-emerald-600 transition-colors p-1 bg-transparent"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-stone-400 hover:text-emerald-600 transition-colors p-2 bg-transparent"
+                    aria-label={
+                      showConfirmPassword ? 'Ẩn xác nhận mật khẩu' : 'Hiện xác nhận mật khẩu'
+                    }
                   >
                     {showConfirmPassword ? (
                       <EyeOff className="w-4 h-4" />
@@ -295,7 +299,7 @@ export function LoginForm() {
             {/* Remember & Forgot Password */}
             {accountExists && (
               <div className="flex items-center justify-between mt-1">
-                <label className="flex items-center gap-2 cursor-pointer group">
+                <label className="flex items-center gap-2 cursor-pointer group py-2">
                   <div className="relative flex items-center justify-center">
                     <input
                       {...register('remember')}
@@ -321,7 +325,7 @@ export function LoginForm() {
 
                 <Link
                   href="/quen-mat-khau"
-                  className="text-stone-400 text-xs font-bold hover:text-green-600 transition-colors"
+                  className="text-stone-400 text-xs font-bold hover:text-green-600 transition-colors p-2 -mr-2"
                 >
                   Quên mật khẩu?
                 </Link>
@@ -354,7 +358,7 @@ export function LoginForm() {
                 <button
                   type="button"
                   onClick={handleBack}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-emerald-600 font-bold text-[10px] uppercase flex items-center gap-1 hover:bg-emerald-50 px-2 py-1 rounded-full transition-all cursor-pointer"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-stone-400 hover:text-emerald-600 font-bold text-[10px] uppercase flex items-center gap-1 hover:bg-emerald-50 px-2 py-2 rounded-full transition-all cursor-pointer"
                 >
                   <ArrowLeft className="w-3 h-3" /> Quay lại
                 </button>

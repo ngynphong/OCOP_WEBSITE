@@ -7,7 +7,6 @@ import { Product, ProductVariant } from '@/features/products/types/productTypes'
 import { Button } from '@/components/ui/AppButton';
 import { OcopBadge } from './OcopBadge';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { useAddToWishlist, useRemoveFromWishlist } from '@/features/wishlist/hooks/useWishlist';
 import { useAddToCart } from '@/features/cart/hooks/useCart';
 import { useAppSelector } from '@/store/hooks';
@@ -16,6 +15,7 @@ import { CiShop } from 'react-icons/ci';
 import { QuickBuyModal } from '@/features/checkout/components/QuickBuyModal';
 import { RFQModal } from '@/features/quotations/components/RFQModal';
 import { MessageSquareQuote } from 'lucide-react';
+import Link from 'next/link';
 
 interface ProductInfoProps {
   product: Product;
@@ -34,7 +34,6 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
   const discount =
     oldPrice && price < oldPrice ? Math.round(((oldPrice - price) / oldPrice) * 100) : 0;
 
-  const router = useRouter();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
 
   // Wishlist
@@ -89,6 +88,7 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
               <button
                 onClick={handleWishlistClick}
                 disabled={isWishlistLoading}
+                aria-label={isWishlisted ? 'Bỏ yêu thích' : 'Thêm vào yêu thích'}
                 className={cn(
                   'p-3 rounded-xl border transition-all active:scale-95',
                   isWishlisted
@@ -206,7 +206,7 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
                     key={variant.id}
                     onClick={() => setSelectedVariant(variant)}
                     className={cn(
-                      'px-5 py-2.5 rounded-xl border-2 font-black transition-all text-[13px] active:scale-95 focus:outline-none',
+                      'px-5 py-3 md:py-2.5 rounded-xl border-2 font-black transition-all text-[13px] active:scale-95 focus:outline-none',
                       selectedVariant?.id === variant.id
                         ? 'border-emerald-600 ring-2 ring-emerald-500 ring-offset-2 bg-emerald-50 text-emerald-700 shadow-md'
                         : 'border-stone-100 bg-white text-stone-600 hover:border-emerald-300 hover:text-emerald-700 shadow-sm',
@@ -327,9 +327,10 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
         </div>
 
         {/* Shop Info Overlay */}
-        <div
-          onClick={() => router.push(`/cua-hang/${product.shop.slug}`)}
-          className="p-6 border bg-stone-100 rounded-xl text-white flex items-center justify-between shadow-sm relative overflow-hidden group cursor-pointer"
+        <Link
+          href={`/cua-hang/${product.shop.slug}`}
+          aria-label={`Xem cửa hàng ${product.shop.name}`}
+          className="p-6 border bg-stone-100 rounded-xl flex items-center justify-between shadow-sm relative overflow-hidden group cursor-pointer"
         >
           <div className="absolute inset-0 bg-linear-to-r from-emerald-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
           <div className="flex items-center gap-5 relative z-10">
@@ -352,7 +353,7 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
                 />
               )}
             </div>
-            <div className="flex flex-col justify-center items-start cursor-pointer min-w-0">
+            <div className="flex flex-col justify-center items-start min-w-0">
               <p className="text-[9px] uppercase tracking-widest text-gray-700 font-black mb-0.5">
                 Cung cấp bởi
               </p>
@@ -361,8 +362,8 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
               </h4>
             </div>
           </div>
-          <CiShop className="w-8 h-8 text-lime-600 relative z-10" />
-        </div>
+          <CiShop className="w-8 h-8 text-lime-600 relative z-10 shrink-0" />
+        </Link>
       </div>
 
       {selectedVariant && (

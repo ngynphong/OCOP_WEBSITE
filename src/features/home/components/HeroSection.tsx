@@ -47,14 +47,35 @@ export const HeroSection = memo(function HeroSection() {
           className="absolute inset-0 z-0"
         >
           <div className="relative w-full h-full">
-            <Image
-              src={banners[currentIndex].imageUrl}
-              alt={banners[currentIndex].title || 'OCOP Banner'}
-              fill
-              priority
-              className="object-cover"
-              sizes="100vw"
-            />
+            {banners[currentIndex].imageMobileUrl ? (
+              <>
+                <Image
+                  src={banners[currentIndex].imageMobileUrl!}
+                  alt={banners[currentIndex].title || 'OCOP Banner Mobile'}
+                  fill
+                  priority
+                  className="object-cover md:hidden"
+                  sizes="100vw"
+                />
+                <Image
+                  src={banners[currentIndex].imageUrl}
+                  alt={banners[currentIndex].title || 'OCOP Banner'}
+                  fill
+                  priority
+                  className="object-cover hidden md:block"
+                  sizes="100vw"
+                />
+              </>
+            ) : (
+              <Image
+                src={banners[currentIndex].imageUrl}
+                alt={banners[currentIndex].title || 'OCOP Banner'}
+                fill
+                priority
+                className="object-cover"
+                sizes="100vw"
+              />
+            )}
             {/* Gradient Overlay for text readability */}
             <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-transparent to-black/60" />
           </div>
@@ -77,7 +98,7 @@ export const HeroSection = memo(function HeroSection() {
               xuất nguồn gốc dễ dàng qua mã QR.
             </p>
             <Link href="/san-pham">
-              <span className="group inline-flex items-center gap-2 text-white/70 hover:text-white uppercase tracking-[0.2em] text-[10px] md:text-xs transition-colors cursor-pointer pb-1 border-b border-white/30 hover:border-white">
+              <span className="group inline-flex items-center gap-2 text-white/70 hover:text-white uppercase tracking-[0.2em] text-[10px] md:text-xs transition-colors cursor-pointer py-2 md:py-0 md:pb-1 border-b border-white/30 hover:border-white">
                 Khám phá sản phẩm
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </span>
@@ -101,19 +122,21 @@ export const HeroSection = memo(function HeroSection() {
               {String(currentIndex + 1).padStart(2, '0')}
             </span>
             <div
-              className="w-24 md:w-48 h-[1px] bg-white/30 overflow-hidden relative cursor-pointer"
+              className="w-24 md:w-48 h-6 flex items-center relative cursor-pointer group"
               onClick={() => {
                 setIsAutoPlay(false);
                 setCurrentIndex((prev) => (prev + 1) % banners.length);
               }}
             >
-              <motion.div
-                className="absolute top-0 left-0 h-full bg-white"
-                initial={{ width: '0%' }}
-                animate={{ width: isAutoPlay ? '100%' : '0%' }}
-                transition={{ duration: 6, ease: 'linear', repeat: isAutoPlay ? Infinity : 0 }}
-                key={`progress-${currentIndex}`}
-              />
+              <div className="w-full h-[1px] bg-white/30 overflow-hidden relative group-hover:h-[2px] transition-all">
+                <motion.div
+                  className="absolute top-0 left-0 h-full bg-white"
+                  initial={{ width: '0%' }}
+                  animate={{ width: isAutoPlay ? '100%' : '0%' }}
+                  transition={{ duration: 6, ease: 'linear', repeat: isAutoPlay ? Infinity : 0 }}
+                  key={`progress-${currentIndex}`}
+                />
+              </div>
             </div>
             <span className="text-sm md:text-base">{String(banners.length).padStart(2, '0')}</span>
           </motion.div>

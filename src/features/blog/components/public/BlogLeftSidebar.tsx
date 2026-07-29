@@ -17,6 +17,7 @@ export const BlogLeftSidebar = ({ bookmarkCount }: BlogLeftSidebarProps) => {
       <button
         className="w-12 h-12 rounded-full bg-white border border-stone-200 flex items-center justify-center text-stone-500 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 transition-colors shadow-sm group"
         title="Yêu thích"
+        aria-label="Yêu thích bài viết"
       >
         <FiHeart className="text-xl group-hover:scale-110 transition-transform" />
       </button>
@@ -24,6 +25,7 @@ export const BlogLeftSidebar = ({ bookmarkCount }: BlogLeftSidebarProps) => {
       <button
         className="w-12 h-12 rounded-full bg-white border border-stone-200 flex flex-col items-center justify-center text-stone-500 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 transition-colors shadow-sm group"
         title="Lưu bài viết"
+        aria-label="Lưu bài viết"
       >
         <FiBookmark
           className={`text-lg group-hover:scale-110 transition-transform ${bookmarkCount !== undefined ? 'mb-0.5' : ''}`}
@@ -38,6 +40,7 @@ export const BlogLeftSidebar = ({ bookmarkCount }: BlogLeftSidebarProps) => {
       <button
         className="w-12 h-12 rounded-full bg-white border border-stone-200 flex items-center justify-center text-stone-500 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 transition-colors shadow-sm group"
         title="Chia sẻ"
+        aria-label="Chia sẻ bài viết"
       >
         <FiShare2 className="text-xl group-hover:scale-110 transition-transform" />
       </button>
@@ -45,6 +48,7 @@ export const BlogLeftSidebar = ({ bookmarkCount }: BlogLeftSidebarProps) => {
       <button
         className="w-12 h-12 rounded-full bg-white border border-stone-200 flex items-center justify-center text-stone-500 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 transition-colors shadow-sm group"
         title="Tùy chỉnh cỡ chữ"
+        aria-label="Tùy chỉnh cỡ chữ"
       >
         <FiType className="text-xl group-hover:scale-110 transition-transform" />
       </button>
@@ -53,6 +57,7 @@ export const BlogLeftSidebar = ({ bookmarkCount }: BlogLeftSidebarProps) => {
         onClick={handlePrint}
         className="w-12 h-12 rounded-full bg-white border border-stone-200 flex items-center justify-center text-stone-500 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 transition-colors shadow-sm group"
         title="In bài viết"
+        aria-label="In bài viết"
       >
         <FiPrinter className="text-xl group-hover:scale-110 transition-transform" />
       </button>

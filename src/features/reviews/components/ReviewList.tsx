@@ -4,7 +4,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useProductReviewsQuery } from '../hooks/useReviews';
 import { ReviewSummary } from './ReviewSummary';
 import { ReviewItem } from './ReviewItem';
-import { Star, Image as ImageIcon, Filter, Loader2 } from 'lucide-react';
+import { Star, Image as ImageIcon, Filter } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ReviewQueryParams, Review } from '../types/reviewTypes';
 import { FlagReviewModal } from './FlagReviewModal';

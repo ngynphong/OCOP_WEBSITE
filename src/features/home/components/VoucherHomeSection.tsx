@@ -120,11 +120,9 @@ export const VoucherHomeSection = memo(function VoucherHomeSection() {
 
                 <Button
                   onClick={() => handleCollect(voucher.id)}
-                  disabled={!isAuthenticated || savedIds.has(voucher.id)}
+                  disabled={savedIds.has(voucher.id)}
                   isLoading={saveVoucher.isPending && saveVoucher.variables === voucher.id}
-                  variant={
-                    savedIds.has(voucher.id) ? 'outline' : isAuthenticated ? 'danger' : 'outline'
-                  }
+                  variant={savedIds.has(voucher.id) ? 'outline' : 'danger'}
                   size="sm"
                   className={`w-full rounded-xl py-2 h-9 text-[11px] font-black uppercase tracking-widest ${
                     savedIds.has(voucher.id) ? 'bg-stone-100 border-stone-200 text-stone-400' : ''

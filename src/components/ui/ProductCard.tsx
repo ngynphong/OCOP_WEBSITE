@@ -188,7 +188,7 @@ const WishlistButton = memo(({ id, isWishlisted }: { id: number; isWishlisted: b
       disabled={isLoading}
       onClick={handleWishlistClick}
       className={cn(
-        'p-2 rounded-full backdrop-blur-md transition-all duration-300 active:scale-90 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500',
+        'p-3 md:p-2 rounded-full backdrop-blur-md transition-all duration-300 active:scale-90 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500',
         isWishlisted ? 'bg-red-50 text-red-500' : 'bg-black/10 text-white hover:bg-black/20',
         isLoading && 'opacity-50 cursor-not-allowed',
       )}
@@ -209,6 +209,7 @@ function StarIcon() {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       stroke="none"
+      aria-hidden="true"
     >
       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
     </svg>

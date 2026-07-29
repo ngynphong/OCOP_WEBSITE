@@ -425,6 +425,7 @@ const DashboardSidebar = ({ onMobileClose }: { onMobileClose?: () => void }) => 
                   isOpen ? 'bg-stone-50 text-green-700' : 'text-stone-600 hover:bg-stone-50',
                   hasActiveChild && !isOpen && 'text-green-600 font-bold',
                 )}
+                aria-expanded={isOpen}
               >
                 <div className="flex items-center gap-3">
                   <group.icon
@@ -463,7 +464,7 @@ const DashboardSidebar = ({ onMobileClose }: { onMobileClose?: () => void }) => 
                           key={item.id}
                           href={item.href}
                           className={cn(
-                            'flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200',
+                            'flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200',
                             isActive
                               ? 'text-green-600 font-bold bg-green-50'
                               : 'text-stone-500 hover:text-stone-900 hover:bg-stone-50',

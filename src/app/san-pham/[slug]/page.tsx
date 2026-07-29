@@ -86,7 +86,7 @@ export default async function ProductDetailPage({ params }: { params: { slug: st
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       )}
-      <ProductDetailClient />
+      <ProductDetailClient initialProduct={product} />
     </>
   );
 }

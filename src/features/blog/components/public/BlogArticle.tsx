@@ -10,11 +10,11 @@ import { useParams } from 'next/navigation';
 import { BlogLeftSidebar } from './BlogLeftSidebar';
 import { BlogRightSidebar, TOCItem } from './BlogRightSidebar';
 
-const generateTOCAndProcessHTML = (html: string) => {
+const generateTOCAndProcessHTML = (html: string, fallbackAlt: string = 'Hình ảnh') => {
   const toc: TOCItem[] = [];
   const seenIds = new Set<string>();
 
-  const processedHtml = html.replace(/<h([2-3])[^>]*>(.*?)<\/h\1>/gi, (match, level, text) => {
+  let processedHtml = html.replace(/<h([2-3])[^>]*>(.*?)<\/h\1>/gi, (match, level, text) => {
     const cleanText = text.replace(/<[^>]+>/g, '').trim();
     // basic slugify for vietnamese
     let id = cleanText
@@ -43,6 +43,22 @@ const generateTOCAndProcessHTML = (html: string) => {
     // add id attribute to the heading tag
     return `<h${level} id="${id}">${text}</h${level}>`;
   });
+
+  // Ensure all images have an alt attribute and lazy loading for performance
+  processedHtml = processedHtml.replace(/<img([^>]*)>/gi, (match, attrs) => {
+    let newAttrs = attrs;
+    if (!/alt\s*=\s*(['"]).*?\1/i.test(newAttrs)) {
+      newAttrs += ` alt="${fallbackAlt}"`;
+    }
+    if (!/loading\s*=/i.test(newAttrs)) {
+      newAttrs += ` loading="lazy"`;
+    }
+    if (!/decoding\s*=/i.test(newAttrs)) {
+      newAttrs += ` decoding="async"`;
+    }
+    return `<img ${newAttrs.trim()}>`;
+  });
+
   return { toc, processedHtml };
 };
 
@@ -53,7 +69,10 @@ export const BlogArticle = () => {
 
   const { toc, processedHtml } = (() => {
     if (!blogRes?.data?.content) return { toc: [], processedHtml: '' };
-    return generateTOCAndProcessHTML(blogRes.data.content.replace(/\n/g, '<br/>'));
+    return generateTOCAndProcessHTML(
+      blogRes.data.content.replace(/\n/g, '<br/>'),
+      blogRes.data.title,
+    );
   })();
 
   if (isLoading)
@@ -82,12 +101,12 @@ export const BlogArticle = () => {
         <nav className="flex items-center text-sm text-stone-500 font-medium mb-8 overflow-x-auto whitespace-nowrap pb-2">
           <Link
             href="/"
-            className="hover:text-emerald-600 transition-colors flex items-center gap-1"
+            className="hover:text-emerald-600 transition-colors flex items-center gap-1 p-2 -ml-2"
           >
             <FiHome /> Trang chủ
           </Link>
           <FiChevronRight className="mx-2 text-stone-300" />
-          <Link href="/bai-viet" className="hover:text-emerald-600 transition-colors">
+          <Link href="/bai-viet" className="hover:text-emerald-600 transition-colors p-2">
             Bài viết
           </Link>
           <FiChevronRight className="mx-2 text-stone-300" />
@@ -159,6 +178,7 @@ export const BlogArticle = () => {
                   src={blog.thumbnailUrl}
                   alt={blog.title}
                   fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 66vw, 50vw"
                   className="object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
                   priority
                 />

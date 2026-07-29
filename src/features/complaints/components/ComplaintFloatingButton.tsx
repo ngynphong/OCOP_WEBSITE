@@ -4,15 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { MessageCircle, X } from 'lucide-react';
 import { ComplaintFormModal } from '@/features/complaints/components/ComplaintFormModal';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAppSelector } from '@/store/hooks';
 import { usePathname } from 'next/navigation';
-import { toast } from 'react-hot-toast';
 
 export const ComplaintFloatingButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
   const [isMounted, setIsMounted] = useState(false);
   const pathname = usePathname();
   const isAdminPage = pathname.startsWith('/admin') || pathname.startsWith('/dashboard');
@@ -33,19 +30,6 @@ export const ComplaintFloatingButton = () => {
   }, [isMounted]);
 
   const handleOpenForm = () => {
-    if (!isAuthenticated) {
-      toast.error('Vui lòng đăng nhập để gửi khiếu nại!', {
-        icon: '🔒',
-        style: {
-          borderRadius: '16px',
-          background: '#333',
-          color: '#fff',
-          fontSize: '12px',
-          fontWeight: 'bold',
-        },
-      });
-      return;
-    }
     setIsOpen(true);
   };
 

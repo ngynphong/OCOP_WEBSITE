@@ -10,11 +10,8 @@ import {
 } from '@/features/products/hooks/usePublicProducts';
 import { ProductGallery } from '@/features/products/components/ProductDetail/Public/ProductGallery';
 import { ProductInfo } from '@/features/products/components/ProductDetail/Public/ProductInfo';
-import { ProductTraceability } from '@/features/products/components/ProductDetail/Public/ProductTraceability';
-import { ProductStory } from '@/features/products/components/ProductDetail/Public/ProductStory';
 import { StickyBottomCTA } from '@/features/products/components/ProductDetail/Public/StickyBottomCTA';
 import { ProductDetailSkeleton } from '@/features/products/components/ProductDetail/Public/ProductDetailSkeleton';
-import { ProductCard } from '@/components/ui/ProductCard';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
@@ -24,19 +21,38 @@ import Link from 'next/link';
 import { Product } from '@/features/products/types/productTypes';
 import { useWishlistStatus } from '@/features/wishlist/hooks/useWishlist';
 import { useAppSelector } from '@/store/hooks';
-import { ReviewList } from '@/features/reviews/components/ReviewList';
+import dynamic from 'next/dynamic';
+
+const ProductStory = dynamic(() =>
+  import('@/features/products/components/ProductDetail/Public/ProductStory').then(
+    (mod) => mod.ProductStory,
+  ),
+);
+const ProductTraceability = dynamic(() =>
+  import('@/features/products/components/ProductDetail/Public/ProductTraceability').then(
+    (mod) => mod.ProductTraceability,
+  ),
+);
+const ReviewList = dynamic(() =>
+  import('@/features/reviews/components/ReviewList').then((mod) => mod.ReviewList),
+);
+const ProductCard = dynamic(() =>
+  import('@/components/ui/ProductCard').then((mod) => mod.ProductCard),
+);
 import { QuickBuyModal } from '@/features/checkout/components/QuickBuyModal';
 import { useState, useCallback } from 'react';
 import toast from 'react-hot-toast';
 
-export function ProductDetailClient() {
+export function ProductDetailClient({ initialProduct }: { initialProduct?: Product | null }) {
   const { slug } = useParams() as { slug: string };
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const [isQuickBuyModalOpen, setIsQuickBuyModalOpen] = useState(false);
 
   const { trackProductView } = useTracking();
 
-  const { data: productResp, isLoading } = usePublicProductDetailQuery(slug);
+  const { data: productResp, isLoading } = usePublicProductDetailQuery(slug, {
+    initialData: initialProduct ? { data: initialProduct } : undefined,
+  });
   const product = productResp?.data;
 
   React.useEffect(() => {

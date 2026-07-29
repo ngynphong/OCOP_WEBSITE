@@ -216,7 +216,7 @@ export function CartPageClient() {
               {selectedItemIds.length > 0 && (
                 <button
                   onClick={handleDeleteSelected}
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-red-600 hover:text-red-700 hover:bg-red-50 px-3 py-1.5 rounded-full transition-colors"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-red-600 hover:text-red-700 hover:bg-red-50 px-3 py-2.5 sm:py-1.5 rounded-full transition-colors"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                   Xóa đã chọn ({selectedItemIds.length})

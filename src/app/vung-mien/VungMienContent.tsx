@@ -102,7 +102,7 @@ export default function VungMienContent() {
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Column: Map */}
-        <div className="lg:col-span-5 bg-white rounded-xl shadow-sm border border-stone-100 p-6 flex flex-col items-center">
+        <div className="lg:col-span-5 bg-white rounded-xl shadow-sm border border-stone-100 p-6 flex flex-col items-center h-fit lg:sticky lg:top-24">
           <div className="w-full flex items-center gap-2 mb-6 border-b border-stone-100 pb-4">
             <MapPin className="text-green-600 w-6 h-6" />
             <h2 className="text-lg font-bold text-stone-800">Bản Đồ Đặc Sản</h2>
@@ -137,7 +137,7 @@ export default function VungMienContent() {
                   onClick={() => {
                     router.push('/vung-mien', { scroll: false });
                   }}
-                  className="text-sm text-green-600 hover:text-green-700 font-medium"
+                  className="text-sm text-green-600 hover:text-green-700 font-medium p-2 -mr-2 md:p-0 md:mr-0"
                 >
                   Xem tất cả
                 </button>
@@ -201,7 +201,7 @@ export default function VungMienContent() {
                 <button
                   onClick={handleLoadMore}
                   disabled={isFetchingNextPage}
-                  className="px-6 py-2.5 bg-white border-2 border-green-600 text-green-700 font-semibold rounded-full hover:bg-green-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  className="px-6 py-3 md:py-2.5 bg-white border-2 border-green-600 text-green-700 font-semibold rounded-full hover:bg-green-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
                   {isFetchingNextPage ? (
                     <>
