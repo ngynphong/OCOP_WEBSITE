@@ -81,9 +81,9 @@ export const ProductCard = memo(function ProductCard({
         <div className="w-full aspect-4/5 md:aspect-5/6 relative bg-stone-100 rounded-xl overflow-hidden shadow-sm group-hover:shadow-2xl group-hover:-translate-y-1 transition-all duration-500 border border-stone-100">
           <Image
             src={image || '/images/fresh-green-produce.jpg'}
-            alt={name}
+            alt={name?.trim() || 'Sản phẩm OCOP'}
             fill
-            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+            sizes="(max-width: 768px) calc(50vw - 32px), (max-width: 1200px) 33vw, 25vw"
             className={cn(
               'object-cover transition-transform duration-700 group-hover:scale-105',
               inStock === false && 'grayscale opacity-70',

@@ -1,67 +1,21 @@
-'use client';
+import type { Banner } from '../api/homeApi';
 
-import { useBannersQuery } from '../hooks/useHome';
-import { motion, AnimatePresence } from 'framer-motion';
-import Image from 'next/image';
-import { memo } from 'react';
+interface AmbientBackgroundProps {
+  banners?: Banner[];
+}
 
-export const AmbientBackground = memo(function AmbientBackground() {
-  const { data: bannerResp } = useBannersQuery();
-  const activeBanner = bannerResp?.data?.[0];
+export function AmbientBackground({ banners = [] }: AmbientBackgroundProps) {
+  const activeBanner = banners.find((banner) => banner.isAmbientBackground);
+  const backgroundImage = activeBanner?.imageUrl || '/images/background.jpg';
 
   return (
-    <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden select-none">
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={
-            activeBanner?.isAmbientBackground ? activeBanner?.imageUrl || 'default' : 'default_bg'
-          }
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.5 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1.5, ease: 'easeInOut' }}
-          className="absolute inset-0"
-        >
-          {/* Main Ambient Image - Lower blur to make it recognizable */}
-          <div className="absolute inset-0 origin-center">
-            {/* Desktop Background */}
-            <div className="hidden md:block absolute inset-0">
-              <Image
-                src={
-                  activeBanner?.isAmbientBackground
-                    ? activeBanner?.imageUrl || '/images/background.jpg'
-                    : '/images/background.jpg'
-                }
-                alt="Event Background"
-                fill
-                priority
-                className="object-cover blur-[3px] saturate-[1.5] brightness-90"
-                sizes="(max-width: 768px) 100vw, 100vw"
-              />
-            </div>
-            {/* Mobile Background */}
-            <div className="block md:hidden absolute inset-0">
-              <Image
-                src={
-                  activeBanner?.isAmbientBackground
-                    ? activeBanner?.imageMobileUrl ||
-                      activeBanner?.imageUrl ||
-                      '/images/background.jpg'
-                    : '/images/background.jpg'
-                }
-                alt="Event Background Mobile"
-                fill
-                priority
-                className="object-cover blur-[3px] saturate-[1.5] brightness-90"
-                sizes="(max-width: 768px) 100vw, 100vw"
-              />
-            </div>
-          </div>
-
-          {/* Darker overlay to ensure text readability */}
-          <div className="absolute inset-0 bg-stone-900/5" />
-        </motion.div>
-      </AnimatePresence>
+    <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden select-none bg-emerald-950 md:bg-transparent">
+      <div
+        className="hidden md:block absolute inset-0 bg-cover bg-center blur-[3px] saturate-[1.5] brightness-90 opacity-50"
+        style={{ backgroundImage: `url(${backgroundImage})` }}
+        aria-hidden="true"
+      />
+      <div className="absolute inset-0 bg-stone-900/5" />
     </div>
   );
-});
+}

@@ -18,15 +18,26 @@ import Image from 'next/image';
 import { useAppSelector } from '@/store/hooks';
 import { useAuthProfile } from '@/features/auth/hooks/useAuthProfile';
 import { useLogout } from '@/features/auth/hooks/useLogout';
-import { motion, AnimatePresence } from 'framer-motion';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
-import { useCart } from '@/features/cart/hooks/useCart';
-import { NotificationBell } from '@/features/notifications/components/NotificationBell';
-import { SearchBox } from '@/features/products/components/SearchBox';
+import { useCartCount } from '@/features/cart/hooks/useCart';
 import dynamic from 'next/dynamic';
 
 import { cn } from '@/lib/utils';
 const QRScannerModal = dynamic(() => import('@/components/ui/QRScannerModal'), { ssr: false });
+const SearchBox = dynamic(
+  () => import('@/features/products/components/SearchBox').then((mod) => mod.SearchBox),
+  {
+    ssr: false,
+    loading: () => <div className="h-10 w-full rounded-full bg-white/10 animate-pulse" />,
+  },
+);
+const NotificationBell = dynamic(
+  () =>
+    import('@/features/notifications/components/NotificationBell').then(
+      (mod) => mod.NotificationBell,
+    ),
+  { ssr: false },
+);
 
 export function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -43,8 +54,8 @@ export function Header() {
   const { logout, isLoggingOut, handleClientLogout } = useLogout();
   const role = useAppSelector((state) => state.auth.roles);
 
-  const { data: cartResp } = useCart();
-  const cartCount = cartResp?.data?.totalItems ?? 0;
+  const { data: cartCountResp } = useCartCount();
+  const cartCount = cartCountResp?.data?.count ?? 0;
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -93,7 +104,7 @@ export function Header() {
             : 'bg-emerald-700',
         )}
       >
-        <div className="w-full max-w-7xl px-4 lg:px-6 py-3 md:py-4 flex justify-between items-center">
+        <div className="w-full max-w-7xl px-4 lg:px-6 py-1 md:py-2 flex justify-between items-center">
           <div className="flex justify-start items-center gap-4 lg:gap-8 lg:pl-4 relative z-[103]">
             <button
               suppressHydrationWarning
@@ -106,16 +117,16 @@ export function Header() {
             <Link
               href="/"
               suppressHydrationWarning
-              className="inline-flex flex-row justify-start items-center"
+              className="inline-flex shrink-0 flex-row justify-start items-center"
             >
               <Image
-                src="/images/logo.png"
+                src="/images/logo-header.webp"
                 alt="OCOP IES CONNECT"
-                width={140}
-                height={140}
-                className="scale-155"
+                width={300}
+                height={150}
+                className="h-[72px] w-auto md:h-[84px] lg:h-[96px] scale-125"
                 priority
-                sizes="(max-width: 768px) 100vw, 100vw"
+                sizes="(max-width: 768px) 142px, (max-width: 1024px) 165px, 189px"
               />
             </Link>
             <nav className="hidden lg:flex justify-start items-center gap-6">
@@ -242,52 +253,44 @@ export function Header() {
                   />
                 </button>
 
-                <AnimatePresence>
-                  {isUserDropdownOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      transition={{ duration: 0.2 }}
-                      className="absolute right-0 mt-1 w-48 bg-white rounded-xl shadow-xl border border-stone-100 overflow-hidden z-50"
-                    >
-                      <div className="p-2">
-                        <Link
-                          href={
-                            role.includes('ADMIN') || role.includes('SUPER_ADMIN')
-                              ? '/admin'
-                              : '/dashboard/ho-so'
-                          }
-                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-stone-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-lg transition-colors group"
-                        >
-                          <User className="w-4 h-4 text-stone-400 group-hover:text-emerald-600" />
-                          <span>Hồ sơ cá nhân</span>
-                        </Link>
-                        <Link
-                          href={
-                            role.includes('ADMIN') || role.includes('SUPER_ADMIN')
-                              ? '/admin'
-                              : '/dashboard'
-                          }
-                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-stone-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-lg transition-colors group"
-                        >
-                          <LayoutDashboard className="w-4 h-4 text-stone-400 group-hover:text-emerald-600" />
-                          <span>Tổng quan</span>
-                        </Link>
-                        <button
-                          onClick={handleLogoutClick}
-                          disabled={isLoggingOut}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors group disabled:opacity-50 cursor-pointer"
-                        >
-                          <LogOut
-                            className={`w-4 h-4 text-red-400 group-hover:text-red-600 ${isLoggingOut ? 'animate-spin' : ''}`}
-                          />
-                          <span>{isLoggingOut ? 'Đang đăng xuất...' : 'Đăng xuất'}</span>
-                        </button>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                {isUserDropdownOpen && (
+                  <div className="absolute right-0 mt-1 w-48 bg-white rounded-xl shadow-xl border border-stone-100 overflow-hidden z-50 animate-in fade-in slide-in-from-top-1 zoom-in-95 duration-150">
+                    <div className="p-2">
+                      <Link
+                        href={
+                          role.includes('ADMIN') || role.includes('SUPER_ADMIN')
+                            ? '/admin'
+                            : '/dashboard/ho-so'
+                        }
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-stone-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-lg transition-colors group"
+                      >
+                        <User className="w-4 h-4 text-stone-400 group-hover:text-emerald-600" />
+                        <span>Hồ sơ cá nhân</span>
+                      </Link>
+                      <Link
+                        href={
+                          role.includes('ADMIN') || role.includes('SUPER_ADMIN')
+                            ? '/admin'
+                            : '/dashboard'
+                        }
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-stone-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-lg transition-colors group"
+                      >
+                        <LayoutDashboard className="w-4 h-4 text-stone-400 group-hover:text-emerald-600" />
+                        <span>Tổng quan</span>
+                      </Link>
+                      <button
+                        onClick={handleLogoutClick}
+                        disabled={isLoggingOut}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors group disabled:opacity-50 cursor-pointer"
+                      >
+                        <LogOut
+                          className={`w-4 h-4 text-red-400 group-hover:text-red-600 ${isLoggingOut ? 'animate-spin' : ''}`}
+                        />
+                        <span>{isLoggingOut ? 'Đang đăng xuất...' : 'Đăng xuất'}</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <>
@@ -334,130 +337,114 @@ export function Header() {
         </div>
 
         {/* Mobile Search Bar Expansion */}
-        <AnimatePresence>
-          {isSearchOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="w-full bg-green-800 lg:hidden relative z-50"
-            >
-              <div className="py-3 px-4">
-                <SearchBox variant="header" onClose={() => setIsSearchOpen(false)} />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {isSearchOpen && (
+          <div className="w-full bg-green-800 lg:hidden relative z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className="py-3 px-4">
+              <SearchBox variant="header" onClose={() => setIsSearchOpen(false)} />
+            </div>
+          </div>
+        )}
 
         {/* Mobile Menu Expansion */}
-        <AnimatePresence>
-          {isMenuOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="w-full bg-green-800 overflow-hidden lg:hidden"
-            >
-              <nav className="flex flex-col gap-4 py-4 px-6">
-                <Link
-                  suppressHydrationWarning
-                  href="/"
-                  onClick={() => setIsMenuOpen(false)}
-                  className={
-                    pathname === '/'
-                      ? 'text-white text-base font-semibold'
-                      : 'text-emerald-100 text-base font-semibold'
-                  }
-                >
-                  Trang Chủ
-                </Link>
-                <Link
-                  href="/san-pham"
-                  onClick={() => setIsMenuOpen(false)}
-                  className={
-                    isHydrated && pathname === '/san-pham'
-                      ? 'text-white text-base font-semibold'
-                      : 'text-emerald-100 text-base font-semibold'
-                  }
-                >
-                  Sản Phẩm
-                </Link>
-                <Link
-                  href="/vung-mien"
-                  onClick={() => setIsMenuOpen(false)}
-                  className={
-                    isHydrated && pathname.startsWith('/vung-mien')
-                      ? 'text-white text-base font-semibold'
-                      : 'text-emerald-100 text-base font-semibold'
-                  }
-                >
-                  Vùng Miền
-                </Link>
-                <Link
-                  href="/cau-chuyen"
-                  onClick={() => setIsMenuOpen(false)}
-                  className={
-                    isHydrated && pathname.startsWith('/cau-chuyen')
-                      ? 'text-white text-base font-semibold'
-                      : 'text-emerald-100 text-base font-semibold'
-                  }
-                >
-                  Câu Chuyện
-                </Link>
-                <Link
-                  href="/bai-viet"
-                  onClick={() => setIsMenuOpen(false)}
-                  className={
-                    isHydrated && pathname.startsWith('/bai-viet')
-                      ? 'text-white text-base font-semibold'
-                      : 'text-emerald-100 text-base font-semibold'
-                  }
-                >
-                  Bài Viết
-                </Link>
+        {isMenuOpen && (
+          <div className="w-full bg-green-800 overflow-hidden lg:hidden animate-in fade-in slide-in-from-top-2 duration-200">
+            <nav className="flex flex-col gap-4 py-4 px-6">
+              <Link
+                suppressHydrationWarning
+                href="/"
+                onClick={() => setIsMenuOpen(false)}
+                className={
+                  pathname === '/'
+                    ? 'text-white text-base font-semibold'
+                    : 'text-emerald-100 text-base font-semibold'
+                }
+              >
+                Trang Chủ
+              </Link>
+              <Link
+                href="/san-pham"
+                onClick={() => setIsMenuOpen(false)}
+                className={
+                  isHydrated && pathname === '/san-pham'
+                    ? 'text-white text-base font-semibold'
+                    : 'text-emerald-100 text-base font-semibold'
+                }
+              >
+                Sản Phẩm
+              </Link>
+              <Link
+                href="/vung-mien"
+                onClick={() => setIsMenuOpen(false)}
+                className={
+                  isHydrated && pathname.startsWith('/vung-mien')
+                    ? 'text-white text-base font-semibold'
+                    : 'text-emerald-100 text-base font-semibold'
+                }
+              >
+                Vùng Miền
+              </Link>
+              <Link
+                href="/cau-chuyen"
+                onClick={() => setIsMenuOpen(false)}
+                className={
+                  isHydrated && pathname.startsWith('/cau-chuyen')
+                    ? 'text-white text-base font-semibold'
+                    : 'text-emerald-100 text-base font-semibold'
+                }
+              >
+                Câu Chuyện
+              </Link>
+              <Link
+                href="/bai-viet"
+                onClick={() => setIsMenuOpen(false)}
+                className={
+                  isHydrated && pathname.startsWith('/bai-viet')
+                    ? 'text-white text-base font-semibold'
+                    : 'text-emerald-100 text-base font-semibold'
+                }
+              >
+                Bài Viết
+              </Link>
 
-                <div className="h-px bg-emerald-700/50 my-2" />
+              <div className="h-px bg-emerald-700/50 my-2" />
 
-                {isHydrated && isAuthenticated ? (
-                  <>
-                    <Link
-                      href={
-                        role.includes('ADMIN') || role.includes('SUPER_ADMIN')
-                          ? '/admin'
-                          : '/dashboard'
-                      }
-                      onClick={() => setIsMenuOpen(false)}
-                      className="text-emerald-100 hover:text-white text-base font-semibold flex items-center gap-3 py-1"
-                    >
-                      <User className="w-5 h-5" />
-                      Hồ sơ cá nhân
-                    </Link>
-                    <button
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                        handleLogoutClick();
-                      }}
-                      className="text-red-300 hover:text-red-200 text-base font-semibold flex items-center gap-3 py-1 text-left"
-                    >
-                      <LogOut className="w-5 h-5" />
-                      Đăng xuất
-                    </button>
-                  </>
-                ) : (
+              {isHydrated && isAuthenticated ? (
+                <>
                   <Link
-                    href="/dang-nhap"
+                    href={
+                      role.includes('ADMIN') || role.includes('SUPER_ADMIN')
+                        ? '/admin'
+                        : '/dashboard'
+                    }
                     onClick={() => setIsMenuOpen(false)}
-                    className="text-emerald-900 bg-white hover:bg-stone-100 rounded-xl py-3 px-4 text-center text-base font-bold shadow-sm mt-2"
+                    className="text-emerald-100 hover:text-white text-base font-semibold flex items-center gap-3 py-1"
                   >
-                    Đăng nhập / Đăng ký
+                    <User className="w-5 h-5" />
+                    Hồ sơ cá nhân
                   </Link>
-                )}
-              </nav>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                  <button
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      handleLogoutClick();
+                    }}
+                    className="text-red-300 hover:text-red-200 text-base font-semibold flex items-center gap-3 py-1 text-left"
+                  >
+                    <LogOut className="w-5 h-5" />
+                    Đăng xuất
+                  </button>
+                </>
+              ) : (
+                <Link
+                  href="/dang-nhap"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="text-emerald-900 bg-white hover:bg-stone-100 rounded-xl py-3 px-4 text-center text-base font-bold shadow-sm mt-2"
+                >
+                  Đăng nhập / Đăng ký
+                </Link>
+              )}
+            </nav>
+          </div>
+        )}
       </div>
 
       {isLogoutModalOpen && (

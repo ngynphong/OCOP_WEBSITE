@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   ...defaultMetadata,
   icons: {
-    icon: '/images/logo.png',
+    icon: '/images/icon.png',
   },
 };
 
