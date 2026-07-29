@@ -66,8 +66,8 @@ export const HeroSlider = memo(function HeroSlider({ banners }: HeroSliderProps)
 
       <div className="absolute inset-0 z-10 flex flex-col justify-between w-full h-full py-6 md:py-12 lg:py-16 px-5 md:px-12 lg:px-24">
         <div className="flex justify-end items-start w-full gap-8 pointer-events-none">
-          <div className="flex flex-col items-start md:items-end md:text-right max-w-[18rem] md:max-w-sm mt-2 md:mt-8 bg-black/35 md:backdrop-blur-md border border-white/10 p-4 md:p-6 rounded-xl md:rounded-2xl pointer-events-auto">
-            <p className="text-white/90 text-sm md:text-base font-sans tracking-wide leading-relaxed mb-4 md:mb-6 drop-shadow-md">
+          <div className="flex flex-col items-start md:items-end md:text-right max-w-[18rem] md:max-w-sm mt-2 md:mt-8 bg-black/55 backdrop-blur-md border border-white/20 shadow-2xl shadow-black/30 p-4 md:p-6 rounded-xl md:rounded-2xl pointer-events-auto">
+            <p className="text-white text-sm md:text-base font-sans tracking-wide leading-relaxed mb-4 md:mb-6 drop-shadow-[0_2px_8px_rgba(0,0,0,0.75)]">
               Kết nối nông dân và người tiêu dùng qua nền tảng thương mại điện tử chuyên biệt. Truy
               xuất nguồn gốc dễ dàng qua mã QR.
             </p>

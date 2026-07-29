@@ -9,19 +9,21 @@ import {
   PublicProductListParams,
 } from '@/features/products/types/productTypes';
 
-export const usePublicCategoriesQuery = () => {
+export const usePublicCategoriesQuery = (options?: Record<string, unknown>) => {
   return useQuery({
     queryKey: ['public-categories'],
     queryFn: () => publicProductApi.getCategories(),
     staleTime: 10 * 60 * 1000,
+    ...options,
   });
 };
 
-export const usePublicProvincesQuery = () => {
+export const usePublicProvincesQuery = (options?: Record<string, unknown>) => {
   return useQuery({
     queryKey: ['public-provinces'],
     queryFn: () => publicProductApi.getProvinces(),
     staleTime: 30 * 60 * 1000,
+    ...options,
   });
 };
 
@@ -138,11 +140,12 @@ export const usePublicCategoryDetailQuery = (slug: string | null | undefined) =>
   });
 };
 
-export const usePublicBrandsQuery = () => {
+export const usePublicBrandsQuery = (options?: Record<string, unknown>) => {
   return useQuery({
     queryKey: ['public-brands'],
     queryFn: () => brandApi.getBrands(),
     staleTime: 30 * 60 * 1000,
+    ...options,
   });
 };
 

@@ -36,14 +36,14 @@ export default async function Home() {
   const banners = await getHomeBanners();
 
   return (
-    <div className="min-h-screen flex flex-col font-sans bg-transparent relative">
+    <div className="min-h-screen flex flex-col font-sans bg-[#f6faf4] md:bg-transparent relative">
       {/* Background Layer */}
       <AmbientBackground banners={banners} />
 
       {/* Content Layer */}
       <Header />
 
-      <main className="relative z-10 flex-1 flex flex-col justify-start items-center w-full overflow-x-hidden">
+      <main className="relative z-10 flex-1 flex flex-col justify-start items-center w-full overflow-x-hidden bg-[#f6faf4] md:bg-transparent">
         <div className="w-full pb-12 flex flex-col justify-start items-center">
           <div className="w-full">
             <HeroSection banners={banners} />

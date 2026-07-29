@@ -104,11 +104,11 @@ export function Header() {
             : 'bg-emerald-700',
         )}
       >
-        <div className="w-full max-w-7xl px-4 lg:px-6 py-1 md:py-2 flex justify-between items-center">
-          <div className="flex justify-start items-center gap-4 lg:gap-8 lg:pl-4 relative z-[103]">
+        <div className="w-full max-w-7xl px-4 lg:px-6 py-2 md:py-2 grid grid-cols-[48px_minmax(0,1fr)_auto] lg:flex lg:justify-between items-center">
+          <div className="flex justify-start items-center lg:gap-8 lg:pl-4 relative z-[103]">
             <button
               suppressHydrationWarning
-              className="lg:hidden text-white p-3 -ml-2 cursor-pointer"
+              className="lg:hidden h-12 w-12 text-white flex items-center justify-center cursor-pointer hover:bg-white/10 rounded-full transition-colors"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               aria-label={isMenuOpen ? 'Đóng menu' : 'Mở menu'}
             >
@@ -117,16 +117,16 @@ export function Header() {
             <Link
               href="/"
               suppressHydrationWarning
-              className="inline-flex shrink-0 flex-row justify-start items-center"
+              className="hidden lg:inline-flex shrink-0 flex-row justify-start items-center"
             >
               <Image
-                src="/images/logo-header.webp"
+                src="/images/logo.png"
                 alt="OCOP IES CONNECT"
-                width={300}
-                height={150}
-                className="h-[72px] w-auto md:h-[84px] lg:h-[96px] scale-125"
+                width={360}
+                height={183}
+                className="h-[88px] w-auto scale-135"
                 priority
-                sizes="(max-width: 768px) 142px, (max-width: 1024px) 165px, 189px"
+                sizes="174px"
               />
             </Link>
             <nav className="hidden lg:flex justify-start items-center gap-6">
@@ -211,13 +211,28 @@ export function Header() {
               </Link>
             </nav>
           </div>
+          <Link
+            href="/"
+            suppressHydrationWarning
+            className="lg:hidden justify-self-center flex w-[116px] max-w-full items-center"
+          >
+            <Image
+              src="/images/logo-header.webp"
+              alt="OCOP IES CONNECT"
+              width={360}
+              height={183}
+              className="h-auto w-full"
+              priority
+              sizes="116px"
+            />
+          </Link>
           <div className="hidden lg:flex flex-1 max-w-[512px] px-8 flex-col justify-start items-start">
             <SearchBox variant="header" />
           </div>
-          <div className="px-2 flex justify-start items-center gap-1 md:gap-2.5 relative z-[103]">
+          <div className="justify-self-end flex justify-end items-center gap-0 md:gap-2.5 relative z-[103]">
             <button
               suppressHydrationWarning
-              className="lg:hidden text-white p-3 -mr-2 hover:bg-white/10 rounded-full transition-colors cursor-pointer"
+              className="lg:hidden h-11 w-11 text-white flex items-center justify-center hover:bg-white/10 rounded-full transition-colors cursor-pointer"
               onClick={() => setIsSearchOpen(!isSearchOpen)}
               aria-label="Mở tìm kiếm"
             >
@@ -297,7 +312,7 @@ export function Header() {
                 <Link
                   href="/dang-nhap"
                   suppressHydrationWarning
-                  className="md:hidden h-12 w-12 flex justify-center items-center text-white hover:bg-white/10 rounded-full transition-colors cursor-pointer group"
+                  className="md:hidden h-11 w-11 flex justify-center items-center text-white hover:bg-white/10 rounded-full transition-colors cursor-pointer group"
                   aria-label="Đăng nhập"
                 >
                   <User className="w-5 h-5 group-hover:scale-110 transition-transform" />
@@ -315,7 +330,7 @@ export function Header() {
               onClick={() => setIsQRModalOpen(true)}
               suppressHydrationWarning
               aria-label="Quét mã QR"
-              className="h-12 w-12 md:h-10 md:w-10 flex justify-center items-center text-white hover:bg-white/10 rounded-full transition-colors cursor-pointer group"
+              className="h-11 w-11 md:h-10 md:w-10 flex justify-center items-center text-white hover:bg-white/10 rounded-full transition-colors cursor-pointer group"
             >
               <ScanLine className="w-5 h-5 group-hover:scale-110 transition-transform" />
             </button>
@@ -324,7 +339,7 @@ export function Header() {
               href="/gio-hang"
               suppressHydrationWarning
               aria-label={`Giỏ hàng${cartCount > 0 ? ` (${cartCount} sản phẩm)` : ''}`}
-              className="h-12 w-12 md:h-10 md:w-10 flex justify-center items-center text-white hover:bg-white/10 rounded-full transition-colors relative cursor-pointer group"
+              className="h-11 w-11 md:h-10 md:w-10 flex justify-center items-center text-white hover:bg-white/10 rounded-full transition-colors relative cursor-pointer group"
             >
               <ShoppingCart className="w-5 h-5 group-hover:scale-110 transition-transform" />
               {cartCount > 0 && (

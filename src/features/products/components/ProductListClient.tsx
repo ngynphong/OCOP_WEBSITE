@@ -1,29 +1,63 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { X, Search } from 'lucide-react';
-import { ProductSidebar } from '@/features/products/components/ProductSidebar';
 import { ProductPagination } from '@/features/products/components/ProductPagination';
 import { ProductCard } from '@/components/ui/ProductCard';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import { Header } from '@/components/layout/Header';
-import { Footer } from '@/components/layout/Footer';
+import { DeferredFooter } from '@/components/layout/DeferredFooter';
 import {
   usePublicProductsQuery,
   usePublicCategoriesQuery,
   usePublicProvincesQuery,
   usePublicBrandsQuery,
 } from '@/features/products/hooks/usePublicProducts';
-import { PublicProductListParams } from '@/features/products/types/productTypes';
+import {
+  ProductListResponse,
+  PublicProductListParams,
+} from '@/features/products/types/productTypes';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useWishlistStatus } from '@/features/wishlist/hooks/useWishlist';
 import { useAppSelector } from '@/store/hooks';
+import dynamic from 'next/dynamic';
 
 const MAX_PRICE_LIMIT = 5000000;
 const PAGE_SIZE = 12;
 
-export function ProductListClient() {
+const ProductSidebar = dynamic(
+  () => import('@/features/products/components/ProductSidebar').then((mod) => mod.ProductSidebar),
+  {
+    ssr: false,
+    loading: () => (
+      <aside className="w-full lg:w-72 shrink-0 space-y-4">
+        <div className="h-12 rounded-xl bg-stone-100 animate-pulse" />
+        <div className="h-32 rounded-xl bg-stone-100 animate-pulse" />
+        <div className="h-32 rounded-xl bg-stone-100 animate-pulse" />
+      </aside>
+    ),
+  },
+);
+
+const subscribeDesktop = (callback: () => void) => {
+  if (typeof window === 'undefined') return () => {};
+
+  const mediaQuery = window.matchMedia('(min-width: 1024px)');
+  mediaQuery.addEventListener('change', callback);
+
+  return () => mediaQuery.removeEventListener('change', callback);
+};
+
+const getDesktopSnapshot = () =>
+  typeof window !== 'undefined' && window.matchMedia('(min-width: 1024px)').matches;
+const getServerDesktopSnapshot = () => false;
+
+interface ProductListClientProps {
+  initialProducts?: ProductListResponse | null;
+}
+
+export function ProductListClient({ initialProducts }: ProductListClientProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRatings, setSelectedRatings] = useState<number[]>([]);
   const [selectedProvinceId, setSelectedProvinceId] = useState<number | null>(null);
@@ -35,6 +69,11 @@ export function ProductListClient() {
   const [page, setPage] = useState(0);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const isDesktop = useSyncExternalStore(
+    subscribeDesktop,
+    getDesktopSnapshot,
+    getServerDesktopSnapshot,
+  );
 
   // Debounce inputs to prevent excessive API calls
   const debouncedSearch = useDebounce(searchQuery, 500);
@@ -42,9 +81,15 @@ export function ProductListClient() {
   const debouncedMaxPrice = useDebounce(maxPrice, 500);
 
   // Fetch meta-data for displaying tags
-  const { data: categoriesData } = usePublicCategoriesQuery();
-  const { data: provincesData } = usePublicProvincesQuery();
-  const { data: brandsData } = usePublicBrandsQuery();
+  const { data: categoriesData } = usePublicCategoriesQuery({
+    enabled: selectedCategoryIds.length > 0,
+  });
+  const { data: provincesData } = usePublicProvincesQuery({
+    enabled: selectedProvinceId !== null,
+  });
+  const { data: brandsData } = usePublicBrandsQuery({
+    enabled: selectedBrandIds.length > 0,
+  });
 
   const params: PublicProductListParams = {
     pageNo: page + 1,
@@ -59,7 +104,20 @@ export function ProductListClient() {
     brandIds: selectedBrandIds.length > 0 ? selectedBrandIds : undefined,
   };
 
-  const { data, isPending, isError } = usePublicProductsQuery(params);
+  const isDefaultQuery =
+    page === 0 &&
+    sort === 'newest' &&
+    !debouncedSearch &&
+    selectedRatings.length === 0 &&
+    selectedProvinceId === null &&
+    selectedCategoryIds.length === 0 &&
+    selectedBrandIds.length === 0 &&
+    debouncedMinPrice === 0 &&
+    debouncedMaxPrice === MAX_PRICE_LIMIT;
+
+  const { data, isPending, isError } = usePublicProductsQuery(params, {
+    initialData: isDefaultQuery && initialProducts ? initialProducts : undefined,
+  });
 
   const products = data?.data?.items ?? [];
   const totalElement = data?.data?.totalElement ?? 0;
@@ -156,115 +214,115 @@ export function ProductListClient() {
 
         <div className="flex flex-col lg:flex-row gap-12">
           {/* Desktop Sidebar Filter */}
-          <div className="hidden lg:block">
-            <ProductSidebar
-              searchQuery={searchQuery}
-              setSearchQuery={(v) => {
-                setSearchQuery(v);
-                setPage(0);
-              }}
-              selectedRatings={selectedRatings}
-              setSelectedRatings={(v) => {
-                setSelectedRatings(v);
-                setPage(0);
-              }}
-              selectedProvinceId={selectedProvinceId}
-              setSelectedProvinceId={(v) => {
-                setSelectedProvinceId(v);
-                setPage(0);
-              }}
-              minPrice={minPrice}
-              maxPrice={maxPrice}
-              setMaxPrice={(v) => {
-                setMaxPrice(v);
-                setPage(0);
-              }}
-              selectedCategoryIds={selectedCategoryIds}
-              setSelectedCategoryIds={(v) => {
-                setSelectedCategoryIds(v);
-                setPage(0);
-              }}
-              selectedBrandIds={selectedBrandIds}
-              setSelectedBrandIds={(v) => {
-                setSelectedBrandIds(v);
-                setPage(0);
-              }}
-            />
-          </div>
+          {isDesktop && (
+            <div className="hidden lg:block">
+              <ProductSidebar
+                searchQuery={searchQuery}
+                setSearchQuery={(v) => {
+                  setSearchQuery(v);
+                  setPage(0);
+                }}
+                selectedRatings={selectedRatings}
+                setSelectedRatings={(v) => {
+                  setSelectedRatings(v);
+                  setPage(0);
+                }}
+                selectedProvinceId={selectedProvinceId}
+                setSelectedProvinceId={(v) => {
+                  setSelectedProvinceId(v);
+                  setPage(0);
+                }}
+                minPrice={minPrice}
+                maxPrice={maxPrice}
+                setMaxPrice={(v) => {
+                  setMaxPrice(v);
+                  setPage(0);
+                }}
+                selectedCategoryIds={selectedCategoryIds}
+                setSelectedCategoryIds={(v) => {
+                  setSelectedCategoryIds(v);
+                  setPage(0);
+                }}
+                selectedBrandIds={selectedBrandIds}
+                setSelectedBrandIds={(v) => {
+                  setSelectedBrandIds(v);
+                  setPage(0);
+                }}
+              />
+            </div>
+          )}
 
           {/* Mobile Drawer Filter */}
-          <div
-            className={`fixed inset-0 z-[200] lg:hidden transition-opacity duration-300 ${
-              isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
-            }`}
-          >
-            {/* Backdrop */}
-            <div
-              className="absolute inset-0 bg-stone-900/60 backdrop-blur-sm"
-              onClick={() => setIsSidebarOpen(false)}
-            />
-            {/* Sliding Panel */}
-            <div
-              className={`absolute top-0 right-0 h-[100dvh] w-[320px] max-w-[90vw] bg-white shadow-2xl transition-transform duration-300 ease-out transform flex flex-col ${
-                isSidebarOpen ? 'translate-x-0' : 'translate-x-full'
-              }`}
-            >
-              <div className="flex flex-col h-full overflow-hidden">
-                <div className="flex items-center justify-between p-6 border-b border-stone-100">
-                  <h2 className="text-xl font-bold text-stone-900">Bộ lọc sản phẩm</h2>
-                  <button
-                    onClick={() => setIsSidebarOpen(false)}
-                    className="p-2 hover:bg-stone-100 rounded-full transition-colors"
-                  >
-                    <X className="w-6 h-6 text-stone-500" />
-                  </button>
-                </div>
-                <div className="flex-1 overflow-y-auto p-6">
-                  <ProductSidebar
-                    searchQuery={searchQuery}
-                    setSearchQuery={(v) => {
-                      setSearchQuery(v);
-                      setPage(0);
-                    }}
-                    selectedRatings={selectedRatings}
-                    setSelectedRatings={(v) => {
-                      setSelectedRatings(v);
-                      setPage(0);
-                    }}
-                    selectedProvinceId={selectedProvinceId}
-                    setSelectedProvinceId={(v) => {
-                      setSelectedProvinceId(v);
-                      setPage(0);
-                    }}
-                    minPrice={minPrice}
-                    maxPrice={maxPrice}
-                    setMaxPrice={(v) => {
-                      setMaxPrice(v);
-                      setPage(0);
-                    }}
-                    selectedCategoryIds={selectedCategoryIds}
-                    setSelectedCategoryIds={(v) => {
-                      setSelectedCategoryIds(v);
-                      setPage(0);
-                    }}
-                    selectedBrandIds={selectedBrandIds}
-                    setSelectedBrandIds={(v) => {
-                      setSelectedBrandIds(v);
-                      setPage(0);
-                    }}
-                  />
-                </div>
-                <div className="p-6 pb-8 border-t border-stone-100 bg-stone-50 shrink-0">
-                  <button
-                    onClick={() => setIsSidebarOpen(false)}
-                    className="w-full bg-green-700 text-white py-4 rounded-xl font-bold shadow-lg hover:bg-green-800 transition-all active:scale-95"
-                  >
-                    Áp dụng bộ lọc
-                  </button>
+          {isSidebarOpen && (
+            <div className="fixed inset-0 z-[200] lg:hidden transition-opacity duration-300 opacity-100">
+              {/* Backdrop */}
+              <div
+                className="absolute inset-0 bg-stone-900/60 backdrop-blur-sm"
+                onClick={() => setIsSidebarOpen(false)}
+              />
+              {/* Sliding Panel */}
+              <div
+                className={`absolute top-0 right-0 h-[100dvh] w-[320px] max-w-[90vw] bg-white shadow-2xl transition-transform duration-300 ease-out transform flex flex-col ${
+                  isSidebarOpen ? 'translate-x-0' : 'translate-x-full'
+                }`}
+              >
+                <div className="flex flex-col h-full overflow-hidden">
+                  <div className="flex items-center justify-between p-6 border-b border-stone-100">
+                    <h2 className="text-xl font-bold text-stone-900">Bộ lọc sản phẩm</h2>
+                    <button
+                      onClick={() => setIsSidebarOpen(false)}
+                      className="p-2 hover:bg-stone-100 rounded-full transition-colors"
+                    >
+                      <X className="w-6 h-6 text-stone-500" />
+                    </button>
+                  </div>
+                  <div className="flex-1 overflow-y-auto p-6">
+                    <ProductSidebar
+                      searchQuery={searchQuery}
+                      setSearchQuery={(v) => {
+                        setSearchQuery(v);
+                        setPage(0);
+                      }}
+                      selectedRatings={selectedRatings}
+                      setSelectedRatings={(v) => {
+                        setSelectedRatings(v);
+                        setPage(0);
+                      }}
+                      selectedProvinceId={selectedProvinceId}
+                      setSelectedProvinceId={(v) => {
+                        setSelectedProvinceId(v);
+                        setPage(0);
+                      }}
+                      minPrice={minPrice}
+                      maxPrice={maxPrice}
+                      setMaxPrice={(v) => {
+                        setMaxPrice(v);
+                        setPage(0);
+                      }}
+                      selectedCategoryIds={selectedCategoryIds}
+                      setSelectedCategoryIds={(v) => {
+                        setSelectedCategoryIds(v);
+                        setPage(0);
+                      }}
+                      selectedBrandIds={selectedBrandIds}
+                      setSelectedBrandIds={(v) => {
+                        setSelectedBrandIds(v);
+                        setPage(0);
+                      }}
+                    />
+                  </div>
+                  <div className="p-6 pb-8 border-t border-stone-100 bg-stone-50 shrink-0">
+                    <button
+                      onClick={() => setIsSidebarOpen(false)}
+                      className="w-full bg-green-700 text-white py-4 rounded-xl font-bold shadow-lg hover:bg-green-800 transition-all active:scale-95"
+                    >
+                      Áp dụng bộ lọc
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Product Grid Area */}
           <div className="grow flex flex-col">
@@ -422,7 +480,7 @@ export function ProductListClient() {
           </div>
         </div>
       </main>
-      <Footer />
+      <DeferredFooter />
     </div>
   );
 }

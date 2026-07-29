@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -70,46 +69,38 @@ export function CustomSelect({
         />
       </button>
 
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
-            className="absolute z-50 mt-2 w-full min-w-[200px] bg-white/95 backdrop-blur-2xl border border-white/80 shadow-2xl shadow-emerald-900/10 rounded-2xl overflow-hidden py-1"
-          >
-            <div className="max-h-60 overflow-y-auto">
-              {options.map((opt) => (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => {
-                    onChange(opt.value);
-                    setIsOpen(false);
-                  }}
-                  className={cn(
-                    'w-full text-left px-4 py-2.5 text-sm transition-colors flex items-center justify-between cursor-pointer',
-                    value === opt.value
-                      ? 'bg-emerald-50/80 text-emerald-700 font-bold'
-                      : 'text-stone-600 hover:bg-stone-50 font-medium',
-                  )}
-                >
-                  <span className="truncate pr-2">{opt.label}</span>
-                  {value === opt.value && (
-                    <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  )}
-                </button>
-              ))}
-              {options.length === 0 && (
-                <div className="px-4 py-3 text-sm text-stone-400 text-center font-medium">
-                  Không có dữ liệu
-                </div>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {isOpen && (
+        <div className="absolute z-50 mt-2 w-full min-w-[200px] bg-white/95 backdrop-blur-2xl border border-white/80 shadow-2xl shadow-emerald-900/10 rounded-2xl overflow-hidden py-1 animate-in fade-in slide-in-from-top-1 zoom-in-95 duration-150">
+          <div className="max-h-60 overflow-y-auto">
+            {options.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => {
+                  onChange(opt.value);
+                  setIsOpen(false);
+                }}
+                className={cn(
+                  'w-full text-left px-4 py-2.5 text-sm transition-colors flex items-center justify-between cursor-pointer',
+                  value === opt.value
+                    ? 'bg-emerald-50/80 text-emerald-700 font-bold'
+                    : 'text-stone-600 hover:bg-stone-50 font-medium',
+                )}
+              >
+                <span className="truncate pr-2">{opt.label}</span>
+                {value === opt.value && (
+                  <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                )}
+              </button>
+            ))}
+            {options.length === 0 && (
+              <div className="px-4 py-3 text-sm text-stone-400 text-center font-medium">
+                Không có dữ liệu
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

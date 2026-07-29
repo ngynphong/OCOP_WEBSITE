@@ -48,12 +48,12 @@ const NewsletterSection = dynamic(() =>
 function DeferredSectionsSkeleton() {
   return (
     <div className="w-full max-w-7xl mx-auto px-6 py-8 space-y-8" aria-hidden="true">
-      <div className="h-16 rounded-xl bg-white/30 border border-white/30 animate-pulse" />
+      <div className="h-16 rounded-xl bg-emerald-100/70 border border-emerald-100 animate-pulse" />
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         {[1, 2, 3, 4].map((item) => (
           <div
             key={item}
-            className="aspect-4/5 rounded-xl bg-white/30 border border-white/30 animate-pulse"
+            className="aspect-4/5 rounded-xl bg-white border border-emerald-100 animate-pulse"
           />
         ))}
       </div>
