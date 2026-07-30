@@ -12,16 +12,16 @@ export function Footer() {
   const categories = categoriesResp?.data?.slice(0, 4) || [];
 
   return (
-    <footer className="w-full px-8 py-12 bg-emerald-50 border-t z-50 border-emerald-100 flex flex-col justify-start items-center">
+    <footer className="w-full px-8 py-12 bg-emerald-950 text-emerald-100 border-t border-emerald-900/80 z-50 relative flex flex-col justify-start items-center">
       <div className="w-full max-w-7xl flex flex-col md:flex-row justify-between items-start gap-12">
         <div className="inline-flex flex-col justify-start items-start gap-3.5 flex-1">
           <div className="flex flex-col justify-start items-start">
-            <span className="text-emerald-800 text-xl font-bold font-sans leading-7">
+            <span className="text-white text-xl font-bold font-sans leading-7">
               OCOP IES Connect
             </span>
           </div>
           <div className="flex flex-col justify-start items-start">
-            <span className="text-emerald-900 text-sm font-normal font-sans leading-6">
+            <span className="text-emerald-200/90 text-sm font-normal font-sans leading-6">
               Kết nối tinh hoa nông sản Việt từ khắp mọi miền đất nước đến bàn ăn của mỗi gia đình.
             </span>
           </div>
@@ -29,35 +29,35 @@ export function Footer() {
             <Link
               href="https://ies-edu.vn"
               aria-label="Trang chủ IES"
-              className="w-10 h-10 bg-green-900 rounded-full flex justify-center items-center hover:bg-green-800 transition-colors"
+              className="w-10 h-10 bg-emerald-900/90 border border-emerald-700/50 rounded-full flex justify-center items-center hover:bg-emerald-800 hover:border-emerald-500 transition-colors"
             >
-              <Globe className="w-4 h-4 text-white" />
+              <Globe className="w-4 h-4 text-emerald-100" />
             </Link>
             <Link
               href="https://www.facebook.com/ies.focus.lms"
               aria-label="Facebook IES"
-              className="w-10 h-10 bg-green-900 rounded-full flex justify-center items-center hover:bg-green-800 transition-colors"
+              className="w-10 h-10 bg-emerald-900/90 border border-emerald-700/50 rounded-full flex justify-center items-center hover:bg-emerald-800 hover:border-emerald-500 transition-colors"
             >
-              <FaFacebook className="w-4 h-4 text-white" />
+              <FaFacebook className="w-4 h-4 text-emerald-100" />
             </Link>
           </div>
         </div>
         <div className="w-72 pb-3.5 inline-flex flex-col justify-start items-start gap-3.5">
           <div className="pb-[0.75px] flex flex-col justify-start items-start">
-            <span className="text-emerald-900 text-sm font-bold font-sans leading-6">Sản phẩm</span>
+            <span className="text-white text-sm font-bold font-sans leading-6">Sản phẩm</span>
           </div>
           <div className="flex flex-col justify-start items-start gap-1.5 min-h-[144px]">
             {isLoading
               ? // Loading state
                 [...Array(4)].map((_, i) => (
-                  <div key={i} className="w-32 h-6 bg-emerald-100 animate-pulse rounded" />
+                  <div key={i} className="w-32 h-6 bg-emerald-900/60 animate-pulse rounded" />
                 ))
               : categories.length > 0
                 ? categories.map((category) => (
                     <Link
                       key={category.id}
                       href={`/danh-muc/${category.slug}`}
-                      className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900 transition-colors py-2 md:py-0 block w-full"
+                      className="text-emerald-200/80 text-sm font-normal font-sans leading-6 hover:text-white transition-colors py-2 md:py-0 block w-full"
                     >
                       {category.name}
                     </Link>
@@ -67,7 +67,7 @@ export function Footer() {
                     <Link
                       key={item}
                       href="#"
-                      className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900 py-2 md:py-0 block w-full"
+                      className="text-emerald-200/80 text-sm font-normal font-sans leading-6 hover:text-white transition-colors py-2 md:py-0 block w-full"
                     >
                       {item}
                     </Link>
@@ -76,36 +76,36 @@ export function Footer() {
         </div>
         <div className="w-72 pb-3.5 inline-flex flex-col justify-start items-start gap-3.5">
           <div className="pb-[0.75px] flex flex-col justify-start items-start">
-            <span className="text-emerald-900 text-sm font-bold font-sans leading-6">Hỗ trợ</span>
+            <span className="text-white text-sm font-bold font-sans leading-6">Hỗ trợ</span>
           </div>
           <div className="flex flex-col justify-start items-start gap-1.5">
             <Link
               href="/ho-tro#contact"
-              className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900 py-2 md:py-0 block w-full"
+              className="text-emerald-200/80 text-sm font-normal font-sans leading-6 hover:text-white transition-colors py-2 md:py-0 block w-full"
             >
               Liên hệ chúng tôi
             </Link>
             <Link
               href="/chinh-sach-bao-mat"
-              className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900 py-2 md:py-0 block w-full"
+              className="text-emerald-200/80 text-sm font-normal font-sans leading-6 hover:text-white transition-colors py-2 md:py-0 block w-full"
             >
               Chính sách bảo mật
             </Link>
             <Link
               href="/chinh-sach-dat-hang"
-              className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900 py-2 md:py-0 block w-full"
+              className="text-emerald-200/80 text-sm font-normal font-sans leading-6 hover:text-white transition-colors py-2 md:py-0 block w-full"
             >
               Chính sách đặt hàng
             </Link>
             <Link
               href="/dieu-khoan-dich-vu"
-              className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900 py-2 md:py-0 block w-full"
+              className="text-emerald-200/80 text-sm font-normal font-sans leading-6 hover:text-white transition-colors py-2 md:py-0 block w-full"
             >
               Điều khoản dịch vụ
             </Link>
             <Link
               href="/ho-tro"
-              className="text-emerald-600/80 text-sm font-normal font-sans leading-6 hover:text-emerald-900 py-2 md:py-0 block w-full"
+              className="text-emerald-200/80 text-sm font-normal font-sans leading-6 hover:text-white transition-colors py-2 md:py-0 block w-full"
             >
               Trung tâm trợ giúp
             </Link>
@@ -113,24 +113,24 @@ export function Footer() {
         </div>
         <div className="w-72 pb-11 inline-flex flex-col justify-start items-start gap-4">
           <div className="pb-[0.75px] flex flex-col justify-start items-start">
-            <h3 className="text-emerald-900 text-sm font-bold font-sans leading-6">Liên hệ</h3>
+            <h3 className="text-white text-sm font-bold font-sans leading-6">Liên hệ</h3>
           </div>
           <div className="flex flex-col justify-start items-start gap-2">
             <div className="flex items-center gap-3">
-              <MapPin className="w-4 h-4 text-emerald-900" />
-              <span className="text-emerald-900 text-sm font-normal font-sans leading-6">
+              <MapPin className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span className="text-emerald-200/90 text-sm font-normal font-sans leading-6">
                 Số 3 Công Trường Quốc Tế , Phường Xuân Hoà, Thành phố Hồ Chí Minh.
               </span>
             </div>
             <div className="flex items-center gap-3">
-              <Phone className="w-4 h-4 text-emerald-900" />
-              <span className="text-emerald-900 text-sm font-normal font-sans leading-6">
+              <Phone className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span className="text-emerald-200/90 text-sm font-normal font-sans leading-6">
                 +84 96 524 8115
               </span>
             </div>
             <div className="flex items-center gap-3">
-              <Mail className="w-4 h-4 text-emerald-900" />
-              <span className="text-emerald-900 text-sm font-normal font-sans leading-6">
+              <Mail className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span className="text-emerald-200/90 text-sm font-normal font-sans leading-6">
                 infovienies@gmail.com
               </span>
             </div>
@@ -155,8 +155,8 @@ export function Footer() {
         </a>
         <Script src="https://images.dmca.com/Badges/DMCABadgeHelper.min.js" strategy="lazyOnload" />
       </div>
-      <div className="w-full max-w-7xl pt-8 mt-12 border-t border-emerald-100 flex flex-col md:flex-row justify-center items-center gap-4">
-        <div className="text-center md:text-left text-emerald-600/60 text-base font-normal font-sans leading-6">
+      <div className="w-full max-w-7xl pt-8 mt-12 border-t border-emerald-900/80 flex flex-col md:flex-row justify-center items-center gap-4">
+        <div className="text-center md:text-left text-emerald-400/80 text-base font-normal font-sans leading-6">
           © {new Date().getFullYear()} OCOP IES Connect
         </div>
       </div>

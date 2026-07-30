@@ -43,7 +43,7 @@ export function NewsletterSection() {
   };
 
   return (
-    <section className="relative w-full py-24 overflow-hidden flex flex-col items-center">
+    <section className="relative w-full py-20 overflow-hidden flex flex-col items-center">
       {/* Background Decor */}
       <div className="absolute inset-0 bg-[#113B28] z-0" />
       <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none z-0">
