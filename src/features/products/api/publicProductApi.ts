@@ -35,9 +35,9 @@ export const publicProductApi = {
     });
   },
 
-  getFeaturedProducts: (limit = 12): Promise<ProductListResponse> => {
+  getFeaturedProducts: (limit = 12, categoryId?: number): Promise<ProductListResponse> => {
     return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.PRODUCTS}/featured`, {
-      params: { limit },
+      params: { limit, categoryId },
       headers: { 'X-Silent-Loading': 'true' },
     });
   },

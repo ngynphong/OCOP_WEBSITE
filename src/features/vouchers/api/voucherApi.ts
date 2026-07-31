@@ -21,6 +21,11 @@ export const voucherApi = {
       headers: { 'X-Silent-Loading': 'true' },
     }),
 
+  getPublicShopVouchers: (shopSlug: string) =>
+    publicAxiosClient.get<Voucher[]>(buildRoute(API_ENDPOINTS.PUBLIC.SHOPS, shopSlug, 'vouchers'), {
+      headers: { 'X-Silent-Loading': 'true' },
+    }),
+
   validateVoucherPublic: (params: { code: string; shopId?: number; subtotal?: number }) =>
     publicAxiosClient.get<VoucherValidateResponse>(`${API_ENDPOINTS.PUBLIC.VOUCHERS}/validate`, {
       params,

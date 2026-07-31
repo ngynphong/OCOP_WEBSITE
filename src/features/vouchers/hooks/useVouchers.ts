@@ -95,6 +95,15 @@ export const usePublicFeaturedVouchers = (limit = 4) => {
   });
 };
 
+export const usePublicShopVouchers = (shopSlug: string) => {
+  return useQuery({
+    queryKey: ['vouchers', 'shop', shopSlug],
+    queryFn: () => voucherApi.getPublicShopVouchers(shopSlug),
+    enabled: !!shopSlug,
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
 export const useValidateVoucher = (isLoggedIn = false) => {
   return useMutation({
     mutationFn: (params: { code: string; shopId?: number; subtotal?: number }) =>

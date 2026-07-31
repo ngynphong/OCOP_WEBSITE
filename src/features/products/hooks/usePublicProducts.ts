@@ -106,10 +106,10 @@ export const useRelatedProductsQuery = (slug: string | null | undefined, limit =
   });
 };
 
-export const useFeaturedProductsQuery = (limit = 12) => {
+export const useFeaturedProductsQuery = (limit = 12, categoryId?: number) => {
   return useQuery({
-    queryKey: ['public-products-featured', limit],
-    queryFn: () => publicProductApi.getFeaturedProducts(limit),
+    queryKey: ['public-products-featured', limit, categoryId],
+    queryFn: () => publicProductApi.getFeaturedProducts(limit, categoryId),
     staleTime: 5 * 60 * 1000,
   });
 };

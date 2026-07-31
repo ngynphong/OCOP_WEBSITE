@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiX, FiCheck } from 'react-icons/fi';
 import { Product } from '@/features/products/types/productTypes';
 import { useAdminCategoriesQuery } from '@/features/admin/hooks/useAdminCategories';
+import { Category } from '@/features/admin/types/adminTypes';
 
 interface AdminProductCategoryModalProps {
   isOpen: boolean;
@@ -33,12 +34,23 @@ export const AdminProductCategoryModal = ({
     setPrevIsOpen(isOpen);
   }
 
-  const categories = data?.data || [];
+  const categories: Category[] = data?.data || [];
+
+  // Recursive search to find category ID matching product's current category name
+  const findCategoryIdByName = (cats: Category[], name?: string): number | null => {
+    if (!name) return null;
+    for (const c of cats) {
+      if (c.name === name) return c.id;
+      if (c.children && c.children.length > 0) {
+        const found = findCategoryIdByName(c.children, name);
+        if (found) return found;
+      }
+    }
+    return null;
+  };
 
   // Find the category that matches the product's current category name
-  const matchedCategoryId = product
-    ? categories.find((c) => c.name === product.categoryName)?.id || null
-    : null;
+  const matchedCategoryId = product ? findCategoryIdByName(categories, product.categoryName) : null;
 
   // Use the user's selection if they clicked one, otherwise fallback to the product's original category
   const currentCategoryId = selectedCategoryId !== null ? selectedCategoryId : matchedCategoryId;
@@ -89,21 +101,52 @@ export const AdminProductCategoryModal = ({
               ) : categories.length === 0 ? (
                 <div className="text-sm text-stone-400 py-4 text-center">Chưa có danh mục nào</div>
               ) : (
-                <div className="grid grid-cols-1 gap-2 max-h-[40vh] overflow-y-auto p-2">
-                  {categories.map((cat) => (
-                    <button
-                      key={cat.id}
-                      onClick={() => setSelectedCategoryId(cat.id)}
-                      className={`flex items-center justify-between p-3 rounded-xl border text-left transition-all cursor-pointer ${
-                        currentCategoryId === cat.id
-                          ? 'border-emerald-500 bg-emerald-50 text-emerald-800 ring-1 ring-emerald-500'
-                          : 'border-stone-200 hover:border-emerald-300 hover:bg-stone-50 text-gray-700'
-                      }`}
-                    >
-                      <span className="font-semibold text-sm">{cat.name}</span>
-                      {currentCategoryId === cat.id && <FiCheck className="text-emerald-500" />}
-                    </button>
-                  ))}
+                <div className="space-y-2 max-h-[45vh] overflow-y-auto p-1 border border-stone-100 rounded-xl">
+                  {categories
+                    .filter((cat: Category) => !cat.parentId)
+                    .map((cat: Category) => (
+                      <div key={cat.id} className="space-y-1.5">
+                        {/* Parent Category */}
+                        <button
+                          onClick={() => setSelectedCategoryId(cat.id)}
+                          className={`w-full flex items-center justify-between p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                            currentCategoryId === cat.id
+                              ? 'border-emerald-500 bg-emerald-50 text-emerald-800 ring-1 ring-emerald-500 font-bold'
+                              : 'border-stone-200 hover:border-emerald-300 hover:bg-stone-50 text-stone-800 font-semibold'
+                          }`}
+                        >
+                          <span className="text-sm">{cat.name}</span>
+                          {currentCategoryId === cat.id && (
+                            <FiCheck className="text-emerald-500 shrink-0" />
+                          )}
+                        </button>
+
+                        {/* Child Categories */}
+                        {cat.children && cat.children.length > 0 && (
+                          <div className="pl-4 space-y-1.5 border-l-2 border-emerald-200 ml-3 my-1">
+                            {cat.children.map((sub: Category) => (
+                              <button
+                                key={sub.id}
+                                onClick={() => setSelectedCategoryId(sub.id)}
+                                className={`w-full flex items-center justify-between p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                                  currentCategoryId === sub.id
+                                    ? 'border-emerald-500 bg-emerald-50 text-emerald-800 ring-1 ring-emerald-500 font-bold'
+                                    : 'border-stone-200 hover:border-emerald-300 hover:bg-stone-50 text-stone-700 font-medium'
+                                }`}
+                              >
+                                <div className="flex items-center gap-2">
+                                  <span className="text-stone-400 text-xs font-mono">└─</span>
+                                  <span className="text-sm">{sub.name}</span>
+                                </div>
+                                {currentCategoryId === sub.id && (
+                                  <FiCheck className="text-emerald-500 shrink-0" />
+                                )}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
                 </div>
               )}
             </div>

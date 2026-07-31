@@ -6,6 +6,7 @@ import { ShopProfileHeader } from './ShopProfileHeader';
 import { ShopProductsTab } from './ShopProductsTab';
 import { ShopPolicyTab } from './ShopPolicyTab';
 import { ShopInfoTab } from './ShopInfoTab';
+import { ShopVouchersSection } from './ShopVouchersSection';
 import { FiAlertCircle, FiLoader } from 'react-icons/fi';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/AppButton';
@@ -80,7 +81,11 @@ export const PublicShopProfile = ({ shopSlug }: PublicShopProfileProps) => {
 
       <ShopProfileHeader shop={shop} />
 
-      <div className="container mx-auto px-4 sm:px-6 mt-8">
+      <div className="container mx-auto px-4 sm:px-6">
+        <ShopVouchersSection shopSlug={shopSlug} />
+      </div>
+
+      <div className="container mx-auto px-4 sm:px-6 mt-6">
         {/* Navigation Tabs */}
         <div className="flex items-center overflow-x-auto hide-scrollbar border-b border-stone-200">
           <button onClick={() => setActiveTab('PRODUCTS')} className={tabClasses('PRODUCTS')}>

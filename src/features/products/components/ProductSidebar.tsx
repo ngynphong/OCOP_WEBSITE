@@ -22,6 +22,7 @@ interface ProductSidebarProps {
   setSelectedCategoryIds: (val: number[]) => void;
   selectedBrandIds: number[];
   setSelectedBrandIds: (val: number[]) => void;
+  hideCategoryFilter?: boolean;
 }
 
 const RATING_STARS = [3, 4, 5];
@@ -42,6 +43,7 @@ export function ProductSidebar({
   setSelectedCategoryIds,
   selectedBrandIds,
   setSelectedBrandIds,
+  hideCategoryFilter = false,
 }: Omit<ProductSidebarProps, 'setMinPrice'>) {
   const { data: categoriesData, isPending: isLoadingCategories } = usePublicCategoriesQuery();
   const { data: provincesData, isPending: isLoadingProvinces } = usePublicProvincesQuery();
@@ -100,74 +102,76 @@ export function ProductSidebar({
       </section>
 
       {/* Categories */}
-      <section>
-        <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-[0.2em] mb-6">
-          Danh mục sản phẩm
-        </h3>
-        {isLoadingCategories ? (
-          <div className="flex items-center gap-2 text-stone-400 text-sm italic">
-            <Loader2 className="w-4 h-4 animate-spin" />
-            Đang tải...
-          </div>
-        ) : (
-          <div className="space-y-4">
-            <div className="flex flex-wrap gap-2">
-              {categories
-                .filter((cat) => !cat.parentId)
-                .map((cat) => {
-                  const isSelected = selectedCategoryIds.includes(cat.id);
-                  return (
-                    <button
-                      key={cat.id}
-                      onClick={() => toggleCategory(cat.id)}
-                      suppressHydrationWarning
-                      className={`px-4 py-2 rounded-full border text-xs font-semibold cursor-pointer transition-all shadow-sm ${
-                        isSelected
-                          ? 'bg-green-700 border-green-700 text-white'
-                          : 'bg-white border-stone-200 text-stone-600 hover:border-green-700 hover:text-green-700'
-                      }`}
-                    >
-                      {cat.name}
-                    </button>
-                  );
-                })}
+      {!hideCategoryFilter && (
+        <section>
+          <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-[0.2em] mb-6">
+            Danh mục sản phẩm
+          </h3>
+          {isLoadingCategories ? (
+            <div className="flex items-center gap-2 text-stone-400 text-sm italic">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Đang tải...
             </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="flex flex-wrap gap-2">
+                {categories
+                  .filter((cat) => !cat.parentId)
+                  .map((cat) => {
+                    const isSelected = selectedCategoryIds.includes(cat.id);
+                    return (
+                      <button
+                        key={cat.id}
+                        onClick={() => toggleCategory(cat.id)}
+                        suppressHydrationWarning
+                        className={`px-4 py-2 rounded-full border text-xs font-semibold cursor-pointer transition-all shadow-sm ${
+                          isSelected
+                            ? 'bg-green-700 border-green-700 text-white'
+                            : 'bg-white border-stone-200 text-stone-600 hover:border-green-700 hover:text-green-700'
+                        }`}
+                      >
+                        {cat.name}
+                      </button>
+                    );
+                  })}
+              </div>
 
-            {/* Sub-categories tree if parent selected */}
-            {categories
-              .filter((cat) => selectedCategoryIds.includes(cat.id) && cat.children?.length > 0)
-              .map((parent) => (
-                <div
-                  key={`sub-${parent.id}`}
-                  className="pl-4 border-l-2 border-stone-200 space-y-2"
-                >
-                  <p className="text-[10px] font-bold text-stone-400 uppercase tracking-wider mb-2">
-                    {parent.name}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {parent.children.map((child) => {
-                      const isChildSelected = selectedCategoryIds.includes(child.id);
-                      return (
-                        <button
-                          key={child.id}
-                          onClick={() => toggleCategory(child.id)}
-                          suppressHydrationWarning
-                          className={`px-3 py-1.5 rounded-full border text-[11px] font-medium cursor-pointer transition-all ${
-                            isChildSelected
-                              ? 'bg-green-100 border-green-600 text-green-700'
-                              : 'bg-stone-50 border-stone-200 text-stone-500 hover:border-green-600'
-                          }`}
-                        >
-                          {child.name}
-                        </button>
-                      );
-                    })}
+              {/* Sub-categories tree if parent selected */}
+              {categories
+                .filter((cat) => selectedCategoryIds.includes(cat.id) && cat.children?.length > 0)
+                .map((parent) => (
+                  <div
+                    key={`sub-${parent.id}`}
+                    className="pl-4 border-l-2 border-stone-200 space-y-2"
+                  >
+                    <p className="text-[10px] font-bold text-stone-400 uppercase tracking-wider mb-2">
+                      {parent.name}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {parent.children.map((child) => {
+                        const isChildSelected = selectedCategoryIds.includes(child.id);
+                        return (
+                          <button
+                            key={child.id}
+                            onClick={() => toggleCategory(child.id)}
+                            suppressHydrationWarning
+                            className={`px-3 py-1.5 rounded-full border text-[11px] font-medium cursor-pointer transition-all ${
+                              isChildSelected
+                                ? 'bg-green-100 border-green-600 text-green-700'
+                                : 'bg-stone-50 border-stone-200 text-stone-500 hover:border-green-600'
+                            }`}
+                          >
+                            {child.name}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              ))}
-          </div>
-        )}
-      </section>
+                ))}
+            </div>
+          )}
+        </section>
+      )}
 
       {/* Brands */}
       <section>
