@@ -15,9 +15,9 @@ const VoucherHomeSection = dynamic(() =>
 const FlashSaleSection = dynamic(() =>
   import('@/features/home/components/FlashSaleSection').then((mod) => mod.FlashSaleSection),
 );
-const FeatureHighlights = dynamic(() =>
-  import('@/features/home/components/FeatureHighlights').then((mod) => mod.FeatureHighlights),
-);
+// const FeatureHighlights = dynamic(() =>
+//   import('@/features/home/components/FeatureHighlights').then((mod) => mod.FeatureHighlights),
+// );
 const CategoryList = dynamic(() =>
   import('@/features/home/components/CategoryList').then((mod) => mod.CategoryList),
 );
@@ -101,7 +101,7 @@ export function HomeDeferredSections() {
             <BestSellersSection />
             <VoucherHomeSection />
             <FlashSaleSection />
-            <FeatureHighlights />
+            {/* <FeatureHighlights /> */}
             <CategoryList />
             <SubBanners />
             <OcopMallSection />

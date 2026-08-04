@@ -22,6 +22,9 @@ const axiosClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  paramsSerializer: {
+    indexes: null,
+  },
 });
 
 const publicAxiosClient = axios.create({
@@ -29,6 +32,9 @@ const publicAxiosClient = axios.create({
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
+  },
+  paramsSerializer: {
+    indexes: null,
   },
 });
 
