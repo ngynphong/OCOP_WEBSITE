@@ -47,8 +47,10 @@ export const useSellerProductMutations = () => {
       toast.success('Tạo sản phẩm thành công');
       invalidateProducts();
     },
-    onError: (error: ApiError) => {
-      toast.error(error?.response?.data?.message || 'Có lỗi khi tạo sản phẩm');
+    onError: (error: Error) => {
+      if (error?.name !== 'AppError') {
+        toast.error(error?.message || 'Có lỗi xảy ra');
+      }
     },
   });
 
@@ -83,8 +85,10 @@ export const useSellerProductMutations = () => {
       invalidateProducts();
       invalidateProduct(id);
     },
-    onError: (error: ApiError) => {
-      toast.error(error?.response?.data?.message || 'Có lỗi khi gửi duyệt');
+    onError: (error: Error) => {
+      if (error?.name !== 'AppError') {
+        toast.error(error?.message || 'Có lỗi khi gửi duyệt');
+      }
     },
   });
 

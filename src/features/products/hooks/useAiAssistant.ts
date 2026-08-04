@@ -5,17 +5,17 @@ export const useAiAssistantMutations = () => {
   const generateStoryMutation = useMutation({
     mutationFn: (data: GenerateStoryRequest) => aiApi.generateStory(data),
     onSuccess: () => {
-      toast.success('AI đã tạo câu chuyện thành công!');
+      toast.success('Hệ thống đã tạo câu chuyện thành công!');
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Lỗi khi tạo câu chuyện với AI');
+      toast.error(error.message || 'Lỗi khi tạo câu chuyện với hệ thống');
     },
   });
 
   const chatMutation = useMutation({
     mutationFn: (data: AiChatRequest) => aiApi.chat(data),
     onError: (error: Error) => {
-      toast.error(error.message || 'Lỗi khi chat với AI');
+      toast.error(error.message || 'Lỗi khi chat với hệ thống');
     },
   });
 

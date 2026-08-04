@@ -123,10 +123,10 @@ export const useAdminProductMutations = () => {
   const syncAllToAiMutation = useMutation({
     mutationFn: () => adminProductApi.syncAllToAi(),
     onSuccess: (data) => {
-      toast.success(data?.message || 'Đã gửi yêu cầu đồng bộ toàn bộ sản phẩm lên AI.');
+      toast.success(data?.message || 'Đã gửi yêu cầu đồng bộ toàn bộ sản phẩm.');
     },
     onError: (error: ApiError) => {
-      toast.error(error?.response?.data?.message || 'Có lỗi khi đồng bộ lên AI');
+      toast.error(error?.response?.data?.message || 'Có lỗi khi đồng bộ.');
     },
   });
 

@@ -276,7 +276,7 @@ export function InfoTab({ productId }: InfoTabProps) {
             className="text-xs flex items-center gap-1 font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg hover:bg-emerald-100 transition disabled:opacity-50"
           >
             <FiEdit3 size={12} />
-            {isGeneratingStory ? 'Đang viết...' : 'Nhờ AI viết câu chuyện'}
+            {isGeneratingStory ? 'Đang viết...' : 'Nhờ hệ thống viết câu chuyện'}
           </button>
         </div>
         <textarea

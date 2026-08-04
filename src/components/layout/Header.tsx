@@ -269,40 +269,42 @@ export function Header() {
                 </button>
 
                 {isUserDropdownOpen && (
-                  <div className="absolute right-0 mt-1 w-48 bg-white rounded-xl shadow-xl border border-stone-100 overflow-hidden z-50 animate-in fade-in slide-in-from-top-1 zoom-in-95 duration-150">
-                    <div className="p-2">
-                      <Link
-                        href={
-                          role.includes('ADMIN') || role.includes('SUPER_ADMIN')
-                            ? '/admin'
-                            : '/dashboard/ho-so'
-                        }
-                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-stone-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-lg transition-colors group"
-                      >
-                        <User className="w-4 h-4 text-stone-400 group-hover:text-emerald-600" />
-                        <span>Hồ sơ cá nhân</span>
-                      </Link>
-                      <Link
-                        href={
-                          role.includes('ADMIN') || role.includes('SUPER_ADMIN')
-                            ? '/admin'
-                            : '/dashboard'
-                        }
-                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-stone-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-lg transition-colors group"
-                      >
-                        <LayoutDashboard className="w-4 h-4 text-stone-400 group-hover:text-emerald-600" />
-                        <span>Tổng quan</span>
-                      </Link>
-                      <button
-                        onClick={handleLogoutClick}
-                        disabled={isLoggingOut}
-                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors group disabled:opacity-50 cursor-pointer"
-                      >
-                        <LogOut
-                          className={`w-4 h-4 text-red-400 group-hover:text-red-600 ${isLoggingOut ? 'animate-spin' : ''}`}
-                        />
-                        <span>{isLoggingOut ? 'Đang đăng xuất...' : 'Đăng xuất'}</span>
-                      </button>
+                  <div className="absolute right-0 pt-2 w-48 z-50">
+                    <div className="bg-white rounded-xl shadow-xl border border-stone-100 overflow-hidden animate-in fade-in slide-in-from-top-1 zoom-in-95 duration-150">
+                      <div className="p-2">
+                        <Link
+                          href={
+                            role.includes('ADMIN') || role.includes('SUPER_ADMIN')
+                              ? '/admin'
+                              : '/dashboard/ho-so'
+                          }
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-stone-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-lg transition-colors group"
+                        >
+                          <User className="w-4 h-4 text-stone-400 group-hover:text-emerald-600" />
+                          <span>Hồ sơ cá nhân</span>
+                        </Link>
+                        <Link
+                          href={
+                            role.includes('ADMIN') || role.includes('SUPER_ADMIN')
+                              ? '/admin'
+                              : '/dashboard'
+                          }
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-stone-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-lg transition-colors group"
+                        >
+                          <LayoutDashboard className="w-4 h-4 text-stone-400 group-hover:text-emerald-600" />
+                          <span>Tổng quan</span>
+                        </Link>
+                        <button
+                          onClick={handleLogoutClick}
+                          disabled={isLoggingOut}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors group disabled:opacity-50 cursor-pointer"
+                        >
+                          <LogOut
+                            className={`w-4 h-4 text-red-400 group-hover:text-red-600 ${isLoggingOut ? 'animate-spin' : ''}`}
+                          />
+                          <span>{isLoggingOut ? 'Đang đăng xuất...' : 'Đăng xuất'}</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 )}

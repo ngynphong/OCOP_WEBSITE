@@ -2,7 +2,7 @@
 
 import React, { useState, Suspense } from 'react';
 import { useParams, useRouter, useSearchParams, usePathname } from 'next/navigation';
-import { FiArrowLeft, FiSend } from 'react-icons/fi';
+import { FiArrowLeft, FiSend, FiAlertCircle } from 'react-icons/fi';
 import {
   useSellerProductDetailQuery,
   useSellerProductMutations,
@@ -44,6 +44,7 @@ function SellerProductDetailContent() {
 
   const activeTab = (searchParams.get('tab') as TabId) || 'info';
   const [suggestedJournal, setSuggestedJournal] = useState<SuggestedJournalPayload | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const setActiveTab = (tab: TabId) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -56,6 +57,29 @@ function SellerProductDetailContent() {
     useSellerProductMutations();
 
   const product = data?.data;
+
+  const handleSubmitProduct = async () => {
+    if (!product) return;
+    setSubmitError(null);
+    try {
+      await submitProduct(product.id);
+    } catch (error: unknown) {
+      const msg = (error as Error)?.message || 'Có lỗi khi gửi duyệt';
+      const lowerMsg = msg.toLowerCase();
+
+      setSubmitError(msg);
+
+      if (lowerMsg.includes('biến thể')) {
+        setActiveTab('variants');
+      } else if (lowerMsg.includes('ảnh')) {
+        setActiveTab('images');
+      } else if (lowerMsg.includes('nhật ký')) {
+        setActiveTab('journals');
+      } else if (lowerMsg.includes('mô tả') || lowerMsg.includes('thông tin')) {
+        setActiveTab('info');
+      }
+    }
+  };
 
   if (isPending) {
     return (
@@ -100,7 +124,7 @@ function SellerProductDetailContent() {
         <div className="flex items-center gap-2 shrink-0">
           {canSubmit && (
             <Button
-              onClick={() => submitProduct(product.id)}
+              onClick={handleSubmitProduct}
               isLoading={isSubmitting}
               leftIcon={<FiSend size={14} />}
               variant="outline"
@@ -131,12 +155,28 @@ function SellerProductDetailContent() {
         </div>
       )}
 
+      {/* Submit error warning */}
+      {submitError && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="p-0.5 text-amber-600 shrink-0">
+            <FiAlertCircle size={18} />
+          </div>
+          <div>
+            <p className="text-sm font-bold text-amber-800">Cần bổ sung thông tin</p>
+            <p className="text-sm text-amber-700 mt-0.5">{submitError}</p>
+          </div>
+        </div>
+      )}
+
       {/* Tabs */}
       <div className="flex gap-1 p-1 bg-stone-100/50 rounded-xl w-fit border border-stone-100">
         {TABS.map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
+            onClick={() => {
+              setActiveTab(tab.id);
+              setSubmitError(null);
+            }}
             className={`px-5 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all cursor-pointer ${
               activeTab === tab.id
                 ? 'bg-white text-emerald-600 shadow-sm border border-stone-100'
