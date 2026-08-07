@@ -12,12 +12,20 @@ interface CreateLotModalProps {
   onClose: () => void;
   onSuccess: () => void;
   onSubmit: (data: ICreateLotReq) => Promise<void>;
+  fixedProduct?: Product;
 }
 
-export const CreateLotModal = ({ isOpen, onClose, onSuccess, onSubmit }: CreateLotModalProps) => {
+export const CreateLotModal = ({
+  isOpen,
+  onClose,
+  onSuccess,
+  onSubmit,
+  fixedProduct,
+}: CreateLotModalProps) => {
   const [formData, setFormData] = useState<ICreateLotReq>({
     lotCode: '',
-    productId: 0,
+    productId: fixedProduct?.id || 0,
+    variantId: 0,
     productionDate: '',
     expiryDate: '',
     quantity: 1,
@@ -31,9 +39,14 @@ export const CreateLotModal = ({ isOpen, onClose, onSuccess, onSubmit }: CreateL
 
   useEffect(() => {
     if (isOpen) {
-      fetchProducts();
+      if (fixedProduct) {
+        setProducts([fixedProduct]);
+        setFormData((prev) => ({ ...prev, productId: fixedProduct.id, variantId: 0 }));
+      } else {
+        fetchProducts();
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, fixedProduct]);
 
   const fetchProducts = async () => {
     try {
@@ -54,14 +67,26 @@ export const CreateLotModal = ({ isOpen, onClose, onSuccess, onSubmit }: CreateL
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === 'productId' || name === 'quantity' ? Number(value) : value,
+      [name]:
+        name === 'productId' || name === 'variantId' || name === 'quantity' ? Number(value) : value,
     }));
+
+    // Nếu đổi sản phẩm, reset variant
+    if (name === 'productId') {
+      setFormData((prev) => ({ ...prev, variantId: 0 }));
+    }
   };
+
+  const selectedProduct = products.find((p) => p.id === formData.productId);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.productId) {
       toast.error('Vui lòng chọn sản phẩm');
+      return;
+    }
+    if (!formData.variantId) {
+      toast.error('Vui lòng chọn quy cách (biến thể)');
       return;
     }
     if (!formData.lotCode) {
@@ -120,13 +145,36 @@ export const CreateLotModal = ({ isOpen, onClose, onSuccess, onSubmit }: CreateL
               required
               value={formData.productId}
               onChange={handleChange}
-              disabled={isLoading}
-              className="w-full px-4 py-2.5 bg-stone-50 border text-gray-700 border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none appearance-none"
+              disabled={isLoading || !!fixedProduct}
+              className="w-full px-4 py-2.5 bg-stone-50 border text-gray-700 border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none appearance-none disabled:opacity-75 disabled:bg-stone-100"
             >
               <option value={0}>Chọn sản phẩm...</option>
               {products.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Variant Selection */}
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-stone-700 flex items-center gap-2">
+              <FiPackage className="text-emerald-600" />
+              Quy cách (Biến thể) <span className="text-red-500">*</span>
+            </label>
+            <select
+              name="variantId"
+              required
+              value={formData.variantId}
+              onChange={handleChange}
+              disabled={isLoading || !formData.productId}
+              className="w-full px-4 py-2.5 bg-stone-50 border text-gray-700 border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none appearance-none disabled:opacity-50"
+            >
+              <option value={0}>Chọn quy cách...</option>
+              {selectedProduct?.variants?.map((v) => (
+                <option key={v.id} value={v.id}>
+                  {v.variantName} (Kho: {v.stockQty})
                 </option>
               ))}
             </select>
@@ -148,14 +196,9 @@ export const CreateLotModal = ({ isOpen, onClose, onSuccess, onSubmit }: CreateL
                 onChange={handleChange}
                 className="flex-1 px-4 py-2.5 bg-stone-50 border text-gray-700 border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
               />
-              <input
-                type="text"
-                name="unit"
-                placeholder="Đơn vị (kg, hộp...)"
-                value={formData.unit}
-                onChange={handleChange}
-                className="w-24 px-4 py-2.5 bg-stone-50 border text-gray-700 border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
-              />
+              <div className="w-24 px-4 py-2.5 bg-stone-100 border text-gray-500 border-stone-200 rounded-xl flex items-center justify-center">
+                {selectedProduct?.unit || 'đơn vị'}
+              </div>
             </div>
           </div>
 
@@ -187,6 +230,22 @@ export const CreateLotModal = ({ isOpen, onClose, onSuccess, onSubmit }: CreateL
               className="w-full px-4 py-2.5 bg-stone-50 border text-gray-700 border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
             />
           </div>
+        </div>
+
+        {/* Input Materials */}
+        <div className="space-y-2">
+          <label className="text-sm font-semibold text-stone-700 flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            Nguyên liệu đầu vào
+          </label>
+          <textarea
+            name="inputMaterials"
+            rows={3}
+            placeholder="Khai báo nguyên liệu đầu vào. Ví dụ: Thịt heo (từ trang trại A), Gia vị (từ cty B)..."
+            value={formData.inputMaterials || ''}
+            onChange={handleChange}
+            className="w-full px-4 py-2.5 bg-stone-50 border text-gray-700 border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none resize-none"
+          />
         </div>
 
         {/* Notes */}

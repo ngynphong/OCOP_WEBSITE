@@ -12,7 +12,9 @@ import {
   IStorageStepReq,
   ITransportStepReq,
   IDistributionStepReq,
+  ITestingStepReq,
   TLotStatus,
+  ILotQrCode,
 } from '../types/supplyChainTypes';
 
 export const supplyChainApi = {
@@ -25,6 +27,10 @@ export const supplyChainApi = {
   },
 
   getSellerLots: async (params: ILotListReq) => {
+    const springParams = {
+      ...params,
+      page: params.page ? params.page - 1 : 0,
+    };
     return axiosClient.get<
       unknown,
       {
@@ -36,7 +42,7 @@ export const supplyChainApi = {
           content: ISupplyChainLot[];
         };
       }
-    >(API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS, { params });
+    >(API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS, { params: springParams });
   },
 
   getSellerLotDetail: async (id: number) => {
@@ -47,9 +53,15 @@ export const supplyChainApi = {
 
   updateLotStatus: async (id: number, status: TLotStatus) => {
     return axiosClient.patch<unknown, { data: ISupplyChainLot }>(
-      buildRoute(API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS, id, 'status'),
+      `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/${id}/status`,
       null,
       { params: { status } },
+    );
+  },
+
+  submitLotForVerification: async (id: number) => {
+    return axiosClient.post<unknown, { data: ISupplyChainLot }>(
+      `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/${id}/submit-verification`,
     );
   },
 
@@ -89,10 +101,38 @@ export const supplyChainApi = {
     );
   },
 
+  recordTestingLog: async (id: number, data: ITestingStepReq) => {
+    return axiosClient.post<unknown, { data: ISupplyChainLot }>(
+      `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/${id}/steps/testing`,
+      data,
+    );
+  },
+
+  // QR Serialization
+  generateItemQrCodes: async (lotId: number, count: number) => {
+    return axiosClient.post<unknown, { data: string }>(
+      `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/${lotId}/qr-codes/generate`,
+      null,
+      { params: { count } },
+    );
+  },
+
+  getLotQrCodes: async (lotId: number) => {
+    return axiosClient.get<unknown, { data: ILotQrCode[] }>(
+      `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/${lotId}/qr-codes`,
+    );
+  },
+
   // Public APIs
   getLotByCode: async (lotCode: string) => {
     return publicAxiosClient.get<unknown, { data: ISupplyChainLot }>(
       `${API_ENDPOINTS.PUBLIC.SUPPLY_CHAIN_LOTS}/by-code/${lotCode}`,
+    );
+  },
+
+  getLotByQrToken: async (qrToken: string) => {
+    return publicAxiosClient.get<unknown, { data: ISupplyChainLot }>(
+      `/api/public/traceability/${qrToken}`,
     );
   },
 

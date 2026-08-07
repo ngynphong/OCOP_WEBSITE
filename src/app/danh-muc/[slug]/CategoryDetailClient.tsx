@@ -88,10 +88,7 @@ export function CategoryDetailClient() {
   const allCategories = categoriesData?.data || [];
 
   // 3. Fetch Featured Products for this Category
-  const { data: featuredData, isPending: isFeaturedLoading } = useFeaturedProductsQuery(
-    6,
-    category?.id,
-  );
+  const { data: featuredData } = useFeaturedProductsQuery(6, category?.id);
   const featuredProducts = featuredData?.data?.items ?? [];
 
   // 4. Fetch Meta Data for Provinces

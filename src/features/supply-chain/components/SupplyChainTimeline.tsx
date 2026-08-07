@@ -6,6 +6,7 @@ import {
   IStorageStepReq,
   ISupplyChainStep,
   ITransportStepReq,
+  ITestingStepReq,
   TStepType,
 } from '../types/supplyChainTypes';
 import {
@@ -18,6 +19,9 @@ import {
   FiMapPin,
   FiUser,
   FiInfo,
+  FiShield,
+  FiFileText,
+  FiCalendar,
 } from 'react-icons/fi';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
@@ -26,6 +30,7 @@ import { cn } from '@/lib/utils';
 interface SupplyChainTimelineProps {
   steps: ISupplyChainStep[];
   className?: string;
+  compact?: boolean;
 }
 
 const stepConfig: Record<TStepType, { label: string; icon: React.ElementType; color: string }> = {
@@ -34,50 +39,47 @@ const stepConfig: Record<TStepType, { label: string; icon: React.ElementType; co
   STORAGE: { label: 'Lưu kho', icon: FiClock, color: 'text-purple-600 bg-purple-100' },
   TRANSPORT: { label: 'Vận chuyển', icon: FiTruck, color: 'text-amber-600 bg-amber-100' },
   DISTRIBUTION: {
-    label: 'Phân phối',
     icon: FiShoppingBag,
-    color: 'text-emerald-600 bg-emerald-100',
+    color: 'bg-emerald-100 text-emerald-600',
+    label: 'Xuất bán / Phân phối',
   },
+  TESTING: { label: 'Kiểm định', icon: FiShield, color: 'text-indigo-600 bg-indigo-100' },
 };
 
-export const SupplyChainTimeline = ({ steps, className }: SupplyChainTimelineProps) => {
+export const SupplyChainTimeline = ({ steps, className, compact }: SupplyChainTimelineProps) => {
   // Sort steps by recordedAt locally to be safe, though API should handle it
   const sortedSteps = [...steps].sort(
     (a, b) => new Date(a.recordedAt).getTime() - new Date(b.recordedAt).getTime(),
   );
 
   return (
-    <div className={cn('relative flex flex-col gap-8', className)}>
-      {/* Decorative vertical line */}
-      <div className="absolute left-[19px] top-4 bottom-4 w-0.5 bg-stone-100 hidden sm:block" />
-
+    <div
+      className={cn(
+        'relative space-y-8 before:absolute before:inset-0 before:ml-5 before:-translate-x-px before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-stone-200 before:to-transparent',
+        className,
+      )}
+    >
       {sortedSteps.map((step, index) => {
-        const config = stepConfig[step.stepType] || stepConfig.PRODUCTION;
-        const Icon = config.icon;
+        const config = stepConfig[step.stepType] || {
+          label: step.stepType,
+          icon: FiInfo,
+          color: 'bg-stone-100 text-stone-600',
+        };
 
         return (
-          <div key={index} className="flex flex-col sm:flex-row gap-4 sm:gap-8 relative group">
-            {/* Step Icon & Indicator */}
-            <div className="flex items-center sm:items-start shrink-0 z-10">
+          <div key={index} className="relative flex items-start group gap-4">
+            {/* Timeline dot */}
+            <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white shrink-0 shadow-sm z-10 bg-white">
               <div
-                className={cn(
-                  'w-10 h-10 rounded-xl flex items-center justify-center shadow-md transition-transform group-hover:scale-110 duration-300',
-                  config.color,
-                )}
+                className={`flex items-center justify-center w-full h-full rounded-full ${config.color}`}
               >
-                <Icon size={20} />
-              </div>
-              <div className="ml-4 sm:hidden">
-                <h4 className="font-bold text-stone-900">{config.label}</h4>
-                <p className="text-xs text-stone-400">
-                  {format(new Date(step.recordedAt), 'HH:mm - dd/MM/yyyy', { locale: vi })}
-                </p>
+                <config.icon size={16} />
               </div>
             </div>
 
             {/* Content Card */}
             <div className="flex-1 bg-white rounded-xl p-5 border border-stone-100 shadow-xl shadow-stone-200/40 group-hover:border-emerald-200/50 transition-colors duration-300">
-              <div className="hidden sm:flex justify-between items-center mb-4">
+              <div className="flex justify-between items-start mb-4">
                 <h4 className="font-bold text-stone-900 group-hover:text-emerald-700 transition-colors">
                   {config.label}
                 </h4>
@@ -87,7 +89,12 @@ export const SupplyChainTimeline = ({ steps, className }: SupplyChainTimelinePro
               </div>
 
               {/* Step Specific Data Rendering */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div
+                className={cn(
+                  'grid gap-4 text-sm',
+                  compact ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2',
+                )}
+              >
                 {renderStepDetails(step)}
               </div>
 
@@ -150,6 +157,20 @@ const renderStepDetails = (step: ISupplyChainStep) => {
           <DetailItem icon={FiMapPin} label="Địa điểm" value={data.farmLocation} />
           <DetailItem icon={FiInfo} label="Phương pháp" value={data.productionMethod} />
           <DetailItem icon={FiUser} label="Người phụ trách" value={data.responsiblePerson} />
+          {data.plantingDate && (
+            <DetailItem
+              icon={FiCalendar}
+              label="Bắt đầu (Sản xuất/Gieo trồng)"
+              value={format(new Date(data.plantingDate), 'dd/MM/yyyy')}
+            />
+          )}
+          {data.harvestDate && (
+            <DetailItem
+              icon={FiCalendar}
+              label="Hoàn thành (Thu hoạch)"
+              value={format(new Date(data.harvestDate), 'dd/MM/yyyy')}
+            />
+          )}
         </>
       );
     }
@@ -165,6 +186,26 @@ const renderStepDetails = (step: ISupplyChainStep) => {
             label="Sản lượng"
             value={`${data.outputQuantity} ${data.unit}`}
           />
+          {data.qualityDocumentUrl && (
+            <div className="flex items-start gap-3 col-span-1 md:col-span-2">
+              <div className="w-8 h-8 rounded-xl bg-stone-50 flex items-center justify-center text-stone-400 shrink-0">
+                <FiFileText size={14} />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[10px] uppercase tracking-wider font-bold text-stone-400">
+                  Tài liệu kiểm định
+                </span>
+                <a
+                  href={data.qualityDocumentUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-semibold text-emerald-600 leading-tight hover:underline"
+                >
+                  Xem tài liệu đính kèm
+                </a>
+              </div>
+            </div>
+          )}
         </>
       );
     }
@@ -206,6 +247,55 @@ const renderStepDetails = (step: ISupplyChainStep) => {
             label="Số lượng"
             value={`${data.distributedQuantity} ${data.unit}`}
           />
+        </>
+      );
+    }
+    case 'TESTING': {
+      const data = step.data as ITestingStepReq;
+      return (
+        <>
+          <div className="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <DetailItem icon={FiShield} label="Loại kiểm định" value={data.testType} />
+            <DetailItem icon={FiCheckCircle} label="Kết quả" value={data.result} />
+            <DetailItem icon={FiMapPin} label="Cơ sở kiểm định" value={data.testingCenterName} />
+            <DetailItem icon={FiInfo} label="Tiêu chuẩn" value={data.standardsMet} />
+            <DetailItem
+              icon={FiClock}
+              label="Ngày cấp"
+              value={data.issuedDate ? format(new Date(data.issuedDate), 'dd/MM/yyyy') : null}
+            />
+            <DetailItem icon={FiInfo} label="Mã chứng nhận" value={data.certificateNumber} />
+          </div>
+          {(() => {
+            let docs: string[] = [];
+            if (data.documentUrls) {
+              try {
+                docs = JSON.parse(data.documentUrls);
+              } catch {}
+            }
+            if (docs.length === 0) return null;
+            return (
+              <div className="col-span-1 md:col-span-2 mt-2 p-3 bg-stone-50 rounded-lg border border-stone-100">
+                <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest block mb-2">
+                  Tài liệu đính kèm
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {docs.map((docUrl, idx) => (
+                    <a
+                      key={idx}
+                      href={docUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-3 py-1.5 bg-white border border-stone-200 rounded text-sm text-indigo-700 hover:bg-indigo-50 transition-colors"
+                    >
+                      <FiFileText size={14} />
+                      <span className="font-medium truncate max-w-[150px]">Tài liệu {idx + 1}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
         </>
       );
     }

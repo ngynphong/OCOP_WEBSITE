@@ -13,18 +13,20 @@ import { InfoTab } from '@/features/products/components/ProductDetail/InfoTab';
 import { VariantsTab } from '@/features/products/components/ProductDetail/VariantsTab';
 import { ImagesTab } from '@/features/products/components/ProductDetail/ImagesTab';
 import { JournalsTab } from '@/features/products/components/ProductDetail/JournalsTab';
+import { LotsTab } from './components/LotsTab';
 import {
   AiChatWidget,
   SuggestedJournalPayload,
 } from '@/features/products/components/ProductDetail/AiChatWidget';
 
-type TabId = 'info' | 'variants' | 'images' | 'journals';
+type TabId = 'info' | 'variants' | 'images' | 'lots' | 'journals';
 
 const TABS: { id: TabId; label: string }[] = [
   { id: 'info', label: 'Thông tin' },
   { id: 'variants', label: 'Biến thể & Giá' },
   { id: 'images', label: 'Ảnh sản phẩm' },
-  { id: 'journals', label: 'Nhật ký nguồn gốc' },
+  { id: 'lots', label: 'Lô hàng' },
+  { id: 'journals', label: 'Nhật ký chung' },
 ];
 
 export default function SellerProductDetailPage() {
@@ -193,6 +195,7 @@ function SellerProductDetailContent() {
         {activeTab === 'info' && <InfoTab productId={productId} />}
         {activeTab === 'variants' && <VariantsTab productId={productId} />}
         {activeTab === 'images' && <ImagesTab productId={productId} />}
+        {activeTab === 'lots' && product && <LotsTab product={product} />}
         {activeTab === 'journals' && (
           <JournalsTab
             productId={productId}

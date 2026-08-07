@@ -104,6 +104,13 @@ const MENU_GROUPS: MenuGroup[] = [
         ],
       },
       {
+        label: 'Lô hàng',
+        icon: FiBox,
+        href: '/admin/supply-chain/lots',
+        id: 'supply-chain-lots',
+        permissions: [PERMISSIONS.PRODUCT_VIEW, PERMISSIONS.PRODUCT_APPROVE],
+      },
+      {
         label: 'Thương hiệu',
         icon: FiTag,
         href: '/admin/brands',

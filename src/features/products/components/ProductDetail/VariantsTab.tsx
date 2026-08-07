@@ -366,12 +366,18 @@ export function VariantsTab({ productId }: VariantsTabProps) {
           <div className="grid grid-cols-3 gap-4">
             <div>
               <label className="text-xs font-bold text-stone-500 block mb-1">Tồn kho</label>
-              <input
-                type="number"
-                {...register('stockQty', { valueAsNumber: true })}
-                placeholder="100"
-                className="w-full border border-stone-200 text-gray-700 rounded-xl px-3 py-2 text-sm outline-none focus:border-emerald-400 transition"
-              />
+              <div className="relative group">
+                <input
+                  type="number"
+                  {...register('stockQty', { valueAsNumber: true })}
+                  placeholder="0"
+                  disabled
+                  className="w-full border border-stone-200 text-gray-500 bg-stone-100 rounded-xl px-3 py-2 text-sm outline-none cursor-not-allowed"
+                />
+                <div className="absolute hidden group-hover:block bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-gray-800 text-white text-xs rounded shadow-lg z-10 text-center">
+                  Tồn kho được tính tự động từ các lô hàng hợp lệ.
+                </div>
+              </div>
             </div>
             <div>
               <label className="text-xs font-bold text-stone-500 block mb-1">Khối lượng (g)</label>

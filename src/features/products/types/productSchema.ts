@@ -15,6 +15,10 @@ export const createProductSchema = z.object({
   productionArea: z.string().max(255).optional(),
   unit: z.string().max(50).optional(),
   weightGram: z.number().int().positive().optional(),
+  ingredients: z.string().optional(),
+  packagingMaterial: z.string().optional(),
+  appliedStandards: z.string().optional(),
+  complianceDocuments: z.string().optional(),
 });
 
 export type CreateProductFormData = z.infer<typeof createProductSchema>;
@@ -49,6 +53,7 @@ export type CreateVariantFormData = z.infer<typeof createVariantSchema>;
 // ─── Tạo bước nhật ký ────────────────────────────────────────────────────────
 
 const journalStepTypes = [
+  'RAW_MATERIAL',
   'PLANTING',
   'CARE',
   'HARVESTING',

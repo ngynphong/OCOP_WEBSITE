@@ -122,7 +122,10 @@ const LotListPage = () => {
                   <LotStatusBadge status={lot.status} />
                 </div>
                 <h3 className="font-bold text-stone-900 group-hover:text-emerald-700 transition-colors">
-                  {lot.productName}
+                  {lot.productName}{' '}
+                  {lot.variantName && (
+                    <span className="text-stone-500 font-normal">- {lot.variantName}</span>
+                  )}
                 </h3>
                 <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm text-stone-500">
                   <span className="flex items-center gap-1.5">

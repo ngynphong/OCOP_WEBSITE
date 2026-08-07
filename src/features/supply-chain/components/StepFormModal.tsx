@@ -8,6 +8,7 @@ import {
   IStorageStepReq,
   ITransportStepReq,
   IDistributionStepReq,
+  ITestingStepReq,
   TStorageType,
 } from '../types/supplyChainTypes';
 
@@ -16,7 +17,8 @@ export type TStepFormData = Partial<
     IProcessingStepReq &
     IStorageStepReq &
     ITransportStepReq &
-    IDistributionStepReq
+    IDistributionStepReq &
+    ITestingStepReq
 >;
 import {
   FiMapPin,
@@ -30,6 +32,9 @@ import {
   FiCheckCircle,
   FiPackage,
   FiShoppingBag,
+  FiShield,
+  FiUploadCloud,
+  FiFileText,
 } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 
@@ -107,6 +112,17 @@ export const StepFormModal = ({ isOpen, onClose, stepType, onSubmit }: StepFormM
           unit: 'kg',
           salesChannel: '',
         };
+      case 'TESTING':
+        return {
+          ...common,
+          testType: '',
+          result: '',
+          testingCenterName: '',
+          standardsMet: '',
+          certificateNumber: '',
+          issuedDate: '',
+          documentUrls: '[]',
+        };
     }
   };
 
@@ -183,7 +199,7 @@ export const StepFormModal = ({ isOpen, onClose, stepType, onSubmit }: StepFormM
               onChange={handleChange}
             />
             <InputField
-              label="Ngày gieo trồng/Bắt đầu"
+              label="Ngày bắt đầu (Sản xuất/Gieo trồng)"
               name="plantingDate"
               icon={FiCalendar}
               type="date"
@@ -191,7 +207,7 @@ export const StepFormModal = ({ isOpen, onClose, stepType, onSubmit }: StepFormM
               onChange={handleChange}
             />
             <InputField
-              label="Ngày thu hoạch"
+              label="Ngày hoàn thành (Thu hoạch/Hoàn thiện)"
               name="harvestDate"
               icon={FiCalendar}
               type="date"
@@ -224,6 +240,8 @@ export const StepFormModal = ({ isOpen, onClose, stepType, onSubmit }: StepFormM
               name="processType"
               icon={FiInfo}
               required
+              multiline
+              rows={3}
               value={formData.processType}
               onChange={handleChange}
             />
@@ -253,13 +271,31 @@ export const StepFormModal = ({ isOpen, onClose, stepType, onSubmit }: StepFormM
               value={formData.unit}
               onChange={handleChange}
             />
-            <div className="md:col-span-2">
+            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-stone-500 uppercase flex items-center gap-1.5">
+                  <FiCheckCircle size={12} className="text-emerald-500" />
+                  Kết quả kiểm định chất lượng <span className="text-red-500">*</span>
+                </label>
+                <select
+                  name="qualityCheckResult"
+                  value={formData.qualityCheckResult || ''}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-2 bg-stone-50 text-gray-700 border border-stone-200 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm font-semibold"
+                >
+                  <option value="" disabled>
+                    Chọn kết quả...
+                  </option>
+                  <option value="Đạt">Đạt</option>
+                  <option value="Không đạt">Không đạt</option>
+                </select>
+              </div>
               <InputField
-                label="Kết quả kiểm định chất lượng"
-                name="qualityCheckResult"
-                icon={FiCheckCircle}
-                required
-                value={formData.qualityCheckResult}
+                label="Link tài liệu kiểm định"
+                name="qualityDocumentUrl"
+                icon={FiFileText}
+                value={formData.qualityDocumentUrl}
                 onChange={handleChange}
               />
             </div>
@@ -444,6 +480,87 @@ export const StepFormModal = ({ isOpen, onClose, stepType, onSubmit }: StepFormM
             />
           </div>
         );
+      case 'TESTING':
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <InputField
+              label="Loại kiểm định"
+              name="testType"
+              icon={FiShield}
+              required
+              value={formData.testType}
+              onChange={handleChange}
+            />
+            <InputField
+              label="Kết quả"
+              name="result"
+              icon={FiCheckCircle}
+              required
+              value={formData.result}
+              onChange={handleChange}
+            />
+            <InputField
+              label="Tên cơ sở kiểm định"
+              name="testingCenterName"
+              icon={FiMapPin}
+              required
+              value={formData.testingCenterName}
+              onChange={handleChange}
+            />
+            <InputField
+              label="Tiêu chuẩn đạt được"
+              name="standardsMet"
+              icon={FiInfo}
+              value={formData.standardsMet}
+              onChange={handleChange}
+            />
+            <InputField
+              label="Mã chứng nhận"
+              name="certificateNumber"
+              icon={FiInfo}
+              value={formData.certificateNumber}
+              onChange={handleChange}
+            />
+            <InputField
+              label="Ngày cấp"
+              name="issuedDate"
+              icon={FiCalendar}
+              type="date"
+              value={formData.issuedDate}
+              onChange={handleChange}
+            />
+            <div className="md:col-span-2 space-y-1 mt-2 p-4 bg-indigo-50/50 border border-indigo-100 rounded-xl border-dashed">
+              <label className="text-xs font-bold text-indigo-700 uppercase flex items-center gap-1.5 mb-2">
+                <FiUploadCloud size={14} />
+                Tải lên minh chứng (Hình ảnh/PDF)
+              </label>
+              <input
+                type="file"
+                multiple
+                accept="image/*,.pdf"
+                className="block w-full text-sm text-stone-500
+                  file:mr-4 file:py-2 file:px-4
+                  file:rounded-full file:border-0
+                  file:text-sm file:font-semibold
+                  file:bg-indigo-50 file:text-indigo-700
+                  hover:file:bg-indigo-100 transition-all cursor-pointer"
+                onChange={(e) => {
+                  // Giả lập UI upload file
+                  if (e.target.files && e.target.files.length > 0) {
+                    toast.success(`Đã chọn ${e.target.files.length} tệp minh chứng.`);
+                    const mockUrls = Array.from(e.target.files).map(
+                      (f) => `/uploads/mock-${f.name}`,
+                    );
+                    setFormData((prev) => ({ ...prev, documentUrls: JSON.stringify(mockUrls) }));
+                  }
+                }}
+              />
+              <p className="text-xs text-indigo-400 mt-2 italic">
+                * Hỗ trợ tải lên ảnh giấy chứng nhận, biên bản kiểm nghiệm, hoặc mã PDF.
+              </p>
+            </div>
+          </div>
+        );
     }
   };
 
@@ -458,7 +575,9 @@ export const StepFormModal = ({ isOpen, onClose, stepType, onSubmit }: StepFormM
       case 'TRANSPORT':
         return 'Ghi nhận Vận chuyển';
       case 'DISTRIBUTION':
-        return 'Ghi nhận Phân phối';
+        return 'Ghi nhận Xuất bán / Phân phối';
+      case 'TESTING':
+        return 'Ghi nhận Kiểm định';
       default:
         return 'Ghi nhận bước mới';
     }
@@ -504,6 +623,8 @@ interface InputFieldProps {
   onChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => void;
+  multiline?: boolean;
+  rows?: number;
 }
 
 const InputField = ({
@@ -514,19 +635,32 @@ const InputField = ({
   type = 'text',
   value,
   onChange,
+  multiline,
+  rows = 3,
 }: InputFieldProps) => (
   <div className="space-y-1">
     <label className="text-xs font-bold text-stone-500 uppercase flex items-center gap-1.5">
       <Icon size={12} className="text-emerald-500" />
       {label} {required && <span className="text-red-500">*</span>}
     </label>
-    <input
-      type={type}
-      name={name}
-      required={required}
-      value={value || ''}
-      onChange={onChange}
-      className="w-full px-4 py-2 bg-stone-50 text-gray-700 border border-stone-200 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm font-semibold"
-    />
+    {multiline ? (
+      <textarea
+        name={name}
+        required={required}
+        value={value || ''}
+        onChange={onChange}
+        rows={rows}
+        className="w-full px-4 py-2 bg-stone-50 text-gray-700 border border-stone-200 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm font-semibold resize-y"
+      />
+    ) : (
+      <input
+        type={type}
+        name={name}
+        required={required}
+        value={value || ''}
+        onChange={onChange}
+        className="w-full px-4 py-2 bg-stone-50 text-gray-700 border border-stone-200 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm font-semibold"
+      />
+    )}
   </div>
 );

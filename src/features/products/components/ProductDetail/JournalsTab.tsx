@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   useSellerJournalsQuery,
@@ -51,6 +51,7 @@ export function JournalsTab({
   const existingSteps = new Set(journals.map((j) => j.stepType));
   const missingGroups: string[] = [];
   const hasSource =
+    existingSteps.has('RAW_MATERIAL') ||
     existingSteps.has('PLANTING') ||
     existingSteps.has('CARE') ||
     existingSteps.has('HARVESTING') ||
@@ -66,11 +67,14 @@ export function JournalsTab({
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
   } = useForm<CreateJournalFormData>({
     resolver: zodResolver(createJournalSchema),
     defaultValues: { stepOrder: (journals.length ?? 0) + 1 },
   });
+
+  const currentStepType = useWatch({ control, name: 'stepType' });
 
   const formRef = React.useRef<HTMLFormElement>(null);
 
@@ -124,6 +128,11 @@ export function JournalsTab({
   };
 
   const onSubmit = async (formData: CreateJournalFormData) => {
+    if (selectedFiles.length === 0) {
+      toast.error('Vui lòng tải lên ít nhất một ảnh minh chứng');
+      return;
+    }
+
     // Auto-assign step order based on current list length
     const { ...submitData } = formData;
     await createJournal({
@@ -267,7 +276,13 @@ export function JournalsTab({
             </label>
             <input
               {...register('title')}
-              placeholder="Gieo trồng & Canh tác"
+              placeholder={
+                currentStepType === 'RAW_MATERIAL'
+                  ? 'Ví dụ: Nhập thịt gà tươi...'
+                  : currentStepType === 'PROCESSING'
+                    ? 'Ví dụ: Chế biến, sấy khô...'
+                    : 'Ví dụ: Gieo trồng & Canh tác...'
+              }
               className="w-full border border-stone-200 text-gray-700 rounded-xl px-3 py-2 text-sm outline-none focus:border-emerald-400 transition"
             />
             {errors.title && <p className="text-xs text-red-500 mt-1">{errors.title.message}</p>}
@@ -300,7 +315,9 @@ export function JournalsTab({
           </div>
 
           <div>
-            <label className="text-xs font-bold text-stone-500 block mb-2">Ảnh hoạt động</label>
+            <label className="text-xs font-bold text-stone-500 block mb-2">
+              Ảnh hoạt động <span className="text-red-500">*</span>
+            </label>
             <div className="flex flex-wrap gap-3">
               {previewUrls.map((url, index) => (
                 <div

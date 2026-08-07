@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import Image from 'next/image';
-import { FiCheck, FiX, FiStar, FiEye, FiBookOpen, FiEdit3 } from 'react-icons/fi';
+import { FiCheck, FiX, FiStar, FiEye, FiEyeOff, FiBookOpen, FiEdit3 } from 'react-icons/fi';
 import { RiStarFill } from 'react-icons/ri';
 import { CiShop } from 'react-icons/ci';
 import { Eye, ShoppingCart, Star } from 'lucide-react';
@@ -21,6 +21,7 @@ interface AdminProductTableRowProps {
   onToggleFeaturedStory: (product: Product) => void;
   onHide: (id: number) => void;
   onOpenCategory: (product: Product) => void;
+  onOpenDetail: (id: number) => void;
 }
 
 export const AdminProductTableRow = memo(function AdminProductTableRow({
@@ -37,6 +38,7 @@ export const AdminProductTableRow = memo(function AdminProductTableRow({
   onToggleFeaturedStory,
   onHide,
   onOpenCategory,
+  onOpenDetail,
 }: AdminProductTableRowProps) {
   return (
     <tr className="hover:bg-stone-50/50 transition-colors">
@@ -195,12 +197,19 @@ export const AdminProductTableRow = memo(function AdminProductTableRow({
               >
                 <FiBookOpen size={14} />
               </button>
+              <button
+                onClick={() => onHide(product.id)}
+                title="Ẩn sản phẩm"
+                className="p-1.5 rounded-lg bg-stone-50 text-stone-400 hover:bg-stone-100 transition cursor-pointer"
+              >
+                <FiEyeOff size={14} />
+              </button>
             </>
           )}
           <button
-            onClick={() => onHide(product.id)}
-            title="Ẩn sản phẩm"
-            className="p-1.5 rounded-lg bg-stone-50 text-stone-400 hover:bg-stone-100 transition cursor-pointer"
+            onClick={() => onOpenDetail(product.id)}
+            title="Xem chi tiết"
+            className="p-1.5 rounded-lg bg-stone-50 text-stone-600 hover:bg-stone-100 transition cursor-pointer flex items-center justify-center"
           >
             <FiEye size={14} />
           </button>

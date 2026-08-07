@@ -1,6 +1,7 @@
 import { JournalStepType } from '../types/productTypes';
 
 export const JOURNAL_STEP_LABELS: Record<JournalStepType, string> = {
+  RAW_MATERIAL: 'Nhập nguyên liệu / Thu mua',
   PLANTING: 'Gieo trồng',
   CARE: 'Chăm sóc',
   HARVESTING: 'Thu hoạch',

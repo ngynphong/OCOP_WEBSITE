@@ -16,9 +16,10 @@ import { FlashSaleManagementTab } from '@/features/flash-sale/components/FlashSa
 import { usePermission } from '@/features/auth/hooks/usePermission';
 import { PERMISSIONS } from '@/features/auth/constants/permissions';
 import { AdminProductRejectModal } from './AdminProductRejectModal';
-import { AdminProductStoryModal } from './AdminProductStoryModal';
+import { AdminProductStoryModal } from '@/features/admin/components/products/AdminProductStoryModal';
+import { AdminProductDetailModal } from '@/features/admin/components/products/AdminProductDetailModal';
+import { AdminProductCategoryModal } from '@/features/admin/components/products/AdminProductCategoryModal';
 import { AdminProductTableRow } from './AdminProductTableRow';
-import { AdminProductCategoryModal } from './AdminProductCategoryModal';
 
 // ─── Status configuration ─────────────────────────────────────────────────────
 
@@ -72,7 +73,10 @@ export const AdminProductsTable = () => {
     isSyncingToAi,
   } = useAdminProductMutations();
 
-  // Story Editing State
+  const [detailModal, setDetailModal] = useState<{ open: boolean; productId: number | null }>({
+    open: false,
+    productId: null,
+  });
   const [storyModal, setStoryModal] = useState<{ open: boolean; product: Product | null }>({
     open: false,
     product: null,
@@ -114,6 +118,10 @@ export const AdminProductsTable = () => {
     },
     [approveProduct],
   );
+
+  const handleOpenDetail = useCallback((id: number) => {
+    setDetailModal({ open: true, productId: id });
+  }, []);
 
   const handleOpenReject = useCallback((id: number) => {
     setRejectNote('');
@@ -315,6 +323,7 @@ export const AdminProductsTable = () => {
                     onToggleFeaturedStory={handleToggleFeaturedStory}
                     onHide={handleHide}
                     onOpenCategory={handleOpenCategory}
+                    onOpenDetail={handleOpenDetail}
                   />
                 ))
               )}
@@ -352,6 +361,16 @@ export const AdminProductsTable = () => {
         isSaving={isUpdatingCategory}
         onClose={() => setCategoryModal({ open: false, product: null })}
         onSave={handleSaveCategory}
+      />
+
+      {/* Product Detail Modal */}
+      <AdminProductDetailModal
+        isOpen={detailModal.open}
+        productId={detailModal.productId}
+        isApproving={isApproving}
+        onClose={() => setDetailModal({ open: false, productId: null })}
+        onApprove={handleApprove}
+        onOpenReject={handleOpenReject}
       />
     </div>
   );

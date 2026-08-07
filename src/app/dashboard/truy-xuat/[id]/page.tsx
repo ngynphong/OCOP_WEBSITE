@@ -11,12 +11,15 @@ import {
   IStorageStepReq,
   ITransportStepReq,
   IDistributionStepReq,
+  ITestingStepReq,
+  ILotQrCode,
 } from '@/features/supply-chain/types/supplyChainTypes';
 import { LotStatusBadge } from '@/features/supply-chain/components/LotStatusBadge';
 import { SupplyChainTimeline } from '@/features/supply-chain/components/SupplyChainTimeline';
 import { StepFormModal, TStepFormData } from '@/features/supply-chain/components/StepFormModal';
+import { PrintQrModal } from '@/features/supply-chain/components/PrintQrModal';
 import { Button } from '@/components/ui/AppButton';
-import { ConfirmModal } from '@/components/ui/ConfirmModal';
+import { Modal } from '@/components/ui/Modal';
 import {
   FiArrowLeft,
   FiPlus,
@@ -39,7 +42,12 @@ const LotDetailPage = () => {
   const [isStepModalOpen, setIsStepModalOpen] = useState(false);
   const [selectedStepType, setSelectedStepType] = useState<TStepType | null>(null);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [showQR, setShowQR] = useState(false);
+
+  const [qrCodes, setQrCodes] = useState<ILotQrCode[]>([]);
+  const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
+  const [generating, setGenerating] = useState(false);
 
   const fetchLotDetail = useCallback(async () => {
     try {
@@ -78,6 +86,9 @@ const LotDetailPage = () => {
         case 'DISTRIBUTION':
           await supplyChainApi.recordDistribution(lot.id, data as IDistributionStepReq);
           break;
+        case 'TESTING':
+          await supplyChainApi.recordTestingLog(lot.id, data as ITestingStepReq);
+          break;
       }
       await fetchLotDetail();
     } catch (error) {
@@ -94,7 +105,63 @@ const LotDetailPage = () => {
       setIsCancelModalOpen(false);
     } catch (error) {
       console.error('Cancel lot error', error);
-      toast.error('Không thể hủy lô hàng');
+      toast.error('Có lỗi xảy ra');
+    }
+  };
+
+  const handleSubmitVerification = async () => {
+    if (!lot) return;
+    try {
+      await supplyChainApi.submitLotForVerification(lot.id);
+      toast.success('Đã gửi yêu cầu duyệt lô hàng');
+      await fetchLotDetail();
+      setIsSubmitModalOpen(false);
+    } catch (error: unknown) {
+      console.error('Submit verification error', error);
+      const e = error as { response?: { data?: { message?: string } } };
+      toast.error(e?.response?.data?.message || 'Có lỗi xảy ra khi gửi duyệt');
+    }
+  };
+
+  const handleGenerateQRs = async () => {
+    if (!lot) return;
+    const countStr = prompt(
+      `Nhập số lượng tem muốn sinh (Tối đa ${lot.quantity}):`,
+      lot.quantity.toString(),
+    );
+    if (!countStr) return;
+    const count = parseInt(countStr);
+    if (isNaN(count) || count <= 0 || count > lot.quantity) {
+      toast.error(`Số lượng không hợp lệ. Phải từ 1 đến ${lot.quantity}`);
+      return;
+    }
+
+    try {
+      setGenerating(true);
+      await supplyChainApi.generateItemQrCodes(lot.id, count);
+      toast.success(`Đã sinh thành công ${count} tem`);
+    } catch (error: unknown) {
+      console.error('Generate QRs error', error);
+      const e = error as { response?: { data?: { message?: string } } };
+      toast.error(e?.response?.data?.message || 'Có lỗi xảy ra khi sinh tem');
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const handleOpenPrintModal = async () => {
+    if (!lot) return;
+    try {
+      const res = await supplyChainApi.getLotQrCodes(lot.id);
+      if (!res.data || res.data.length === 0) {
+        toast.error('Lô này chưa được sinh tem độc bản. Hãy sinh tem trước.');
+        return;
+      }
+      setQrCodes(res.data);
+      setIsPrintModalOpen(true);
+    } catch (error) {
+      console.error('Fetch QRs error', error);
+      toast.error('Không thể lấy danh sách tem');
     }
   };
 
@@ -114,6 +181,16 @@ const LotDetailPage = () => {
           <FiArrowLeft /> Quay lại
         </button>
         <div className="flex gap-2">
+          {lot.verificationStatus === 'DRAFT' || lot.verificationStatus === 'REJECTED' ? (
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => setIsSubmitModalOpen(true)}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+            >
+              Gửi duyệt lô hàng
+            </Button>
+          ) : null}
           <Button variant="outline" size="sm" onClick={() => setShowQR(!showQR)}>
             {showQR ? (
               'Ẩn QR Code'
@@ -179,8 +256,17 @@ const LotDetailPage = () => {
                 />
               </div>
 
+              {lot.inputMaterials && (
+                <div className="bg-stone-50 p-4 rounded-xl mt-4">
+                  <p className="text-xs font-bold text-stone-400 uppercase mb-2">
+                    Nguyên liệu đầu vào
+                  </p>
+                  <p className="text-sm text-stone-600">{lot.inputMaterials}</p>
+                </div>
+              )}
+
               {lot.notes && (
-                <div className="bg-stone-50 p-4 rounded-xl">
+                <div className="bg-stone-50 p-4 rounded-xl mt-4">
                   <p className="text-xs font-bold text-stone-400 uppercase mb-2">Ghi chú</p>
                   <p className="text-sm text-stone-600 italic">{lot.notes}</p>
                 </div>
@@ -191,21 +277,39 @@ const LotDetailPage = () => {
           {/* QR Code Section */}
           {showQR && (
             <div className="bg-white rounded-xl p-6 border border-emerald-100 shadow-xl shadow-emerald-500/10 text-center animate-in fade-in zoom-in duration-300">
-              <h3 className="font-bold text-stone-900 mb-4">Mã QR Truy xuất</h3>
+              <h3 className="font-bold text-stone-900 mb-4">Mã QR Truy xuất (Master)</h3>
               <div className="bg-white p-4 rounded-xl border-2 border-stone-50 inline-block shadow-inner">
                 <QRCode value={publicUrl} size={180} />
               </div>
               <p className="text-xs text-stone-400 mt-4 px-4 leading-relaxed">
                 Khách hàng có thể quét mã này để truy xuất nguồn gốc sản phẩm nhanh chóng.
               </p>
-              <Button
-                variant="outline"
-                size="sm"
-                className="mt-4 w-full"
-                onClick={() => window.open(publicUrl, '_blank')}
-              >
-                <FiExternalLink className="mr-2" /> Xem trang Public
-              </Button>
+              <div className="mt-4 flex flex-col gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                  onClick={() => window.open(publicUrl, '_blank')}
+                >
+                  <FiExternalLink className="mr-2" /> Xem trang Public
+                </Button>
+
+                <hr className="my-2 border-stone-100" />
+                <h4 className="font-bold text-sm text-stone-700 text-left">Quản lý Tem Độc Bản</h4>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleGenerateQRs}
+                    disabled={generating}
+                  >
+                    {generating ? 'Đang xử lý...' : 'Sinh Tem Loạt'}
+                  </Button>
+                  <Button variant="primary" size="sm" onClick={handleOpenPrintModal}>
+                    <FiPrinter className="mr-2" /> In Tem
+                  </Button>
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -215,19 +319,21 @@ const LotDetailPage = () => {
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-stone-900">Timeline chuỗi cung ứng</h3>
 
-            {lot.status !== 'CANCELLED' && lot.status !== 'DISTRIBUTED' && (
+            {lot.status !== 'CANCELLED' && (
               <div className="relative group">
                 <Button variant="primary" size="sm" className="rounded-xl">
                   <FiPlus className="mr-2" /> Ghi nhận bước tiếp theo
                 </Button>
                 <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl border border-stone-100 shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-20 py-2">
-                  <StepOption
-                    label="Sản xuất"
-                    onClick={() => {
-                      setSelectedStepType('PRODUCTION');
-                      setIsStepModalOpen(true);
-                    }}
-                  />
+                  {!lot.steps?.some((step) => step.stepType === 'PRODUCTION') && (
+                    <StepOption
+                      label="Sản xuất"
+                      onClick={() => {
+                        setSelectedStepType('PRODUCTION');
+                        setIsStepModalOpen(true);
+                      }}
+                    />
+                  )}
                   <StepOption
                     label="Chế biến"
                     onClick={() => {
@@ -250,9 +356,16 @@ const LotDetailPage = () => {
                     }}
                   />
                   <StepOption
-                    label="Phân phối"
+                    label="Xuất bán / Phân phối"
                     onClick={() => {
                       setSelectedStepType('DISTRIBUTION');
+                      setIsStepModalOpen(true);
+                    }}
+                  />
+                  <StepOption
+                    label="Kiểm định"
+                    onClick={() => {
+                      setSelectedStepType('TESTING');
                       setIsStepModalOpen(true);
                     }}
                   />
@@ -272,14 +385,65 @@ const LotDetailPage = () => {
         onSubmit={handleRecordStep}
       />
 
-      <ConfirmModal
+      <Modal
         isOpen={isCancelModalOpen}
-        onCancel={() => setIsCancelModalOpen(false)}
-        onConfirm={handleCancelLot}
+        onClose={() => setIsCancelModalOpen(false)}
         title="Hủy lô hàng"
-        message="Bạn có chắc chắn muốn hủy lô hàng này không? Hành động này không thể hoàn tác."
-        type="danger"
-      />
+      >
+        <div className="space-y-4">
+          <p className="text-stone-600">
+            Bạn có chắc chắn muốn hủy lô hàng này không? Hành động này không thể hoàn tác và lô hàng
+            sẽ không thể sử dụng để xuất kho hay sinh tem QR được nữa.
+          </p>
+          <div className="flex justify-end gap-3 pt-4">
+            <Button variant="outline" onClick={() => setIsCancelModalOpen(false)}>
+              Đóng
+            </Button>
+            <Button
+              variant="primary"
+              className="bg-red-600 hover:bg-red-700"
+              onClick={handleCancelLot}
+            >
+              Xác nhận Hủy
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Modal Submit */}
+      <Modal
+        isOpen={isSubmitModalOpen}
+        onClose={() => setIsSubmitModalOpen(false)}
+        title="Gửi duyệt lô hàng"
+      >
+        <div className="space-y-4">
+          <p className="text-stone-600">
+            Bạn có chắc chắn muốn gửi yêu cầu duyệt lô hàng này?
+            <br />
+            <br />
+            <strong>Lưu ý:</strong> Sau khi gửi duyệt, lô hàng sẽ chuyển sang trạng thái{' '}
+            <strong>Chờ duyệt</strong> và bạn sẽ không thể chỉnh sửa các thông tin cơ bản cho đến
+            khi có kết quả từ Admin.
+          </p>
+          <div className="flex justify-end gap-3 pt-4">
+            <Button variant="outline" onClick={() => setIsSubmitModalOpen(false)}>
+              Hủy
+            </Button>
+            <Button variant="primary" onClick={handleSubmitVerification}>
+              Xác nhận Gửi
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {lot && (
+        <PrintQrModal
+          isOpen={isPrintModalOpen}
+          onClose={() => setIsPrintModalOpen(false)}
+          lot={lot}
+          qrCodes={qrCodes}
+        />
+      )}
     </div>
   );
 };

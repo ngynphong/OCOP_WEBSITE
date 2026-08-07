@@ -1,4 +1,5 @@
 import { ResponseBase, PaginatedResponse } from '@/features/admin/types/adminTypes';
+import { ISupplyChainLot } from '@/features/supply-chain/types/supplyChainTypes';
 
 export type { ResponseBase, PaginatedResponse };
 
@@ -7,6 +8,7 @@ export type { ResponseBase, PaginatedResponse };
 export type ProductStatus = 'DRAFT' | 'PENDING_REVIEW' | 'APPROVED' | 'REJECTED' | 'DISCONTINUED';
 
 export type JournalStepType =
+  | 'RAW_MATERIAL'
   | 'PLANTING'
   | 'CARE'
   | 'HARVESTING'
@@ -156,6 +158,10 @@ export interface Product {
   impactStats?: string;
   unit: string;
   weightGram: number;
+  ingredients?: string;
+  packagingMaterial?: string;
+  appliedStandards?: string;
+  complianceDocuments?: string;
   minPrice: number;
   maxPrice: number;
   ratingAvg: number;
@@ -201,6 +207,10 @@ export interface CreateProductRequest {
   productionArea?: string;
   unit?: string;
   weightGram?: number;
+  ingredients?: string;
+  packagingMaterial?: string;
+  appliedStandards?: string;
+  complianceDocuments?: string;
 }
 
 export interface UpdateProductRequest {
@@ -216,6 +226,10 @@ export interface UpdateProductRequest {
   productionArea?: string;
   unit?: string;
   weightGram?: number;
+  ingredients?: string;
+  packagingMaterial?: string;
+  appliedStandards?: string;
+  complianceDocuments?: string;
 }
 
 export interface UpdateProductStoryRequest {
@@ -415,6 +429,10 @@ export interface TraceProductInfo {
   ocopStar: string;
   certificationNumber: string;
   thumbnailUrl: string;
+  ingredients?: string;
+  packagingMaterial?: string;
+  appliedStandards?: string;
+  complianceDocuments?: string;
   shop: {
     id: number;
     name: string;
@@ -435,6 +453,7 @@ export interface TraceDetail {
   qr: TraceQrInfo;
   journals: ProductJournal[];
   scanCount: number;
+  lot?: ISupplyChainLot;
 }
 
 export type TraceDetailResponse = ResponseBase<TraceDetail>;
