@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FiPlus, FiPackage, FiClock, FiCheckCircle } from 'react-icons/fi';
+import Link from 'next/link';
+import { FiPlus, FiPackage, FiClock } from 'react-icons/fi';
 import { Button } from '@/components/ui/AppButton';
-import { CreateLotModal } from '@/features/supply-chain/components/CreateLotModal';
 import { supplyChainApi } from '@/features/supply-chain/api/supplyChainApi';
-import { ISupplyChainLot, ICreateLotReq } from '@/features/supply-chain/types/supplyChainTypes';
+import { ISupplyChainLot, TLotStatus } from '@/features/supply-chain/types/supplyChainTypes';
 import { Product } from '@/features/products/types/productTypes';
 import { toast } from 'react-hot-toast';
 import { format } from 'date-fns';
+import { LotStatusBadge } from '@/features/supply-chain/components/LotStatusBadge';
 
 interface LotsTabProps {
   product: Product;
@@ -17,7 +18,6 @@ export const LotsTab = ({ product }: LotsTabProps) => {
   const router = useRouter();
   const [lots, setLots] = useState<ISupplyChainLot[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [page] = useState(1);
 
   const fetchLots = React.useCallback(async () => {
@@ -37,39 +37,6 @@ export const LotsTab = ({ product }: LotsTabProps) => {
     fetchLots();
   }, [fetchLots]);
 
-  const handleCreateLot = async (data: ICreateLotReq) => {
-    await supplyChainApi.createLot(data);
-  };
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'DRAFT':
-        return (
-          <span className="px-2 py-1 text-xs rounded-lg bg-stone-100 text-stone-600 font-medium">
-            Bản nháp
-          </span>
-        );
-      case 'ACTIVE':
-        return (
-          <span className="px-2 py-1 text-xs rounded-lg bg-emerald-100 text-emerald-700 font-medium flex items-center gap-1">
-            <FiCheckCircle /> Hoạt động
-          </span>
-        );
-      case 'SOLD_OUT':
-        return (
-          <span className="px-2 py-1 text-xs rounded-lg bg-gray-100 text-gray-600 font-medium">
-            Hết hàng
-          </span>
-        );
-      default:
-        return (
-          <span className="px-2 py-1 text-xs rounded-lg bg-stone-100 text-stone-600 font-medium">
-            {status}
-          </span>
-        );
-    }
-  };
-
   if (isLoading && lots.length === 0) {
     return (
       <div className="space-y-4 animate-pulse">
@@ -87,14 +54,11 @@ export const LotsTab = ({ product }: LotsTabProps) => {
           <h3 className="text-lg font-black text-stone-900">Lịch sử sản xuất & Lô hàng</h3>
           <p className="text-sm text-stone-500">Quản lý các đợt sản xuất và truy xuất nguồn gốc</p>
         </div>
-        <Button
-          variant="primary"
-          leftIcon={<FiPlus size={18} />}
-          onClick={() => setIsModalOpen(true)}
-          className="rounded-xl shrink-0"
-        >
-          Tạo lô hàng mới
-        </Button>
+        <Link href="/dashboard/lo-san-xuat/tao-moi">
+          <Button variant="primary" leftIcon={<FiPlus size={18} />} className="rounded-xl shrink-0">
+            Tạo lô hàng mới
+          </Button>
+        </Link>
       </div>
 
       {lots.length === 0 ? (
@@ -107,13 +71,11 @@ export const LotsTab = ({ product }: LotsTabProps) => {
             Sản phẩm này chưa được gán lô sản xuất nào. Khởi tạo lô hàng đầu tiên để quản lý tồn kho
             và truy xuất.
           </p>
-          <Button
-            variant="primary"
-            leftIcon={<FiPlus size={18} />}
-            onClick={() => setIsModalOpen(true)}
-          >
-            Khởi tạo lô hàng
-          </Button>
+          <Link href="/dashboard/lo-san-xuat/tao-moi">
+            <Button variant="primary" leftIcon={<FiPlus size={18} />}>
+              Khởi tạo lô hàng
+            </Button>
+          </Link>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -121,7 +83,7 @@ export const LotsTab = ({ product }: LotsTabProps) => {
             <div
               key={lot.id}
               className="bg-white border border-stone-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow cursor-pointer flex flex-col group"
-              onClick={() => router.push(`/dashboard/truy-xuat/${lot.id}`)}
+              onClick={() => router.push(`/dashboard/lo-san-xuat/${lot.id}`)}
             >
               <div className="flex justify-between items-start mb-4">
                 <div>
@@ -130,7 +92,7 @@ export const LotsTab = ({ product }: LotsTabProps) => {
                   </h4>
                   <p className="text-xs text-stone-500 mt-1">{lot.variantName || 'Mặc định'}</p>
                 </div>
-                {getStatusBadge(lot.status)}
+                <LotStatusBadge status={lot.status as TLotStatus} />
               </div>
 
               <div className="space-y-2 mt-auto">
@@ -160,14 +122,6 @@ export const LotsTab = ({ product }: LotsTabProps) => {
           ))}
         </div>
       )}
-
-      <CreateLotModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSuccess={fetchLots}
-        onSubmit={handleCreateLot}
-        fixedProduct={product}
-      />
     </div>
   );
 };

@@ -231,6 +231,22 @@ const MENU_GROUPS: MenuGroup[] = [
         roles: ['SELLER'],
         permission: 'seller.shop.manage',
       },
+      {
+        id: 'material-lots',
+        label: 'Nguồn nguyên liệu',
+        icon: FiPackage,
+        href: '/dashboard/nguon-nguyen-lieu',
+        roles: ['SELLER'],
+        permission: 'seller.shop.manage',
+      },
+      {
+        id: 'production-batches',
+        label: 'Lô sản xuất',
+        icon: FaWarehouse,
+        href: '/dashboard/lo-san-xuat',
+        roles: ['SELLER'],
+        permission: 'seller.shop.manage',
+      },
     ],
   },
 ];

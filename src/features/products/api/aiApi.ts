@@ -39,4 +39,10 @@ export const aiApi = {
       headers: { 'X-Silent-Loading': 'true' },
     });
   },
+
+  generateProcessStep: (data: { message: string }) => {
+    return axiosClient.post<AiChatResponse>('/seller/ai/generate-process-step', data, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
+  },
 };

@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { supplyChainApi } from '@/features/supply-chain/api/supplyChainApi';
 import { cn } from '@/lib/utils';
-import { ISupplyChainLot } from '@/features/supply-chain/types/supplyChainTypes';
+import { ISupplyChainLot, TLotStatus } from '@/features/supply-chain/types/supplyChainTypes';
 import { LotStatusBadge } from '@/features/supply-chain/components/LotStatusBadge';
 import { SupplyChainTimeline } from '@/features/supply-chain/components/SupplyChainTimeline';
 import { TraceabilityReportModal } from '@/features/supply-chain/components/TraceabilityReportModal';
@@ -112,7 +112,7 @@ const PublicTraceabilityPage = () => {
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-stone-500">Trạng thái</span>
-              <LotStatusBadge status={lot.status} />
+              <LotStatusBadge status={lot.status as TLotStatus} />
             </div>
             {lot.verificationLevel && (
               <div className="flex items-center justify-between">

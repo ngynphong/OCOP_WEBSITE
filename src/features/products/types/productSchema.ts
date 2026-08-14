@@ -72,8 +72,8 @@ export const createJournalSchema = z.object({
   location: z.string().max(500).optional(),
   latitude: z.number().min(-90).max(90).optional(),
   longitude: z.number().min(-180).max(180).optional(),
-  activityDate: z.string().optional(),
-  images: z.array(z.string()).optional(),
+  activityDate: z.string().min(1, 'Vui lòng chọn ngày thực hiện'),
+  images: z.array(z.string()).min(1, 'Vui lòng thêm ít nhất 1 hình ảnh minh họa'),
 });
 
 export type CreateJournalFormData = z.infer<typeof createJournalSchema>;

@@ -31,7 +31,10 @@ export const sellerProductApi = {
   // ─── Product CRUD ──────────────────────────────────────────────────────────
 
   getProducts: (params?: ProductListParams): Promise<ProductListResponse> => {
-    return axiosClient.get(API_ENDPOINTS.SELLER.PRODUCTS, { params });
+    return axiosClient.get(API_ENDPOINTS.SELLER.PRODUCTS, {
+      headers: { 'X-Silent-Loading': 'true' },
+      params,
+    });
   },
 
   createProduct: (data: CreateProductRequest): Promise<ProductDetailResponse> => {
@@ -71,7 +74,9 @@ export const sellerProductApi = {
   // ─── Variants ─────────────────────────────────────────────────────────────
 
   getVariants: (productId: number): Promise<VariantListResponse> => {
-    return axiosClient.get(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'variants'));
+    return axiosClient.get(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'variants'), {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   createVariant: (

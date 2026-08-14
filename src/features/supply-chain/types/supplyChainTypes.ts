@@ -45,29 +45,98 @@ export interface ISupplyChainStep {
     | ITestingStepReq;
 }
 
+export interface IEventInfo {
+  id: number;
+  templateStepId: number;
+  stepTitle: string;
+  stepType: string;
+  sourceType: string;
+  eventAt: string;
+  recordedAt: string;
+  recordedBy: string;
+  eventData: string | Record<string, unknown> | null;
+}
+
+export interface IMaterialUsageInfo {
+  materialLotId: number;
+  materialLotCode: string;
+  materialName: string;
+  sourceType: string;
+  supplierName?: string;
+  facilityName?: string;
+  cycleName?: string;
+  quantityUsed: number;
+  unit: string;
+}
+
+export interface IProcessTemplateStep {
+  id: number;
+  stepOrder: number;
+  stepType: string;
+  title: string;
+  description?: string;
+}
+
+export interface IProcessTemplate {
+  id: number;
+  name: string;
+  description?: string;
+  status: string;
+  versionNumber?: number;
+  steps: IProcessTemplateStep[];
+}
+
+export interface ICreateProcessTemplateReq {
+  productId: number;
+  name: string;
+  description?: string;
+  status?: string;
+  steps: Omit<IProcessTemplateStep, 'id'>[];
+}
+
+export interface IRecallInfo {
+  reason: string;
+  recalledAt?: string;
+  recalledBy?: string;
+  notes?: string;
+}
+
 export interface ISupplyChainLot {
   id: number;
   lotCode: string;
+  gtinCode?: string;
+  digitalLink?: string;
   productId: number;
   productName: string;
-  variantId?: number;
-  variantName?: string;
+  variantId: number;
+  variantName: string;
   shopId: number;
   shopName: string;
+  glnCode?: string;
   productionDate?: string;
   expiryDate?: string;
   quantity: number;
-  unit?: string;
-  status: TLotStatus;
-  verificationLevel?: TVerificationLevel;
-  verificationStatus?: TVerificationStatus;
+  remainingQuantity: number;
+  reservedQuantity: number;
+  availableQuantity: number;
+  unit: string;
+  status: string;
+  verificationLevel?: string;
+  verificationStatus?: string;
   trustScore?: number;
   qrUrl?: string;
   qrToken?: string;
   notes?: string;
   inputMaterials?: string;
   createdAt: string;
-  steps: ISupplyChainStep[] | null;
+  warnings?: string[];
+  recallInfo?: IRecallInfo;
+  steps?: ISupplyChainStep[];
+  events?: IEventInfo[];
+  materialsUsed?: IMaterialUsageInfo[];
+  processTemplateId?: number;
+  processTemplateName?: string;
+  templateSteps?: IProcessTemplateStep[];
 }
 
 export interface ILotQrCode {
@@ -80,6 +149,26 @@ export interface ILotQrCode {
   createdAt: string;
 }
 
+export interface ILotAuditLog {
+  id: number;
+  actorEmail?: string;
+  entityType?: string;
+  entityId?: string;
+  action: string;
+  beforeValue?: Record<string, unknown>;
+  afterValue?: Record<string, unknown>;
+  ipAddress?: string;
+  userAgent?: string;
+  createdAt: string;
+}
+
+export interface ICreateBatchEventReq {
+  templateStepId: number;
+  eventAt: string;
+  eventData?: string;
+  evidenceIds?: number[];
+}
+
 export interface ICreateLotReq {
   lotCode: string;
   productId: number;
@@ -90,6 +179,11 @@ export interface ICreateLotReq {
   unit?: string;
   notes?: string;
   inputMaterials?: string;
+  processTemplateId: number;
+  materialsUsed?: {
+    materialLotId: number;
+    quantity: number;
+  }[];
 }
 
 export interface ILotListReq {

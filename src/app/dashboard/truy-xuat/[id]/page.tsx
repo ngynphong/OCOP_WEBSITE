@@ -13,6 +13,7 @@ import {
   IDistributionStepReq,
   ITestingStepReq,
   ILotQrCode,
+  TLotStatus,
 } from '@/features/supply-chain/types/supplyChainTypes';
 import { LotStatusBadge } from '@/features/supply-chain/components/LotStatusBadge';
 import { SupplyChainTimeline } from '@/features/supply-chain/components/SupplyChainTimeline';
@@ -227,7 +228,7 @@ const LotDetailPage = () => {
                   <span className="text-xs font-bold text-emerald-600 tracking-widest uppercase">
                     {lot.lotCode}
                   </span>
-                  <LotStatusBadge status={lot.status} />
+                  <LotStatusBadge status={lot.status as TLotStatus} />
                 </div>
                 <h2 className="text-xl font-bold text-stone-900 leading-tight">
                   {lot.productName}

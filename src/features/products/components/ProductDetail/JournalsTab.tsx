@@ -258,15 +258,11 @@ export function JournalsTab({
                 <p className="text-xs text-red-500 mt-1">{errors.stepType.message}</p>
               )}
             </div>
-            <div>
-              <label className="text-xs font-bold text-stone-500 block mb-1 opacity-50">
-                Thứ tự bước (Tự động)
-              </label>
+            <div className="hidden">
               <input
-                type="number"
-                disabled
+                type="hidden"
+                {...register('stepOrder', { valueAsNumber: true })}
                 value={journals.length + 1}
-                className="w-full border border-stone-200 text-stone-400 bg-stone-50 rounded-xl px-3 py-2 text-sm outline-none transition"
               />
             </div>
           </div>
@@ -297,12 +293,17 @@ export function JournalsTab({
               />
             </div>
             <div>
-              <label className="text-xs font-bold text-stone-500 block mb-1">Ngày hoạt động</label>
+              <label className="text-xs font-bold text-stone-500 block mb-1">
+                Ngày hoạt động <span className="text-red-500">*</span>
+              </label>
               <input
                 type="date"
                 {...register('activityDate')}
                 className="w-full border border-stone-200 text-gray-700 rounded-xl px-3 py-2 text-sm outline-none focus:border-emerald-400 transition"
               />
+              {errors.activityDate && (
+                <p className="text-xs text-red-500 mt-1">{errors.activityDate.message}</p>
+              )}
             </div>
           </div>
           <div>

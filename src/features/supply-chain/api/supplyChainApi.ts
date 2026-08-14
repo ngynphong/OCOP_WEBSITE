@@ -15,6 +15,10 @@ import {
   ITestingStepReq,
   TLotStatus,
   ILotQrCode,
+  ILotAuditLog,
+  IProcessTemplate,
+  ICreateProcessTemplateReq,
+  ICreateBatchEventReq,
 } from '../types/supplyChainTypes';
 
 export const supplyChainApi = {
@@ -111,7 +115,7 @@ export const supplyChainApi = {
   // QR Serialization
   generateItemQrCodes: async (lotId: number, count: number) => {
     return axiosClient.post<unknown, { data: string }>(
-      `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/${lotId}/qr-codes/generate`,
+      `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/${lotId}/qrs/generate`,
       null,
       { params: { count } },
     );
@@ -119,8 +123,47 @@ export const supplyChainApi = {
 
   getLotQrCodes: async (lotId: number) => {
     return axiosClient.get<unknown, { data: ILotQrCode[] }>(
-      `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/${lotId}/qr-codes`,
+      `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/${lotId}/qrs`,
     );
+  },
+
+  getProcessTemplates: async (productId: number) => {
+    return axiosClient.get<unknown, { data: IProcessTemplate[] }>(
+      `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/templates`,
+      {
+        headers: { 'X-Silent-Loading': 'true' },
+        params: { productId },
+      },
+    );
+  },
+
+  createProcessTemplate: async (data: ICreateProcessTemplateReq) => {
+    return axiosClient.post<unknown, { data: IProcessTemplate }>(
+      `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/templates`,
+      data,
+    );
+  },
+
+  addBatchEvent: async (lotId: number, data: ICreateBatchEventReq) => {
+    return axiosClient.post<unknown, { data: ISupplyChainLot }>(
+      `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/${lotId}/events`,
+      data,
+    );
+  },
+
+  getLotAuditLogs: async (lotId: number, params: { page?: number; size?: number } = {}) => {
+    return axiosClient.get<
+      unknown,
+      {
+        data: {
+          page: number;
+          size: number;
+          totalPages: number;
+          totalElements: number;
+          content: ILotAuditLog[];
+        };
+      }
+    >(`${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/${lotId}/audit-logs`, { params });
   },
 
   // Public APIs

@@ -8,7 +8,6 @@ import {
   ICreateLotReq,
 } from '@/features/supply-chain/types/supplyChainTypes';
 import { LotStatusBadge } from '@/features/supply-chain/components/LotStatusBadge';
-import { CreateLotModal } from '@/features/supply-chain/components/CreateLotModal';
 import { Button } from '@/components/ui/AppButton';
 import { Pagination } from '@/components/ui/Pagination';
 import { FiPlus, FiSearch, FiPackage, FiCalendar, FiArrowRight } from 'react-icons/fi';
@@ -23,7 +22,6 @@ const LotListPage = () => {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<TLotStatus | undefined>(undefined);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const fetchLots = useCallback(async () => {
     try {
@@ -47,11 +45,6 @@ const LotListPage = () => {
     fetchLots();
   }, [page, statusFilter, fetchLots]);
 
-  const handleCreateLot = async (data: ICreateLotReq) => {
-    await supplyChainApi.createLot(data);
-    fetchLots();
-  };
-
   return (
     <div className="space-y-8">
       {/* Header Section */}
@@ -62,13 +55,11 @@ const LotListPage = () => {
             Quản lý lô hàng và các bước chuỗi cung ứng của shop.
           </p>
         </div>
-        <Button
-          variant="primary"
-          className="rounded-xl shadow-lg shadow-emerald-500/20"
-          onClick={() => setIsCreateModalOpen(true)}
-        >
-          <FiPlus className="mr-2" /> Tạo lô hàng mới
-        </Button>
+        <Link href="/dashboard/lo-san-xuat/tao-moi">
+          <Button variant="primary" className="rounded-xl shadow-lg shadow-emerald-500/20">
+            <FiPlus className="mr-2" /> Tạo lô sản xuất
+          </Button>
+        </Link>
       </div>
 
       {/* Filter & Search Bar */}
@@ -119,7 +110,7 @@ const LotListPage = () => {
                   <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest">
                     {lot.lotCode}
                   </span>
-                  <LotStatusBadge status={lot.status} />
+                  <LotStatusBadge status={lot.status as TLotStatus} />
                 </div>
                 <h3 className="font-bold text-stone-900 group-hover:text-emerald-700 transition-colors">
                   {lot.productName}{' '}
@@ -162,13 +153,11 @@ const LotListPage = () => {
             <p className="text-stone-500 text-sm mt-1">
               Bắt đầu bằng cách tạo lô hàng đầu tiên của bạn.
             </p>
-            <Button
-              variant="outline"
-              className="mt-6 rounded-xl"
-              onClick={() => setIsCreateModalOpen(true)}
-            >
-              <FiPlus className="mr-2" /> Tạo ngay
-            </Button>
+            <Link href="/dashboard/lo-san-xuat/tao-moi">
+              <Button variant="outline" className="mt-6 rounded-xl">
+                <FiPlus className="mr-2" /> Tạo ngay
+              </Button>
+            </Link>
           </div>
         )}
       </div>
@@ -178,13 +167,6 @@ const LotListPage = () => {
           <Pagination currentPage={page} totalPages={totalPage} onPageChange={setPage} />
         </div>
       )}
-
-      <CreateLotModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        onSuccess={() => fetchLots()}
-        onSubmit={handleCreateLot}
-      />
     </div>
   );
 };

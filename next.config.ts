@@ -90,6 +90,10 @@ const nextConfig: NextConfig = {
         source: '/:file([^/]+\\.(?:png|jpg|jpeg|gif|webp|svg|PNG|JPG|JPEG))',
         destination: '/images/:file',
       },
+      {
+        source: '/01/:gtin/10/:lotCode',
+        destination: '/trace/01-:gtin-10-:lotCode',
+      },
     ];
   },
 };
