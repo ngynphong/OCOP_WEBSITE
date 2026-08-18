@@ -22,6 +22,7 @@ import { materialSourceApi } from '../api/materialSourceApi';
 import { Button } from '@/components/ui/AppButton';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import { Controller } from 'react-hook-form';
+import Image from 'next/image';
 
 interface MaterialLotTabProps {
   isCreating: boolean;
@@ -329,19 +330,18 @@ function MaterialLotDetailsPanel({ lot, onClose }: MaterialLotDetailsPanelProps)
   const [usages, setUsages] = useState<IMaterialLotUsage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const loadUsages = async () => {
-    try {
-      setIsLoading(true);
-      const res = await materialSourceApi.getMaterialLotUsages(lot.id);
-      setUsages(res.data.content);
-    } catch (error) {
-      console.error('Lỗi khi tải lịch sử sử dụng nguyên liệu', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const loadUsages = async () => {
+      try {
+        setIsLoading(true);
+        const res = await materialSourceApi.getMaterialLotUsages(lot.id);
+        setUsages(res.data.content);
+      } catch (error) {
+        console.error('Lỗi khi tải lịch sử sử dụng nguyên liệu', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
     loadUsages();
   }, [lot.id]);
 
@@ -438,9 +438,11 @@ function MaterialLotDetailsPanel({ lot, onClose }: MaterialLotDetailsPanelProps)
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded bg-stone-50 overflow-hidden flex-shrink-0 border border-stone-200 flex items-center justify-center">
                     {u.productionBatch.product?.mainImageUrl ? (
-                      <img
+                      <Image
                         src={u.productionBatch.product.mainImageUrl}
                         alt={u.productionBatch.product.name}
+                        width={40}
+                        height={40}
                         className="w-full h-full object-cover"
                       />
                     ) : (

@@ -20,24 +20,24 @@ export default function SourceCycleListModal({ isOpen, onClose, facilityId, faci
   const [selectedCycleId, setSelectedCycleId] = useState<number | null>(null);
 
   useEffect(() => {
+    const fetchCycles = async () => {
+      setIsLoading(true);
+      try {
+        const res = await materialSourceApi.getCyclesByFacility(facilityId, 0, 50);
+        if (res.data?.content) {
+          setCycles(res.data.content);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     if (isOpen) {
       fetchCycles();
     }
   }, [isOpen, facilityId]);
-
-  const fetchCycles = async () => {
-    setIsLoading(true);
-    try {
-      const res = await materialSourceApi.getCyclesByFacility(facilityId, 0, 50);
-      if (res.data?.content) {
-        setCycles(res.data.content);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="">

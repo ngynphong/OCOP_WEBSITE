@@ -9,8 +9,6 @@ import FacilityTab from '@/features/supply-chain/components/FacilityTab';
 import MaterialLotTab from '@/features/supply-chain/components/MaterialLotTab';
 
 import CreateSupplierModal from '@/features/supply-chain/components/CreateSupplierModal';
-import CreateFacilityModal from '@/features/supply-chain/components/CreateFacilityModal';
-import CreateMaterialLotModal from '@/features/supply-chain/components/CreateMaterialLotModal';
 
 export default function NguonNguyenLieuPage() {
   const [activeTab, setActiveTab] = useState<'SUPPLIER' | 'FACILITY' | 'MATERIAL_LOT'>('SUPPLIER');

@@ -20,6 +20,7 @@ const processTemplateSchema = z.object({
         stepType: z.string().min(1, 'Vui lòng chọn loại công việc'),
         title: z.string().min(1, 'Tên công việc không được để trống'),
         description: z.string().optional(),
+        estimatedDays: z.number().min(0, 'Ngày dự kiến >= 0').optional(),
       }),
     )
     .min(1, 'Quy trình phải có ít nhất 1 bước'),
@@ -53,13 +54,16 @@ export function ProcessTemplateTab({ productId }: { productId: number }) {
     reset,
     setValue,
     getValues,
+    watch,
     formState: { errors },
   } = useForm<ProcessTemplateFormData>({
     resolver: zodResolver(processTemplateSchema),
     defaultValues: {
       name: '',
       description: '',
-      steps: [{ stepOrder: 1, stepType: 'RAW_MATERIAL', title: '', description: '' }],
+      steps: [
+        { stepOrder: 1, stepType: 'RAW_MATERIAL', title: '', description: '', estimatedDays: 0 },
+      ],
     },
   });
 
@@ -67,6 +71,8 @@ export function ProcessTemplateTab({ productId }: { productId: number }) {
     control,
     name: 'steps',
   });
+
+  const watchSteps = watch('steps');
 
   const { generateDesc, isGenerating } = useAiGeneration();
 
@@ -179,6 +185,7 @@ export function ProcessTemplateTab({ productId }: { productId: number }) {
                     stepType: 'OTHER',
                     title: '',
                     description: '',
+                    estimatedDays: 0,
                   })
                 }
                 className="flex items-center gap-1.5 text-emerald-600 hover:text-emerald-700 font-bold text-xs"
@@ -211,8 +218,8 @@ export function ProcessTemplateTab({ productId }: { productId: number }) {
                     </button>
                   )}
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="flex flex-col gap-1">
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                    <div className="flex flex-col gap-1 md:col-span-3">
                       <label className="text-[10px] font-bold text-stone-500 uppercase">
                         Loại công việc <span className="text-red-500">*</span>
                       </label>
@@ -233,7 +240,7 @@ export function ProcessTemplateTab({ productId }: { productId: number }) {
                       )}
                     </div>
 
-                    <div className="flex flex-col gap-1">
+                    <div className="flex flex-col gap-1 md:col-span-6">
                       <label className="text-[10px] font-bold text-stone-500 uppercase">
                         Tên công việc <span className="text-red-500">*</span>
                       </label>
@@ -249,7 +256,38 @@ export function ProcessTemplateTab({ productId }: { productId: number }) {
                       )}
                     </div>
 
-                    <div className="flex flex-col gap-1 md:col-span-2">
+                    <div className="flex flex-col gap-1 md:col-span-3">
+                      <label className="text-[10px] font-bold text-stone-500 uppercase">
+                        Thời gian chờ
+                      </label>
+                      <div className="flex items-center gap-2 bg-white border border-stone-200 rounded-lg overflow-hidden pr-1 focus-within:border-emerald-400">
+                        <span className="bg-stone-50 border-r border-stone-200 px-3 py-1.5 text-sm font-medium text-stone-500">
+                          Sau
+                        </span>
+                        <input
+                          type="number"
+                          min="0"
+                          {...register(`steps.${index}.estimatedDays` as const, {
+                            valueAsNumber: true,
+                          })}
+                          placeholder="0"
+                          className="flex-1 w-full min-w-[50px] text-gray-700 px-2 py-1.5 text-sm outline-none bg-transparent"
+                        />
+                        <span className="text-sm font-medium text-stone-500 pr-2">ngày</span>
+                      </div>
+                      <p className="text-[10px] text-stone-500 mt-0.5">
+                        {index === 0
+                          ? '*Kể từ lúc bắt đầu tạo lô'
+                          : `*Kể từ sau bước "${watchSteps[index - 1]?.title || 'trước'}"`}
+                      </p>
+                      {errors.steps?.[index]?.estimatedDays && (
+                        <p className="text-xs text-red-500">
+                          {errors.steps[index]?.estimatedDays?.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="flex flex-col gap-1 md:col-span-12">
                       <div className="flex items-center justify-between">
                         <label className="text-[10px] font-bold text-stone-500 uppercase">
                           Hướng dẫn cách làm
@@ -295,6 +333,21 @@ export function ProcessTemplateTab({ productId }: { productId: number }) {
                   </div>
                 </div>
               ))}
+              <button
+                type="button"
+                onClick={() =>
+                  append({
+                    stepOrder: fields.length + 1,
+                    stepType: 'OTHER',
+                    title: '',
+                    description: '',
+                    estimatedDays: 0,
+                  })
+                }
+                className="w-full mt-2 py-4 border-2 border-dashed border-stone-200 hover:border-emerald-400 hover:bg-emerald-50 rounded-xl text-stone-500 hover:text-emerald-700 font-bold text-sm flex items-center justify-center gap-2 transition"
+              >
+                <FiPlus size={18} /> Thêm bước tiếp theo
+              </button>
             </div>
           </div>
 
@@ -366,12 +419,22 @@ export function ProcessTemplateTab({ productId }: { productId: number }) {
                     {template.steps?.map((step, idx) => (
                       <div
                         key={step.id}
-                        className="flex items-center gap-2 px-2.5 py-1.5 bg-stone-50 border border-stone-100 rounded-lg text-xs font-medium text-stone-700"
+                        className="flex flex-col gap-1 px-2.5 py-2 bg-stone-50 border border-stone-100 rounded-lg"
                       >
-                        <span className="w-5 h-5 rounded-full bg-white flex items-center justify-center text-[10px] font-black text-stone-400 border border-stone-200 shadow-xs">
-                          {idx + 1}
-                        </span>
-                        {step.title}
+                        <div className="flex items-center gap-2 text-xs font-medium text-stone-700">
+                          <span className="w-5 h-5 rounded-full bg-white flex items-center justify-center text-[10px] font-black text-stone-400 border border-stone-200 shadow-xs">
+                            {idx + 1}
+                          </span>
+                          {step.title}
+                        </div>
+                        {step.estimatedDays !== undefined && step.estimatedDays !== null && (
+                          <span className="text-[10px] text-emerald-600 font-medium pl-7">
+                            <FiZap className="inline mr-0.5" />
+                            {idx === 0
+                              ? `Sau khi tạo lô: ${step.estimatedDays} ngày`
+                              : `Sau bước "${template.steps![idx - 1]?.title || 'trước'}": ${step.estimatedDays} ngày`}
+                          </span>
+                        )}
                       </div>
                     ))}
                   </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FiX, FiBox, FiTrendingDown, FiExternalLink } from 'react-icons/fi';
+import { FiBox, FiTrendingDown, FiExternalLink } from 'react-icons/fi';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import { Modal } from '@/components/ui/Modal';
@@ -7,6 +7,7 @@ import { IMaterialLot, IMaterialLotUsage } from '../types/materialSourceTypes';
 import { materialSourceApi } from '../api/materialSourceApi';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Package } from 'lucide-react';
+import Image from 'next/image';
 
 interface MaterialLotDetailsModalProps {
   isOpen: boolean;
@@ -23,25 +24,25 @@ export default function MaterialLotDetailsModal({
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    const loadUsages = async () => {
+      if (!lot) return;
+      try {
+        setIsLoading(true);
+        const res = await materialSourceApi.getMaterialLotUsages(lot.id);
+        setUsages(res.data.content);
+      } catch (error) {
+        console.error('Lỗi khi tải lịch sử sử dụng nguyên liệu', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     if (isOpen && lot) {
       loadUsages();
     } else {
       setUsages([]);
     }
   }, [isOpen, lot]);
-
-  const loadUsages = async () => {
-    if (!lot) return;
-    try {
-      setIsLoading(true);
-      const res = await materialSourceApi.getMaterialLotUsages(lot.id);
-      setUsages(res.data.content);
-    } catch (error) {
-      console.error('Lỗi khi tải lịch sử sử dụng nguyên liệu', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   if (!lot) return null;
 
@@ -125,9 +126,11 @@ export default function MaterialLotDetailsModal({
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-lg bg-stone-100 overflow-hidden flex-shrink-0 border border-stone-200">
                       {u.productionBatch.product?.mainImageUrl ? (
-                        <img
+                        <Image
                           src={u.productionBatch.product.mainImageUrl}
                           alt={u.productionBatch.product.name}
+                          width={100}
+                          height={100}
                           className="w-full h-full object-cover"
                         />
                       ) : (

@@ -89,7 +89,7 @@ export default function CreateProductionBatchPage() {
   const { useCreateProductionBatch, useGetProcessTemplates } = useProductionBatch();
   const createMutation = useCreateProductionBatch();
 
-  const { lots: materialLotsData, isLoading: isLoadingLots } = useMaterialLotList();
+  const { lots: materialLotsData } = useMaterialLotList();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema) as Resolver<FormData>,
@@ -194,7 +194,7 @@ export default function CreateProductionBatchPage() {
                   style={{ width: `${((step - 1) / (STEPS.length - 1)) * 100}%` }}
                 />
               </div>
-              {STEPS.map((s, index) => {
+              {STEPS.map((s) => {
                 const Icon = s.icon;
                 const isActive = step === s.id;
                 const isCompleted = step > s.id;

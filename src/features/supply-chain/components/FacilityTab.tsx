@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   FiEdit2,
   FiTrash2,
@@ -26,12 +26,7 @@ import {
   useDeleteCycle,
 } from '../hooks/useFacility';
 import { useForm } from 'react-hook-form';
-import {
-  ISourceFacility,
-  ISourceCycle,
-  ISourceCycleLog,
-  ISourceCycleLogReq,
-} from '../types/materialSourceTypes';
+import { ISourceFacility, ISourceCycle, ISourceCycleLogReq } from '../types/materialSourceTypes';
 import { Button } from '@/components/ui/AppButton';
 import { toast } from 'react-toastify';
 
@@ -179,12 +174,7 @@ function CycleAccordionItem({ cycle, onCycleDeleted }: CycleAccordionItemProps) 
   const { createLogMutation, deleteLogMutation } = useManageCycleLogs(cycle.id);
   const { deleteCycleMutation } = useDeleteCycle(() => onCycleDeleted());
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<ISourceCycleLogReq>({
+  const { register, handleSubmit, reset } = useForm<ISourceCycleLogReq>({
     defaultValues: {
       activityName: '',
       eventTime: new Date().toISOString().slice(0, 16),

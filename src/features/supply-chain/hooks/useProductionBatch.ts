@@ -5,7 +5,6 @@ import {
   ICreateBatchEventReq,
   ICreateLotReq,
   ILotListReq,
-  IProcessTemplate,
   ISupplyChainLot,
   ICreateProcessTemplateReq,
 } from '../types/supplyChainTypes';

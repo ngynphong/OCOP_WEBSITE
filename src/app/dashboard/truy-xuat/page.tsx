@@ -2,11 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { supplyChainApi } from '@/features/supply-chain/api/supplyChainApi';
-import {
-  ISupplyChainLot,
-  TLotStatus,
-  ICreateLotReq,
-} from '@/features/supply-chain/types/supplyChainTypes';
+import { ISupplyChainLot, TLotStatus } from '@/features/supply-chain/types/supplyChainTypes';
 import { LotStatusBadge } from '@/features/supply-chain/components/LotStatusBadge';
 import { Button } from '@/components/ui/AppButton';
 import { Pagination } from '@/components/ui/Pagination';

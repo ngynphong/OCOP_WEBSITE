@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { FiX, FiPlus, FiTrash2, FiClock } from 'react-icons/fi';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/AppButton';
@@ -28,11 +28,7 @@ export default function SourceCycleLogModal({ isOpen, onClose, cycleId }: Props)
     },
   });
 
-  useEffect(() => {
-    if (isOpen) fetchLogs();
-  }, [isOpen, cycleId]);
-
-  const fetchLogs = async () => {
+  const fetchLogs = useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await materialSourceApi.getCycleLogs(cycleId, 0, 100);
@@ -44,7 +40,11 @@ export default function SourceCycleLogModal({ isOpen, onClose, cycleId }: Props)
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [cycleId]);
+
+  useEffect(() => {
+    if (isOpen) fetchLogs();
+  }, [isOpen, fetchLogs]);
 
   const handleAdd = async () => {
     const values = form.getValues();
@@ -58,7 +58,7 @@ export default function SourceCycleLogModal({ isOpen, onClose, cycleId }: Props)
       setIsAdding(false);
       form.reset();
       fetchLogs();
-    } catch (error) {
+    } catch {
       toast.error('Có lỗi xảy ra');
     }
   };
@@ -69,7 +69,7 @@ export default function SourceCycleLogModal({ isOpen, onClose, cycleId }: Props)
       await materialSourceApi.deleteCycleLog(logId);
       toast.success('Xóa nhật ký thành công');
       fetchLogs();
-    } catch (error) {
+    } catch {
       toast.error('Có lỗi xảy ra');
     }
   };

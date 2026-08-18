@@ -55,6 +55,9 @@ export interface IEventInfo {
   recordedAt: string;
   recordedBy: string;
   eventData: string | Record<string, unknown> | null;
+  dataHash?: string;
+  previousHash?: string;
+  evidenceDocuments?: IEvidenceDocument[];
 }
 
 export interface IMaterialUsageInfo {
@@ -75,6 +78,7 @@ export interface IProcessTemplateStep {
   stepType: string;
   title: string;
   description?: string;
+  estimatedDays?: number;
 }
 
 export interface IProcessTemplate {
@@ -259,13 +263,17 @@ export interface IEvidenceDocument {
   documentType: string;
   fileName: string;
   fileUrl: string;
-  mimeType: string;
-  fileSize: number;
-  issuedBy: string;
-  issuedDate: string;
-  expiryDate: string;
-  verificationStatus: TVerificationStatus;
-  uploadedAt: string;
+  mimeType?: string;
+  fileSize?: number;
+  issuedBy?: string | null;
+  issuedDate?: string | null;
+  expiryDate?: string | null;
+  verificationStatus?: TVerificationStatus;
+  uploadedAt?: string;
+  uploadedBy?: string;
+  deviceInfo?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface ITestingStepReq {
