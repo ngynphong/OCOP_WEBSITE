@@ -6,13 +6,13 @@ import { FiLogOut, FiCheckCircle } from 'react-icons/fi';
 import { useAppSelector } from '@/store/hooks';
 import { useLogout } from '@/features/auth/hooks/useLogout';
 
-export const ForcedLogoutModal = () => {
-  const { isForcedLogout } = useAppSelector((state) => state.auth);
+export const ShopApprovedModal = () => {
+  const { isShopApproved } = useAppSelector((state) => state.auth);
   const { handleClientLogout } = useLogout();
 
   return (
     <AnimatePresence>
-      {isForcedLogout && (
+      {isShopApproved && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
           {/* Backdrop (Blur & Dark) */}
           <motion.div

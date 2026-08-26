@@ -23,7 +23,12 @@ import {
 import { useDispatch } from 'react-redux';
 import { setLoading } from '@/store/features/uiSlice';
 import { useSellerDashboard, useUserDashboard } from '@/features/dashboard/hooks/useDashboard';
+import UpcomingTasksWidget from '@/features/dashboard/components/UpcomingTasksWidget';
 import Image from 'next/image';
+import { OrderStatusBadge } from '@/features/orders/components/OrderStatusBadge';
+import { useSellerRevenueQuery } from '@/features/seller-orders/hooks/useSellerOrders';
+import { useLowStockAlertsQuery } from '@/features/inventory/hooks/useSellerInventory';
+import { FiAlertTriangle } from 'react-icons/fi';
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
@@ -42,6 +47,10 @@ const DashboardPage = () => {
     isPending: isSellerPending,
     isError: isSellerError,
   } = useSellerDashboard(isMounted && isSellerMode);
+
+  const [revenuePeriod, setRevenuePeriod] = React.useState<'day' | 'week' | 'month'>('month');
+  const { data: revenueData } = useSellerRevenueQuery({ period: revenuePeriod });
+  const { data: lowStockAlerts } = useLowStockAlertsQuery();
 
   const {
     data: userData,
@@ -121,13 +130,20 @@ const DashboardPage = () => {
 
   const sellerStats = [
     {
-      label: 'Doanh thu tháng',
-      value: formatCurrency(sellerData?.sellerStats?.monthlyRevenue || 0),
+      label:
+        'Doanh thu (' +
+        (revenuePeriod === 'day'
+          ? 'Hôm nay'
+          : revenuePeriod === 'week'
+            ? 'Tuần này'
+            : 'Tháng này') +
+        ')',
+      value: formatCurrency(revenueData?.data?.netRevenue || 0),
       icon: FiDollarSign,
       color: 'bg-emerald-600',
     },
     {
-      label: 'Đơn hàng mới',
+      label: 'Đơn chờ xử lý',
       value: sellerData?.sellerStats?.newOrders || 0,
       icon: FiShoppingBag,
       color: 'bg-blue-600',
@@ -177,8 +193,30 @@ const DashboardPage = () => {
         </Link>
       </div>
 
+      {/* Revenue Filter for Seller */}
+      {isSellerMode && (
+        <div className="flex justify-end -mb-2">
+          <div className="inline-flex bg-stone-100 p-1 rounded-lg">
+            {(['day', 'week', 'month'] as const).map((period) => (
+              <button
+                key={period}
+                onClick={() => setRevenuePeriod(period)}
+                className={cn(
+                  'px-4 py-1.5 text-sm font-medium rounded-md transition-all',
+                  revenuePeriod === period
+                    ? 'bg-white text-emerald-700 shadow-sm'
+                    : 'text-stone-500 hover:text-stone-700',
+                )}
+              >
+                {period === 'day' ? 'Hôm nay' : period === 'week' ? 'Tuần này' : 'Tháng này'}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
         {stats.map((stat, idx) => (
           <motion.div
             key={stat.label}
@@ -200,8 +238,43 @@ const DashboardPage = () => {
         ))}
       </div>
 
+      {isSellerMode && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+          <UpcomingTasksWidget />
+
+          <div className="flex flex-col gap-4 lg:h-[350px]">
+            <div className="p-5 rounded-xl bg-white border border-stone-100 flex items-center gap-4 flex-1">
+              <div className="w-10 h-10 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center">
+                <FiTag size={20} />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-stone-400 uppercase tracking-tighter">
+                  Sản phẩm chờ duyệt
+                </p>
+                <p className="text-xl font-black text-stone-900">
+                  {sellerData?.overview?.pendingProducts || 0}
+                </p>
+              </div>
+            </div>
+            <div className="p-5 rounded-xl bg-white border border-stone-100 flex items-center gap-4 flex-1">
+              <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
+                <FiBarChart2 size={20} />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-stone-400 uppercase tracking-tighter">
+                  Lượt xem shop
+                </p>
+                <p className="text-xl font-black text-stone-900">
+                  {sellerData?.overview?.shopViews || 0}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Conditional Banner */}
-      {!isSellerMode ? (
+      {!isSellerMode && (
         <Link
           href="/dashboard/cua-hang"
           className="group flex items-center gap-5 p-5 rounded-xl bg-linear-to-r from-green-700 to-emerald-600 text-white shadow-xl shadow-green-700/25 hover:shadow-green-600/40 transition-all hover:-translate-y-0.5"
@@ -220,35 +293,6 @@ const DashboardPage = () => {
             className="shrink-0 opacity-70 group-hover:translate-x-1 transition-transform"
           />
         </Link>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="p-5 rounded-xl bg-white border border-stone-100 flex items-center gap-4">
-            <div className="w-10 h-10 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center">
-              <FiTag size={20} />
-            </div>
-            <div>
-              <p className="text-xs font-bold text-stone-400 uppercase tracking-tighter">
-                Sản phẩm chờ duyệt
-              </p>
-              <p className="text-xl font-black text-stone-900">
-                {sellerData?.overview?.pendingProducts || 0}
-              </p>
-            </div>
-          </div>
-          <div className="p-5 rounded-xl bg-white border border-stone-100 flex items-center gap-4">
-            <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
-              <FiBarChart2 size={20} />
-            </div>
-            <div>
-              <p className="text-xs font-bold text-stone-400 uppercase tracking-tighter">
-                Lượt xem shop
-              </p>
-              <p className="text-xl font-black text-stone-900">
-                {sellerData?.overview?.shopViews || 0}
-              </p>
-            </div>
-          </div>
-        </div>
       )}
 
       {isSellerMode &&
@@ -266,15 +310,16 @@ const DashboardPage = () => {
                 {sellerData.actionRequiredProducts.map((product) => (
                   <div
                     key={product.id}
-                    className="p-4 flex items-center justify-between hover:bg-red-50/50 transition-colors"
+                    className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-red-50/50 transition-colors"
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-start sm:items-center gap-3">
                       <div className="w-10 h-10 bg-stone-100 rounded-lg overflow-hidden relative shrink-0 border border-stone-200">
                         {product.thumbnailUrl ? (
                           <Image
                             src={product.thumbnailUrl}
                             alt={product.name}
-                            className="w-full h-full object-cover"
+                            fill
+                            className="object-cover"
                           />
                         ) : (
                           <FiPackage className="w-5 h-5 text-stone-400 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
@@ -300,6 +345,47 @@ const DashboardPage = () => {
           </div>
         )}
 
+      {isSellerMode && lowStockAlerts && lowStockAlerts.data.length > 0 && (
+        <div className="mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <FiAlertTriangle className="text-amber-500" size={20} />
+            <h3 className="text-lg font-bold text-stone-900">Sản phẩm sắp hết hàng</h3>
+          </div>
+          <div className="bg-amber-50/50 border border-amber-100 rounded-xl overflow-hidden shadow-sm">
+            <div className="divide-y divide-amber-100/50">
+              {lowStockAlerts.data.map((alert) => (
+                <div
+                  key={alert.variantId}
+                  className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-amber-50 transition-colors"
+                >
+                  <div className="flex items-start sm:items-center gap-4">
+                    <div className="w-10 h-10 bg-white rounded-lg overflow-hidden relative shrink-0 border border-amber-200 flex items-center justify-center">
+                      <FiPackage className="w-5 h-5 text-stone-400" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-stone-800">{alert.variantName}</p>
+                      <p className="text-xs text-amber-700 font-medium mt-0.5">SKU: {alert.sku}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-6 justify-between sm:justify-end w-full sm:w-auto">
+                    <div className="text-left sm:text-right">
+                      <p className="text-xs text-stone-500 mb-0.5">Tồn kho hiện tại</p>
+                      <p className="text-sm font-bold text-amber-600">{alert.stockQty}</p>
+                    </div>
+                    <Link
+                      href={`/dashboard/kho-hang`}
+                      className="shrink-0 px-4 py-2 bg-amber-500 text-white hover:bg-amber-600 rounded-lg text-xs font-bold transition-colors shadow-sm shadow-amber-500/20"
+                    >
+                      Nhập thêm
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Recent Activity */}
         <div className="space-y-4">
@@ -308,7 +394,7 @@ const DashboardPage = () => {
               {isSellerMode ? 'Đơn hàng mới' : 'Đơn hàng gần đây'}
             </h3>
             <Link
-              href={isSellerMode ? '/dashboard/don-hang-shop' : '/dashboard/don-hang'}
+              href={isSellerMode ? '/dashboard/cua-hang/don-hang' : '/dashboard/don-hang'}
               className="text-sm text-green-600 hover:text-green-700 font-semibold flex items-center gap-1 group p-2 -mr-2"
             >
               Xem tất cả <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
@@ -321,9 +407,9 @@ const DashboardPage = () => {
                 {recentOrders.slice(0, 4).map((order) => (
                   <div
                     key={order.orderId}
-                    className="p-4 flex items-center justify-between hover:bg-stone-50 transition-colors"
+                    className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-stone-50 transition-colors"
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-start sm:items-center gap-3">
                       <div className="w-10 h-10 bg-green-50 text-green-600 rounded-xl flex items-center justify-center shrink-0">
                         <FiShoppingBag size={18} />
                       </div>
@@ -334,13 +420,11 @@ const DashboardPage = () => {
                         </p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-sm font-black text-stone-900">
+                    <div className="text-left sm:text-right flex flex-col items-start sm:items-end justify-center">
+                      <p className="text-sm font-black text-stone-900 mb-1">
                         {formatCurrency(order.totalAmount)}
                       </p>
-                      <p className="text-[10px] font-bold text-stone-400 uppercase">
-                        {order.status}
-                      </p>
+                      <OrderStatusBadge status={order.status} />
                     </div>
                   </div>
                 ))}
@@ -364,12 +448,15 @@ const DashboardPage = () => {
             {isSellerMode ? 'Công cụ bán hàng' : 'Thông tin tài khoản'}
           </h3>
           <div className="bg-white border border-stone-100 rounded-xl p-6 space-y-4 shadow-sm">
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600">
+            <Link
+              href={isSellerMode ? '/dashboard/cua-hang' : '/dashboard/ho-so'}
+              className="flex items-center gap-4 p-2 -mx-2 rounded-xl hover:bg-stone-50 transition-colors group"
+            >
+              <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600 shrink-0">
                 <FiUser size={18} />
               </div>
-              <div>
-                <p className="text-sm font-bold text-stone-800">
+              <div className="flex-1">
+                <p className="text-sm font-bold text-stone-800 group-hover:text-green-700 transition-colors">
                   {isSellerMode ? 'Cài đặt Shop' : 'Cập nhật hồ sơ'}
                 </p>
                 <p className="text-xs text-stone-500">
@@ -378,20 +465,19 @@ const DashboardPage = () => {
                     : 'Hoàn thiện thông tin để nhận ưu đãi cá nhân.'}
                 </p>
               </div>
-              <Link
-                href={isSellerMode ? '/dashboard/cua-hang' : '/dashboard/ho-so'}
-                className="ml-auto w-12 h-12 flex items-center justify-center hover:bg-stone-50 rounded-full"
-                aria-label={isSellerMode ? 'Cài đặt Shop' : 'Cập nhật hồ sơ'}
-              >
+              <div className="w-8 h-8 flex items-center justify-center text-stone-400 group-hover:text-green-600 group-hover:translate-x-1 transition-all">
                 <FiArrowRight size={16} />
-              </Link>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
+              </div>
+            </Link>
+            <Link
+              href={isSellerMode ? '/dashboard/cua-hang/chinh-sach' : '/dashboard/bao-mat'}
+              className="flex items-center gap-4 p-2 -mx-2 rounded-xl hover:bg-stone-50 transition-colors group"
+            >
+              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 shrink-0">
                 <FiShield size={18} />
               </div>
-              <div>
-                <p className="text-sm font-bold text-stone-800">
+              <div className="flex-1">
+                <p className="text-sm font-bold text-stone-800 group-hover:text-blue-700 transition-colors">
                   {isSellerMode ? 'Chính sách bán hàng' : 'Bảo mật'}
                 </p>
                 <p className="text-xs text-stone-500">
@@ -400,14 +486,10 @@ const DashboardPage = () => {
                     : 'Thay đổi mật khẩu định kỳ để bảo vệ tài khoản.'}
                 </p>
               </div>
-              <Link
-                href={isSellerMode ? '/dashboard/cua-hang/chinh-sach' : '/dashboard/bao-mat'}
-                className="ml-auto w-12 h-12 flex items-center justify-center hover:bg-stone-50 rounded-full"
-                aria-label={isSellerMode ? 'Chính sách bán hàng' : 'Bảo mật'}
-              >
+              <div className="w-8 h-8 flex items-center justify-center text-stone-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all">
                 <FiArrowRight size={16} />
-              </Link>
-            </div>
+              </div>
+            </Link>
           </div>
         </div>
       </div>

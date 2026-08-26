@@ -43,19 +43,28 @@ export const useSellerJournalMutations = (productId: number) => {
     mutationFn: ({ data, files }: { data: CreateJournalRequest; files?: File[] }) =>
       sellerProductApi.createJournal(productId, data, files),
     onSuccess: () => {
-      toast.success('Tạo bước nhật ký thành công');
+      toast.success('Tạo bước nhật ký thành công', { id: 'create-journal' });
       invalidate();
     },
     onError: (error: ApiError) => {
-      toast.error(error?.response?.data?.message || 'Có lỗi khi tạo bước nhật ký');
+      toast.error(error?.response?.data?.message || 'Có lỗi khi tạo bước nhật ký', {
+        id: 'create-journal-error',
+      });
     },
   });
 
   const updateJournalMutation = useMutation({
-    mutationFn: ({ journalId, data }: { journalId: number; data: UpdateJournalRequest }) =>
-      sellerProductApi.updateJournal(productId, journalId, data),
+    mutationFn: ({
+      journalId,
+      data,
+      files,
+    }: {
+      journalId: number;
+      data: UpdateJournalRequest;
+      files?: File[];
+    }) => sellerProductApi.updateJournal(productId, journalId, data, files),
     onSuccess: () => {
-      toast.success('Cập nhật bước nhật ký thành công');
+      toast.success('Cập nhật bước nhật ký thành công', { id: 'update-journal' });
       invalidate();
     },
     onError: (error: ApiError) => {

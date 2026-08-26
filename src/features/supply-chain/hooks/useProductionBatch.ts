@@ -143,6 +143,16 @@ export const useProductionBatch = () => {
     });
   };
 
+  const useGetSystemTemplates = (categoryId?: number) => {
+    return useQuery({
+      queryKey: ['process-templates', 'system', categoryId],
+      queryFn: async () => {
+        const response = await supplyChainApi.getSystemTemplates(categoryId);
+        return response.data;
+      },
+    });
+  };
+
   const useCreateProcessTemplate = () => {
     return useMutation({
       mutationFn: async (data: ICreateProcessTemplateReq) => {
@@ -168,6 +178,7 @@ export const useProductionBatch = () => {
     useGetLotQrCodes,
     useGetLotAuditLogs,
     useGetProcessTemplates,
+    useGetSystemTemplates,
     useCreateProcessTemplate,
   };
 };

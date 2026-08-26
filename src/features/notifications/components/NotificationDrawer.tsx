@@ -7,6 +7,7 @@ import { FiX, FiCheckCircle, FiTrash2, FiBellOff } from 'react-icons/fi';
 import { useInfiniteNotifications, useNotificationMutations } from '../hooks/useNotifications';
 import { NotificationItem, NotificationSkeleton } from './NotificationItem';
 import { Button } from '@/components/ui/AppButton';
+import { NotificationDetailDialog } from './NotificationDetailDialog';
 
 interface NotificationDrawerProps {
   isOpen: boolean;
@@ -23,6 +24,8 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({ isOpen, 
   } = useInfiniteNotifications();
 
   const [mounted, setMounted] = useState(false);
+  const [selectedNotificationId, setSelectedNotificationId] = useState<string | undefined>();
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -162,6 +165,10 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({ isOpen, 
                       notification={notification}
                       onRead={markAsRead}
                       onDelete={deleteOne}
+                      onSelect={(id) => {
+                        setSelectedNotificationId(id);
+                        setIsDetailOpen(true);
+                      }}
                     />
                   ))}
 
@@ -192,6 +199,16 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({ isOpen, 
               )}
             </div>
           </motion.div>
+
+          {/* Dialog */}
+          <NotificationDetailDialog
+            isOpen={isDetailOpen}
+            onClose={() => {
+              setIsDetailOpen(false);
+              setTimeout(() => setSelectedNotificationId(undefined), 200);
+            }}
+            notificationId={selectedNotificationId}
+          />
         </>
       )}
     </AnimatePresence>,

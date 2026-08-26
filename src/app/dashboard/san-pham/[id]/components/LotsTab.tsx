@@ -9,29 +9,42 @@ import { Product } from '@/features/products/types/productTypes';
 import { toast } from 'react-hot-toast';
 import { format } from 'date-fns';
 import { LotStatusBadge } from '@/features/supply-chain/components/LotStatusBadge';
+import { Pagination } from '@/components/ui/Pagination';
 
 interface LotsTabProps {
   product: Product;
+  onNextTab?: (
+    tab: 'info' | 'variants' | 'images' | 'process_templates' | 'lots' | 'journals',
+  ) => void;
 }
 
 export const LotsTab = ({ product }: LotsTabProps) => {
   const router = useRouter();
   const [lots, setLots] = useState<ISupplyChainLot[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [page] = useState(1);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
 
   const fetchLots = React.useCallback(async () => {
     try {
       setIsLoading(true);
-      const res = await supplyChainApi.getSellerLots({ page, size: 10, productId: product.id });
+      const res = await supplyChainApi.getSellerLots({
+        page,
+        size: pageSize,
+        productId: product.id,
+      });
       setLots(res.data.content);
+      setTotalPages(res.data.totalPages || 0);
+      setTotalElements(res.data.totalElements || 0);
     } catch (error) {
       console.error(error);
       toast.error('Không thể tải danh sách lô hàng');
     } finally {
       setIsLoading(false);
     }
-  }, [page, product.id]);
+  }, [page, pageSize, product.id]);
 
   useEffect(() => {
     fetchLots();
@@ -48,13 +61,19 @@ export const LotsTab = ({ product }: LotsTabProps) => {
   }
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+    <div
+      id="tour-lots-tab-content"
+      className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300"
+    >
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div>
           <h3 className="text-lg font-black text-stone-900">Lịch sử sản xuất & Lô hàng</h3>
           <p className="text-sm text-stone-500">Quản lý các đợt sản xuất và truy xuất nguồn gốc</p>
         </div>
-        <Link href="/dashboard/lo-san-xuat/tao-moi">
+        <Link
+          href={`/dashboard/lo-san-xuat/tao-moi?productId=${product.id}`}
+          id="tour-lots-tab-create-btn"
+        >
           <Button variant="primary" leftIcon={<FiPlus size={18} />} className="rounded-xl shrink-0">
             Tạo lô hàng mới
           </Button>
@@ -71,7 +90,7 @@ export const LotsTab = ({ product }: LotsTabProps) => {
             Sản phẩm này chưa được gán lô sản xuất nào. Khởi tạo lô hàng đầu tiên để quản lý tồn kho
             và truy xuất.
           </p>
-          <Link href="/dashboard/lo-san-xuat/tao-moi">
+          <Link href={`/dashboard/lo-san-xuat/tao-moi?productId=${product.id}`}>
             <Button variant="primary" leftIcon={<FiPlus size={18} />}>
               Khởi tạo lô hàng
             </Button>
@@ -115,11 +134,30 @@ export const LotsTab = ({ product }: LotsTabProps) => {
               </div>
 
               <div className="mt-4 pt-4 border-t border-stone-100 flex justify-between items-center text-xs">
-                <span className="text-stone-400">{lot.steps?.length || 0} công đoạn</span>
+                <span className="text-stone-400">
+                  {lot.eventCount ?? lot.events?.length ?? 0}/{lot.templateSteps?.length || 0} công
+                  đoạn
+                </span>
                 <span className="text-emerald-600 font-medium">Chi tiết &rarr;</span>
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {totalPages > 0 && (
+        <div className="pt-6 mt-6 border-t border-stone-100 flex justify-center">
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            pageSize={pageSize}
+            totalElements={totalElements}
+            onPageChange={setPage}
+            onPageSizeChange={(size) => {
+              setPageSize(size);
+              setPage(1);
+            }}
+          />
         </div>
       )}
     </div>

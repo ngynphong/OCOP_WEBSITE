@@ -10,6 +10,9 @@ import { ProductImage } from '@/features/products/types/productTypes';
 
 interface ImagesTabProps {
   productId: number;
+  onNextTab?: (
+    tab: 'info' | 'variants' | 'images' | 'process_templates' | 'lots' | 'journals',
+  ) => void;
 }
 
 export function ImagesTab({ productId }: ImagesTabProps) {
@@ -21,7 +24,20 @@ export function ImagesTab({ productId }: ImagesTabProps) {
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) await uploadImage(file);
+    if (file) {
+      await uploadImage(file);
+      window.dispatchEvent(
+        new CustomEvent('trigger-tour-next-step', {
+          detail: {
+            elementId: 'tour-process-tab',
+            title: 'Tải ảnh thành công',
+            description:
+              'Ảnh đã được tải lên! Nếu đã đủ ảnh, hãy chuyển sang thẻ "Quy trình mẫu" để thiết lập các bước sản xuất chuẩn nhé.',
+            nextTabId: 'process_templates',
+          },
+        }),
+      );
+    }
     e.target.value = '';
   };
 
@@ -30,7 +46,10 @@ export function ImagesTab({ productId }: ImagesTabProps) {
   return (
     <div className="space-y-4">
       {/* Upload button */}
-      <label className="flex items-center justify-center gap-2 w-full py-4 border-2 border-dashed border-stone-200 rounded-xl cursor-pointer hover:border-emerald-300 transition">
+      <label
+        id="tour-images-upload"
+        className="flex items-center justify-center gap-2 w-full py-4 border-2 border-dashed border-stone-200 rounded-xl cursor-pointer hover:border-emerald-300 transition"
+      >
         <span className="text-sm font-bold text-stone-400">
           {isUploading ? ' Đang upload...' : '+ Upload ảnh mới'}
         </span>

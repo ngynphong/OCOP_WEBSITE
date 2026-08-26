@@ -20,6 +20,9 @@ import { ShoppingBag } from 'lucide-react';
 
 interface VariantsTabProps {
   productId: number;
+  onNextTab?: (
+    tab: 'info' | 'variants' | 'images' | 'process_templates' | 'lots' | 'journals',
+  ) => void;
 }
 
 export function VariantsTab({ productId }: VariantsTabProps) {
@@ -52,6 +55,28 @@ export function VariantsTab({ productId }: VariantsTabProps) {
 
   const isWholesaleEnabled = useWatch({ control, name: 'isWholesaleEnabled' });
   const wholesalePrices = useWatch({ control, name: 'wholesalePrices' });
+  const variantName = useWatch({ control, name: 'variantName' });
+
+  React.useEffect(() => {
+    if (variantName) {
+      const generatedSku = variantName
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toUpperCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^A-Z0-9-]/g, '');
+
+      setValue('sku', generatedSku);
+    }
+  }, [variantName, setValue]);
+
+  React.useEffect(() => {
+    if (showForm) {
+      setTimeout(() => {
+        window.dispatchEvent(new Event('trigger-onboarding-tour-auto'));
+      }, 500);
+    }
+  }, [showForm]);
 
   const onSubmit = async (formData: CreateVariantFormData) => {
     // Parse optionValues string (e.g., "Color: Green, Size: L") into Record<string, string>
@@ -73,12 +98,24 @@ export function VariantsTab({ productId }: VariantsTabProps) {
     });
     reset();
     setShowForm(false);
+
+    window.dispatchEvent(
+      new CustomEvent('trigger-tour-next-step', {
+        detail: {
+          elementId: 'tour-images-tab',
+          title: 'Thêm biến thể thành công',
+          description:
+            'Biến thể đã được lưu! Bây giờ, hãy bấm sang thẻ "Hình ảnh" (hoặc nút "Chuyển trang") để tải lên các bức ảnh đẹp cho sản phẩm.',
+          nextTabId: 'images',
+        },
+      }),
+    );
   };
 
   if (isPending) return <div className="h-32 bg-stone-100 rounded-xl animate-pulse" />;
 
   return (
-    <div className="space-y-4">
+    <div id="tour-variants-tab-content" className="space-y-4">
       {/* Variants list */}
       {variants.length === 0 ? (
         <div className="flex items-center justify-center h-24 bg-stone-50 rounded-xl border border-dashed border-stone-200">
@@ -279,6 +316,7 @@ export function VariantsTab({ productId }: VariantsTabProps) {
       {/* Add variant form */}
       {showForm ? (
         <form
+          id="tour-variant-form"
           onSubmit={handleSubmit(onSubmit)}
           className="border border-stone-100 rounded-xl p-5 space-y-4 bg-stone-50/50"
         >
@@ -289,6 +327,7 @@ export function VariantsTab({ productId }: VariantsTabProps) {
                 Tên biến thể <span className="text-red-500">*</span>
               </label>
               <input
+                id="tour-variant-form-name"
                 {...register('variantName')}
                 placeholder="250g – Trà xanh"
                 className="w-full border border-stone-200 text-gray-700 rounded-xl px-3 py-2 text-sm outline-none focus:border-emerald-400 transition"
@@ -300,6 +339,7 @@ export function VariantsTab({ productId }: VariantsTabProps) {
             <div>
               <label className="text-xs font-bold text-stone-500 block mb-1">SKU</label>
               <input
+                id="tour-variant-form-sku"
                 {...register('sku')}
                 placeholder="TEA-250G-GREEN"
                 className="w-full border border-stone-200 text-gray-700 rounded-xl px-3 py-2 text-sm outline-none focus:border-emerald-400 transition"
@@ -316,6 +356,7 @@ export function VariantsTab({ productId }: VariantsTabProps) {
                 control={control}
                 render={({ field: { onChange, value, ...rest } }) => (
                   <input
+                    id="tour-variant-form-price"
                     {...rest}
                     type="text"
                     value={formatVNDInput(value)}
@@ -334,6 +375,7 @@ export function VariantsTab({ productId }: VariantsTabProps) {
                 control={control}
                 render={({ field: { onChange, value, ...rest } }) => (
                   <input
+                    id="tour-variant-form-comparePrice"
                     {...rest}
                     type="text"
                     value={formatVNDInput(value)}
@@ -351,6 +393,7 @@ export function VariantsTab({ productId }: VariantsTabProps) {
                 control={control}
                 render={({ field: { onChange, value, ...rest } }) => (
                   <input
+                    id="tour-variant-form-costPrice"
                     {...rest}
                     type="text"
                     value={formatVNDInput(value)}
@@ -366,7 +409,7 @@ export function VariantsTab({ productId }: VariantsTabProps) {
           <div className="grid grid-cols-3 gap-4">
             <div>
               <label className="text-xs font-bold text-stone-500 block mb-1">Tồn kho</label>
-              <div className="relative group">
+              <div id="tour-variant-form-stock" className="relative group">
                 <input
                   type="number"
                   {...register('stockQty', { valueAsNumber: true })}
@@ -414,7 +457,7 @@ export function VariantsTab({ productId }: VariantsTabProps) {
 
           <div className="flex flex-col gap-4 p-4 bg-white rounded-xl border border-stone-200">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
+              <div id="tour-variant-form-default" className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   id="isDefault"
@@ -429,7 +472,7 @@ export function VariantsTab({ productId }: VariantsTabProps) {
                 </label>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div id="tour-variant-form-wholesale" className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   id="isWholesaleEnabled"
@@ -545,6 +588,7 @@ export function VariantsTab({ productId }: VariantsTabProps) {
         </form>
       ) : (
         <button
+          id="tour-variants-add-btn"
           onClick={() => setShowForm(true)}
           className="w-full py-3 border border-dashed border-stone-200 rounded-xl text-sm font-bold text-stone-400 hover:border-emerald-300 hover:text-emerald-600 transition cursor-pointer"
         >

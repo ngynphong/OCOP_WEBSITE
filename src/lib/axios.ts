@@ -18,7 +18,7 @@ const updateLoadingState = (delta: number) => {
 
 const axiosClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
-  timeout: 10000,
+  timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -29,7 +29,7 @@ const axiosClient = axios.create({
 
 const publicAxiosClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
-  timeout: 10000,
+  timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
   },

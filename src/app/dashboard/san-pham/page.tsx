@@ -18,6 +18,7 @@ import { AiChatWidget } from '@/features/products/components/ProductDetail/AiCha
 import { FiZap } from 'react-icons/fi';
 import { cn } from '@/lib/utils';
 import { Eye } from 'lucide-react';
+import { Pagination } from '@/components/ui/Pagination';
 
 // ─── Status config ────────────────────────────────────────────────────────────
 
@@ -64,6 +65,7 @@ export default function SellerProductsPage() {
 
   const products: Product[] = data?.data?.items ?? [];
   const total = data?.data?.totalElement ?? 0;
+  const totalPages = data?.data?.totalPage ?? Math.ceil(total / (params.pageSize || 10));
 
   const handleDelete = async (id: number) => {
     await deleteProduct(id);
@@ -88,6 +90,7 @@ export default function SellerProductsPage() {
           <p className="text-xs text-stone-400 mt-1">{total} sản phẩm</p>
         </div>
         <Button
+          id="tour-add-product"
           onClick={() => router.push('/dashboard/san-pham/tao-moi')}
           variant="primary"
           leftIcon={<FiPlus size={16} />}
@@ -190,206 +193,224 @@ export default function SellerProductsPage() {
               </Button>
             </div>
           ) : (
-            products.map((product) => {
-              const extendedProduct = product as Product & {
-                categoryName?: string;
-                provinceName?: string;
-              };
-              const categoryName = extendedProduct.categoryName || product.category?.name;
+            <>
+              {products.map((product) => {
+                const extendedProduct = product as Product & {
+                  categoryName?: string;
+                  provinceName?: string;
+                };
+                const categoryName = extendedProduct.categoryName || product.category?.name;
 
-              return (
-                <div
-                  key={product.id}
-                  className={cn(
-                    'flex flex-col sm:flex-row sm:items-start gap-4 p-5 bg-white rounded-xl border transition duration-300 relative',
-                    isSelected(product.id)
-                      ? 'border-emerald-500 shadow-md ring-1 ring-emerald-500/20'
-                      : 'border-stone-100 hover:border-emerald-200',
-                  )}
-                >
-                  {/* Selection Checkbox */}
-                  <div className="absolute left-3 top-3 z-10">
-                    <input
-                      type="checkbox"
-                      checked={isSelected(product.id)}
-                      onChange={() => toggleProductSelection(product)}
-                      className="w-4 h-4 rounded border-stone-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
-                    />
-                  </div>
-
-                  {/* Thumbnail */}
-                  <div className="relative w-full sm:w-24 sm:h-24 aspect-square sm:aspect-auto rounded-xl bg-stone-50 overflow-hidden shrink-0 border border-stone-100">
-                    {product?.thumbnailUrl ? (
-                      <Image
-                        src={product.thumbnailUrl}
-                        alt={product.name}
-                        fill
-                        sizes="96px"
-                        className="object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center text-stone-300 text-xs font-bold gap-1">
-                        <FiSlash size={16} />
-                        <span>No IMG</span>
-                      </div>
+                return (
+                  <div
+                    key={product.id}
+                    className={cn(
+                      'flex flex-col sm:flex-row sm:items-start gap-4 p-5 bg-white rounded-xl border transition duration-300 relative mb-3',
+                      isSelected(product.id)
+                        ? 'border-emerald-500 shadow-md ring-1 ring-emerald-500/20'
+                        : 'border-stone-100 hover:border-emerald-200',
                     )}
-                  </div>
-
-                  {/* Info */}
-                  <div className="flex-1 min-w-0 w-full">
-                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
-                      <div className="min-w-0">
-                        <p
-                          className="font-bold text-stone-800 text-base line-clamp-1"
-                          title={product.name}
-                        >
-                          {product.name}
-                        </p>
-                        <div className="flex items-center flex-wrap gap-1.5 mt-1.5 text-xs">
-                          {categoryName && (
-                            <span className="font-semibold text-stone-600 bg-stone-100 px-2 py-0.5 rounded-full">
-                              {categoryName}
-                            </span>
-                          )}
-                          {product.ocopStar > 0 && (
-                            <span className="font-bold text-amber-500 bg-amber-50 px-2 py-0.5 rounded-full flex items-center gap-0.5">
-                              {'★'.repeat(product.ocopStar)}
-                            </span>
-                          )}
-                          {extendedProduct.provinceName && (
-                            <span className="text-stone-500">• {extendedProduct.provinceName}</span>
-                          )}
-                        </div>
-                      </div>
-                      {/* Status */}
-                      <span
-                        className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold whitespace-nowrap shrink-0 border ${STATUS_COLORS[product.status]}`}
-                      >
-                        {STATUS_LABELS[product.status]}
-                      </span>
+                  >
+                    {/* Selection Checkbox */}
+                    <div className="absolute left-3 top-3 z-10">
+                      <input
+                        type="checkbox"
+                        checked={isSelected(product.id)}
+                        onChange={() => toggleProductSelection(product)}
+                        className="w-4 h-4 rounded border-stone-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                      />
                     </div>
 
-                    <div className="flex flex-col sm:flex-row sm:items-end justify-between mt-4 gap-4">
-                      <div>
-                        {/* Pricing */}
-                        <div className="font-black text-emerald-600 text-lg">
-                          {product.minPrice === product.maxPrice
-                            ? `${product.minPrice?.toLocaleString('vi-VN')} đ`
-                            : `${product.minPrice?.toLocaleString('vi-VN')} đ - ${product.maxPrice?.toLocaleString('vi-VN')} đ`}
+                    {/* Thumbnail */}
+                    <div className="relative w-full sm:w-24 sm:h-24 aspect-square sm:aspect-auto rounded-xl bg-stone-50 overflow-hidden shrink-0 border border-stone-100">
+                      {product?.thumbnailUrl ? (
+                        <Image
+                          src={product.thumbnailUrl}
+                          alt={product.name}
+                          fill
+                          sizes="96px"
+                          className="object-cover"
+                          loading="eager"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex flex-col items-center justify-center text-stone-300 text-xs font-bold gap-1">
+                          <FiSlash size={16} />
+                          <span>No IMG</span>
                         </div>
-                        {/* Stats */}
-                        <div className="flex items-center gap-3 mt-1.5 text-xs text-stone-500 font-medium">
-                          <span className="flex items-center gap-1" title="Đánh giá trung bình">
-                            <span className="text-amber-500">
-                              <RiStarFill size={14} />
-                            </span>
-                            {product.ratingAvg > 0 ? product.ratingAvg.toFixed(1) : 'Chưa có'}
-                            {product.totalReviews > 0 && (
-                              <span className="text-stone-400">({product.totalReviews})</span>
+                      )}
+                    </div>
+
+                    {/* Info */}
+                    <div className="flex-1 min-w-0 w-full">
+                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <p
+                            className="font-bold text-stone-800 text-base line-clamp-1"
+                            title={product.name}
+                          >
+                            {product.name}
+                          </p>
+                          <div className="flex items-center flex-wrap gap-1.5 mt-1.5 text-xs">
+                            {categoryName && (
+                              <span className="font-semibold text-stone-600 bg-stone-100 px-2 py-0.5 rounded-full">
+                                {categoryName}
+                              </span>
                             )}
-                          </span>
-                          <span className="w-1 h-1 rounded-full bg-stone-300" />
-                          <span title="Số lượng đã bán">
-                            Đã bán:{' '}
-                            <span className="text-stone-700 font-bold">
-                              {product.soldCount || 0}
-                            </span>
-                          </span>
-                          <span className="w-1 h-1 rounded-full bg-stone-300" />
-                          <span title="Lượt xem">
-                            Lượt xem:{' '}
-                            <span className="text-stone-700 font-bold">
-                              {product.viewCount || 0}
-                            </span>
-                          </span>
+                            {product.ocopStar > 0 && (
+                              <span className="font-bold text-amber-500 bg-amber-50 px-2 py-0.5 rounded-full flex items-center gap-0.5">
+                                {'★'.repeat(product.ocopStar)}
+                              </span>
+                            )}
+                            {extendedProduct.provinceName && (
+                              <span className="text-stone-500">
+                                • {extendedProduct.provinceName}
+                              </span>
+                            )}
+                          </div>
                         </div>
+                        {/* Status */}
+                        <span
+                          className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold whitespace-nowrap shrink-0 border ${STATUS_COLORS[product.status]}`}
+                        >
+                          {STATUS_LABELS[product.status]}
+                        </span>
                       </div>
 
-                      {/* Actions */}
-                      <div className="flex items-center gap-1.5 shrink-0 bg-stone-50 p-1.5 rounded-xl border border-stone-100">
-                        {/* Flash Sale Action */}
-                        {product.status === 'APPROVED' && (
+                      <div className="flex flex-col sm:flex-row sm:items-end justify-between mt-4 gap-4">
+                        <div>
+                          {/* Pricing */}
+                          <div className="font-black text-emerald-600 text-lg">
+                            {product.minPrice === product.maxPrice
+                              ? `${product.minPrice?.toLocaleString('vi-VN')} đ`
+                              : `${product.minPrice?.toLocaleString('vi-VN')} đ - ${product.maxPrice?.toLocaleString('vi-VN')} đ`}
+                          </div>
+                          {/* Stats */}
+                          <div className="flex items-center gap-3 mt-1.5 text-xs text-stone-500 font-medium">
+                            <span className="flex items-center gap-1" title="Đánh giá trung bình">
+                              <span className="text-amber-500">
+                                <RiStarFill size={14} />
+                              </span>
+                              {product.ratingAvg > 0 ? product.ratingAvg.toFixed(1) : 'Chưa có'}
+                              {product.totalReviews > 0 && (
+                                <span className="text-stone-400">({product.totalReviews})</span>
+                              )}
+                            </span>
+                            <span className="w-1 h-1 rounded-full bg-stone-300" />
+                            <span title="Số lượng đã bán">
+                              Đã bán:{' '}
+                              <span className="text-stone-700 font-bold">
+                                {product.soldCount || 0}
+                              </span>
+                            </span>
+                            <span className="w-1 h-1 rounded-full bg-stone-300" />
+                            <span title="Lượt xem">
+                              Lượt xem:{' '}
+                              <span className="text-stone-700 font-bold">
+                                {product.viewCount || 0}
+                              </span>
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex items-center gap-1.5 shrink-0 bg-stone-50 p-1.5 rounded-xl border border-stone-100">
+                          {/* Flash Sale Action */}
+                          {product.status === 'APPROVED' && (
+                            <button
+                              onClick={() => {
+                                setSelectedProducts([product]);
+                                setIsFlashSaleDrawerOpen(true);
+                              }}
+                              title="Tham gia Flash Sale"
+                              className="p-2 rounded-lg text-red-500 hover:bg-red-50 hover:shadow-sm transition cursor-pointer"
+                            >
+                              <FiZap size={16} className="fill-current" />
+                            </button>
+                          )}
+
                           <button
-                            onClick={() => {
-                              setSelectedProducts([product]);
-                              setIsFlashSaleDrawerOpen(true);
-                            }}
-                            title="Tham gia Flash Sale"
-                            className="p-2 rounded-lg text-red-500 hover:bg-red-50 hover:shadow-sm transition cursor-pointer"
+                            onClick={() => router.push(`/dashboard/san-pham/${product.id}`)}
+                            title="Xem chi tiết"
+                            className="p-2 rounded-lg text-stone-400 hover:bg-white hover:shadow-sm hover:text-emerald-600 transition cursor-pointer"
                           >
-                            <FiZap size={16} className="fill-current" />
+                            <Eye size={16} />
                           </button>
-                        )}
 
-                        <button
-                          onClick={() => router.push(`/dashboard/san-pham/${product.id}`)}
-                          title="Xem chi tiết"
-                          className="p-2 rounded-lg text-stone-400 hover:bg-white hover:shadow-sm hover:text-emerald-600 transition cursor-pointer"
-                        >
-                          <Eye size={16} />
-                        </button>
+                          {(product.status === 'DRAFT' || product.status === 'REJECTED') && (
+                            <button
+                              onClick={() => submitProduct(product.id)}
+                              disabled={isSubmitting}
+                              title="Gửi duyệt"
+                              className="p-2 rounded-lg text-amber-500 hover:bg-white hover:shadow-sm transition disabled:opacity-30 cursor-pointer"
+                            >
+                              <FiSend size={16} />
+                            </button>
+                          )}
 
-                        {(product.status === 'DRAFT' || product.status === 'REJECTED') && (
+                          {product.status === 'PENDING_REVIEW' && (
+                            <button
+                              onClick={() => withdrawProduct(product.id)}
+                              disabled={isWithdrawing}
+                              title="Rút lại"
+                              className="p-2 rounded-lg text-stone-400 hover:bg-white hover:shadow-sm hover:text-stone-600 transition disabled:opacity-30 cursor-pointer"
+                            >
+                              <FiSlash size={16} />
+                            </button>
+                          )}
+
+                          {product.status === 'APPROVED' && (
+                            <button
+                              onClick={() => discontinueProduct(product.id)}
+                              disabled={isDiscontinuing}
+                              title="Ngừng kinh doanh"
+                              className="p-2 rounded-lg text-stone-400 hover:bg-white hover:shadow-sm hover:text-stone-600 transition disabled:opacity-30 cursor-pointer"
+                            >
+                              <FiSlash size={16} />
+                            </button>
+                          )}
+
                           <button
-                            onClick={() => submitProduct(product.id)}
-                            disabled={isSubmitting}
-                            title="Gửi duyệt"
-                            className="p-2 rounded-lg text-amber-500 hover:bg-white hover:shadow-sm transition disabled:opacity-30 cursor-pointer"
-                          >
-                            <FiSend size={16} />
-                          </button>
-                        )}
-
-                        {product.status === 'PENDING_REVIEW' && (
-                          <button
-                            onClick={() => withdrawProduct(product.id)}
-                            disabled={isWithdrawing}
-                            title="Rút lại"
+                            onClick={() => duplicateProduct(product.id)}
+                            disabled={isDuplicating}
+                            title="Nhân bản"
                             className="p-2 rounded-lg text-stone-400 hover:bg-white hover:shadow-sm hover:text-stone-600 transition disabled:opacity-30 cursor-pointer"
                           >
-                            <FiSlash size={16} />
+                            <FiCopy size={16} />
                           </button>
-                        )}
 
-                        {product.status === 'APPROVED' && (
-                          <button
-                            onClick={() => discontinueProduct(product.id)}
-                            disabled={isDiscontinuing}
-                            title="Ngừng kinh doanh"
-                            className="p-2 rounded-lg text-stone-400 hover:bg-white hover:shadow-sm hover:text-stone-600 transition disabled:opacity-30 cursor-pointer"
-                          >
-                            <FiSlash size={16} />
-                          </button>
-                        )}
+                          {product.status === 'DRAFT' && (
+                            <div className="w-px h-6 bg-stone-200 mx-0.5" />
+                          )}
 
-                        <button
-                          onClick={() => duplicateProduct(product.id)}
-                          disabled={isDuplicating}
-                          title="Nhân bản"
-                          className="p-2 rounded-lg text-stone-400 hover:bg-white hover:shadow-sm hover:text-stone-600 transition disabled:opacity-30 cursor-pointer"
-                        >
-                          <FiCopy size={16} />
-                        </button>
-
-                        {product.status === 'DRAFT' && (
-                          <div className="w-px h-6 bg-stone-200 mx-0.5" />
-                        )}
-
-                        {product.status === 'DRAFT' && (
-                          <button
-                            onClick={() => setConfirmDelete(product.id)}
-                            title="Xóa"
-                            className="p-2 rounded-lg text-red-400 hover:bg-red-50 hover:text-red-500 transition cursor-pointer"
-                          >
-                            <FiTrash2 size={16} />
-                          </button>
-                        )}
+                          {product.status === 'DRAFT' && (
+                            <button
+                              onClick={() => setConfirmDelete(product.id)}
+                              title="Xóa"
+                              className="p-2 rounded-lg text-red-400 hover:bg-red-50 hover:text-red-500 transition cursor-pointer"
+                            >
+                              <FiTrash2 size={16} />
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              );
-            })
+                );
+              })}
+
+              <div className="pt-4 border-t border-stone-100">
+                <Pagination
+                  currentPage={params.pageNo || 1}
+                  totalPages={totalPages}
+                  pageSize={params.pageSize || 10}
+                  totalElements={total}
+                  onPageChange={(page) => setParams((p) => ({ ...p, pageNo: page }))}
+                  onPageSizeChange={(size) =>
+                    setParams((p) => ({ ...p, pageSize: size, pageNo: 1 }))
+                  }
+                />
+              </div>
+            </>
           )}
         </div>
       )}

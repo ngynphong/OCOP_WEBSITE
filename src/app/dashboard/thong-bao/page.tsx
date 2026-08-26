@@ -14,9 +14,12 @@ import { FiBell, FiCheck, FiInbox, FiSettings } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { NotificationDetailDialog } from '@/features/notifications/components/NotificationDetailDialog';
 
 export default function NotificationsPage() {
   const [filterType, setFilterType] = useState('ALL');
+  const [selectedNotificationId, setSelectedNotificationId] = useState<string | undefined>();
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   const {
     data: notifications,
@@ -112,6 +115,10 @@ export default function NotificationsPage() {
                   notification={notification}
                   onRead={markAsRead}
                   onDelete={deleteOne}
+                  onSelect={(id) => {
+                    setSelectedNotificationId(id);
+                    setIsDetailOpen(true);
+                  }}
                 />
               </motion.div>
             ))}
@@ -140,6 +147,15 @@ export default function NotificationsPage() {
           </div>
         )}
       </div>
+
+      <NotificationDetailDialog
+        isOpen={isDetailOpen}
+        onClose={() => {
+          setIsDetailOpen(false);
+          setTimeout(() => setSelectedNotificationId(undefined), 200);
+        }}
+        notificationId={selectedNotificationId}
+      />
     </div>
   );
 }

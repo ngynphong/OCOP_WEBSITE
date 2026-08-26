@@ -9,10 +9,13 @@ import { vi } from 'date-fns/locale';
 import { ISupplyChainLot, TLotStatus } from '@/features/supply-chain/types/supplyChainTypes';
 import { LotStatusBadge } from '@/features/supply-chain/components/LotStatusBadge';
 import Link from 'next/link';
+import { useState } from 'react';
+import { Pagination } from '@/components/ui/Pagination';
 
 export default function ProductionBatchPage() {
+  const [params, setParams] = useState({ page: 0, size: 12 });
   const { useGetProductionBatches } = useProductionBatch();
-  const { data, isLoading } = useGetProductionBatches({ page: 0, size: 20 });
+  const { data, isLoading } = useGetProductionBatches(params);
 
   return (
     <div className="space-y-4 md:space-y-6 pb-20 md:pb-6">
@@ -24,8 +27,11 @@ export default function ProductionBatchPage() {
             Theo dõi quá trình sản xuất và chế biến từ nguyên liệu thành phẩm
           </p>
         </div>
-        <Link href="/dashboard/lo-san-xuat/tao-moi" className="w-full md:w-auto">
-          <Button className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white shadow-md rounded-xl py-6 md:py-2 text-base md:text-sm font-semibold">
+        <Link href="/dashboard/lo-san-xuat/tao-moi" className="w-full md:w-auto block">
+          <Button
+            id="tour-add-lot"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-md rounded-xl h-12 md:h-10 text-base md:text-sm font-semibold"
+          >
             <Plus className="w-5 h-5 mr-2" />
             Bắt đầu Lô Mới
           </Button>
@@ -66,11 +72,11 @@ export default function ProductionBatchPage() {
                 key={lot.id}
                 className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col"
               >
-                <div className="p-4 border-b border-slate-100 flex justify-between items-start">
-                  <div className="mr-2">
-                    <div className="text-sm text-slate-500 mb-1 flex items-center">
+                <div className="p-4 border-b border-slate-100 flex justify-between items-start gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm text-slate-500 mb-1 flex items-center flex-wrap gap-1">
                       Mã lô:{' '}
-                      <span className="font-mono font-medium text-slate-700 ml-1 bg-slate-100 px-1.5 py-0.5 rounded">
+                      <span className="font-mono font-medium text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded truncate">
                         {lot.lotCode}
                       </span>
                     </div>
@@ -78,7 +84,9 @@ export default function ProductionBatchPage() {
                       {lot.productName}
                     </h3>
                   </div>
-                  <LotStatusBadge status={lot.status as TLotStatus} />
+                  <div className="shrink-0">
+                    <LotStatusBadge status={lot.status as TLotStatus} />
+                  </div>
                 </div>
 
                 <div className="p-4 flex-1 space-y-3">
@@ -96,16 +104,21 @@ export default function ProductionBatchPage() {
                         : 'N/A'}
                     </span>
                   </div>
-                  {/* Progress bar minh hoạ (Nên lấy từ ProcessTemplate trong tương lai) */}
+                  {/* Progress bar */}
                   <div className="mt-2">
                     <div className="flex justify-between text-xs text-slate-500 mb-1">
                       <span>Tiến độ</span>
-                      <span>Đang sản xuất</span>
+                      <span>
+                        {lot.eventCount ?? lot.events?.length ?? 0}/{lot.templateSteps?.length || 0}{' '}
+                        công đoạn
+                      </span>
                     </div>
                     <div className="w-full bg-slate-100 rounded-full h-1.5">
                       <div
-                        className="bg-blue-500 h-1.5 rounded-full"
-                        style={{ width: '45%' }}
+                        className="bg-blue-500 h-1.5 rounded-full transition-all duration-500"
+                        style={{
+                          width: `${(lot.templateSteps?.length || 0) > 0 ? ((lot.eventCount ?? lot.events?.length ?? 0) / (lot.templateSteps?.length || 1)) * 100 : 0}%`,
+                        }}
                       ></div>
                     </div>
                   </div>
@@ -115,21 +128,35 @@ export default function ProductionBatchPage() {
                   <Link href={`/dashboard/lo-san-xuat/${lot.id}`} className="block">
                     <Button
                       variant="outline"
-                      className="w-full bg-white text-slate-700 hover:bg-slate-100 hover:text-slate-900 h-10 rounded-lg"
+                      className="w-full bg-white text-slate-700 hover:bg-slate-100 hover:text-slate-900 h-10 rounded-lg px-2 text-xs sm:text-sm"
                     >
-                      <FileText className="w-4 h-4 mr-2" />
+                      <FileText className="w-4 h-4 mr-1 sm:mr-2 shrink-0" />
                       Chi tiết
                     </Button>
                   </Link>
                   <Link href={`/dashboard/lo-san-xuat/${lot.id}?action=log`} className="block">
-                    <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white h-10 rounded-lg">
-                      <Camera className="w-4 h-4 mr-2" />
-                      Ghi nhật ký
+                    <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white h-10 rounded-lg px-2 text-xs sm:text-sm">
+                      <Camera className="w-4 h-4 mr-1 sm:mr-2 shrink-0" />
+                      Nhật ký
                     </Button>
                   </Link>
                 </div>
               </div>
             ))}
+
+            <div className="col-span-full pt-4 border-t border-slate-200">
+              <Pagination
+                currentPage={params.page + 1}
+                totalPages={
+                  data?.data?.totalPages ||
+                  Math.ceil((data?.data?.totalElements || 0) / params.size)
+                }
+                pageSize={params.size}
+                totalElements={data?.data?.totalElements}
+                onPageChange={(page) => setParams((p) => ({ ...p, page: page - 1 }))}
+                onPageSizeChange={(size) => setParams({ page: 0, size })}
+              />
+            </div>
           </div>
         )}
       </div>

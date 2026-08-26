@@ -1,13 +1,19 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { FiPlus, FiTrash2, FiSave, FiZap, FiAlertCircle } from 'react-icons/fi';
+import { FiPlus, FiSave, FiZap, FiAlertCircle } from 'react-icons/fi';
 import { useProductionBatch } from '@/features/supply-chain/hooks/useProductionBatch';
-import { toast } from 'react-hot-toast';
+import {
+  IProcessTemplate,
+  IProcessTemplateStep,
+} from '@/features/supply-chain/types/supplyChainTypes';
 import { useAiGeneration } from '@/features/products/hooks/useAiGeneration';
+import { TemplateBuilder } from '@/features/supply-chain/components/TemplateBuilder/TemplateBuilder';
+import { EditBlockModal } from '@/features/supply-chain/components/TemplateBuilder/EditBlockModal';
+import { TemplateBlock } from '@/features/supply-chain/components/TemplateBuilder/LegoBlock';
 
 // Schema Validation
 const processTemplateSchema = z.object({
@@ -26,26 +32,24 @@ const processTemplateSchema = z.object({
     .min(1, 'Quy trình phải có ít nhất 1 bước'),
 });
 
-type ProcessTemplateFormData = z.infer<typeof processTemplateSchema>;
+export type ProcessTemplateFormData = z.infer<typeof processTemplateSchema>;
 
-const STEP_TYPES = [
-  { value: 'RAW_MATERIAL', label: 'Nguyên liệu/Nguồn gốc' },
-  { value: 'PLANTING', label: 'Gieo trồng' },
-  { value: 'CARE', label: 'Chăm sóc' },
-  { value: 'HARVESTING', label: 'Thu hoạch' },
-  { value: 'PROCESSING', label: 'Chế biến' },
-  { value: 'QUALITY_CHECK', label: 'Kiểm định chất lượng' },
-  { value: 'PACKAGING', label: 'Đóng gói' },
-  { value: 'CERTIFICATION', label: 'Chứng nhận' },
-  { value: 'OTHER', label: 'Khác' },
-];
-
-export function ProcessTemplateTab({ productId }: { productId: number }) {
-  const { useGetProcessTemplates, useCreateProcessTemplate } = useProductionBatch();
+export function ProcessTemplateTab({
+  productId,
+}: {
+  productId: number;
+  onNextTab?: (
+    tab: 'info' | 'variants' | 'images' | 'process_templates' | 'lots' | 'journals',
+  ) => void;
+}) {
+  const { useGetProcessTemplates, useGetSystemTemplates, useCreateProcessTemplate } =
+    useProductionBatch();
   const { data: templatesData, isLoading } = useGetProcessTemplates(productId);
+  const { data: systemTemplatesData, isLoading: isLoadingSystem } = useGetSystemTemplates();
   const { mutate: createTemplate, isPending } = useCreateProcessTemplate();
 
   const [isCreating, setIsCreating] = useState(false);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
   const {
     register,
@@ -54,7 +58,6 @@ export function ProcessTemplateTab({ productId }: { productId: number }) {
     reset,
     setValue,
     getValues,
-    watch,
     formState: { errors },
   } = useForm<ProcessTemplateFormData>({
     resolver: zodResolver(processTemplateSchema),
@@ -67,12 +70,21 @@ export function ProcessTemplateTab({ productId }: { productId: number }) {
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, move } = useFieldArray({
     control,
     name: 'steps',
   });
 
-  const watchSteps = watch('steps');
+  useEffect(() => {
+    if (isCreating) {
+      const hasSeen = localStorage.getItem('tour_process_create_form_seen');
+      if (!hasSeen) {
+        setTimeout(() => {
+          window.dispatchEvent(new Event('trigger-onboarding-tour-auto'));
+        }, 200);
+      }
+    }
+  }, [isCreating]);
 
   const { generateDesc, isGenerating } = useAiGeneration();
 
@@ -91,18 +103,50 @@ export function ProcessTemplateTab({ productId }: { productId: number }) {
       onSuccess: () => {
         setIsCreating(false);
         reset();
+
+        window.dispatchEvent(
+          new CustomEvent('trigger-tour-next-step', {
+            detail: {
+              elementId: 'tour-lots-tab',
+              title: 'Tạo quy trình thành công',
+              description:
+                'Bây giờ bạn đã có quy trình chuẩn! Hãy chuyển sang thẻ "Lô hàng" để bắt đầu tạo các đợt sản xuất thực tế nhé.',
+              nextTabId: 'lots',
+            },
+          }),
+        );
       },
     });
   };
 
-  if (isLoading) {
+  if (isLoading || isLoadingSystem) {
     return <div className="p-8 text-center text-stone-500">Đang tải danh sách quy trình...</div>;
   }
 
   const templates = templatesData || [];
+  const systemTemplates = systemTemplatesData || [];
+
+  const handleCloneSystemTemplate = (template: IProcessTemplate) => {
+    reset({
+      name: `${template.name} (Copy)`,
+      description: template.description || '',
+      steps:
+        template.steps?.map((step: IProcessTemplateStep) => ({
+          stepOrder: step.stepOrder,
+          stepType: step.stepType,
+          title: step.title,
+          description: step.description,
+          estimatedDays: step.estimatedDays || 0,
+        })) || [],
+    });
+    setIsCreating(true);
+  };
 
   return (
-    <div className="flex flex-col gap-8 w-full max-w-4xl mx-auto pb-20">
+    <div
+      id="tour-process-tab-content"
+      className="flex flex-col gap-8 w-full max-w-4xl mx-auto pb-20"
+    >
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -113,6 +157,7 @@ export function ProcessTemplateTab({ productId }: { productId: number }) {
         </div>
         {!isCreating && (
           <button
+            id="tour-process-create"
             onClick={() => setIsCreating(true)}
             className="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-sm transition shadow-sm hover:shadow-md"
           >
@@ -121,6 +166,47 @@ export function ProcessTemplateTab({ productId }: { productId: number }) {
           </button>
         )}
       </div>
+      {systemTemplates.length > 0 && !isCreating && (
+        <div className="mt-8">
+          <h3 className="text-lg font-black text-stone-900 mb-4">Mẫu quy trình hệ thống gợi ý</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {systemTemplates.map((template) => (
+              <div
+                key={template.id}
+                className="bg-stone-50 p-5 rounded-2xl border border-stone-200 flex flex-col justify-between"
+              >
+                <div>
+                  <h4 className="font-bold text-stone-800 text-base">{template.name}</h4>
+                  <p className="text-xs text-stone-500 mt-1 mb-3 line-clamp-2">
+                    {template.description || 'Quy trình chuẩn được hệ thống đề xuất.'}
+                  </p>
+                  <div className="flex flex-wrap gap-1 mb-4">
+                    {template.steps?.slice(0, 3).map((step, idx) => (
+                      <span
+                        key={idx}
+                        className="text-[10px] bg-white border border-stone-200 text-stone-600 px-2 py-1 rounded-md"
+                      >
+                        {idx + 1}. {step.title}
+                      </span>
+                    ))}
+                    {template.steps && template.steps.length > 3 && (
+                      <span className="text-[10px] bg-stone-100 text-stone-500 px-2 py-1 rounded-md">
+                        +{template.steps.length - 3} bước nữa
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <button
+                  onClick={() => handleCloneSystemTemplate(template)}
+                  className="w-full py-2 bg-white border border-emerald-300 text-emerald-700 font-bold text-sm rounded-xl hover:bg-emerald-50 transition"
+                >
+                  Sử dụng mẫu này
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {isCreating ? (
         <form
@@ -151,7 +237,7 @@ export function ProcessTemplateTab({ productId }: { productId: number }) {
           </div>
 
           <div className="grid grid-cols-1 gap-5">
-            <div>
+            <div id="tour-process-form-name">
               <label className="text-xs font-bold text-stone-500 block mb-1">
                 Tên quy trình mẫu <span className="text-red-500">*</span>
               </label>
@@ -174,195 +260,70 @@ export function ProcessTemplateTab({ productId }: { productId: number }) {
             </div>
           </div>
 
-          <div className="pt-4 border-t border-stone-100">
+          <div id="tour-process-form-builder" className="pt-4 border-t border-stone-100">
             <div className="flex items-center justify-between mb-4">
-              <h4 className="font-bold text-stone-800">Danh sách các bước</h4>
-              <button
-                type="button"
-                onClick={() =>
-                  append({
-                    stepOrder: fields.length + 1,
-                    stepType: 'OTHER',
-                    title: '',
-                    description: '',
-                    estimatedDays: 0,
-                  })
-                }
-                className="flex items-center gap-1.5 text-emerald-600 hover:text-emerald-700 font-bold text-xs"
-              >
-                <FiPlus size={14} /> Thêm bước mới
-              </button>
+              <h4 className="font-bold text-stone-800">Cấu trúc Quy trình (Kéo thả để sắp xếp)</h4>
             </div>
 
             {errors.steps?.root && (
               <p className="text-xs text-red-500 mb-3">{errors.steps.root.message}</p>
             )}
 
-            <div className="flex flex-col gap-4">
-              {fields.map((field, index) => (
-                <div
-                  key={field.id}
-                  className="p-4 rounded-xl border border-stone-200 bg-stone-50/50 relative group"
-                >
-                  <div className="absolute -left-3 -top-3 w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-black border-2 border-white shadow-sm">
-                    {index + 1}
-                  </div>
-
-                  {fields.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => remove(index)}
-                      className="absolute top-4 right-4 text-stone-400 hover:text-red-500 transition opacity-0 group-hover:opacity-100"
-                    >
-                      <FiTrash2 size={16} />
-                    </button>
-                  )}
-
-                  <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                    <div className="flex flex-col gap-1 md:col-span-3">
-                      <label className="text-[10px] font-bold text-stone-500 uppercase">
-                        Loại công việc <span className="text-red-500">*</span>
-                      </label>
-                      <select
-                        {...register(`steps.${index}.stepType` as const)}
-                        className="w-full border border-stone-200 text-gray-700 rounded-lg px-2.5 py-1.5 text-sm outline-none focus:border-emerald-400 bg-white"
-                      >
-                        {STEP_TYPES.map((t) => (
-                          <option key={t.value} value={t.value}>
-                            {t.label}
-                          </option>
-                        ))}
-                      </select>
-                      {errors.steps?.[index]?.stepType && (
-                        <p className="text-xs text-red-500">
-                          {errors.steps[index]?.stepType?.message}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="flex flex-col gap-1 md:col-span-6">
-                      <label className="text-[10px] font-bold text-stone-500 uppercase">
-                        Tên công việc <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        {...register(`steps.${index}.title` as const)}
-                        placeholder="Ví dụ: Cày xới đất..."
-                        className="w-full border border-stone-200 text-gray-700 rounded-lg px-2.5 py-1.5 text-sm outline-none focus:border-emerald-400 bg-white"
-                      />
-                      {errors.steps?.[index]?.title && (
-                        <p className="text-xs text-red-500">
-                          {errors.steps[index]?.title?.message}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="flex flex-col gap-1 md:col-span-3">
-                      <label className="text-[10px] font-bold text-stone-500 uppercase">
-                        Thời gian chờ
-                      </label>
-                      <div className="flex items-center gap-2 bg-white border border-stone-200 rounded-lg overflow-hidden pr-1 focus-within:border-emerald-400">
-                        <span className="bg-stone-50 border-r border-stone-200 px-3 py-1.5 text-sm font-medium text-stone-500">
-                          Sau
-                        </span>
-                        <input
-                          type="number"
-                          min="0"
-                          {...register(`steps.${index}.estimatedDays` as const, {
-                            valueAsNumber: true,
-                          })}
-                          placeholder="0"
-                          className="flex-1 w-full min-w-[50px] text-gray-700 px-2 py-1.5 text-sm outline-none bg-transparent"
-                        />
-                        <span className="text-sm font-medium text-stone-500 pr-2">ngày</span>
-                      </div>
-                      <p className="text-[10px] text-stone-500 mt-0.5">
-                        {index === 0
-                          ? '*Kể từ lúc bắt đầu tạo lô'
-                          : `*Kể từ sau bước "${watchSteps[index - 1]?.title || 'trước'}"`}
-                      </p>
-                      {errors.steps?.[index]?.estimatedDays && (
-                        <p className="text-xs text-red-500">
-                          {errors.steps[index]?.estimatedDays?.message}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="flex flex-col gap-1 md:col-span-12">
-                      <div className="flex items-center justify-between">
-                        <label className="text-[10px] font-bold text-stone-500 uppercase">
-                          Hướng dẫn cách làm
-                        </label>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const currentTitle = getValues(`steps.${index}.title`);
-                            const currentType = getValues(`steps.${index}.stepType`);
-                            const typeLabel =
-                              STEP_TYPES.find((t) => t.value === currentType)?.label || currentType;
-                            if (!currentTitle) {
-                              toast.error(
-                                'Vui lòng nhập "Tên công việc" trước khi tự động tạo nhé!',
-                              );
-                              return;
-                            }
-                            generateDesc(
-                              {
-                                prompt: `Viết mô tả ngắn gọn khoảng 2 câu hướng dẫn người nông dân cách thực hiện công việc "${currentTitle}" (Loại công việc: ${typeLabel}). Giọng văn mộc mạc, gần gũi, đi thẳng vào nội dung hướng dẫn.`,
-                              },
-                              {
-                                onSuccess: (response) => {
-                                  setValue(`steps.${index}.description`, response.replyMessage);
-                                },
-                              },
-                            );
-                          }}
-                          disabled={isGenerating}
-                          className="flex items-center gap-1 text-[10px] font-bold text-amber-600 hover:text-amber-700 bg-amber-50 hover:bg-amber-100 px-2 py-0.5 rounded transition disabled:opacity-50"
-                        >
-                          <FiZap size={12} />
-                          {isGenerating ? 'Đang viết...' : 'Tự động tạo'}
-                        </button>
-                      </div>
-                      <textarea
-                        {...register(`steps.${index}.description` as const)}
-                        rows={2}
-                        placeholder="Mô tả kỹ hơn để người làm theo dễ hiểu..."
-                        className="w-full border border-stone-200 text-gray-700 rounded-lg px-2.5 py-1.5 text-sm outline-none focus:border-emerald-400 bg-white resize-none"
-                      />
-                    </div>
-                  </div>
-                </div>
-              ))}
-              <button
-                type="button"
-                onClick={() =>
-                  append({
-                    stepOrder: fields.length + 1,
-                    stepType: 'OTHER',
-                    title: '',
-                    description: '',
-                    estimatedDays: 0,
-                  })
-                }
-                className="w-full mt-2 py-4 border-2 border-dashed border-stone-200 hover:border-emerald-400 hover:bg-emerald-50 rounded-xl text-stone-500 hover:text-emerald-700 font-bold text-sm flex items-center justify-center gap-2 transition"
-              >
-                <FiPlus size={18} /> Thêm bước tiếp theo
-              </button>
-            </div>
+            <TemplateBuilder
+              fields={fields}
+              move={move}
+              remove={remove}
+              onAdd={() =>
+                append({
+                  stepOrder: fields.length + 1,
+                  stepType: 'OTHER',
+                  title: '',
+                  description: '',
+                  estimatedDays: 0,
+                })
+              }
+              onEdit={(index) => setEditingIndex(index === editingIndex ? null : index)}
+              getValues={(index) => getValues().steps[index] as unknown as TemplateBlock}
+              renderEditForm={(index) =>
+                editingIndex === index ? (
+                  <EditBlockModal
+                    index={index}
+                    onClose={() => setEditingIndex(null)}
+                    register={register}
+                    errors={errors}
+                    setValue={setValue}
+                    getValues={getValues}
+                    isGenerating={isGenerating}
+                    onGenerateDesc={(prompt, cb) => {
+                      generateDesc(
+                        { prompt },
+                        {
+                          onSuccess: (res) => cb(res.replyMessage),
+                        },
+                      );
+                    }}
+                    previousStepTitle={
+                      index > 0 ? getValues(`steps.${index - 1}.title`) : undefined
+                    }
+                  />
+                ) : null
+              }
+            />
           </div>
 
           <div className="flex items-center justify-end gap-3 pt-6 border-t border-stone-100">
             <button
               type="button"
               onClick={() => setIsCreating(false)}
-              className="px-5 py-2.5 text-stone-500 hover:bg-stone-100 rounded-xl font-bold text-sm transition"
+              className="px-5 py-2.5 text-stone-500 hover:bg-stone-100 rounded-xl font-bold text-sm transition cursor-pointer"
             >
               Hủy
             </button>
             <button
+              id="tour-process-form-submit"
               type="submit"
               disabled={isPending}
-              className="flex items-center gap-2 px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-sm transition disabled:opacity-50"
+              className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white font-bold rounded-xl text-sm transition shadow-sm hover:shadow flex items-center gap-2 cursor-pointer"
             >
               <FiSave size={16} />
               {isPending ? 'Đang lưu...' : 'Lưu quy trình mẫu'}

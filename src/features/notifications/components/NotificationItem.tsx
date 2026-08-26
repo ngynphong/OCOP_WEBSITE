@@ -106,11 +106,17 @@ export const NotificationItem = React.memo<{
   notification: INotification;
   onRead: (id: string) => void;
   onDelete: (id: string) => void;
-}>(({ notification, onRead, onDelete }) => {
+  onSelect?: (id: string) => void;
+}>(({ notification, onRead, onDelete, onSelect }) => {
   const router = useRouter();
   const { actor, eventType, createdAt, read, id, payload, actionable, targetUrl } = notification;
 
   const handleNotifyClick = async () => {
+    if (onSelect) {
+      onSelect(id);
+      return;
+    }
+
     if (!read) {
       await onRead(id);
     }

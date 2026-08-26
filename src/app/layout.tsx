@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   },
 };
 
-import { ForcedLogoutModal } from '@/components/layout/ForcedLogoutModal';
+import { ShopApprovedModal } from '@/components/layout/ShopApprovedModal';
 
 export default function RootLayout({
   children,
@@ -53,7 +53,7 @@ export default function RootLayout({
       <body suppressHydrationWarning className="min-h-full flex flex-col">
         <AppProvider>
           {children}
-          <ForcedLogoutModal />
+          <ShopApprovedModal />
         </AppProvider>
       </body>
     </html>

@@ -134,9 +134,12 @@ export const sellerOrderApi = {
   },
 
   getB2BRevenue: async (params: { period?: string }) => {
-    return axiosClient.get<unknown, { data: unknown }>(API_ENDPOINTS.SELLER.ORDERS_B2B_REVENUE, {
-      params,
-    });
+    return axiosClient.get<unknown, { data: IRevenueRes }>(
+      API_ENDPOINTS.SELLER.ORDERS_B2B_REVENUE,
+      {
+        params,
+      },
+    );
   },
 
   getB2BPayouts: async (params: { pageNo?: number; pageSize?: number }) => {

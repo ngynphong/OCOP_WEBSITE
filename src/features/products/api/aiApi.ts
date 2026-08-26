@@ -1,4 +1,5 @@
 import { axiosClient } from '@/lib/axios';
+import { JournalStepType } from '../types/productTypes';
 
 export interface GenerateStoryRequest {
   productId: number;
@@ -9,6 +10,11 @@ export interface AiStoryResponse {
   storyTitle: string;
   description: string;
   impactStats: string;
+  extractedJournals?: {
+    stepType: JournalStepType;
+    title: string;
+    description: string;
+  }[];
 }
 
 export interface ChatMessage {

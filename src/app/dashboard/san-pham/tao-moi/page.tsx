@@ -14,6 +14,7 @@ import { PublicCategory } from '@/features/products/types/productTypes';
 import { Button } from '@/components/ui/AppButton';
 import { flattenCategories } from '@/features/products/utils/productUtils';
 import { PRODUCT_UNITS } from '@/features/products/utils/ProductConstants';
+import { ProductSetupProgress } from '../[id]/components/ProductSetupProgress';
 
 export default function CreateProductPage() {
   const router = useRouter();
@@ -62,8 +63,11 @@ export default function CreateProductPage() {
         </div>
       </div>
 
+      {/* Timeline placeholder (0% progress) */}
+      <ProductSetupProgress />
+
       {/* Form */}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <form id="tour-product-form" onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         {/* Tên sản phẩm */}
         <div>
           <label className="text-xs font-bold text-stone-500 uppercase tracking-widest block mb-1.5">
@@ -192,6 +196,7 @@ export default function CreateProductPage() {
             Hủy
           </Button>
           <Button
+            id="tour-product-save"
             type="submit"
             variant="primary"
             isLoading={isCreating}

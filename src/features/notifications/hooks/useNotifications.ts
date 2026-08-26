@@ -32,6 +32,15 @@ export const useInfiniteNotifications = (pageSize = 10, entityType?: string) => 
   });
 };
 
+export const useNotificationDetail = (id?: string) => {
+  return useQuery({
+    queryKey: [...NOTIFICATION_KEYS.all, 'detail', id],
+    queryFn: () => notificationApi.getNotification(id!),
+    enabled: !!id,
+    select: (data) => data.data,
+  });
+};
+
 export const useUnreadCountScope = () => {
   const queryClient = useQueryClient();
   const { client, addConnectListener } = useWebSocket();

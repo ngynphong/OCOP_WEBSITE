@@ -21,6 +21,9 @@ import { PRODUCT_UNITS } from '../../utils/ProductConstants';
 
 interface InfoTabProps {
   productId: number;
+  onNextTab?: (
+    tab: 'info' | 'variants' | 'images' | 'process_templates' | 'lots' | 'journals',
+  ) => void;
 }
 
 export function InfoTab({ productId }: InfoTabProps) {
@@ -88,7 +91,23 @@ export function InfoTab({ productId }: InfoTabProps) {
   const provinces = provincesData?.data ?? [];
 
   const onSubmit = async (formData: CreateProductFormData) => {
-    await updateProduct({ id: productId, data: formData });
+    try {
+      await updateProduct({ id: productId, data: formData });
+
+      window.dispatchEvent(
+        new CustomEvent('trigger-tour-next-step', {
+          detail: {
+            elementId: 'tour-variant-tab',
+            title: 'Đã lưu thông tin chung',
+            description:
+              'Thông tin cơ bản đã được lưu thành công! Giờ hãy bấm vào thẻ "Biến thể" ở đây (hoặc nút "Chuyển trang") để thiết lập giá bán.',
+            nextTabId: 'variants',
+          },
+        }),
+      );
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   if (isLoadingProduct || isLoadingCategories || isLoadingProvinces) {
@@ -142,7 +161,7 @@ export function InfoTab({ productId }: InfoTabProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+    <form id="tour-info-form" onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       <div>
         <label className="text-xs font-bold text-stone-500 uppercase tracking-widest block mb-1.5">
           Tên sản phẩm <span className="text-red-500">*</span>

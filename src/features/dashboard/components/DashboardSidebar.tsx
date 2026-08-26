@@ -299,7 +299,7 @@ const DashboardSidebar = ({ onMobileClose }: { onMobileClose?: () => void }) => 
     () => true,
     () => false,
   );
-  const [openGroups, setOpenGroups] = useState<string[]>([]);
+  const [openGroups, setOpenGroups] = useState<string[]>(() => MENU_GROUPS.map((g) => g.id));
   const { count: unreadNotificationCount } = useUnreadCountScope();
   const unreadChatCount = useUnreadChatCount(dashboardMode);
 

@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/AppButton';
-import { FiCheckSquare, FiPlus, FiTrash2, FiEdit2 } from 'react-icons/fi';
+import { FiCheckSquare, FiPlus, FiTrash2, FiEdit2, FiAlertTriangle } from 'react-icons/fi';
 import { useProductionBatch } from '../hooks/useProductionBatch';
 import { ICreateBatchEventReq, IProcessTemplateStep } from '../types/supplyChainTypes';
 import { useSellerJournalMutations } from '@/features/products/hooks/useSellerJournals';
 import { toast } from 'react-hot-toast';
 import { JournalStepType } from '@/features/products/types/productTypes';
+import { supplyChainApi } from '../api/supplyChainApi';
+import { useDebounce } from '@/hooks/useDebounce';
 
 interface Props {
   isOpen: boolean;
@@ -31,6 +33,7 @@ export const AddBatchEventForm = ({ isOpen, onClose, lotId, productId, templateS
     register,
     handleSubmit,
     control,
+    watch,
     formState: { errors },
     reset,
   } = useForm<FormValues>();
@@ -39,6 +42,49 @@ export const AddBatchEventForm = ({ isOpen, onClose, lotId, productId, templateS
   const { createJournal } = useSellerJournalMutations(productId);
 
   const [metadataFields, setMetadataFields] = useState<{ key: string; value: string }[]>([]);
+  const [aiWarning, setAiWarning] = useState<string | null>(null);
+  const [isAiChecking, setIsAiChecking] = useState(false);
+
+  const templateStepId = watch('templateStepId');
+  const debouncedFields = useDebounce(metadataFields, 1500);
+
+  useEffect(() => {
+    const checkAi = async () => {
+      const validFields = debouncedFields.filter(
+        (f) => f.key.trim() !== '' && f.value.trim() !== '',
+      );
+      if (validFields.length === 0 || !templateStepId) {
+        setAiWarning(null);
+        return;
+      }
+
+      const selectedStep = templateSteps.find((s) => s.id === Number(templateStepId));
+      if (!selectedStep) return;
+
+      const dataToVerify: Record<string, string> = {};
+      validFields.forEach((f) => {
+        dataToVerify[f.key.trim()] = f.value;
+      });
+
+      setIsAiChecking(true);
+      try {
+        const res = await supplyChainApi.verifyBatchEvent({
+          templateDesc: selectedStep.description || selectedStep.title,
+          eventData: JSON.stringify(dataToVerify),
+        });
+        if (res.data.hasViolation) {
+          setAiWarning(res.data.violationMessage);
+        } else {
+          setAiWarning(null);
+        }
+      } catch (_err) {
+        // Bỏ qua lỗi kết nối AI khi gõ
+      } finally {
+        setIsAiChecking(false);
+      }
+    };
+    checkAi();
+  }, [debouncedFields, templateStepId, templateSteps]);
 
   const addMetadataField = () => {
     setMetadataFields([...metadataFields, { key: '', value: '' }]);
@@ -71,10 +117,13 @@ export const AddBatchEventForm = ({ isOpen, onClose, lotId, productId, templateS
       });
     }
 
+    const currentIsoTime = new Date().toISOString();
+
     const req: ICreateBatchEventReq = {
       templateStepId: Number(data.templateStepId),
-      eventAt: new Date(data.eventAt).toISOString(),
+      eventAt: currentIsoTime,
       eventData: parsedEventData ? JSON.stringify(parsedEventData) : undefined,
+      force: !!aiWarning, // Gửi force nếu có cảnh báo AI
     };
 
     const selectedStep = templateSteps.find((s) => s.id === Number(data.templateStepId));
@@ -91,7 +140,7 @@ export const AddBatchEventForm = ({ isOpen, onClose, lotId, productId, templateS
                   stepType: selectedStep.stepType as JournalStepType,
                   title: selectedStep.title,
                   description: selectedStep.description || '',
-                  activityDate: data.eventAt,
+                  activityDate: currentIsoTime,
                   images: [],
                 },
               },
@@ -106,7 +155,13 @@ export const AddBatchEventForm = ({ isOpen, onClose, lotId, productId, templateS
           }
           reset();
           setMetadataFields([]);
+          setAiWarning(null);
           onClose();
+          toast.success('Ghi nhận thành công!');
+        },
+        onError: (error: unknown) => {
+          const err = error as { response?: { data?: { message?: string } } };
+          toast.error(err?.response?.data?.message || 'Có lỗi xảy ra khi ghi nhận nhật ký');
         },
       },
     );
@@ -144,20 +199,6 @@ export const AddBatchEventForm = ({ isOpen, onClose, lotId, productId, templateS
               />
               {errors.templateStepId && (
                 <p className="text-red-500 text-xs mt-1">{errors.templateStepId.message}</p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1">
-                Thời gian thực hiện <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="datetime-local"
-                {...register('eventAt', { required: 'Vui lòng nhập thời gian' })}
-                className="w-full border border-stone-300 text-gray-700 bg-white rounded-lg px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
-              />
-              {errors.eventAt && (
-                <p className="text-red-500 text-xs mt-1">{errors.eventAt.message}</p>
               )}
             </div>
           </div>
@@ -228,6 +269,22 @@ export const AddBatchEventForm = ({ isOpen, onClose, lotId, productId, templateS
                     </button>
                   </div>
                 ))
+              )}
+
+              {isAiChecking && (
+                <div className="text-xs text-stone-500 animate-pulse mt-2">
+                  Đang kiểm tra tiêu chuẩn OCOP...
+                </div>
+              )}
+
+              {aiWarning && !isAiChecking && (
+                <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
+                  <FiAlertTriangle className="text-red-500 flex-shrink-0 mt-0.5" size={16} />
+                  <div>
+                    <h4 className="text-sm font-semibold text-red-800">Phát hiện vi phạm</h4>
+                    <p className="text-sm text-red-700 mt-1">{aiWarning}</p>
+                  </div>
+                </div>
               )}
             </div>
           </div>

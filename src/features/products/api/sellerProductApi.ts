@@ -130,7 +130,9 @@ export const sellerProductApi = {
   // ─── Images ───────────────────────────────────────────────────────────────
 
   getImages: (productId: number): Promise<ImageListResponse> => {
-    return axiosClient.get(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'images'));
+    return axiosClient.get(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'images'), {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   uploadImage: (productId: number, file: File): Promise<ImageDetailResponse> => {
@@ -202,10 +204,36 @@ export const sellerProductApi = {
     productId: number,
     journalId: number,
     data: UpdateJournalRequest,
+    files?: File[],
   ): Promise<JournalDetailResponse> => {
+    const formData = new FormData();
+
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && key !== 'images' && key !== 'retainImages') {
+        if (Array.isArray(value)) {
+          value.forEach((v) => formData.append(key, v.toString()));
+        } else {
+          formData.append(key, value.toString());
+        }
+      }
+    });
+
+    if (data.images && data.images.length > 0) {
+      data.images.forEach((img) => formData.append('images', img));
+    }
+
+    if (files && files.length > 0) {
+      files.forEach((file) => {
+        formData.append('images', file);
+      });
+    }
+
     return axiosClient.put(
       buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'journals', journalId),
-      data,
+      formData,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      },
     );
   },
 

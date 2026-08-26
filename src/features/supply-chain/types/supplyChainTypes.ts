@@ -14,6 +14,18 @@ export type TLotStatus =
   | 'DISTRIBUTED'
   | 'CANCELLED';
 
+export interface ILotTaskResponse {
+  id: string;
+  lotId: number;
+  lotCode: string;
+  productName: string;
+  stepId: number;
+  stepTitle: string;
+  dueDate: string;
+  isOverdue: boolean;
+  daysRemaining: number;
+}
+
 export type TStepType =
   | 'PRODUCTION'
   | 'PROCESSING'
@@ -58,6 +70,7 @@ export interface IEventInfo {
   dataHash?: string;
   previousHash?: string;
   evidenceDocuments?: IEvidenceDocument[];
+  aiAnalysisResult?: string;
 }
 
 export interface IMaterialUsageInfo {
@@ -137,6 +150,7 @@ export interface ISupplyChainLot {
   recallInfo?: IRecallInfo;
   steps?: ISupplyChainStep[];
   events?: IEventInfo[];
+  eventCount?: number;
   materialsUsed?: IMaterialUsageInfo[];
   processTemplateId?: number;
   processTemplateName?: string;
@@ -171,6 +185,7 @@ export interface ICreateBatchEventReq {
   eventAt: string;
   eventData?: string;
   evidenceIds?: number[];
+  force?: boolean;
 }
 
 export interface ICreateLotReq {

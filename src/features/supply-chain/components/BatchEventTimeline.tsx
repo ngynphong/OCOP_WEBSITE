@@ -68,7 +68,7 @@ const AddressDisplay = ({ lat, lng }: { lat: number; lng: number }) => {
         } else {
           setAddress(`${lat.toFixed(4)}, ${lng.toFixed(4)}`);
         }
-      } catch (error) {
+      } catch (_error) {
         setAddress(`${lat.toFixed(4)}, ${lng.toFixed(4)}`);
       }
     };
@@ -192,6 +192,34 @@ export const BatchEventTimeline = ({ events }: BatchEventTimelineProps) => {
                               : JSON.stringify(event.eventData, null, 2)}
                           </pre>
                         );
+                      })()}
+
+                    {/* Hiển thị cảnh báo AI chạy ngầm nếu có */}
+                    {event.aiAnalysisResult &&
+                      (() => {
+                        try {
+                          const aiData = JSON.parse(event.aiAnalysisResult);
+                          if (aiData.hasViolation) {
+                            return (
+                              <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
+                                <span className="text-red-500 text-lg flex-shrink-0 mt-0.5">
+                                  ⚠️
+                                </span>
+                                <div>
+                                  <h4 className="text-sm font-semibold text-red-800">
+                                    Hệ thống phát hiện vi phạm
+                                  </h4>
+                                  <p className="text-xs text-red-700 mt-1">
+                                    {aiData.violationMessage}
+                                  </p>
+                                </div>
+                              </div>
+                            );
+                          }
+                          return null;
+                        } catch {
+                          return null;
+                        }
                       })()}
 
                     {/* Hiển thị evidenceDocuments nếu có */}

@@ -12,8 +12,9 @@ import { useAuthProfile } from '@/features/auth/hooks/useAuthProfile';
 import { cn } from '@/lib/utils';
 import { setLoading } from '@/store/features/uiSlice';
 import { NotificationBell } from '@/features/notifications/components/NotificationBell';
-import { FiLogOut } from 'react-icons/fi';
+import { FiLogOut, FiHelpCircle } from 'react-icons/fi';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
+import { SellerTourGuide, triggerTourEvent } from '@/components/Onboarding/SellerTourGuide';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -135,6 +136,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 {profile?.lastLoginAt?.split('T')[0] || 'Chưa có'}
               </p>
             </div>
+
+            <button
+              onClick={() => window.dispatchEvent(triggerTourEvent)}
+              className="flex items-center gap-2 p-2 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors border border-emerald-100 shadow-xs"
+              title="Xem hướng dẫn thao tác"
+            >
+              <FiHelpCircle className="w-5 h-5" />
+              <span className="text-sm font-medium hidden sm:inline-block">Hướng dẫn</span>
+            </button>
+
             {/* Notification Bell */}
             {isMounted && (
               <NotificationBell className="text-stone-500 hover:text-stone-900 hover:bg-stone-100 border border-stone-100 shadow-xs" />
@@ -283,6 +294,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         onConfirm={handleConfirmLogout}
         onCancel={() => setIsLogoutModalOpen(false)}
       />
+      {isSeller && <SellerTourGuide />}
     </div>
   );
 }

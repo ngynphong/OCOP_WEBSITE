@@ -19,10 +19,18 @@ import {
   IProcessTemplate,
   ICreateProcessTemplateReq,
   ICreateBatchEventReq,
+  ILotTaskResponse,
 } from '../types/supplyChainTypes';
 
 export const supplyChainApi = {
   // Seller APIs
+  getUpcomingTasks: async () => {
+    return axiosClient.get<unknown, { data: ILotTaskResponse[] }>(
+      '/seller/supply-chain/lots/tasks',
+      { headers: { 'X-Silent-Loading': 'true' } },
+    );
+  },
+
   createLot: async (data: ICreateLotReq) => {
     return axiosClient.post<unknown, { data: ISupplyChainLot }>(
       API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS,
@@ -46,7 +54,10 @@ export const supplyChainApi = {
           content: ISupplyChainLot[];
         };
       }
-    >(API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS, { params: springParams });
+    >(API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS, {
+      headers: { 'X-Silent-Loading': 'true' },
+      params: springParams,
+    });
   },
 
   getSellerLotDetail: async (id: number) => {
@@ -137,6 +148,16 @@ export const supplyChainApi = {
     );
   },
 
+  getSystemTemplates: async (categoryId?: number) => {
+    return axiosClient.get<unknown, { data: IProcessTemplate[] }>(
+      `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/templates/system`,
+      {
+        headers: { 'X-Silent-Loading': 'true' },
+        params: { categoryId },
+      },
+    );
+  },
+
   createProcessTemplate: async (data: ICreateProcessTemplateReq) => {
     return axiosClient.post<unknown, { data: IProcessTemplate }>(
       `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/templates`,
@@ -149,6 +170,20 @@ export const supplyChainApi = {
       `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/${lotId}/events`,
       data,
     );
+  },
+
+  verifyBatchEvent: async (data: { templateDesc: string; eventData: string }) => {
+    return axiosClient.post<
+      unknown,
+      {
+        data: {
+          hasViolation: boolean;
+          violationMessage: string;
+          isDivergent: boolean;
+          divergenceMessage: string;
+        };
+      }
+    >('/seller/ai/verify-event', data, { headers: { 'X-Silent-Loading': 'true' } });
   },
 
   getLotAuditLogs: async (lotId: number, params: { page?: number; size?: number } = {}) => {

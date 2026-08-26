@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm, useFieldArray, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -86,6 +86,7 @@ const STEPS = [
 export default function CreateProductionBatchPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
+  const [lockedProductId, setLockedProductId] = useState<number | null>(null);
   const { useCreateProductionBatch, useGetProcessTemplates } = useProductionBatch();
   const createMutation = useCreateProductionBatch();
 
@@ -105,6 +106,16 @@ export default function CreateProductionBatchPage() {
       materialsUsed: [],
     },
   });
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const preProductId = params.get('productId');
+    if (preProductId) {
+      const pid = Number(preProductId);
+      form.setValue('productId', pid);
+      setLockedProductId(pid);
+    }
+  }, [form]);
 
   const selectedProductId = form.watch('productId');
   const { data: productsData } = useSellerProductsQuery({ pageNo: 1, pageSize: 100 });
@@ -164,16 +175,24 @@ export default function CreateProductionBatchPage() {
 
   const prevStep = () => setStep((s) => s - 1);
 
+  useEffect(() => {
+    // Notify tour guide that step changed (small delay to ensure DOM is ready)
+    const timer = setTimeout(() => {
+      window.dispatchEvent(new Event('trigger-onboarding-tour-auto'));
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [step]);
+
   return (
     <div className="max-w-7xl mx-auto space-y-6 pb-20">
       {/* Header */}
       <div className="flex items-center gap-4 mb-8">
-        <Link
-          href="/dashboard/lo-san-xuat"
+        <button
+          onClick={() => router.back()}
           className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-500 hover:text-slate-700"
         >
           <ArrowLeft className="w-5 h-5" />
-        </Link>
+        </button>
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Tạo lô sản xuất mới</h1>
           <p className="text-slate-500 text-sm mt-1">
@@ -231,7 +250,10 @@ export default function CreateProductionBatchPage() {
             <form id="wizard-form" className="space-y-6" onSubmit={(e) => e.preventDefault()}>
               {/* STEP 1: Thông tin chung */}
               {step === 1 && (
-                <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
+                <div
+                  id="tour-lot-step-1"
+                  className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500"
+                >
                   <div className="space-y-1.5">
                     <label className="text-sm font-semibold text-slate-700">
                       Mã lô sản xuất <span className="text-red-500">*</span>
@@ -275,7 +297,7 @@ export default function CreateProductionBatchPage() {
                             form.setValue('variantId', 0);
                             form.setValue('processTemplateId', 0);
                           }}
-                          className="w-full appearance-none rounded-xl text-gray-700 border border-slate-200 px-4 py-3 pr-10 text-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none bg-white"
+                          className={`w-full appearance-none rounded-xl text-gray-700 border border-slate-200 px-4 py-3 pr-10 text-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none ${lockedProductId ? 'bg-slate-50 cursor-not-allowed opacity-90 pointer-events-none' : 'bg-white'}`}
                         >
                           <option value={0}>Chọn sản phẩm</option>
                           {products.map((p: SellerProduct) => (
@@ -378,12 +400,31 @@ export default function CreateProductionBatchPage() {
 
               {/* STEP 2: Chọn quy trình */}
               {step === 2 && (
-                <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
-                  <div className="mb-4">
-                    <h2 className="text-lg font-bold text-slate-800">Quy trình sản xuất chuẩn</h2>
-                    <p className="text-slate-500 text-sm mt-1">
-                      Chọn một quy trình chuẩn đã được cấu hình cho sản phẩm này.
-                    </p>
+                <div
+                  id="tour-lot-step-2"
+                  className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500"
+                >
+                  <div className="mb-4 flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                    <div>
+                      <h2 className="text-lg font-bold text-slate-800">Quy trình sản xuất chuẩn</h2>
+                      <p className="text-slate-500 text-sm mt-1">
+                        Chọn một quy trình chuẩn đã được cấu hình cho sản phẩm này.
+                      </p>
+                    </div>
+                    {templates && templates.length > 0 && (
+                      <Link
+                        href={`/dashboard/san-pham/${form.watch('productId')}?tab=process_templates`}
+                      >
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 shrink-0"
+                        >
+                          + Tạo quy trình mới
+                        </Button>
+                      </Link>
+                    )}
                   </div>
 
                   {isLoadingTemplates ? (
@@ -392,17 +433,31 @@ export default function CreateProductionBatchPage() {
                       <p>Đang tải danh sách quy trình...</p>
                     </div>
                   ) : !templates || templates.length === 0 ? (
-                    <div className="p-6 border border-amber-200 rounded-xl bg-amber-50 text-amber-800 text-sm flex gap-4 items-start">
+                    <div
+                      id="tour-lot-step-2-empty"
+                      className="p-6 border border-amber-200 rounded-xl bg-amber-50 text-amber-800 text-sm flex gap-4 items-start"
+                    >
                       <div className="p-2 bg-amber-100 rounded-lg shrink-0">
                         <Layers className="w-5 h-5 text-amber-600" />
                       </div>
                       <div>
                         <p className="font-semibold mb-1">Chưa có Quy trình chuẩn</p>
-                        <p className="text-amber-700/80 leading-relaxed">
-                          Sản phẩm này chưa được cấu hình Quy trình chuẩn mặc định. Vui lòng quay
-                          lại phần &quot;Nhật ký chung&quot; của sản phẩm để cấu hình trước khi tạo
-                          lô.
+                        <p className="text-amber-700/80 leading-relaxed mb-4">
+                          Sản phẩm này chưa được cấu hình Quy trình chuẩn. Vui lòng thiết lập quy
+                          trình mẫu trước khi tạo lô sản xuất.
                         </p>
+                        <Link
+                          href={`/dashboard/san-pham/${form.watch('productId')}?tab=process_templates`}
+                        >
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="bg-white border-amber-300 text-amber-700 hover:bg-amber-100"
+                          >
+                            Thiết lập Quy trình mẫu
+                          </Button>
+                        </Link>
                       </div>
                     </div>
                   ) : (
@@ -489,7 +544,10 @@ export default function CreateProductionBatchPage() {
 
               {/* STEP 3: Phân bổ nguyên liệu */}
               {step === 3 && (
-                <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
+                <div
+                  id="tour-lot-step-3"
+                  className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500"
+                >
                   <div className="flex justify-between items-end mb-4">
                     <div>
                       <h2 className="text-lg font-bold text-slate-800">Nguyên liệu sử dụng</h2>
@@ -596,7 +654,10 @@ export default function CreateProductionBatchPage() {
 
               {/* STEP 4: Xác nhận */}
               {step === 4 && (
-                <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
+                <div
+                  id="tour-lot-submit"
+                  className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500"
+                >
                   <div className="mb-4">
                     <h2 className="text-lg font-bold text-slate-800">Kiểm tra & Xác nhận</h2>
                     <p className="text-slate-500 text-sm mt-1">

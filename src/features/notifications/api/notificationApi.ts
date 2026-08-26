@@ -2,7 +2,10 @@ import { axiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
 import { buildRoute } from '@/lib/routeBuilder';
 
-import { NotificationResponse } from '@/features/notifications/types/notificationTypes';
+import {
+  NotificationResponse,
+  INotification,
+} from '@/features/notifications/types/notificationTypes';
 
 export const notificationApi = {
   /**
@@ -18,6 +21,15 @@ export const notificationApi = {
   }) => {
     return axiosClient.get<NotificationResponse>(API_ENDPOINTS.NOTIFICATIONS, {
       params,
+      headers: { 'X-Silent-Loading': 'true' },
+    });
+  },
+
+  /**
+   * Lấy chi tiết một thông báo
+   */
+  getNotification: (id: string) => {
+    return axiosClient.get<INotification>(buildRoute(API_ENDPOINTS.NOTIFICATIONS, id), {
       headers: { 'X-Silent-Loading': 'true' },
     });
   },

@@ -14,13 +14,10 @@ import { VariantsTab } from '@/features/products/components/ProductDetail/Varian
 import { ImagesTab } from '@/features/products/components/ProductDetail/ImagesTab';
 import { JournalsTab } from '@/features/products/components/ProductDetail/JournalsTab';
 import { ProcessTemplateTab } from '@/features/products/components/ProductDetail/ProcessTemplateTab';
+import { ProductSetupProgress } from './components/ProductSetupProgress';
 import { LotsTab } from './components/LotsTab';
-import {
-  AiChatWidget,
-  SuggestedJournalPayload,
-} from '@/features/products/components/ProductDetail/AiChatWidget';
 
-type TabId = 'info' | 'variants' | 'images' | 'process_templates' | 'lots' | 'journals';
+export type TabId = 'info' | 'variants' | 'images' | 'process_templates' | 'lots' | 'journals';
 
 const TABS: { id: TabId; label: string }[] = [
   { id: 'info', label: 'Thông tin' },
@@ -47,7 +44,6 @@ function SellerProductDetailContent() {
   const productId = Number(id);
 
   const activeTab = (searchParams.get('tab') as TabId) || 'info';
-  const [suggestedJournal, setSuggestedJournal] = useState<SuggestedJournalPayload | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const setActiveTab = (tab: TabId) => {
@@ -61,6 +57,13 @@ function SellerProductDetailContent() {
     useSellerProductMutations();
 
   const product = data?.data;
+
+  React.useEffect(() => {
+    // Fire event to re-evaluate tour guide based on current active tab
+    setTimeout(() => {
+      window.dispatchEvent(new Event('trigger-onboarding-tour-auto'));
+    }, 300);
+  }, [activeTab]);
 
   const handleSubmitProduct = async () => {
     if (!product) return;
@@ -172,11 +175,26 @@ function SellerProductDetailContent() {
         </div>
       )}
 
+      <ProductSetupProgress product={product} onNavigateTab={setActiveTab} />
+
       {/* Tabs */}
       <div className="flex gap-1 p-1 bg-stone-100/50 rounded-xl w-fit border border-stone-100">
         {TABS.map((tab) => (
           <button
             key={tab.id}
+            id={
+              tab.id === 'process_templates'
+                ? 'tour-process-tab'
+                : tab.id === 'variants'
+                  ? 'tour-variant-tab'
+                  : tab.id === 'images'
+                    ? 'tour-images-tab'
+                    : tab.id === 'lots'
+                      ? 'tour-lots-tab'
+                      : tab.id === 'journals'
+                        ? 'tour-journals-tab'
+                        : undefined
+            }
             onClick={() => {
               setActiveTab(tab.id);
               setSubmitError(null);
@@ -194,30 +212,17 @@ function SellerProductDetailContent() {
 
       {/* Tab content */}
       <div>
-        {activeTab === 'info' && <InfoTab productId={productId} />}
-        {activeTab === 'variants' && <VariantsTab productId={productId} />}
-        {activeTab === 'images' && <ImagesTab productId={productId} />}
-        {activeTab === 'process_templates' && <ProcessTemplateTab productId={productId} />}
-        {activeTab === 'lots' && product && <LotsTab product={product} />}
+        {activeTab === 'info' && <InfoTab productId={productId} onNextTab={setActiveTab} />}
+        {activeTab === 'variants' && <VariantsTab productId={productId} onNextTab={setActiveTab} />}
+        {activeTab === 'images' && <ImagesTab productId={productId} onNextTab={setActiveTab} />}
+        {activeTab === 'process_templates' && (
+          <ProcessTemplateTab productId={productId} onNextTab={setActiveTab} />
+        )}
+        {activeTab === 'lots' && product && <LotsTab product={product} onNextTab={setActiveTab} />}
         {activeTab === 'journals' && (
-          <JournalsTab
-            productId={productId}
-            productName={product.name}
-            suggestedJournal={suggestedJournal}
-            onSuggestionConsumed={() => setSuggestedJournal(null)}
-          />
+          <JournalsTab productId={productId} productName={product.name} />
         )}
       </div>
-
-      {/* Widget chat AI */}
-      <AiChatWidget
-        productId={product.id}
-        productName={product.name}
-        onJournalSuggested={(payload) => {
-          setSuggestedJournal(payload);
-          setActiveTab('journals');
-        }}
-      />
     </div>
   );
 }

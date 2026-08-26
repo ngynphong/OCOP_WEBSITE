@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/store/hooks';
 import Cookies from 'js-cookie';
 import { authApi } from '../api/authApi';
-import { setCredentials, setForcedLogout } from '@/store/features/authSlice';
+import { setCredentials, setShopApproved } from '@/store/features/authSlice';
 import { useEffect } from 'react';
 
 export const useAuthProfile = () => {
@@ -38,7 +38,7 @@ export const useAuthProfile = () => {
       const hasSellerOnClient = reduxRoles.includes('SELLER');
 
       if (hasSellerOnServer && !hasSellerOnClient) {
-        dispatch(setForcedLogout(true));
+        dispatch(setShopApproved(true));
       }
     }
   }, [profileQuery.isSuccess, profileQuery.data, reduxRoles, dispatch]);

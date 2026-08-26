@@ -68,7 +68,7 @@ function ActionModal({ action, onClose }: { action: ActionState; onClose: () => 
   const [qty, setQty] = useState('');
   const [delta, setDelta] = useState('');
   const [note, setNote] = useState('');
-  const [importRefId, setImportRefId] = useState('');
+  const [importRefId, _setImportRefId] = useState('');
   const [reason, setReason] = useState('');
   const [threshold, setThreshold] = useState('');
 
@@ -115,34 +115,6 @@ function ActionModal({ action, onClose }: { action: ActionState; onClose: () => 
         <p className="mb-4 text-sm text-stone-500">{action.variantName}</p>
 
         <form onSubmit={handleSubmit} className="space-y-3">
-          {action.type === 'add' && (
-            <>
-              <input
-                type="number"
-                min={1}
-                required
-                placeholder="Số lượng nhập *"
-                value={qty}
-                onChange={(e) => setQty(e.target.value)}
-                className="w-full rounded-lg border text-gray-700 border-stone-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
-              />
-              <input
-                type="text"
-                placeholder="Mã phiếu nhập (tuỳ chọn)"
-                value={importRefId}
-                onChange={(e) => setImportRefId(e.target.value)}
-                className="w-full rounded-lg border text-gray-700 border-stone-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
-              />
-              <input
-                type="text"
-                placeholder="Ghi chú (tuỳ chọn)"
-                value={note}
-                onChange={(e) => setNote(e.target.value)}
-                className="w-full rounded-lg border border-stone-200 text-gray-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
-              />
-            </>
-          )}
-
           {action.type === 'adjust' && (
             <>
               <input
@@ -340,13 +312,13 @@ export default function InventoryListClient() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-1">
-                        <button
-                          onClick={() => openAction('add', item)}
-                          title="Nhập hàng"
-                          className="rounded-md p-1.5 text-stone-400 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer"
+                        <Link
+                          href="/dashboard/lo-san-xuat"
+                          title="Nhập từ Lô Hàng"
+                          className="rounded-md p-1.5 text-emerald-500 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer flex items-center gap-1"
                         >
                           <FiPlus className="size-4" />
-                        </button>
+                        </Link>
                         <button
                           onClick={() => openAction('adjust', item)}
                           title="Điều chỉnh"
