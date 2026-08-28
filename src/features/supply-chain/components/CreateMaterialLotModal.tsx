@@ -23,6 +23,7 @@ export default function CreateMaterialLotModal({ isOpen, onClose }: Props) {
     selectedFacilityId,
     setSelectedFacilityId,
     cycles,
+    harvests,
   } = useCreateMaterialLot({ onSuccess: onClose, isOpen });
   const {
     register,
@@ -226,6 +227,38 @@ export default function CreateMaterialLotModal({ isOpen, onClose }: Props) {
                     />
                     {errors.sourceCycleId && (
                       <p className="text-red-500 text-xs mt-1">{errors.sourceCycleId.message}</p>
+                    )}
+                  </div>
+                )}
+
+                {form.watch('sourceCycleId') && (
+                  <div>
+                    <label className="block text-sm font-medium text-stone-700 mb-1">
+                      Lần thu hoạch <span className="text-red-500">*</span>
+                    </label>
+                    <Controller
+                      control={control}
+                      name="harvestId"
+                      rules={{
+                        required: sourceType === 'INTERNAL' ? 'Vui lòng chọn lần thu hoạch' : false,
+                      }}
+                      render={({ field }) => (
+                        <CustomSelect
+                          value={field.value || ''}
+                          onChange={(val) => {
+                            field.onChange(Number(val));
+                            form.trigger('originalQuantity');
+                          }}
+                          options={harvests.map((h) => ({
+                            label: `${h.harvestDate} - ${h.quantity} ${h.unit}`,
+                            value: h.id,
+                          }))}
+                          placeholder="-- Chọn Đợt Thu Hoạch --"
+                        />
+                      )}
+                    />
+                    {errors.harvestId && (
+                      <p className="text-red-500 text-xs mt-1">{errors.harvestId.message}</p>
                     )}
                   </div>
                 )}

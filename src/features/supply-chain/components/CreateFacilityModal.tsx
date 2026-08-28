@@ -3,6 +3,8 @@ import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/AppButton';
 import { FiMapPin, FiInfo, FiLayers, FiAlertCircle } from 'react-icons/fi';
 import { useCreateFacility } from '../hooks/useFacility';
+import MapPickerWrapper from './map/MapPickerWrapper';
+import { LocationSelects } from './LocationSelects';
 
 interface Props {
   isOpen: boolean;
@@ -42,7 +44,7 @@ export default function CreateFacilityModal({ isOpen, onClose }: Props) {
               </label>
               <input
                 {...register('name', { required: 'Vui lòng nhập tên cơ sở' })}
-                className="w-full border border-stone-300 text-gray-700 rounded-lg px-3 py-2.5 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                className="w-full border border-stone-300 text-gray-700 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
                 placeholder="Ví dụ: Vườn xoài Cát Chu số 1"
               />
               {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
@@ -55,7 +57,7 @@ export default function CreateFacilityModal({ isOpen, onClose }: Props) {
               </label>
               <select
                 {...register('type', { required: 'Vui lòng chọn loại hình' })}
-                className="w-full border border-stone-300 text-gray-700 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white transition-colors"
+                className="w-full border border-stone-300 text-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 bg-white transition-colors"
               >
                 <option value="">-- Chọn loại hình --</option>
                 <option value="PLANTING">Trồng trọt (Vùng trồng)</option>
@@ -74,7 +76,7 @@ export default function CreateFacilityModal({ isOpen, onClose }: Props) {
                 type="number"
                 step="0.01"
                 {...register('areaSize', { valueAsNumber: true })}
-                className="w-full border border-stone-300 text-gray-700 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                className="w-full border border-stone-300 text-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
                 placeholder="Ví dụ: 1000"
               />
             </div>
@@ -92,20 +94,83 @@ export default function CreateFacilityModal({ isOpen, onClose }: Props) {
               </label>
               <input
                 {...register('address')}
-                className="w-full border border-stone-300 text-gray-700 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
-                placeholder="Số nhà, đường, xã, huyện..."
+                className="w-full border border-stone-300 text-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                placeholder="Số nhà, đường, xóm..."
               />
+            </div>
+          </div>
+
+          <LocationSelects form={form} />
+
+          <div>
+            <label className="block text-sm font-medium text-stone-700 mb-1">Mô tả thêm</label>
+            <textarea
+              {...register('description')}
+              rows={3}
+              className="w-full border border-stone-300 text-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+              placeholder="Ghi chú về cơ sở vật chất, chứng nhận (nếu có)..."
+            />
+          </div>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-semibold text-stone-900 uppercase tracking-wider mb-4 pb-2 border-b border-stone-100 flex items-center gap-2">
+            🌿 Cây trồng / Vật nuôi
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-stone-700 mb-1">
+                Tên Cây Trồng / Vật Nuôi
+              </label>
+              <input
+                {...register('cropName')}
+                className="w-full border border-stone-300 text-gray-700 rounded-lg px-3 py-2  focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                placeholder="VD: Xoài, Lợn, Tôm..."
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-stone-700 mb-1">
+                Giống (Variety)
+              </label>
+              <input
+                {...register('cropVariety')}
+                className="w-full border border-stone-300 text-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                placeholder="VD: Cát Chu, Lợn Rừng..."
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* BẢN ĐỒ & TOẠ ĐỘ */}
+        <div>
+          <h3 className="text-sm font-semibold text-stone-900 uppercase tracking-wider mb-4 pb-2 border-b border-stone-100 flex items-center gap-2">
+            <FiMapPin className="text-emerald-600" /> Vị trí & Ranh giới
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="sm:col-span-2">
+              <label className="block text-sm font-medium text-stone-700 mb-1">
+                Bản đồ vị trí (Click để chọn toạ độ, dùng công cụ để vẽ ranh giới)
+              </label>
+              <div className="h-[400px] mb-3">
+                <MapPickerWrapper
+                  latitude={form.watch('latitude')}
+                  longitude={form.watch('longitude')}
+                  boundary={form.watch('boundary')}
+                  onChangeLocation={(lat: number, lng: number) => {
+                    form.setValue('latitude', lat);
+                    form.setValue('longitude', lng);
+                  }}
+                  onChangeBoundary={(boundaryJson: string) => {
+                    form.setValue('boundary', boundaryJson);
+                  }}
+                />
+              </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1">Mô tả thêm</label>
-              <textarea
-                {...register('description')}
-                rows={3}
-                className="w-full border border-stone-300 text-gray-700 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
-                placeholder="Ghi chú về cơ sở vật chất, chứng nhận (nếu có)..."
-              />
-            </div>
+            {/* Hidden fields just to store data for react-hook-form */}
+            <input type="hidden" {...register('latitude', { valueAsNumber: true })} />
+            <input type="hidden" {...register('longitude', { valueAsNumber: true })} />
+            <input type="hidden" {...register('boundary')} />
           </div>
         </div>
 

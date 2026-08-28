@@ -75,6 +75,47 @@ export function useCreateFacility({ onSuccess }: { onSuccess?: () => void }) {
   };
 }
 
+export function useUpdateFacility(facilityId: number, { onSuccess }: { onSuccess?: () => void }) {
+  const queryClient = useQueryClient();
+  const form = useForm<ISourceFacilityReq>();
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const mutation = useMutation({
+    mutationFn: (data: ISourceFacilityReq) => materialSourceApi.updateFacility(facilityId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['facilities'] });
+      form.reset();
+      onSuccess?.();
+    },
+    onError: (err: ApiErrorResponse) => {
+      setErrorMsg(err?.response?.data?.message || 'Có lỗi xảy ra khi cập nhật cơ sở/vùng trồng');
+    },
+  });
+
+  const onSubmit = (data: ISourceFacilityReq) => {
+    setErrorMsg('');
+    mutation.mutate(data);
+  };
+
+  return {
+    form,
+    mutation,
+    onSubmit: form.handleSubmit(onSubmit),
+    errorMsg,
+  };
+}
+
+export function useDeleteFacility(onSuccess?: () => void) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (facilityId: number) => materialSourceApi.deleteFacility(facilityId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['facilities'] });
+      onSuccess?.();
+    },
+  });
+}
+
 export function useCreateCycle({
   facilityId,
   onSuccess,
@@ -145,20 +186,32 @@ export function useCycleLogs(cycleId: number, enabled: boolean) {
   };
 }
 
+import { toast } from 'react-hot-toast';
+
 export function useManageCycleLogs(cycleId: number) {
   const queryClient = useQueryClient();
 
   const createLogMutation = useMutation({
     mutationFn: (data: ISourceCycleLogReq) => materialSourceApi.createCycleLog(cycleId, data),
     onSuccess: () => {
+      toast.success('Ghi nhận sự kiện thành công!');
       queryClient.invalidateQueries({ queryKey: ['cycle_logs', cycleId] });
+    },
+    onError: (error: unknown) => {
+      const e = error as { response?: { data?: { message?: string } } };
+      toast.error(e?.response?.data?.message || 'Có lỗi xảy ra khi ghi nhận nhật ký');
     },
   });
 
   const deleteLogMutation = useMutation({
     mutationFn: (logId: number) => materialSourceApi.deleteCycleLog(logId),
     onSuccess: () => {
+      toast.success('Xóa sự kiện thành công!');
       queryClient.invalidateQueries({ queryKey: ['cycle_logs', cycleId] });
+    },
+    onError: (error: unknown) => {
+      const e = error as { response?: { data?: { message?: string } } };
+      toast.error(e?.response?.data?.message || 'Có lỗi xảy ra khi xóa sự kiện');
     },
   });
 

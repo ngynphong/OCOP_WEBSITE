@@ -20,15 +20,28 @@ import {
   useFacilityList,
   useCycleList,
   useCreateCycle,
-  useCreateFacility,
+  useDeleteFacility,
   useCycleLogs,
   useManageCycleLogs,
   useDeleteCycle,
 } from '../hooks/useFacility';
 import { useForm } from 'react-hook-form';
-import { ISourceFacility, ISourceCycle, ISourceCycleLogReq } from '../types/materialSourceTypes';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { materialSourceApi } from '../api/materialSourceApi';
+import {
+  ISourceFacility,
+  ISourceFacilityReq,
+  ISourceCycle,
+  ISourceCycleLogReq,
+} from '../types/materialSourceTypes';
 import { Button } from '@/components/ui/AppButton';
 import { toast } from 'react-toastify';
+import MapPickerWrapper from './map/MapPickerWrapper';
+import { LocationSelects } from './LocationSelects';
+import { useSellerProductsQuery } from '@/features/products/hooks/useSellerProducts';
+import { useProductionBatch } from '@/features/supply-chain/hooks/useProductionBatch';
+import { FARMING_PHASES } from '@/features/products/utils/ProductConstants';
+import { JournalStepType } from '@/features/products/types/productTypes';
 
 interface FacilityTabProps {
   isCreating: boolean;
@@ -37,19 +50,49 @@ interface FacilityTabProps {
 
 interface CreateFacilityFormProps {
   onClose: () => void;
+  initialData?: ISourceFacility;
 }
 
-function CreateFacilityForm({ onClose }: CreateFacilityFormProps) {
-  const { form, mutation, onSubmit, errorMsg } = useCreateFacility({
+function CreateFacilityForm({ onClose, initialData }: CreateFacilityFormProps) {
+  const queryClient = useQueryClient();
+  const form = useForm<ISourceFacilityReq>({
+    defaultValues: initialData || {},
+  });
+  const [errorMsg, setErrorMsg] = useState('');
+  const isEditing = !!initialData;
+
+  const mutation = useMutation({
+    mutationFn: (data: ISourceFacilityReq) =>
+      isEditing
+        ? materialSourceApi.updateFacility(initialData.id, data)
+        : materialSourceApi.createFacility(data),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['facilities'] });
+      form.reset();
       onClose();
-      toast.success('Thêm cơ sở/vùng trồng mới thành công');
+      toast.success(
+        isEditing ? 'Cập nhật cơ sở/vùng trồng thành công' : 'Thêm cơ sở/vùng trồng mới thành công',
+      );
+    },
+    onError: (err: unknown) => {
+      const apiError = err as { response?: { data?: { message?: string } } };
+      setErrorMsg(apiError?.response?.data?.message || 'Có lỗi xảy ra');
     },
   });
+
+  const onSubmit = form.handleSubmit((data) => {
+    setErrorMsg('');
+    mutation.mutate(data);
+  });
+
   const {
     register,
     formState: { errors },
   } = form;
+
+  const watchLatitude = form.watch('latitude');
+  const watchLongitude = form.watch('longitude');
+  const watchBoundary = form.watch('boundary');
 
   return (
     <div className="space-y-6">
@@ -57,7 +100,7 @@ function CreateFacilityForm({ onClose }: CreateFacilityFormProps) {
       <div className="flex items-center justify-between pb-4 border-b border-stone-100">
         <h2 className="text-lg font-bold text-stone-900 flex items-center gap-2">
           <FiMapPin className="text-emerald-600" />
-          Thêm Cơ sở / Vùng trồng mới
+          {isEditing ? 'Cập nhật Cơ sở / Vùng trồng' : 'Thêm Cơ sở / Vùng trồng mới'}
         </h2>
         <button
           type="button"
@@ -83,7 +126,7 @@ function CreateFacilityForm({ onClose }: CreateFacilityFormProps) {
             </label>
             <input
               {...register('name', { required: 'Vui lòng nhập tên cơ sở' })}
-              className="w-full border border-stone-300 text-gray-700 text-sm rounded-lg px-3 py-2 focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-white"
+              className="w-full border border-stone-300 text-gray-700 text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-white"
               placeholder="Ví dụ: Vườn xoài Cát Chu số 1"
             />
             {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
@@ -96,7 +139,7 @@ function CreateFacilityForm({ onClose }: CreateFacilityFormProps) {
               </label>
               <select
                 {...register('type', { required: 'Vui lòng chọn loại hình' })}
-                className="w-full border border-stone-300 text-gray-700 text-sm rounded-lg px-3 py-2 focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 bg-white transition-colors"
+                className="w-full border border-stone-300 text-gray-700 text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 bg-white transition-colors"
               >
                 <option value="">-- Chọn loại hình --</option>
                 <option value="PLANTING">Trồng trọt (Vùng trồng)</option>
@@ -115,11 +158,13 @@ function CreateFacilityForm({ onClose }: CreateFacilityFormProps) {
                 type="number"
                 step="0.01"
                 {...register('areaSize', { valueAsNumber: true })}
-                className="w-full border border-stone-300 text-gray-700 text-sm rounded-lg px-3 py-2 focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-white"
+                className="w-full border border-stone-300 text-gray-700 text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-white"
                 placeholder="Ví dụ: 1000"
               />
             </div>
           </div>
+
+          <LocationSelects form={form} />
 
           <div>
             <label className="block text-xs font-semibold text-stone-700 mb-1">
@@ -127,9 +172,59 @@ function CreateFacilityForm({ onClose }: CreateFacilityFormProps) {
             </label>
             <input
               {...register('address')}
-              className="w-full border border-stone-300 text-gray-700 text-sm rounded-lg px-3 py-2 focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-white"
-              placeholder="Số nhà, đường, xã, huyện..."
+              className="w-full border border-stone-300 text-gray-700 text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-white"
+              placeholder="Số nhà, đường, xóm..."
             />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-stone-700 mb-1">
+                Tên cây trồng/vật nuôi
+              </label>
+              <input
+                {...register('cropName')}
+                className="w-full border border-stone-300 text-gray-700 text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-white"
+                placeholder="Ví dụ: Xoài, Lợn..."
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-stone-700 mb-1">
+                Giống (Variety)
+              </label>
+              <input
+                {...register('cropVariety')}
+                className="w-full border border-stone-300 text-gray-700 text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-white"
+                placeholder="Ví dụ: Cát Chu, Lai Sind..."
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-stone-700 mb-2 flex items-center justify-between">
+              <span>Bản đồ vị trí & Ranh giới vùng trồng</span>
+              <span className="font-normal text-stone-500">
+                (Click để chọn toạ độ, dùng công cụ để vẽ đa giác)
+              </span>
+            </label>
+            <div className="h-[400px] mb-3">
+              <MapPickerWrapper
+                latitude={watchLatitude}
+                longitude={watchLongitude}
+                boundary={watchBoundary}
+                onChangeLocation={(lat: number, lng: number) => {
+                  form.setValue('latitude', lat);
+                  form.setValue('longitude', lng);
+                }}
+                onChangeBoundary={(boundaryJson: string) => {
+                  form.setValue('boundary', boundaryJson);
+                }}
+              />
+            </div>
+            {/* Hidden fields just to store data for react-hook-form */}
+            <input type="hidden" {...register('latitude', { valueAsNumber: true })} />
+            <input type="hidden" {...register('longitude', { valueAsNumber: true })} />
+            <input type="hidden" {...register('boundary')} />
           </div>
 
           <div>
@@ -137,23 +232,18 @@ function CreateFacilityForm({ onClose }: CreateFacilityFormProps) {
             <textarea
               {...register('description')}
               rows={3}
-              className="w-full border border-stone-300 text-gray-700 text-sm rounded-lg px-3 py-2 focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-white resize-none"
+              className="w-full border border-stone-300 text-gray-700 text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-white resize-none"
               placeholder="Ghi chú về cơ sở vật chất, chứng nhận (nếu có)..."
             />
           </div>
         </div>
 
-        <div className="pt-4 flex justify-end gap-2 border-t border-stone-100">
-          <Button type="button" variant="outline" size="sm" onClick={onClose}>
-            Hủy bỏ
+        <div className="pt-4 flex justify-end gap-3 border-t border-stone-100">
+          <Button type="button" variant="outline" onClick={onClose} className="px-6">
+            Hủy
           </Button>
-          <Button
-            type="submit"
-            size="sm"
-            isLoading={mutation.isPending}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white"
-          >
-            Lưu cơ sở
+          <Button type="submit" isLoading={mutation.isPending} className="px-6">
+            {isEditing ? 'Cập nhật' : 'Thêm mới'}
           </Button>
         </div>
       </form>
@@ -170,24 +260,34 @@ function CycleAccordionItem({ cycle, onCycleDeleted }: CycleAccordionItemProps) 
   const [isExpanded, setIsExpanded] = useState(false);
   const [isAddingLog, setIsAddingLog] = useState(false);
 
+  const { useGetProcessTemplateById } = useProductionBatch();
+  const { data: templateData } = useGetProcessTemplateById(cycle.processTemplateId);
+  const farmingSteps =
+    templateData?.steps?.filter((s) => FARMING_PHASES.includes(s.stepType as JournalStepType)) ||
+    [];
+
   const { logs, isLoading } = useCycleLogs(cycle.id, isExpanded);
   const { createLogMutation, deleteLogMutation } = useManageCycleLogs(cycle.id);
   const { deleteCycleMutation } = useDeleteCycle(() => onCycleDeleted());
 
-  const { register, handleSubmit, reset } = useForm<ISourceCycleLogReq>({
+  const { register, handleSubmit, reset, setValue } = useForm<ISourceCycleLogReq>({
     defaultValues: {
       activityName: '',
       eventTime: new Date().toISOString().slice(0, 16),
       description: '',
       materialsUsed: '',
+      templateStepId: undefined,
     },
   });
+
+  const [selectedStepId, setSelectedStepId] = useState<number | ''>('');
 
   const handleAddLog = (data: ISourceCycleLogReq) => {
     createLogMutation.mutate(data, {
       onSuccess: () => {
         toast.success('Thêm nhật ký thành công');
         setIsAddingLog(false);
+        setSelectedStepId('');
         reset();
       },
       onError: () => {
@@ -316,13 +416,51 @@ function CycleAccordionItem({ cycle, onCycleDeleted }: CycleAccordionItemProps) 
                     <label className="text-xs font-medium text-stone-600">
                       Tên hoạt động <span className="text-red-500">*</span>
                     </label>
-                    <input
-                      type="text"
-                      placeholder="Vd: Bón phân đợt 1, Phun thuốc..."
-                      required
-                      {...register('activityName', { required: true })}
-                      className="w-full px-2.5 py-1.5 text-sm border text-gray-700 border-stone-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 bg-white"
-                    />
+                    {farmingSteps.length > 0 ? (
+                      <div className="flex flex-col gap-2">
+                        <select
+                          className="w-full px-2.5 py-1.5 text-sm border text-gray-700 border-stone-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 bg-white"
+                          value={selectedStepId}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setSelectedStepId(val === '' ? '' : Number(val));
+                            const step = farmingSteps.find((s) => s.id === Number(val));
+                            if (step) {
+                              setValue('activityName', step.title);
+                              setValue('templateStepId', step.id);
+                            } else {
+                              setValue('activityName', '');
+                              setValue('templateStepId', undefined);
+                            }
+                          }}
+                        >
+                          <option value="">-- Chọn công đoạn --</option>
+                          {farmingSteps.map((s) => (
+                            <option key={s.id} value={s.id}>
+                              {s.title}
+                            </option>
+                          ))}
+                          <option value="-1">Hoạt động khác (Tự nhập)</option>
+                        </select>
+                        {selectedStepId === -1 && (
+                          <input
+                            type="text"
+                            placeholder="Nhập tên hoạt động..."
+                            required
+                            {...register('activityName', { required: true })}
+                            className="w-full px-2.5 py-1.5 text-sm border text-gray-700 border-stone-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 bg-white"
+                          />
+                        )}
+                      </div>
+                    ) : (
+                      <input
+                        type="text"
+                        placeholder="Vd: Bón phân đợt 1, Phun thuốc..."
+                        required
+                        {...register('activityName', { required: true })}
+                        className="w-full px-2.5 py-1.5 text-sm border text-gray-700 border-stone-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 bg-white"
+                      />
+                    )}
                   </div>
                   <div className="space-y-1">
                     <label className="text-xs font-medium text-stone-600">
@@ -434,6 +572,14 @@ interface FacilityDetailPanelProps {
 function FacilityDetailPanel({ facility, onClose }: FacilityDetailPanelProps) {
   const { cycles, refetch, isLoading: isLoadingCycles } = useCycleList(facility.id);
   const [isAddingCycle, setIsAddingCycle] = useState(false);
+
+  const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
+  const { data: productsData } = useSellerProductsQuery({ pageNo: 1, pageSize: 100 });
+
+  const { useGetProcessTemplates } = useProductionBatch();
+  const { data: templatesData, isLoading: isLoadingTemplates } = useGetProcessTemplates(
+    selectedProductId || 0,
+  );
 
   const {
     form,
@@ -567,6 +713,55 @@ function FacilityDetailPanel({ facility, onClose }: FacilityDetailPanelProps) {
               </div>
             )}
 
+            <div className="bg-emerald-50/50 p-4 border border-emerald-100 rounded-lg space-y-4 mb-4">
+              <h5 className="font-semibold text-emerald-800 text-xs uppercase tracking-wider mb-2">
+                Liên kết Quy trình chuẩn (Tùy chọn)
+              </h5>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-stone-700 mb-1">
+                    Sản phẩm dự kiến
+                  </label>
+                  <select
+                    className="w-full border border-stone-300 text-gray-700 text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-white"
+                    value={selectedProductId || ''}
+                    onChange={(e) => {
+                      setSelectedProductId(e.target.value ? Number(e.target.value) : null);
+                    }}
+                  >
+                    <option value="">-- Chọn sản phẩm --</option>
+                    {productsData?.data?.items?.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-stone-700 mb-1">
+                    Quy trình chuẩn
+                  </label>
+                  <select
+                    className="w-full border border-stone-300 text-gray-700 text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-white disabled:bg-stone-100 disabled:text-stone-400"
+                    {...register('processTemplateId')}
+                    disabled={!selectedProductId || isLoadingTemplates}
+                  >
+                    <option value="">-- Chọn quy trình --</option>
+                    {templatesData?.map((t) => (
+                      <option key={t.id} value={t.id}>
+                        {t.name}
+                      </option>
+                    ))}
+                  </select>
+                  {selectedProductId && templatesData?.length === 0 && (
+                    <p className="text-xs text-amber-600 mt-1">
+                      Sản phẩm này chưa có quy trình nào.
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="md:col-span-2">
                 <label className="block text-xs font-semibold text-stone-700 mb-1">
@@ -689,11 +884,15 @@ function FacilityDetailPanel({ facility, onClose }: FacilityDetailPanelProps) {
 
 export default function FacilityTab({ isCreating, setIsCreating }: FacilityTabProps) {
   const { facilities, isLoading, refetch } = useFacilityList();
+  const deleteFacilityMutation = useDeleteFacility();
+
   const [selectedFacility, setSelectedFacility] = useState<ISourceFacility | null>(null);
+  const [editingFacility, setEditingFacility] = useState<ISourceFacility | null>(null);
 
   const handleSelectFacility = (fac: ISourceFacility) => {
-    setIsCreating(false);
     setSelectedFacility(fac);
+    setIsCreating(false);
+    setEditingFacility(null);
   };
 
   if (isCreating && selectedFacility !== null) {
@@ -718,7 +917,28 @@ export default function FacilityTab({ isCreating, setIsCreating }: FacilityTabPr
     );
   }
 
-  const isRightPanelOpen = !!selectedFacility || isCreating;
+  const isRightPanelOpen = !!selectedFacility || isCreating || !!editingFacility;
+
+  const handleEditFacility = (e: React.MouseEvent, fac: ISourceFacility) => {
+    e.stopPropagation();
+    setEditingFacility(fac);
+    setSelectedFacility(null);
+    setIsCreating(false);
+  };
+
+  const handleDeleteFacility = (e: React.MouseEvent, fac: ISourceFacility) => {
+    e.stopPropagation();
+    if (!confirm(`Bạn có chắc chắn muốn xóa cơ sở/vùng trồng "${fac.name}"?`)) return;
+    deleteFacilityMutation.mutate(fac.id, {
+      onSuccess: () => {
+        toast.success('Xóa cơ sở/vùng trồng thành công');
+        if (selectedFacility?.id === fac.id) setSelectedFacility(null);
+        if (editingFacility?.id === fac.id) setEditingFacility(null);
+        refetch();
+      },
+      onError: () => toast.error('Có lỗi xảy ra khi xóa cơ sở/vùng trồng'),
+    });
+  };
 
   return (
     <div className="space-y-4 animate-in fade-in duration-300">
@@ -764,7 +984,7 @@ export default function FacilityTab({ isCreating, setIsCreating }: FacilityTabPr
                 </h2>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
                 {facilities.map((fac) => (
                   <div
                     key={fac.id}
@@ -788,19 +1008,50 @@ export default function FacilityTab({ isCreating, setIsCreating }: FacilityTabPr
                                 : fac.type}
                       </span>
                     </div>
-                    <p className="text-stone-500 text-sm mb-1.5 line-clamp-2 min-h-[40px]">
+                    <p className="text-stone-500 text-sm mb-2 line-clamp-2 min-h-[40px]">
                       {fac.address || (
                         <span className="italic text-stone-400">Chưa cập nhật địa chỉ</span>
                       )}
                     </p>
-                    <p className="text-stone-700 text-sm mb-5 font-medium bg-stone-50 p-2 rounded-lg inline-block">
-                      Quy mô:{' '}
-                      {fac.areaSize ? (
-                        <span className="text-emerald-700 font-bold">{fac.areaSize}</span>
-                      ) : (
-                        '---'
-                      )}
-                    </p>
+
+                    {fac.cropName && (
+                      <div className="mb-3 flex items-center gap-2">
+                        <span className="bg-emerald-50 border border-emerald-100 text-emerald-700 px-2.5 py-1 rounded-md text-xs font-semibold flex items-center gap-1.5 shadow-sm">
+                          {fac.cropName}
+                        </span>
+                        {fac.cropVariety && (
+                          <span className="text-xs text-stone-500">(Giống: {fac.cropVariety})</span>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="mb-4">
+                      <p className="text-stone-700 text-sm font-medium bg-stone-50 p-2 rounded-lg inline-block border border-stone-100">
+                        Quy mô/Diện tích:{' '}
+                        {fac.areaSize ? (
+                          <span className="text-emerald-700 font-bold">
+                            {fac.areaSize}{' '}
+                            <span className="text-xs font-normal text-stone-500">
+                              {fac.type === 'PLANTING'
+                                ? '(ha/m²)'
+                                : fac.type === 'LIVESTOCK'
+                                  ? '(con)'
+                                  : ''}
+                            </span>
+                          </span>
+                        ) : (
+                          <span className="text-stone-400 font-normal">Chưa cập nhật</span>
+                        )}
+                      </p>
+                    </div>
+
+                    {fac.description && (
+                      <div className="mb-4 p-3 bg-stone-50 rounded-lg border border-stone-100">
+                        <p className="text-sm text-stone-600 italic whitespace-pre-wrap">
+                          {fac.description}
+                        </p>
+                      </div>
+                    )}
 
                     <div
                       className="flex justify-between items-center pt-3 border-t border-stone-100"
@@ -809,7 +1060,7 @@ export default function FacilityTab({ isCreating, setIsCreating }: FacilityTabPr
                       <span className="text-xs text-stone-400">
                         Tạo: {format(new Date(fac.createdAt), 'dd/MM/yyyy')}
                       </span>
-                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex gap-1 transition-opacity">
                         <button
                           onClick={() => handleSelectFacility(fac)}
                           className="text-emerald-600 hover:bg-emerald-50 transition-colors p-2 rounded-lg text-xs font-semibold"
@@ -818,12 +1069,14 @@ export default function FacilityTab({ isCreating, setIsCreating }: FacilityTabPr
                           Xem nhật ký vụ
                         </button>
                         <button
+                          onClick={(e) => handleEditFacility(e, fac)}
                           className="text-stone-400 hover:text-blue-600 hover:bg-blue-50 transition-colors p-2 rounded-lg"
                           title="Sửa"
                         >
                           <FiEdit2 size={16} />
                         </button>
                         <button
+                          onClick={(e) => handleDeleteFacility(e, fac)}
                           className="text-stone-400 hover:text-red-650 hover:bg-red-50 transition-colors p-2 rounded-lg"
                           title="Xóa"
                         >
@@ -838,14 +1091,15 @@ export default function FacilityTab({ isCreating, setIsCreating }: FacilityTabPr
           )}
         </div>
 
-        {/* Right Column: Detail or Create panel */}
+        {/* Right Column: Detail or Create/Edit panel */}
         {isRightPanelOpen && (
           <div className="lg:col-span-8 bg-white border border-stone-200 rounded-xl shadow-sm p-6">
-            {isCreating ? (
+            {isCreating || editingFacility ? (
               <CreateFacilityForm
+                initialData={editingFacility || undefined}
                 onClose={() => {
                   setIsCreating(false);
-                  refetch();
+                  setEditingFacility(null);
                 }}
               />
             ) : selectedFacility ? (

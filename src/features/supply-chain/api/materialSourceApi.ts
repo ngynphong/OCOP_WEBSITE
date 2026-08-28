@@ -13,6 +13,8 @@ import {
   ISourceCycleLog,
   ISourceCycleLogReq,
   IMaterialLotUsage,
+  IHarvest,
+  IHarvestReq,
 } from '../types/materialSourceTypes';
 
 export const materialSourceApi = {
@@ -124,6 +126,26 @@ export const materialSourceApi = {
   },
   deleteCycleLog: async (id: number) => {
     return axiosClient.delete(`/api/v1/seller/source-cycles/logs/${id}`);
+  },
+
+  // --- Harvests ---
+  getHarvests: async (cycleId: number, page = 0, size = 10) => {
+    return axiosClient.get<unknown, { data: IPageResponse<IHarvest> }>(
+      `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_CYCLES}/${cycleId}/harvests`,
+      {
+        headers: { 'X-Silent-Loading': 'true' },
+        params: { page, size },
+      },
+    );
+  },
+  createHarvest: async (data: IHarvestReq) => {
+    return axiosClient.post<unknown, { data: IHarvest }>('/api/v1/seller/harvests', data);
+  },
+  updateHarvest: async (id: number, data: IHarvestReq) => {
+    return axiosClient.put<unknown, { data: IHarvest }>(`/api/v1/seller/harvests/${id}`, data);
+  },
+  deleteHarvest: async (id: number) => {
+    return axiosClient.delete(`/api/v1/seller/harvests/${id}`);
   },
 
   // --- Material Lots ---

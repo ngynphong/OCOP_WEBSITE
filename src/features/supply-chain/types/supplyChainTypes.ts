@@ -147,6 +147,8 @@ export interface ISupplyChainLot {
   inputMaterials?: string;
   createdAt: string;
   warnings?: string[];
+  sourceCycleId?: number;
+  sourceCycleStatus?: string;
   recallInfo?: IRecallInfo;
   steps?: ISupplyChainStep[];
   events?: IEventInfo[];
@@ -203,6 +205,8 @@ export interface ICreateLotReq {
     materialLotId: number;
     quantity: number;
   }[];
+  isClosedLoop?: boolean;
+  facilityId?: number;
 }
 
 export interface ILotListReq {

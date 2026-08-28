@@ -45,6 +45,8 @@ const LotDetailPage = () => {
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [showQR, setShowQR] = useState(false);
+  const [isGenerateModalOpen, setIsGenerateModalOpen] = useState(false);
+  const [generateCount, setGenerateCount] = useState<string>('');
 
   const [qrCodes, setQrCodes] = useState<ILotQrCode[]>([]);
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
@@ -124,14 +126,15 @@ const LotDetailPage = () => {
     }
   };
 
+  const handleOpenGenerateModal = () => {
+    if (!lot) return;
+    setGenerateCount(lot.quantity.toString());
+    setIsGenerateModalOpen(true);
+  };
+
   const handleGenerateQRs = async () => {
     if (!lot) return;
-    const countStr = prompt(
-      `Nhập số lượng tem muốn sinh (Tối đa ${lot.quantity}):`,
-      lot.quantity.toString(),
-    );
-    if (!countStr) return;
-    const count = parseInt(countStr);
+    const count = parseInt(generateCount);
     if (isNaN(count) || count <= 0 || count > lot.quantity) {
       toast.error(`Số lượng không hợp lệ. Phải từ 1 đến ${lot.quantity}`);
       return;
@@ -141,6 +144,7 @@ const LotDetailPage = () => {
       setGenerating(true);
       await supplyChainApi.generateItemQrCodes(lot.id, count);
       toast.success(`Đã sinh thành công ${count} tem`);
+      setIsGenerateModalOpen(false);
     } catch (error: unknown) {
       console.error('Generate QRs error', error);
       const e = error as { response?: { data?: { message?: string } } };
@@ -301,7 +305,7 @@ const LotDetailPage = () => {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={handleGenerateQRs}
+                    onClick={handleOpenGenerateModal}
                     disabled={generating}
                   >
                     {generating ? 'Đang xử lý...' : 'Sinh Tem Loạt'}
@@ -432,6 +436,50 @@ const LotDetailPage = () => {
             </Button>
             <Button variant="primary" onClick={handleSubmitVerification}>
               Xác nhận Gửi
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={isGenerateModalOpen}
+        onClose={() => setIsGenerateModalOpen(false)}
+        title="Sinh tem QR truy xu?t"
+      >
+        <div className="space-y-4">
+          <p className="text-stone-600 text-sm">
+            Vui l�ng nh?p s? lu?ng tem d?c b?n mu?n sinh cho l� h�ng n�y.
+            <br />
+            <strong>Luu �:</strong> S? lu?ng t?i da kh�ng vu?t qu� s? lu?ng ti�u chu?n c?a l� h�ng
+            l� <strong>{lot?.quantity}</strong> tem.
+          </p>
+          <div className="pt-2">
+            <label className="block text-sm font-semibold text-stone-700 mb-1">
+              S? lu?ng tem c?n sinh <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              className="w-full px-4 py-2 bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+              placeholder={`Tối đa ${lot?.quantity} tem`}
+              value={generateCount}
+              onChange={(e) => {
+                const val = parseInt(e.target.value);
+                if (val > (lot?.quantity || 0)) {
+                  setGenerateCount((lot?.quantity || 0).toString());
+                } else {
+                  setGenerateCount(e.target.value);
+                }
+              }}
+              min="1"
+              max={lot?.quantity}
+            />
+          </div>
+          <div className="flex justify-end gap-3 pt-4">
+            <Button variant="outline" onClick={() => setIsGenerateModalOpen(false)}>
+              H?y b?
+            </Button>
+            <Button variant="primary" onClick={handleGenerateQRs} isLoading={generating}>
+              X�c nh?n & Sinh tem
             </Button>
           </div>
         </div>

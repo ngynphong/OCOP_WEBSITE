@@ -148,6 +148,13 @@ export const supplyChainApi = {
     );
   },
 
+  getTemplateById: async (templateId: number) => {
+    return axiosClient.get<unknown, { data: IProcessTemplate }>(
+      `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/templates/${templateId}`,
+      { headers: { 'X-Silent-Loading': 'true' } },
+    );
+  },
+
   getSystemTemplates: async (categoryId?: number) => {
     return axiosClient.get<unknown, { data: IProcessTemplate[] }>(
       `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/templates/system`,
@@ -168,6 +175,24 @@ export const supplyChainApi = {
   addBatchEvent: async (lotId: number, data: ICreateBatchEventReq) => {
     return axiosClient.post<unknown, { data: ISupplyChainLot }>(
       `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/${lotId}/events`,
+      data,
+    );
+  },
+
+  harvestAndLink: async (
+    lotId: number,
+    data: {
+      cycleId: number;
+      harvestDate: string;
+      quantity: number;
+      unit: string;
+      qualityGrade?: string;
+      harvestArea?: number;
+      description?: string;
+    },
+  ) => {
+    return axiosClient.post<unknown, { data: ISupplyChainLot }>(
+      `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/${lotId}/harvest-and-link`,
       data,
     );
   },

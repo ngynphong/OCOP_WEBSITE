@@ -175,7 +175,11 @@ export const BatchEventTimeline = ({ events }: BatchEventTimelineProps) => {
                                     <li key={key} className="flex px-3 py-2 text-sm sm:text-xs">
                                       <span className="font-medium text-gray-500 w-1/3">{key}</span>
                                       <span className="text-gray-900 font-medium w-2/3 break-words">
-                                        {String(value)}
+                                        {typeof value === 'object' &&
+                                        value !== null &&
+                                        'value' in (value as Record<string, unknown>)
+                                          ? `${(value as Record<string, unknown>).value} ${(value as Record<string, unknown>).unit || ''}`.trim()
+                                          : String(value)}
                                       </span>
                                     </li>
                                   );

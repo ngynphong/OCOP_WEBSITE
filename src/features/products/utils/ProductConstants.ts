@@ -12,6 +12,17 @@ export const JOURNAL_STEP_LABELS: Record<JournalStepType, string> = {
   OTHER: 'Khác',
 };
 
+export const FARMING_PHASES: JournalStepType[] = ['PLANTING', 'CARE', 'HARVESTING'];
+
+export const PROCESSING_PHASES: JournalStepType[] = [
+  'RAW_MATERIAL',
+  'PROCESSING',
+  'QUALITY_CHECK',
+  'PACKAGING',
+  'CERTIFICATION',
+  'OTHER',
+];
+
 export const BLOCKCHAIN_COLORS: Record<string, string> = {
   NOT_SUBMITTED: 'text-stone-400',
   PENDING: 'text-amber-500',

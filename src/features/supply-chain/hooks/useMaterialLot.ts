@@ -64,6 +64,15 @@ export function useCreateMaterialLot({
   });
   const cycles = cyclesData?.data?.content || [];
 
+  const sourceCycleId = useWatch({ control: form.control, name: 'sourceCycleId' });
+
+  const { data: harvestsData } = useQuery({
+    queryKey: ['harvests_for_cycle', sourceCycleId],
+    queryFn: () => materialSourceApi.getHarvests(sourceCycleId!, 0, 100),
+    enabled: isOpen && sourceType === 'INTERNAL' && !!sourceCycleId,
+  });
+  const harvests = harvestsData?.data?.content || [];
+
   const mutation = useMutation({
     mutationFn: (data: IMaterialLotReq) => materialSourceApi.createMaterialLot(data),
     onSuccess: () => {
@@ -93,5 +102,6 @@ export function useCreateMaterialLot({
     selectedFacilityId,
     setSelectedFacilityId,
     cycles,
+    harvests,
   };
 }

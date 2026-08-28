@@ -122,6 +122,8 @@ export default function ProductionBatchDetailPage() {
   const lotId = Number(params.id);
 
   const [isAddEventModalOpen, setIsAddEventModalOpen] = useState(false);
+  const [isQrModalOpen, setIsQrModalOpen] = useState(false);
+  const [qrCount, setQrCount] = useState<number>(0);
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'INFO' | 'TIMELINE' | 'PACKAGING' | 'AUDIT'>('INFO');
 
@@ -145,10 +147,19 @@ export default function ProductionBatchDetailPage() {
 
   const templateSteps = lot?.templateSteps || [];
 
-  const handleGenerateQrs = () => {
-    const count = parseInt(window.prompt('Nhập số lượng mã QR cần sinh:', '10') || '0', 10);
-    if (count > 0) {
-      generateQrMutation.mutate({ lotId, count });
+  const handleOpenQrModal = () => {
+    setQrCount(lot?.quantity || 10);
+    setIsQrModalOpen(true);
+  };
+
+  const handleConfirmGenerateQrs = () => {
+    if (qrCount > 0) {
+      generateQrMutation.mutate(
+        { lotId, count: qrCount },
+        {
+          onSuccess: () => setIsQrModalOpen(false),
+        },
+      );
     }
   };
 
@@ -325,6 +336,52 @@ export default function ProductionBatchDetailPage() {
                 </div>
               </div>
 
+              {lot.materialsUsed && lot.materialsUsed.length > 0 && (
+                <>
+                  <hr className="border-stone-200" />
+                  <div>
+                    <h3 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-4">
+                      Nguyên liệu sử dụng
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {lot.materialsUsed.map((m, idx) => (
+                        <div
+                          key={idx}
+                          className="p-4 bg-white border border-stone-200 rounded-lg shadow-sm"
+                        >
+                          <div className="flex justify-between items-start mb-2">
+                            <span className="font-semibold text-stone-800">{m.materialName}</span>
+                            <span className="text-sm font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">
+                              {m.quantityUsed} {m.unit}
+                            </span>
+                          </div>
+                          <div className="text-xs text-stone-500 space-y-1">
+                            <p>
+                              Mã lô nguyên liệu:{' '}
+                              <span className="font-medium text-stone-700">
+                                {m.materialLotCode}
+                              </span>
+                            </p>
+                            {m.supplierName && (
+                              <p>
+                                Nhà cung cấp:{' '}
+                                <span className="text-stone-700">{m.supplierName}</span>
+                              </p>
+                            )}
+                            {m.facilityName && (
+                              <p>
+                                Cơ sở/Vùng trồng:{' '}
+                                <span className="text-stone-700">{m.facilityName}</span>
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+
               {lot.notes && (
                 <>
                   <hr className="border-stone-200" />
@@ -356,12 +413,14 @@ export default function ProductionBatchDetailPage() {
               ) : (
                 <>
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-semibold">Danh sách Mã QR (GS1 Digital Link)</h3>
+                    <h3 className="text-lg font-semibold text-gray-700">
+                      Danh sách Mã QR (GS1 Digital Link)
+                    </h3>
                     <div className="flex items-center gap-2">
                       <Button
                         id="tour-generate-qr"
                         variant="primary"
-                        onClick={handleGenerateQrs}
+                        onClick={handleOpenQrModal}
                         isLoading={generateQrMutation.isPending}
                       >
                         Sinh mã QR
@@ -508,6 +567,11 @@ export default function ProductionBatchDetailPage() {
           lotId={lotId}
           productId={lot.productId || 0}
           templateSteps={templateSteps}
+          sourceCycleId={lot.sourceCycleId}
+          sourceCycleStatus={lot.sourceCycleStatus}
+          completedProcessingStepIds={
+            lot.events?.map((e) => e.templateStepId).filter((id): id is number => id != null) || []
+          }
         />
       )}
 
@@ -558,6 +622,49 @@ export default function ProductionBatchDetailPage() {
           <div className="flex justify-end pt-2 border-t border-stone-100 mt-2">
             <Button variant="outline" onClick={() => setIsTemplateModalOpen(false)}>
               Đóng
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Modal Sinh mã QR */}
+      <Modal
+        isOpen={isQrModalOpen}
+        onClose={() => setIsQrModalOpen(false)}
+        title="Sinh mã QR (GS1 Digital Link)"
+        maxWidth="max-w-md"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600">
+            Lô sản xuất này có số lượng sản phẩm dự kiến là{' '}
+            <strong className="text-emerald-700">
+              {lot?.quantity} {lot?.unit}
+            </strong>
+            . Bạn có thể sinh số lượng mã QR tương ứng với số lượng đóng gói thực tế.
+          </p>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Số lượng mã QR cần sinh
+            </label>
+            <input
+              type="number"
+              min="1"
+              max="100000"
+              value={qrCount}
+              onChange={(e) => setQrCount(parseInt(e.target.value) || 0)}
+              className="w-full px-3 py-2 border border-gray-300 text-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
+            />
+          </div>
+          <div className="flex justify-end gap-2 mt-6">
+            <Button variant="outline" onClick={() => setIsQrModalOpen(false)}>
+              Hủy
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleConfirmGenerateQrs}
+              isLoading={generateQrMutation.isPending}
+            >
+              Xác nhận sinh mã
             </Button>
           </div>
         </div>

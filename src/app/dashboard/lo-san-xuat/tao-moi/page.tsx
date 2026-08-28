@@ -13,6 +13,7 @@ import {
 } from '@/features/supply-chain/types/supplyChainTypes';
 import { useProductionBatch } from '@/features/supply-chain/hooks/useProductionBatch';
 import { useMaterialLotList } from '@/features/supply-chain/hooks/useMaterialLot';
+import { useFacilityList } from '@/features/supply-chain/hooks/useFacility';
 import { useSellerProductsQuery } from '@/features/products/hooks/useSellerProducts';
 import { useSellerVariantsQuery } from '@/features/products/hooks/useSellerVariants';
 import {
@@ -55,24 +56,36 @@ interface MaterialLotOption {
   unit: string;
 }
 
-const formSchema = z.object({
-  lotCode: z.string().min(1, 'Mã lô là bắt buộc'),
-  productId: z.number().min(1, 'Sản phẩm là bắt buộc'),
-  variantId: z.number().min(1, 'Biến thể là bắt buộc'),
-  processTemplateId: z.number().min(1, 'Quy trình là bắt buộc'),
-  productionDate: z.string().optional(),
-  expiryDate: z.string().optional(),
-  quantity: z.coerce.number().min(1, 'Số lượng sản phẩm dự kiến phải > 0'),
-  unit: z.string().min(1, 'Đơn vị là bắt buộc'),
-  materialsUsed: z
-    .array(
-      z.object({
-        materialLotId: z.number().min(1, 'Vui lòng chọn lô nguyên liệu'),
-        quantity: z.coerce.number().min(0.01, 'Số lượng phải > 0'),
-      }),
-    )
-    .optional(),
-});
+const formSchema = z
+  .object({
+    lotCode: z.string().min(1, 'Mã lô là bắt buộc'),
+    productId: z.number().min(1, 'Sản phẩm là bắt buộc'),
+    variantId: z.number().min(1, 'Biến thể là bắt buộc'),
+    processTemplateId: z.number().min(1, 'Quy trình là bắt buộc'),
+    productionDate: z.string().optional(),
+    expiryDate: z.string().optional(),
+    quantity: z.coerce.number().min(1, 'Số lượng sản phẩm dự kiến phải > 0'),
+    unit: z.string().min(1, 'Đơn vị là bắt buộc'),
+    materialsUsed: z
+      .array(
+        z.object({
+          materialLotId: z.number().min(1, 'Vui lòng chọn lô nguyên liệu'),
+          quantity: z.coerce.number().min(0.01, 'Số lượng phải > 0'),
+        }),
+      )
+      .optional(),
+    isClosedLoop: z.boolean().optional(),
+    facilityId: z.number().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.isClosedLoop && !data.facilityId) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Vui lòng chọn cơ sở/vùng trồng',
+        path: ['facilityId'],
+      });
+    }
+  });
 
 type FormData = z.infer<typeof formSchema>;
 
@@ -104,6 +117,7 @@ export default function CreateProductionBatchPage() {
       quantity: 1,
       unit: 'kg',
       materialsUsed: [],
+      isClosedLoop: false,
     },
   });
 
@@ -123,6 +137,8 @@ export default function CreateProductionBatchPage() {
 
   const { data: variantsData } = useSellerVariantsQuery(selectedProductId);
   const variants = variantsData?.data || [];
+
+  const { facilities } = useFacilityList();
 
   const { data: templates, isLoading: isLoadingTemplates } =
     useGetProcessTemplates(selectedProductId);
@@ -167,7 +183,11 @@ export default function CreateProductionBatchPage() {
     } else if (step === 2) {
       isValid = await form.trigger('processTemplateId');
     } else if (step === 3) {
-      isValid = await form.trigger('materialsUsed');
+      if (form.watch('isClosedLoop')) {
+        isValid = await form.trigger('facilityId');
+      } else {
+        isValid = await form.trigger('materialsUsed');
+      }
     }
 
     if (isValid) setStep((s) => s + 1);
@@ -290,13 +310,13 @@ export default function CreateProductionBatchPage() {
                       </label>
                       <div className="relative">
                         <select
-                          {...form.register('productId', { valueAsNumber: true })}
-                          onChange={(e) => {
-                            const val = Number(e.target.value);
-                            form.setValue('productId', val);
-                            form.setValue('variantId', 0);
-                            form.setValue('processTemplateId', 0);
-                          }}
+                          {...form.register('productId', {
+                            valueAsNumber: true,
+                            onChange: () => {
+                              form.setValue('variantId', 0);
+                              form.setValue('processTemplateId', 0);
+                            },
+                          })}
                           className={`w-full appearance-none rounded-xl text-gray-700 border border-slate-200 px-4 py-3 pr-10 text-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none ${lockedProductId ? 'bg-slate-50 cursor-not-allowed opacity-90 pointer-events-none' : 'bg-white'}`}
                         >
                           <option value={0}>Chọn sản phẩm</option>
@@ -550,104 +570,170 @@ export default function CreateProductionBatchPage() {
                 >
                   <div className="flex justify-between items-end mb-4">
                     <div>
-                      <h2 className="text-lg font-bold text-slate-800">Nguyên liệu sử dụng</h2>
+                      <h2 className="text-lg font-bold text-slate-800">
+                        Nguồn nguyên liệu sử dụng
+                      </h2>
                       <p className="text-slate-500 text-sm mt-1">
-                        Trừ trực tiếp vào kho nguyên liệu tương ứng.
+                        Khai báo nguồn nguyên liệu sử dụng cho lô hàng này.
                       </p>
                     </div>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => append({ materialLotId: 0, quantity: 1 })}
-                      className="border-blue-200 text-blue-700 hover:bg-blue-50 hover:border-blue-300"
-                    >
-                      + Thêm nguyên liệu
-                    </Button>
                   </div>
 
-                  {fields.length === 0 ? (
-                    <div className="text-center py-12 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
-                      <Droplets className="w-12 h-12 mx-auto text-slate-300 mb-4" />
-                      <h3 className="font-semibold text-slate-700 mb-1">Chưa có nguyên liệu</h3>
-                      <p className="text-sm text-slate-500 max-w-sm mx-auto mb-6">
-                        Bạn có thể tạo lô sản xuất mà không cần khai báo nguyên liệu ngay lúc này,
-                        hoặc thêm nguyên liệu để hệ thống trừ kho tự động.
-                      </p>
-                      <Button
-                        type="button"
-                        onClick={() => append({ materialLotId: 0, quantity: 1 })}
-                        variant="primary"
-                      >
-                        Thêm nguyên liệu đầu tiên
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {fields.map((field, index) => (
-                        <div
-                          key={field.id}
-                          className="flex flex-col sm:flex-row gap-4 items-start sm:items-end p-5 bg-slate-50/50 rounded-2xl border border-slate-200 group relative"
-                        >
-                          <div className="flex-1 w-full space-y-1.5">
-                            <label className="text-sm font-semibold text-slate-700">
-                              Lô nguyên liệu
-                            </label>
-                            <div className="relative">
-                              <select
-                                {...form.register(`materialsUsed.${index}.materialLotId`, {
-                                  valueAsNumber: true,
-                                })}
-                                className="w-full appearance-none rounded-xl text-gray-700 border border-slate-200 px-4 py-3 pr-10 text-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none bg-white"
-                              >
-                                <option value={0}>Chọn lô nguyên liệu</option>
-                                {materialLotsData?.map((lot: MaterialLotOption) => {
-                                  const disabled = lot.availableQuantity <= 0;
-                                  return (
-                                    <option key={lot.id} value={lot.id} disabled={disabled}>
-                                      {lot.code} - {lot.materialName} (Tồn: {lot.availableQuantity}{' '}
-                                      {lot.unit}) {disabled ? '(Hết)' : ''}
-                                    </option>
-                                  );
-                                })}
-                              </select>
-                              <ChevronRight className="w-4 h-4 text-slate-400 absolute right-4 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" />
-                            </div>
-                            {form.formState.errors.materialsUsed?.[index]?.materialLotId && (
-                              <p className="text-xs text-red-500 font-medium">
-                                {form.formState.errors.materialsUsed[index]?.materialLotId?.message}
-                              </p>
-                            )}
-                          </div>
-                          <div className="w-full sm:w-40 space-y-1.5">
-                            <label className="text-sm font-semibold text-slate-700">
-                              SL Sử dụng
-                            </label>
-                            <input
-                              type="number"
-                              step="0.01"
-                              {...form.register(`materialsUsed.${index}.quantity`, {
-                                valueAsNumber: true,
-                              })}
-                              className="w-full rounded-xl text-gray-700 border border-slate-200 px-4 py-3 text-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none bg-white"
-                            />
-                            {form.formState.errors.materialsUsed?.[index]?.quantity && (
-                              <p className="text-xs text-red-500 font-medium">
-                                {form.formState.errors.materialsUsed[index]?.quantity?.message}
-                              </p>
-                            )}
-                          </div>
-                          <button
-                            type="button"
-                            className="w-full sm:w-auto p-3 sm:mb-0.5 rounded-xl text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors flex justify-center items-center gap-2 border border-transparent hover:border-red-100"
-                            onClick={() => remove(index)}
+                  <div className="bg-emerald-50/50 p-5 rounded-2xl border border-emerald-100">
+                    <label className="flex items-start gap-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        {...form.register('isClosedLoop')}
+                        className="mt-1 w-4 h-4 text-emerald-600 rounded border-gray-300 focus:ring-emerald-500"
+                        onChange={(e) => {
+                          form.setValue('isClosedLoop', e.target.checked);
+                          if (e.target.checked) {
+                            form.setValue('materialsUsed', []);
+                          }
+                        }}
+                      />
+                      <div>
+                        <span className="font-semibold text-emerald-900 block mb-1">
+                          Lô hàng khép kín (Tự trồng trọt / chăn nuôi)
+                        </span>
+                        <span className="text-sm text-emerald-700">
+                          Hệ thống sẽ tự động tạo Vụ canh tác/chăn nuôi tương ứng. Lô hàng này sẽ
+                          không cần chọn lô nguyên liệu.
+                        </span>
+                      </div>
+                    </label>
+
+                    {form.watch('isClosedLoop') && (
+                      <div className="mt-4 pl-7 animate-in fade-in slide-in-from-top-2">
+                        <label className="block text-sm font-medium text-stone-700 mb-1">
+                          Cơ sở / Vùng trồng <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative">
+                          <select
+                            {...form.register('facilityId', { valueAsNumber: true })}
+                            className="w-full appearance-none rounded-xl text-gray-700 border border-slate-200 px-4 py-3 pr-10 text-sm focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none bg-white"
                           >
-                            <Trash2 className="w-5 h-5" />
-                            <span className="sm:hidden font-medium">Xóa nguyên liệu</span>
-                          </button>
+                            <option value="">-- Chọn Cơ sở / Vùng trồng --</option>
+                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                            {facilities?.map((f: any) => (
+                              <option key={f.id} value={f.id}>
+                                {f.name}
+                              </option>
+                            ))}
+                          </select>
+                          <ChevronRight className="w-4 h-4 text-slate-400 absolute right-4 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" />
                         </div>
-                      ))}
-                    </div>
+                        {form.formState.errors.facilityId && (
+                          <p className="text-red-500 text-xs mt-1">
+                            {form.formState.errors.facilityId.message}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {!form.watch('isClosedLoop') && (
+                    <>
+                      <div className="flex justify-end mb-4 mt-6">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => append({ materialLotId: 0, quantity: 1 })}
+                          className="border-blue-200 text-blue-700 hover:bg-blue-50 hover:border-blue-300"
+                        >
+                          + Thêm nguyên liệu
+                        </Button>
+                      </div>
+
+                      {fields.length === 0 ? (
+                        <div className="text-center py-12 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
+                          <Droplets className="w-12 h-12 mx-auto text-slate-300 mb-4" />
+                          <h3 className="font-semibold text-slate-700 mb-1">Chưa có nguyên liệu</h3>
+                          <p className="text-sm text-slate-500 max-w-sm mx-auto mb-6">
+                            Bạn có thể tạo lô sản xuất mà không cần khai báo nguyên liệu ngay lúc
+                            này, hoặc thêm nguyên liệu để hệ thống trừ kho tự động.
+                          </p>
+                          <Button
+                            type="button"
+                            onClick={() => append({ materialLotId: 0, quantity: 1 })}
+                            variant="primary"
+                          >
+                            Thêm nguyên liệu đầu tiên
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="space-y-4">
+                          {fields.map((field, index) => (
+                            <div
+                              key={field.id}
+                              className="flex flex-col sm:flex-row gap-4 items-start sm:items-end p-5 bg-slate-50/50 rounded-2xl border border-slate-200 group relative"
+                            >
+                              <div className="flex-1 w-full space-y-1.5">
+                                <label className="text-sm font-semibold text-slate-700">
+                                  Lô nguyên liệu
+                                </label>
+                                <div className="relative">
+                                  <select
+                                    {...form.register(`materialsUsed.${index}.materialLotId`, {
+                                      valueAsNumber: true,
+                                    })}
+                                    className="w-full appearance-none rounded-xl text-gray-700 border border-slate-200 px-4 py-3 pr-10 text-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none bg-white"
+                                  >
+                                    <option value={0}>Chọn lô nguyên liệu</option>
+                                    {materialLotsData?.map((lot: MaterialLotOption) => {
+                                      const disabled = lot.availableQuantity <= 0;
+                                      return (
+                                        <option key={lot.id} value={lot.id} disabled={disabled}>
+                                          {lot.code} - {lot.materialName} (Tồn:{' '}
+                                          {lot.availableQuantity} {lot.unit}){' '}
+                                          {disabled ? '(Hết)' : ''}
+                                        </option>
+                                      );
+                                    })}
+                                  </select>
+                                  <ChevronRight className="w-4 h-4 text-slate-400 absolute right-4 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" />
+                                </div>
+                                {form.formState.errors.materialsUsed?.[index]?.materialLotId && (
+                                  <p className="text-xs text-red-500 font-medium">
+                                    {
+                                      form.formState.errors.materialsUsed[index]?.materialLotId
+                                        ?.message
+                                    }
+                                  </p>
+                                )}
+                              </div>
+                              <div className="w-full sm:w-40 space-y-1.5">
+                                <label className="text-sm font-semibold text-slate-700">
+                                  SL Sử dụng
+                                </label>
+                                <input
+                                  type="number"
+                                  step="0.01"
+                                  {...form.register(`materialsUsed.${index}.quantity`, {
+                                    valueAsNumber: true,
+                                  })}
+                                  className="w-full rounded-xl text-gray-700 border border-slate-200 px-4 py-3 text-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none bg-white"
+                                />
+                                {form.formState.errors.materialsUsed?.[index]?.quantity && (
+                                  <p className="text-xs text-red-500 font-medium">
+                                    {form.formState.errors.materialsUsed[index]?.quantity?.message}
+                                  </p>
+                                )}
+                              </div>
+                              <button
+                                type="button"
+                                className="w-full sm:w-auto p-3 sm:mb-0.5 rounded-xl text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors flex justify-center items-center gap-2 border border-transparent hover:border-red-100"
+                                onClick={() => remove(index)}
+                              >
+                                <Trash2 className="w-5 h-5" />
+                                <span className="sm:hidden font-medium">Xóa nguyên liệu</span>
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
               )}

@@ -27,6 +27,11 @@ export type CreateProductFormData = z.infer<typeof createProductSchema>;
 
 export const createVariantSchema = z.object({
   sku: z.string().max(100).optional(),
+  gtinCode: z
+    .string()
+    .regex(/^\d{13,14}$/, 'Mã GTIN phải gồm 13 hoặc 14 chữ số')
+    .optional()
+    .or(z.literal('')),
   variantName: z.string().min(1, 'Tên biến thể không được để trống').max(255),
   price: z.number().positive('Giá phải lớn hơn 0'),
   comparePrice: z.number().positive().optional(),

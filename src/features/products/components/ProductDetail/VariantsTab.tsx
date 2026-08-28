@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useForm, Controller, useWatch } from 'react-hook-form';
-import { X } from 'lucide-react';
+import { X, Wand2 } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   useSellerVariantsQuery,
@@ -77,6 +77,21 @@ export function VariantsTab({ productId }: VariantsTabProps) {
       }, 500);
     }
   }, [showForm]);
+
+  const handleGenerateInternalGtin = () => {
+    let gtin = '200';
+    for (let i = 0; i < 9; i++) {
+      gtin += Math.floor(Math.random() * 10).toString();
+    }
+    let sum = 0;
+    for (let i = 0; i < 12; i++) {
+      const digit = parseInt(gtin.charAt(i), 10);
+      sum += i % 2 === 0 ? digit : digit * 3;
+    }
+    const checkDigit = (10 - (sum % 10)) % 10;
+    gtin += checkDigit.toString();
+    setValue('gtinCode', gtin, { shouldValidate: true });
+  };
 
   const onSubmit = async (formData: CreateVariantFormData) => {
     // Parse optionValues string (e.g., "Color: Green, Size: L") into Record<string, string>
@@ -154,7 +169,7 @@ export function VariantsTab({ productId }: VariantsTabProps) {
                     <td className="px-4 py-4">
                       <div className="font-bold text-stone-900">{v.variantName}</div>
                       <div className="text-[10px] text-stone-400 font-mono mt-0.5 uppercase tracking-tighter">
-                        SKU: {v.sku || 'N/A'}
+                        SKU: {v.sku || 'N/A'} {v.gtinCode ? ` | GTIN: ${v.gtinCode}` : ''}
                       </div>
                       {v.optionValues && (
                         <div className="flex flex-wrap gap-1 mt-2">
@@ -321,7 +336,7 @@ export function VariantsTab({ productId }: VariantsTabProps) {
           className="border border-stone-100 rounded-xl p-5 space-y-4 bg-stone-50/50"
         >
           <h4 className="text-sm font-black text-stone-700">Thêm biến thể mới</h4>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <div>
               <label className="text-xs font-bold text-stone-500 block mb-1">
                 Tên biến thể <span className="text-red-500">*</span>
@@ -344,6 +359,29 @@ export function VariantsTab({ productId }: VariantsTabProps) {
                 placeholder="TEA-250G-GREEN"
                 className="w-full border border-stone-200 text-gray-700 rounded-xl px-3 py-2 text-sm outline-none focus:border-emerald-400 transition"
               />
+            </div>
+            <div>
+              <label className="text-xs font-bold text-stone-500 block mb-1">
+                Mã GTIN (Mã vạch)
+              </label>
+              <div className="relative">
+                <input
+                  {...register('gtinCode')}
+                  placeholder="Để trống sẽ tự động sinh mã"
+                  className="w-full border border-stone-200 text-gray-700 rounded-xl px-3 py-2 pr-10 text-sm outline-none focus:border-emerald-400 transition"
+                />
+                <button
+                  type="button"
+                  onClick={handleGenerateInternalGtin}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-stone-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                  title="Tạo mã nội bộ ngẫu nhiên"
+                >
+                  <Wand2 className="w-4 h-4" />
+                </button>
+              </div>
+              {errors.gtinCode && (
+                <p className="text-xs text-red-500 mt-1">{errors.gtinCode.message}</p>
+              )}
             </div>
           </div>
           <div className="grid grid-cols-3 gap-4">

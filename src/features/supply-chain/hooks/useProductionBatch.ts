@@ -87,6 +87,7 @@ export const useProductionBatch = () => {
         toast.success('Ghi nhận sự kiện thành công!');
         queryClient.invalidateQueries({ queryKey: ['production-batch-detail', variables.lotId] });
         queryClient.invalidateQueries({ queryKey: ['production-batches'] });
+        queryClient.invalidateQueries({ queryKey: ['lot-audit-logs', variables.lotId] });
       },
       onError: (error: ApiErrorResponse) => {
         toast.error(error?.response?.data?.message || 'Có lỗi xảy ra khi ghi nhận sự kiện');
@@ -143,6 +144,17 @@ export const useProductionBatch = () => {
     });
   };
 
+  const useGetProcessTemplateById = (templateId: number | null | undefined) => {
+    return useQuery({
+      queryKey: ['process-template', templateId],
+      queryFn: async () => {
+        const response = await supplyChainApi.getTemplateById(templateId!);
+        return response.data;
+      },
+      enabled: !!templateId,
+    });
+  };
+
   const useGetSystemTemplates = (categoryId?: number) => {
     return useQuery({
       queryKey: ['process-templates', 'system', categoryId],
@@ -169,15 +181,35 @@ export const useProductionBatch = () => {
     });
   };
 
+  const useHarvestAndLink = () => {
+    return useMutation({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      mutationFn: async ({ lotId, data }: { lotId: number; data: any }) => {
+        const response = await supplyChainApi.harvestAndLink(lotId, data);
+        return response.data;
+      },
+      onSuccess: (_, { lotId }) => {
+        toast.success('Ghi nhận thu hoạch thành công!');
+        queryClient.invalidateQueries({ queryKey: ['production-batch-detail', lotId] });
+        queryClient.invalidateQueries({ queryKey: ['lot-audit-logs', lotId] });
+      },
+      onError: (error: ApiErrorResponse) => {
+        toast.error(error?.response?.data?.message || 'Có lỗi xảy ra khi ghi nhận thu hoạch');
+      },
+    });
+  };
+
   return {
     useGetProductionBatches,
     useCreateProductionBatch,
     useGetProductionBatchDetail,
     useAddBatchEvent,
+    useHarvestAndLink,
     useGenerateQrCodes,
     useGetLotQrCodes,
     useGetLotAuditLogs,
     useGetProcessTemplates,
+    useGetProcessTemplateById,
     useGetSystemTemplates,
     useCreateProcessTemplate,
   };

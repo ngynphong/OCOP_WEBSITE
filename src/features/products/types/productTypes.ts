@@ -59,6 +59,7 @@ export interface WholesalePrice {
 export interface ProductVariant {
   id: number;
   sku: string;
+  gtinCode?: string;
   variantName: string;
   optionValues: string;
   price: number;
