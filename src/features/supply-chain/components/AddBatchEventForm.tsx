@@ -2,9 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/AppButton';
-import { FiCheckSquare, FiPlus, FiTrash2, FiEdit2, FiAlertTriangle } from 'react-icons/fi';
+import {
+  FiCheckSquare,
+  FiPlus,
+  FiTrash2,
+  FiEdit2,
+  FiAlertTriangle,
+  FiCamera,
+  FiMapPin,
+  FiFileText,
+} from 'react-icons/fi';
 import { useProductionBatch } from '../hooks/useProductionBatch';
-import { ICreateBatchEventReq, IProcessTemplateStep } from '../types/supplyChainTypes';
+import {
+  ICreateBatchEventReq,
+  IProcessTemplateStep,
+  IStepField,
+  IEvidenceRule,
+  TStepFieldType,
+} from '../types/supplyChainTypes';
 import { useSellerJournalMutations } from '@/features/products/hooks/useSellerJournals';
 import { toast } from 'react-hot-toast';
 import { JournalStepType } from '@/features/products/types/productTypes';
@@ -79,6 +94,9 @@ export const AddBatchEventForm = ({
   const isAllFarmingStepsCompleted =
     farmingSteps.length === 0 ||
     farmingSteps.every((step) => completedFarmingStepIds.includes(step.id));
+  const uncompletedFarmingSteps = farmingSteps.filter(
+    (step) => !completedFarmingStepIds.includes(step.id),
+  );
 
   const isStepCompleted = (stepId: number) => {
     if (activeTab === 'FARMING') {
@@ -103,22 +121,81 @@ export const AddBatchEventForm = ({
   const templateStepId = watch('templateStepId');
   const debouncedFields = useDebounce(metadataFields, 1500);
 
+  const selectedStep = templateSteps?.find((s) => s.id === Number(templateStepId));
+
+  const stepDynamicFields: IStepField[] = React.useMemo(() => {
+    if (!selectedStep?.dynamicFieldsSchema) return [];
+    try {
+      const parsed: unknown = JSON.parse(selectedStep.dynamicFieldsSchema);
+      if (Array.isArray(parsed)) {
+        return (
+          parsed as Array<{
+            key?: string;
+            name?: string;
+            label?: string;
+            type?: string;
+            required?: boolean;
+            unit?: string;
+            options?: string[];
+          }>
+        ).map((f, i) => ({
+          id: String(i),
+          key: f.key || f.name || `field_${i}`,
+          label: f.label || f.name || `Thông số ${i + 1}`,
+          type: (f.type || 'TEXT').toUpperCase() as TStepFieldType,
+          required: Boolean(f.required),
+          unit: f.unit || undefined,
+          options: f.options || undefined,
+        }));
+      }
+      return [];
+    } catch {
+      return [];
+    }
+  }, [selectedStep]);
+
+  const stepEvidenceRule: IEvidenceRule = React.useMemo(() => {
+    if (!selectedStep?.evidenceRule) {
+      return { photo: 'OPTIONAL', gps: 'OPTIONAL', video: 'OPTIONAL' };
+    }
+    try {
+      return JSON.parse(selectedStep.evidenceRule) as IEvidenceRule;
+    } catch {
+      return { photo: 'OPTIONAL', gps: 'OPTIONAL', video: 'OPTIONAL' };
+    }
+  }, [selectedStep]);
+
+  const [dynamicFieldValues, setDynamicFieldValues] = useState<
+    Record<string, { value: string | number | boolean; unit?: string }>
+  >({});
+
+  useEffect(() => {
+    setDynamicFieldValues({});
+  }, [templateStepId]);
+
   useEffect(() => {
     const checkAi = async () => {
       const validFields = debouncedFields.filter(
         (f) => f.key.trim() !== '' && f.value.trim() !== '',
       );
-      if (validFields.length === 0 || !templateStepId) {
+      const hasDynamic = Object.values(dynamicFieldValues).some(
+        (v) => v.value !== undefined && v.value !== '',
+      );
+
+      if (validFields.length === 0 && !hasDynamic) {
         setAiWarning(null);
         return;
       }
-
-      const selectedStep = templateSteps.find((s) => s.id === Number(templateStepId));
-      if (!selectedStep) return;
+      if (!templateStepId || !selectedStep) return;
 
       const dataToVerify: Record<string, string> = {};
+      Object.entries(dynamicFieldValues).forEach(([k, v]) => {
+        if (v.value !== undefined && v.value !== '') {
+          dataToVerify[k] = v.unit ? `${v.value} ${v.unit}` : String(v.value);
+        }
+      });
       validFields.forEach((f) => {
-        dataToVerify[f.key.trim()] = f.value;
+        dataToVerify[f.key.trim()] = f.unit ? `${f.value} ${f.unit}` : f.value;
       });
 
       setIsAiChecking(true);
@@ -139,7 +216,7 @@ export const AddBatchEventForm = ({
       }
     };
     checkAi();
-  }, [debouncedFields, templateStepId, templateSteps]);
+  }, [debouncedFields, dynamicFieldValues, templateStepId, selectedStep]);
 
   const addMetadataField = () => {
     setMetadataFields([...metadataFields, { key: '', value: '', unit: '' }]);
@@ -162,11 +239,33 @@ export const AddBatchEventForm = ({
   };
 
   const onSubmit = (data: FormValues) => {
-    let parsedEventData: Record<string, unknown> | undefined = undefined;
+    // 1. Kiểm tra trường bắt buộc theo template
+    for (const f of stepDynamicFields) {
+      if (f.required) {
+        const entry = dynamicFieldValues[f.key];
+        if (
+          !entry ||
+          entry.value === undefined ||
+          entry.value === null ||
+          String(entry.value).trim() === ''
+        ) {
+          toast.error(`Vui lòng nhập trường bắt buộc: "${f.label}" theo quy trình.`);
+          return;
+        }
+      }
+    }
 
+    let parsedEventData: Record<string, unknown> | undefined = undefined;
+    const hasDynamicData = Object.keys(dynamicFieldValues).length > 0;
     const validFields = metadataFields.filter((f) => f.key.trim() !== '');
-    if (validFields.length > 0) {
+
+    if (hasDynamicData || validFields.length > 0) {
       parsedEventData = {};
+      Object.entries(dynamicFieldValues).forEach(([k, v]) => {
+        if (v.value !== undefined && v.value !== '') {
+          parsedEventData![k] = v.unit ? { value: v.value, unit: v.unit } : v.value;
+        }
+      });
       validFields.forEach((f) => {
         parsedEventData![f.key.trim()] = f.unit ? { value: f.value, unit: f.unit } : f.value;
       });
@@ -314,27 +413,57 @@ export const AddBatchEventForm = ({
           )}
 
           {sourceCycleId && activeTab === 'FARMING' && sourceCycleStatus !== 'COMPLETED' && (
-            <div className="bg-amber-50 text-amber-800 p-4 rounded-xl mb-6 border border-amber-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div>
-                <h4 className="font-bold text-sm flex items-center gap-2">
-                  <span className="text-lg">🌾</span> Đã đến kỳ thu hoạch?
-                </h4>
-                <p className="text-xs text-amber-700 mt-1">
-                  {isAllFarmingStepsCompleted
-                    ? 'Hoàn tất thu hoạch để chuyển nguyên liệu vào sản xuất (mở khóa Giai đoạn 2).'
-                    : 'Bạn cần ghi nhận đầy đủ các bước canh tác trước khi thu hoạch.'}
-                </p>
+            <div
+              className={`p-4 rounded-xl mb-6 border transition-all ${
+                isAllFarmingStepsCompleted
+                  ? 'bg-emerald-50/80 text-emerald-900 border-emerald-200'
+                  : 'bg-amber-50/80 text-amber-900 border-amber-200'
+              }`}
+            >
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex-1">
+                  <h4 className="font-bold text-sm flex items-center gap-2">
+                    <span className="text-lg">🌾</span>{' '}
+                    {isAllFarmingStepsCompleted
+                      ? 'Đủ điều kiện thu hoạch vụ mùa!'
+                      : 'Điều kiện tiên quyết: Thu hoạch vụ mùa'}
+                  </h4>
+                  <p className="text-xs mt-1 leading-relaxed">
+                    {isAllFarmingStepsCompleted
+                      ? '100% công đoạn canh tác đã được hoàn tất. Bấm Hoàn tất thu hoạch để chuyển sang Giai đoạn 2 (Chế biến/Đóng gói).'
+                      : `Chưa thể thu hoạch: Cần ghi nhận đủ ${uncompletedFarmingSteps.length} công đoạn canh tác còn thiếu theo quy trình chuẩn OCOP.`}
+                  </p>
+                  {!isAllFarmingStepsCompleted && (
+                    <div className="flex flex-wrap items-center gap-1.5 mt-2.5">
+                      <span className="text-[11px] font-semibold text-amber-800 mr-1">
+                        Còn thiếu:
+                      </span>
+                      {uncompletedFarmingSteps.map((s) => (
+                        <span
+                          key={s.id}
+                          className="px-2 py-0.5 bg-amber-100/90 text-amber-900 rounded-md text-[11px] font-medium border border-amber-200"
+                        >
+                          Bước {s.stepOrder}: {s.title}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <Button
+                  type="button"
+                  variant="primary"
+                  disabled={!isAllFarmingStepsCompleted}
+                  onClick={() => setIsHarvestModalOpen(true)}
+                  className={`whitespace-nowrap ${
+                    isAllFarmingStepsCompleted
+                      ? 'bg-emerald-600 hover:bg-emerald-700 shadow-sm'
+                      : 'bg-stone-300 text-stone-700 cursor-not-allowed border-none shadow-none hover:bg-stone-300 opacity-60'
+                  }`}
+                  title={!isAllFarmingStepsCompleted ? 'Chưa hoàn thành các bước canh tác' : ''}
+                >
+                  Hoàn tất thu hoạch
+                </Button>
               </div>
-              <Button
-                type="button"
-                variant="primary"
-                disabled={!isAllFarmingStepsCompleted}
-                onClick={() => setIsHarvestModalOpen(true)}
-                className={`whitespace-nowrap ${isAllFarmingStepsCompleted ? 'bg-amber-600 hover:bg-amber-700' : 'bg-stone-300 text-stone-700 cursor-not-allowed border-none shadow-none hover:bg-stone-300'}`}
-                title={!isAllFarmingStepsCompleted ? 'Chưa hoàn thành các bước canh tác' : ''}
-              >
-                Hoàn tất thu hoạch
-              </Button>
             </div>
           )}
 
@@ -415,6 +544,181 @@ export const AddBatchEventForm = ({
               <p className="text-red-500 text-xs mt-2">{errors.templateStepId.message}</p>
             )}
           </div>
+
+          {/* Quy tắc bằng chứng thực địa nếu có */}
+          {selectedStep &&
+            (stepEvidenceRule.photo === 'REQUIRED' || stepEvidenceRule.gps === 'REQUIRED') && (
+              <div className="mt-4 p-3 bg-amber-50/70 border border-amber-200/80 rounded-xl flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <FiCamera className="text-amber-700 shrink-0" size={16} />
+                  <span className="text-xs font-bold text-amber-900">
+                    Quy tắc bằng chứng OCOP của bước này:
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  {stepEvidenceRule.photo === 'REQUIRED' && (
+                    <span className="text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md border border-amber-200">
+                      📷 Ảnh bắt buộc
+                    </span>
+                  )}
+                  {stepEvidenceRule.gps === 'REQUIRED' && (
+                    <span className="text-[10px] font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-md border border-blue-200">
+                      📍 GPS bắt buộc
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+
+          {/* Form động chuẩn OCOP từ template */}
+          {stepDynamicFields.length > 0 && (
+            <div className="mt-5 border border-emerald-200 rounded-xl overflow-hidden bg-white shadow-xs">
+              <div className="bg-emerald-50/90 px-4 py-3 flex items-center justify-between border-b border-emerald-100">
+                <div className="flex items-center gap-2">
+                  <FiFileText className="text-emerald-700" size={16} />
+                  <div>
+                    <h4 className="font-bold text-emerald-950 text-sm">
+                      Thông số kỹ thuật chuẩn ({stepDynamicFields.length})
+                    </h4>
+                    <p className="text-[11px] text-emerald-800/80">
+                      Tự động nạp theo quy trình tiêu chuẩn của công đoạn này
+                    </p>
+                  </div>
+                </div>
+                <span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full border border-emerald-200">
+                  Quy chuẩn OCOP
+                </span>
+              </div>
+
+              <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                {stepDynamicFields.map((field) => {
+                  const current = dynamicFieldValues[field.key];
+                  const rawVal = current?.value;
+                  return (
+                    <div key={field.key} className="flex flex-col gap-1">
+                      <label className="text-xs font-bold text-stone-700 flex items-center justify-between">
+                        <span>
+                          {field.label} {field.required && <span className="text-rose-500">*</span>}
+                        </span>
+                        {field.unit && (
+                          <span className="text-[10px] bg-stone-100 text-stone-600 px-1.5 py-0.2 rounded font-semibold">
+                            {field.unit}
+                          </span>
+                        )}
+                      </label>
+
+                      {field.type === 'NUMBER' && (
+                        <div className="flex items-center border border-stone-300 rounded-lg overflow-hidden bg-white focus-within:border-emerald-500">
+                          <input
+                            type="number"
+                            step="any"
+                            value={rawVal !== undefined ? String(rawVal) : ''}
+                            onChange={(e) =>
+                              setDynamicFieldValues((prev) => ({
+                                ...prev,
+                                [field.key]: { value: e.target.value, unit: field.unit },
+                              }))
+                            }
+                            placeholder={`Nhập số lượng (${field.unit || 'giá trị'})...`}
+                            className="flex-1 text-sm px-3 py-2 outline-none text-stone-800"
+                          />
+                          {field.unit && (
+                            <span className="bg-stone-50 border-l border-stone-200 px-2.5 py-2 text-xs font-semibold text-stone-500">
+                              {field.unit}
+                            </span>
+                          )}
+                        </div>
+                      )}
+
+                      {field.type === 'TEXT' && (
+                        <input
+                          type="text"
+                          value={rawVal !== undefined ? String(rawVal) : ''}
+                          onChange={(e) =>
+                            setDynamicFieldValues((prev) => ({
+                              ...prev,
+                              [field.key]: { value: e.target.value, unit: field.unit },
+                            }))
+                          }
+                          placeholder="Nhập nội dung..."
+                          className="w-full border border-stone-300 rounded-lg text-sm px-3 py-2 outline-none text-stone-800 focus:border-emerald-500"
+                        />
+                      )}
+
+                      {field.type === 'SELECT' && (
+                        <select
+                          value={rawVal !== undefined ? String(rawVal) : ''}
+                          onChange={(e) =>
+                            setDynamicFieldValues((prev) => ({
+                              ...prev,
+                              [field.key]: { value: e.target.value, unit: field.unit },
+                            }))
+                          }
+                          className="w-full border border-stone-300 rounded-lg text-sm px-3 py-2 outline-none text-stone-800 focus:border-emerald-500 bg-white"
+                        >
+                          <option value="">-- Chọn một tùy chọn --</option>
+                          {(field.options || []).map((opt) => (
+                            <option key={opt} value={opt}>
+                              {opt}
+                            </option>
+                          ))}
+                        </select>
+                      )}
+
+                      {field.type === 'BOOLEAN' && (
+                        <div className="flex items-center gap-3 pt-1">
+                          <label className="flex items-center gap-1.5 text-xs text-stone-700 cursor-pointer">
+                            <input
+                              type="radio"
+                              name={`radio_${field.key}`}
+                              checked={rawVal === true}
+                              onChange={() =>
+                                setDynamicFieldValues((prev) => ({
+                                  ...prev,
+                                  [field.key]: { value: true, unit: field.unit },
+                                }))
+                              }
+                              className="text-emerald-600 focus:ring-emerald-500"
+                            />
+                            Đã đạt / Có
+                          </label>
+                          <label className="flex items-center gap-1.5 text-xs text-stone-700 cursor-pointer">
+                            <input
+                              type="radio"
+                              name={`radio_${field.key}`}
+                              checked={rawVal === false}
+                              onChange={() =>
+                                setDynamicFieldValues((prev) => ({
+                                  ...prev,
+                                  [field.key]: { value: false, unit: field.unit },
+                                }))
+                              }
+                              className="text-emerald-600 focus:ring-emerald-500"
+                            />
+                            Chưa đạt / Không
+                          </label>
+                        </div>
+                      )}
+
+                      {field.type === 'DATE' && (
+                        <input
+                          type="date"
+                          value={rawVal !== undefined ? String(rawVal) : ''}
+                          onChange={(e) =>
+                            setDynamicFieldValues((prev) => ({
+                              ...prev,
+                              [field.key]: { value: e.target.value, unit: field.unit },
+                            }))
+                          }
+                          className="w-full border border-stone-300 rounded-lg text-sm px-3 py-2 outline-none text-stone-800 focus:border-emerald-500 bg-white"
+                        />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           <div className="mt-6 border border-stone-200 rounded-xl overflow-hidden">
             <div className="bg-stone-50 px-4 py-3 flex justify-between items-start border-b border-stone-200">

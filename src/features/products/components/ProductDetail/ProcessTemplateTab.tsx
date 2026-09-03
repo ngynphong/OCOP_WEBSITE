@@ -27,6 +27,8 @@ const processTemplateSchema = z.object({
         title: z.string().min(1, 'Tên công việc không được để trống'),
         description: z.string().optional(),
         estimatedDays: z.number().min(0, 'Ngày dự kiến >= 0').optional(),
+        dynamicFieldsSchema: z.string().optional(),
+        evidenceRule: z.string().optional(),
       }),
     )
     .min(1, 'Quy trình phải có ít nhất 1 bước'),
@@ -137,6 +139,8 @@ export function ProcessTemplateTab({
           title: step.title,
           description: step.description,
           estimatedDays: step.estimatedDays || 0,
+          dynamicFieldsSchema: step.dynamicFieldsSchema || '',
+          evidenceRule: step.evidenceRule || '',
         })) || [],
     });
     setIsCreating(true);
@@ -180,18 +184,86 @@ export function ProcessTemplateTab({
                   <p className="text-xs text-stone-500 mt-1 mb-3 line-clamp-2">
                     {template.description || 'Quy trình chuẩn được hệ thống đề xuất.'}
                   </p>
-                  <div className="flex flex-wrap gap-1 mb-4">
-                    {template.steps?.slice(0, 3).map((step, idx) => (
-                      <span
-                        key={idx}
-                        className="text-[10px] bg-white border border-stone-200 text-stone-600 px-2 py-1 rounded-md"
-                      >
-                        {idx + 1}. {step.title}
-                      </span>
-                    ))}
+                  <div className="flex flex-col gap-2 mb-4">
+                    {template.steps?.slice(0, 3).map((step, idx) => {
+                      let fieldCount = 0;
+                      let parsedFields: Array<{ label?: string; name?: string; unit?: string }> =
+                        [];
+                      if (step.dynamicFieldsSchema) {
+                        try {
+                          const p: unknown = JSON.parse(step.dynamicFieldsSchema);
+                          if (Array.isArray(p)) {
+                            parsedFields = p as Array<{
+                              label?: string;
+                              name?: string;
+                              unit?: string;
+                            }>;
+                            fieldCount = parsedFields.length;
+                          }
+                        } catch {}
+                      }
+
+                      let ruleObj: { photo?: string; gps?: string } | null = null;
+                      if (step.evidenceRule) {
+                        try {
+                          ruleObj = JSON.parse(step.evidenceRule) as {
+                            photo?: string;
+                            gps?: string;
+                          };
+                        } catch {}
+                      }
+
+                      return (
+                        <div
+                          key={idx}
+                          className="bg-white p-2.5 rounded-xl border border-stone-200/80"
+                        >
+                          <div className="flex items-center justify-between text-xs font-bold text-stone-800">
+                            <span>
+                              {idx + 1}. {step.title}
+                            </span>
+                            {fieldCount > 0 && (
+                              <span className="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded border border-emerald-200">
+                                📋 {fieldCount} thông số
+                              </span>
+                            )}
+                          </div>
+                          {(parsedFields.length > 0 ||
+                            ruleObj?.photo === 'REQUIRED' ||
+                            ruleObj?.gps === 'REQUIRED') && (
+                            <div className="flex flex-wrap items-center gap-1 mt-1.5 pt-1.5 border-t border-stone-100">
+                              {parsedFields.slice(0, 3).map((f, fIdx) => (
+                                <span
+                                  key={fIdx}
+                                  className="text-[10px] bg-stone-50 text-stone-600 px-1.5 py-0.5 rounded border border-stone-200/70"
+                                >
+                                  {f.label || f.name}
+                                  {f.unit ? ` (${f.unit})` : ''}
+                                </span>
+                              ))}
+                              {parsedFields.length > 3 && (
+                                <span className="text-[10px] text-stone-400 font-semibold">
+                                  +{parsedFields.length - 3}
+                                </span>
+                              )}
+                              {ruleObj?.photo === 'REQUIRED' && (
+                                <span className="text-[10px] bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded border border-amber-200 font-bold ml-auto">
+                                  📷 Ảnh
+                                </span>
+                              )}
+                              {ruleObj?.gps === 'REQUIRED' && (
+                                <span className="text-[10px] bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded border border-blue-200 font-bold">
+                                  📍 GPS
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                     {template.steps && template.steps.length > 3 && (
-                      <span className="text-[10px] bg-stone-100 text-stone-500 px-2 py-1 rounded-md">
-                        +{template.steps.length - 3} bước nữa
+                      <span className="text-[11px] text-stone-400 font-medium pl-1">
+                        ... và còn {template.steps.length - 3} bước nữa
                       </span>
                     )}
                   </div>
@@ -377,27 +449,99 @@ export function ProcessTemplateTab({
                     Các bước sẽ làm
                   </h4>
                   <div className="flex flex-wrap gap-2">
-                    {template.steps?.map((step, idx) => (
-                      <div
-                        key={step.id}
-                        className="flex flex-col gap-1 px-2.5 py-2 bg-stone-50 border border-stone-100 rounded-lg"
-                      >
-                        <div className="flex items-center gap-2 text-xs font-medium text-stone-700">
-                          <span className="w-5 h-5 rounded-full bg-white flex items-center justify-center text-[10px] font-black text-stone-400 border border-stone-200 shadow-xs">
-                            {idx + 1}
-                          </span>
-                          {step.title}
+                    {template.steps?.map((step, idx) => {
+                      let fieldCount = 0;
+                      let parsedFields: Array<{
+                        label?: string;
+                        name?: string;
+                        unit?: string;
+                        required?: boolean;
+                      }> = [];
+                      if (step.dynamicFieldsSchema) {
+                        try {
+                          const p: unknown = JSON.parse(step.dynamicFieldsSchema);
+                          if (Array.isArray(p)) {
+                            parsedFields = p as Array<{
+                              label?: string;
+                              name?: string;
+                              unit?: string;
+                              required?: boolean;
+                            }>;
+                            fieldCount = parsedFields.length;
+                          }
+                        } catch {}
+                      }
+
+                      let ruleObj: { photo?: string; gps?: string } | null = null;
+                      if (step.evidenceRule) {
+                        try {
+                          ruleObj = JSON.parse(step.evidenceRule) as {
+                            photo?: string;
+                            gps?: string;
+                          };
+                        } catch {}
+                      }
+
+                      return (
+                        <div
+                          key={step.id || idx}
+                          className="flex flex-col gap-1.5 px-3 py-2.5 bg-stone-50 border border-stone-200/80 rounded-xl min-w-[240px] max-w-sm"
+                        >
+                          <div className="flex items-center justify-between gap-2 text-xs font-bold text-stone-800">
+                            <div className="flex items-center gap-2">
+                              <span className="w-5 h-5 rounded-full bg-white flex items-center justify-center text-[10px] font-black text-stone-500 border border-stone-200 shadow-xs">
+                                {idx + 1}
+                              </span>
+                              <span>{step.title}</span>
+                            </div>
+                            {fieldCount > 0 && (
+                              <span className="text-[10px] bg-emerald-100/80 text-emerald-800 font-bold px-2 py-0.5 rounded-md border border-emerald-200">
+                                📋 {fieldCount}
+                              </span>
+                            )}
+                          </div>
+
+                          {step.estimatedDays !== undefined && step.estimatedDays !== null && (
+                            <span className="text-[10px] text-emerald-600 font-medium pl-7">
+                              <FiZap className="inline mr-0.5" />
+                              {idx === 0
+                                ? `Sau khi tạo lô: ${step.estimatedDays} ngày`
+                                : `Sau bước "${template.steps![idx - 1]?.title || 'trước'}": ${step.estimatedDays} ngày`}
+                            </span>
+                          )}
+
+                          {parsedFields.length > 0 && (
+                            <div className="flex flex-wrap gap-1 pl-7 pt-1 border-t border-stone-200/60">
+                              {parsedFields.map((f, fIdx) => (
+                                <span
+                                  key={fIdx}
+                                  className="text-[10px] font-medium bg-white text-stone-700 px-1.5 py-0.5 rounded border border-stone-200"
+                                >
+                                  {f.label || f.name}
+                                  {f.unit ? ` (${f.unit})` : ''}
+                                  {f.required ? ' *' : ''}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+
+                          {(ruleObj?.photo === 'REQUIRED' || ruleObj?.gps === 'REQUIRED') && (
+                            <div className="flex items-center gap-1.5 pl-7 text-[10px] font-bold">
+                              {ruleObj?.photo === 'REQUIRED' && (
+                                <span className="text-amber-800 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
+                                  📷 Ảnh bắt buộc
+                                </span>
+                              )}
+                              {ruleObj?.gps === 'REQUIRED' && (
+                                <span className="text-blue-800 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200">
+                                  📍 GPS bắt buộc
+                                </span>
+                              )}
+                            </div>
+                          )}
                         </div>
-                        {step.estimatedDays !== undefined && step.estimatedDays !== null && (
-                          <span className="text-[10px] text-emerald-600 font-medium pl-7">
-                            <FiZap className="inline mr-0.5" />
-                            {idx === 0
-                              ? `Sau khi tạo lô: ${step.estimatedDays} ngày`
-                              : `Sau bước "${template.steps![idx - 1]?.title || 'trước'}": ${step.estimatedDays} ngày`}
-                          </span>
-                        )}
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               </div>

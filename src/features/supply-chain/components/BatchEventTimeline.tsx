@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { IEventInfo, IEvidenceDocument } from '../types/supplyChainTypes';
+import { IEventInfo, IEvidenceDocument, IProcessTemplateStep } from '../types/supplyChainTypes';
 import { format } from 'date-fns';
 import {
   Clock,
@@ -16,6 +16,7 @@ import Image from 'next/image';
 
 interface BatchEventTimelineProps {
   events: IEventInfo[] | null;
+  templateSteps?: IProcessTemplateStep[];
 }
 
 const getEventIcon = (stepType: string) => {
@@ -82,7 +83,23 @@ const AddressDisplay = ({ lat, lng }: { lat: number; lng: number }) => {
   );
 };
 
-export const BatchEventTimeline = ({ events }: BatchEventTimelineProps) => {
+export const BatchEventTimeline = ({ events, templateSteps }: BatchEventTimelineProps) => {
+  const getFieldLabel = (templateStepId: number, key: string): string => {
+    if (!templateSteps || !templateStepId) return key;
+    const step = templateSteps.find((s) => s.id === templateStepId);
+    if (!step?.dynamicFieldsSchema) return key;
+    try {
+      const parsed: unknown = JSON.parse(step.dynamicFieldsSchema);
+      if (Array.isArray(parsed)) {
+        const found = (parsed as Array<{ key?: string; name?: string; label?: string }>).find(
+          (f) => f.key === key || f.name === key,
+        );
+        if (found?.label) return found.label;
+      }
+    } catch {}
+    return key;
+  };
+
   if (!events || events.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500">
@@ -170,11 +187,15 @@ export const BatchEventTimeline = ({ events }: BatchEventTimelineProps) => {
                             <div className="bg-white rounded border border-gray-200 mt-2 overflow-hidden">
                               <ul className="divide-y divide-gray-100">
                                 {Object.entries(parsedData).map(([key, value]) => {
-                                  if (key.toLowerCase() === 'id') return null;
+                                  if (key.toLowerCase() === 'id' || key === 'addToStory')
+                                    return null;
+                                  const fieldLabel = getFieldLabel(event.templateStepId, key);
                                   return (
                                     <li key={key} className="flex px-3 py-2 text-sm sm:text-xs">
-                                      <span className="font-medium text-gray-500 w-1/3">{key}</span>
-                                      <span className="text-gray-900 font-medium w-2/3 break-words">
+                                      <span className="font-semibold text-stone-700 w-2/5">
+                                        {fieldLabel}
+                                      </span>
+                                      <span className="text-stone-900 font-medium w-3/5 break-words">
                                         {typeof value === 'object' &&
                                         value !== null &&
                                         'value' in (value as Record<string, unknown>)

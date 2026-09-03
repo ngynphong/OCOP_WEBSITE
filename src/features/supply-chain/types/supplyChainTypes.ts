@@ -24,6 +24,34 @@ export interface ILotTaskResponse {
   dueDate: string;
   isOverdue: boolean;
   daysRemaining: number;
+  assignmentId?: number;
+  assigneeName?: string;
+}
+
+export type TAssignmentRole = 'ASSIGNEE' | 'SUPERVISOR' | 'AUDITOR';
+export type TAssignmentStatus = 'ACTIVE' | 'REVOKED' | 'COMPLETED';
+
+export interface ILotAssignment {
+  id: number;
+  lotId: number;
+  lotCode: string;
+  userId: string;
+  userFullName: string;
+  userEmail: string;
+  userPhoneNumber?: string;
+  templateStepId?: number;
+  stepTitle?: string;
+  role: TAssignmentRole;
+  status: TAssignmentStatus;
+  assignedAt: string;
+  notes?: string;
+}
+
+export interface ICreateLotAssignmentReq {
+  userIdentifier: string;
+  templateStepId?: number;
+  role?: TAssignmentRole;
+  notes?: string;
 }
 
 export type TStepType =
@@ -71,6 +99,7 @@ export interface IEventInfo {
   previousHash?: string;
   evidenceDocuments?: IEvidenceDocument[];
   aiAnalysisResult?: string;
+  isFlaggedByAi?: boolean;
 }
 
 export interface IMaterialUsageInfo {
@@ -85,6 +114,31 @@ export interface IMaterialUsageInfo {
   unit: string;
 }
 
+export type TStepFieldType = 'TEXT' | 'NUMBER' | 'DATE' | 'DATETIME' | 'SELECT' | 'BOOLEAN';
+
+export interface IStepField {
+  id?: string;
+  key: string;
+  label: string;
+  type: TStepFieldType;
+  required: boolean;
+  unit?: string;
+  options?: string[];
+  min?: number;
+  max?: number;
+  placeholder?: string;
+  helpText?: string;
+  order?: number;
+}
+
+export type TRuleRequirement = 'REQUIRED' | 'OPTIONAL' | 'DISABLED';
+
+export interface IEvidenceRule {
+  photo: TRuleRequirement;
+  gps: TRuleRequirement;
+  video: TRuleRequirement;
+}
+
 export interface IProcessTemplateStep {
   id: number;
   stepOrder: number;
@@ -92,6 +146,8 @@ export interface IProcessTemplateStep {
   title: string;
   description?: string;
   estimatedDays?: number;
+  dynamicFieldsSchema?: string;
+  evidenceRule?: string;
 }
 
 export interface IProcessTemplate {
@@ -108,7 +164,10 @@ export interface ICreateProcessTemplateReq {
   name: string;
   description?: string;
   status?: string;
-  steps: Omit<IProcessTemplateStep, 'id'>[];
+  steps: (Omit<IProcessTemplateStep, 'id'> & {
+    dynamicFieldsSchema?: string;
+    evidenceRule?: string;
+  })[];
 }
 
 export interface IRecallInfo {
@@ -141,6 +200,7 @@ export interface ISupplyChainLot {
   verificationLevel?: string;
   verificationStatus?: string;
   trustScore?: number;
+  isFlaggedByAi?: boolean;
   qrUrl?: string;
   qrToken?: string;
   notes?: string;
@@ -149,6 +209,9 @@ export interface ISupplyChainLot {
   warnings?: string[];
   sourceCycleId?: number;
   sourceCycleStatus?: string;
+  sourceCycleName?: string;
+  farmName?: string;
+  responsiblePerson?: string;
   recallInfo?: IRecallInfo;
   steps?: ISupplyChainStep[];
   events?: IEventInfo[];
@@ -212,6 +275,7 @@ export interface ICreateLotReq {
 export interface ILotListReq {
   status?: TLotStatus;
   productId?: number;
+  flaggedByAi?: boolean;
   page: number;
   size: number;
 }

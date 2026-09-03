@@ -3,12 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { FiArrowLeft, FiPlus, FiZap } from 'react-icons/fi';
+import { Sprout, MapPin, Calendar, User, Package } from 'lucide-react';
 import { Button } from '@/components/ui/AppButton';
 import { Modal } from '@/components/ui/Modal';
 import { useProductionBatch } from '@/features/supply-chain/hooks/useProductionBatch';
 import { BatchEventTimeline } from '@/features/supply-chain/components/BatchEventTimeline';
 import { AddBatchEventForm } from '@/features/supply-chain/components/AddBatchEventForm';
 import { LotStatusBadge } from '@/features/supply-chain/components/LotStatusBadge';
+import { LotAssignmentsTab } from '@/features/supply-chain/components/LotAssignmentsTab';
 import {
   ILotQrCode,
   ILotAuditLog,
@@ -125,7 +127,9 @@ export default function ProductionBatchDetailPage() {
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
   const [qrCount, setQrCount] = useState<number>(0);
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'INFO' | 'TIMELINE' | 'PACKAGING' | 'AUDIT'>('INFO');
+  const [activeTab, setActiveTab] = useState<
+    'INFO' | 'ASSIGNMENTS' | 'TIMELINE' | 'PACKAGING' | 'AUDIT'
+  >('INFO');
 
   useEffect(() => {
     if (searchParams.get('action') === 'log') {
@@ -216,6 +220,17 @@ export default function ProductionBatchDetailPage() {
             Thông tin chung
           </button>
           <button
+            id="tour-assignments-tab"
+            className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
+              activeTab === 'ASSIGNMENTS'
+                ? 'border-emerald-600 text-emerald-600'
+                : 'border-transparent text-stone-500 hover:text-stone-700 hover:border-stone-300'
+            }`}
+            onClick={() => setActiveTab('ASSIGNMENTS')}
+          >
+            Phân công nhân sự
+          </button>
+          <button
             id="tour-journal"
             className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
               activeTab === 'TIMELINE'
@@ -252,6 +267,52 @@ export default function ProductionBatchDetailPage() {
         <div className="p-6">
           {activeTab === 'INFO' && (
             <div className="bg-stone-50 rounded-xl p-5 border border-stone-100 flex flex-col gap-5">
+              {/* Thông tin nhận diện thực địa */}
+              <div className="bg-white p-4 rounded-xl border border-stone-200 shadow-2xs">
+                <h3 className="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                  <Sprout className="w-4 h-4 text-emerald-600" />
+                  <span>Thông tin nhận diện thực địa</span>
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                  <div className="bg-stone-50 p-3 rounded-lg border border-stone-100">
+                    <span className="text-xs text-stone-500 flex items-center gap-1.5 mb-1">
+                      <MapPin className="w-3.5 h-3.5 text-stone-400 shrink-0" />
+                      Vùng trồng / Cơ sở:
+                    </span>
+                    <span className="font-bold text-stone-800">
+                      {lot.farmName || lot.shopName || 'Cơ sở OCOP'}
+                    </span>
+                  </div>
+                  <div className="bg-stone-50 p-3 rounded-lg border border-stone-100">
+                    <span className="text-xs text-stone-500 flex items-center gap-1.5 mb-1">
+                      <Calendar className="w-3.5 h-3.5 text-stone-400 shrink-0" />
+                      Vụ canh tác:
+                    </span>
+                    <span className="font-bold text-stone-800">
+                      {lot.sourceCycleName || 'Đông Xuân 2026'}
+                    </span>
+                  </div>
+                  <div className="bg-stone-50 p-3 rounded-lg border border-stone-100">
+                    <span className="text-xs text-stone-500 flex items-center gap-1.5 mb-1">
+                      <User className="w-3.5 h-3.5 text-stone-400 shrink-0" />
+                      Người phụ trách:
+                    </span>
+                    <span className="font-bold text-stone-800">
+                      {lot.responsiblePerson || 'Chủ hộ tự đảm nhiệm'}
+                    </span>
+                  </div>
+                  <div className="bg-stone-50 p-3 rounded-lg border border-stone-100">
+                    <span className="text-xs text-stone-500 flex items-center gap-1.5 mb-1">
+                      <Package className="w-3.5 h-3.5 text-stone-400 shrink-0" />
+                      Quy mô sản lượng:
+                    </span>
+                    <span className="font-bold text-stone-800">
+                      {lot.quantity} {lot.unit}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 <div>
                   <h3 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1">
@@ -396,9 +457,14 @@ export default function ProductionBatchDetailPage() {
             </div>
           )}
 
+          {activeTab === 'ASSIGNMENTS' && lot && <LotAssignmentsTab lot={lot} />}
+
           {activeTab === 'TIMELINE' && (
             <div className="mt-4">
-              <BatchEventTimeline events={lot.events || []} />
+              <BatchEventTimeline
+                events={lot.events || []}
+                templateSteps={lot.templateSteps || []}
+              />
             </div>
           )}
 

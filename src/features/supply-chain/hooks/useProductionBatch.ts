@@ -7,6 +7,7 @@ import {
   ILotListReq,
   ISupplyChainLot,
   ICreateProcessTemplateReq,
+  ICreateLotAssignmentReq,
 } from '../types/supplyChainTypes';
 
 interface ApiErrorResponse {
@@ -199,6 +200,51 @@ export const useProductionBatch = () => {
     });
   };
 
+  const useGetLotAssignments = (lotId: number) => {
+    return useQuery({
+      queryKey: ['lot-assignments', lotId],
+      queryFn: async () => {
+        const response = await supplyChainApi.getLotAssignments(lotId);
+        return response.data;
+      },
+      enabled: !!lotId,
+    });
+  };
+
+  const useAssignUserToLot = () => {
+    return useMutation({
+      mutationFn: async ({ lotId, data }: { lotId: number; data: ICreateLotAssignmentReq }) => {
+        const response = await supplyChainApi.assignUserToLot(lotId, data);
+        return response.data;
+      },
+      onSuccess: (_, { lotId }) => {
+        toast.success('Phân công nhân sự thành công!');
+        queryClient.invalidateQueries({ queryKey: ['lot-assignments', lotId] });
+        queryClient.invalidateQueries({ queryKey: ['lot-audit-logs', lotId] });
+      },
+      onError: (error: ApiErrorResponse) => {
+        toast.error(error?.response?.data?.message || 'Có lỗi xảy ra khi phân công nhân sự');
+      },
+    });
+  };
+
+  const useRevokeLotAssignment = () => {
+    return useMutation({
+      mutationFn: async ({ lotId, assignmentId }: { lotId: number; assignmentId: number }) => {
+        const response = await supplyChainApi.revokeLotAssignment(lotId, assignmentId);
+        return response.data;
+      },
+      onSuccess: (_, { lotId }) => {
+        toast.success('Đã thu hồi phân công nhân sự!');
+        queryClient.invalidateQueries({ queryKey: ['lot-assignments', lotId] });
+        queryClient.invalidateQueries({ queryKey: ['lot-audit-logs', lotId] });
+      },
+      onError: (error: ApiErrorResponse) => {
+        toast.error(error?.response?.data?.message || 'Có lỗi xảy ra khi thu hồi phân công');
+      },
+    });
+  };
+
   return {
     useGetProductionBatches,
     useCreateProductionBatch,
@@ -212,5 +258,8 @@ export const useProductionBatch = () => {
     useGetProcessTemplateById,
     useGetSystemTemplates,
     useCreateProcessTemplate,
+    useGetLotAssignments,
+    useAssignUserToLot,
+    useRevokeLotAssignment,
   };
 };

@@ -20,6 +20,8 @@ import {
   ICreateProcessTemplateReq,
   ICreateBatchEventReq,
   ILotTaskResponse,
+  ILotAssignment,
+  ICreateLotAssignmentReq,
 } from '../types/supplyChainTypes';
 
 export const supplyChainApi = {
@@ -28,6 +30,26 @@ export const supplyChainApi = {
     return axiosClient.get<unknown, { data: ILotTaskResponse[] }>(
       '/seller/supply-chain/lots/tasks',
       { headers: { 'X-Silent-Loading': 'true' } },
+    );
+  },
+
+  getLotAssignments: async (lotId: number) => {
+    return axiosClient.get<unknown, { data: ILotAssignment[] }>(
+      `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/${lotId}/assignments`,
+      { headers: { 'X-Silent-Loading': 'true' } },
+    );
+  },
+
+  assignUserToLot: async (lotId: number, data: ICreateLotAssignmentReq) => {
+    return axiosClient.post<unknown, { data: ILotAssignment }>(
+      `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/${lotId}/assignments`,
+      data,
+    );
+  },
+
+  revokeLotAssignment: async (lotId: number, assignmentId: number) => {
+    return axiosClient.delete<unknown, { data: void }>(
+      `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/${lotId}/assignments/${assignmentId}`,
     );
   },
 

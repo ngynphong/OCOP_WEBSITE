@@ -11,6 +11,7 @@ import {
   FiShield,
   FiTruck,
   FiTag,
+  FiFileText,
 } from 'react-icons/fi';
 import clsx from 'clsx';
 
@@ -29,6 +30,8 @@ export interface TemplateBlock {
   title: string;
   description: string;
   estimatedDays: number;
+  dynamicFieldsSchema?: string;
+  evidenceRule?: string;
 }
 
 interface LegoBlockProps {
@@ -109,6 +112,43 @@ export function LegoBlock({ block, index, onRemove, onEdit, isOverlay }: LegoBlo
   const currentBlockType = block.blockType || getBlockType(block.stepType);
   const blockStyle = BLOCK_STYLES[currentBlockType] || BLOCK_STYLES.KHAC;
 
+  let dynamicFields: Array<{
+    key?: string;
+    label?: string;
+    name?: string;
+    unit?: string;
+    required?: boolean;
+  }> = [];
+  if (block.dynamicFieldsSchema) {
+    try {
+      const parsed: unknown = JSON.parse(block.dynamicFieldsSchema);
+      if (Array.isArray(parsed)) {
+        dynamicFields = parsed as Array<{
+          key?: string;
+          label?: string;
+          name?: string;
+          unit?: string;
+          required?: boolean;
+        }>;
+      }
+    } catch {
+      dynamicFields = [];
+    }
+  }
+
+  let parsedRule: { photo?: string; gps?: string; video?: string } | null = null;
+  if (block.evidenceRule) {
+    try {
+      parsedRule = JSON.parse(block.evidenceRule) as {
+        photo?: string;
+        gps?: string;
+        video?: string;
+      };
+    } catch {
+      parsedRule = null;
+    }
+  }
+
   return (
     <div
       ref={setNodeRef}
@@ -143,6 +183,48 @@ export function LegoBlock({ block, index, onRemove, onEdit, isOverlay }: LegoBlo
         <p className="text-xs text-stone-500 line-clamp-1">
           {block.description || 'Chưa có mô tả'}
         </p>
+
+        {/* Dynamic Fields & Evidence Badges */}
+        {(dynamicFields.length > 0 ||
+          parsedRule?.photo === 'REQUIRED' ||
+          parsedRule?.gps === 'REQUIRED') && (
+          <div className="flex flex-wrap items-center gap-1.5 mt-2">
+            {dynamicFields.length > 0 && (
+              <div className="flex flex-wrap items-center gap-1">
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-800 bg-emerald-100/80 border border-emerald-200 px-2 py-0.5 rounded-md">
+                  <FiFileText size={10} />
+                  <span>{dynamicFields.length} thông số</span>
+                </span>
+                {dynamicFields.slice(0, 3).map((df, i) => (
+                  <span
+                    key={i}
+                    className="text-[10px] font-medium bg-stone-100 text-stone-600 px-1.5 py-0.5 rounded border border-stone-200/80"
+                  >
+                    {df.label || df.name}
+                    {df.unit ? ` (${df.unit})` : ''}
+                    {df.required ? ' *' : ''}
+                  </span>
+                ))}
+                {dynamicFields.length > 3 && (
+                  <span className="text-[10px] font-semibold text-stone-400">
+                    +{dynamicFields.length - 3} nữa
+                  </span>
+                )}
+              </div>
+            )}
+
+            {parsedRule?.photo === 'REQUIRED' && (
+              <span className="inline-flex items-center text-[10px] font-bold text-amber-800 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded">
+                📷 Ảnh bắt buộc
+              </span>
+            )}
+            {parsedRule?.gps === 'REQUIRED' && (
+              <span className="inline-flex items-center text-[10px] font-bold text-blue-800 bg-blue-50 border border-blue-200 px-1.5 py-0.5 rounded">
+                📍 GPS bắt buộc
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="flex items-center gap-2 ml-4">
