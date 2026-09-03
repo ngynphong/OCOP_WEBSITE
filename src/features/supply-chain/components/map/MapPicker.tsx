@@ -4,6 +4,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
 import 'leaflet-draw';
+import { toast } from 'react-hot-toast';
 
 // Fix missing marker icons in leaflet with webpack/nextjs
 delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)._getIconUrl;
@@ -173,18 +174,62 @@ export default function MapPicker({
   }, [latitude, longitude]);
 
   const handleSearch = async () => {
-    if (!searchQuery.trim()) return;
+    const q = searchQuery.trim();
+    if (!q) return;
     setIsSearching(true);
+    setSearchResults([]);
     try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-          searchQuery,
-        )}&countrycodes=vn&limit=5`,
+      // 1. Thử gọi qua API route nội bộ của Next.js (chạy server-side, không bị lỗi CORS/mạng)
+      const res = await fetch(`/api/geocoding/search?q=${encodeURIComponent(q)}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          setSearchResults(data);
+          return;
+        }
+      }
+
+      // 2. Dự phòng: Gọi trực tiếp Photon Komoot nếu API route không phản hồi
+      const photonRes = await fetch(
+        `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=5`,
       );
-      const data = await res.json();
-      setSearchResults(data);
+      if (photonRes.ok) {
+        const pData = await photonRes.json();
+        if (pData?.features && Array.isArray(pData.features) && pData.features.length > 0) {
+          const mapped: NominatimResult[] = pData.features.map(
+            (f: {
+              geometry: { coordinates: [number, number] };
+              properties: {
+                name?: string;
+                district?: string;
+                county?: string;
+                city?: string;
+                state?: string;
+                country?: string;
+              };
+            }) => {
+              const p = f.properties || {};
+              const parts = [p.name, p.district || p.county, p.city || p.state, p.country].filter(
+                Boolean,
+              );
+              const displayName =
+                parts.length > 0 ? Array.from(new Set(parts)).join(', ') : p.name || q;
+              return {
+                lat: String(f.geometry.coordinates[1]),
+                lon: String(f.geometry.coordinates[0]),
+                display_name: displayName,
+              };
+            },
+          );
+          setSearchResults(mapped);
+          return;
+        }
+      }
+
+      toast.error('Không tìm thấy địa điểm phù hợp');
     } catch (error) {
       console.error('Lỗi tìm kiếm địa chỉ:', error);
+      toast.error('Có lỗi xảy ra khi tìm kiếm địa chỉ');
     } finally {
       setIsSearching(false);
     }
@@ -193,10 +238,13 @@ export default function MapPicker({
   const selectSearchResult = (result: NominatimResult) => {
     const lat = parseFloat(result.lat);
     const lon = parseFloat(result.lon);
-    setCenter([lat, lon]);
-    setZoom(16);
-    setSearchResults([]);
-    setSearchQuery(result.display_name);
+    if (!isNaN(lat) && !isNaN(lon)) {
+      setCenter([lat, lon]);
+      setZoom(FOCUS_ZOOM);
+      onChangeLocation(lat, lon); // Tự động thả ghim vào vị trí tìm kiếm
+      setSearchResults([]);
+      setSearchQuery(result.display_name);
+    }
   };
 
   return (
@@ -216,7 +264,7 @@ export default function MapPicker({
             type="button"
             onClick={handleSearch}
             disabled={isSearching}
-            className="bg-emerald-600 text-white px-3 py-1.5 rounded text-sm hover:bg-emerald-700 disabled:opacity-50"
+            className="bg-emerald-600 text-white px-3 py-1.5 rounded text-sm hover:bg-emerald-700 disabled:opacity-50 font-medium"
           >
             {isSearching ? 'Đang tìm...' : 'Tìm'}
           </button>
@@ -228,7 +276,7 @@ export default function MapPicker({
                 <button
                   key={idx}
                   type="button"
-                  className="w-full text-left px-3 py-2 text-sm font-medium text-stone-800 hover:bg-emerald-50 border-b border-stone-100 last:border-b-0"
+                  className="w-full text-left px-3 py-2 text-sm font-medium text-stone-800 hover:bg-emerald-50 border-b border-stone-100 last:border-b-0 cursor-pointer"
                   onClick={() => selectSearchResult(res)}
                 >
                   {res.display_name}
@@ -241,26 +289,37 @@ export default function MapPicker({
 
       <div className="flex-1 relative z-0">
         <MapContainer center={center} zoom={zoom} style={{ width: '100%', height: '100%' }}>
-          {/* Component tự cập nhật Center khi state center thay đổi */}
+          {/* Component tự cập nhật Center khi state center thay đổi và kích hoạt render tile đầy đủ */}
           <MapCenterUpdater center={center} zoom={zoom} />
 
           <LayersControl position="bottomleft">
-            <LayersControl.BaseLayer checked name="Bản đồ đường phố (OSM)">
+            <LayersControl.BaseLayer checked name="Bản đồ vệ tinh (Google Hybrid)">
               <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://mt1.google.com/vt/lyrs=y&hl=vi&x={x}&y={y}&z={z}"
+                attribution="Google Maps"
+                maxZoom={20}
               />
             </LayersControl.BaseLayer>
-            <LayersControl.BaseLayer name="Bản đồ vệ tinh (Google Hybrid)">
+            <LayersControl.BaseLayer name="Bản đồ đường phố (Google)">
               <TileLayer
-                url="http://mt0.google.com/vt/lyrs=y&hl=vi&x={x}&y={y}&z={z}"
+                url="https://mt1.google.com/vt/lyrs=m&hl=vi&x={x}&y={y}&z={z}"
                 attribution="Google Maps"
+                maxZoom={20}
+              />
+            </LayersControl.BaseLayer>
+            <LayersControl.BaseLayer name="Bản đồ đường phố (CartoDB OSM)">
+              <TileLayer
+                url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+                subdomains="abcd"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>'
+                maxZoom={19}
               />
             </LayersControl.BaseLayer>
             <LayersControl.BaseLayer name="Bản đồ vệ tinh (Esri)">
               <TileLayer
                 url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
                 attribution="Tiles &copy; Esri"
+                maxZoom={19}
               />
             </LayersControl.BaseLayer>
           </LayersControl>
@@ -289,11 +348,21 @@ export default function MapPicker({
   );
 }
 
-// Component phụ giúp React Leaflet bay đến toạ độ mới khi state thay đổi
+// Component phụ giúp React Leaflet bay đến toạ độ mới khi state thay đổi và sửa lỗi tile xám
 function MapCenterUpdater({ center, zoom }: { center: [number, number]; zoom: number }) {
   const map = useMap();
+
   useEffect(() => {
     map.flyTo(center, zoom, { duration: 1.5 });
   }, [center, zoom, map]);
+
+  useEffect(() => {
+    // Sửa lỗi Leaflet không render tile (bản đồ bị xám) khi mở tab/modal
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [map]);
+
   return null;
 }

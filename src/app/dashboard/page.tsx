@@ -41,20 +41,26 @@ const DashboardPage = () => {
   const [isMounted, setIsMounted] = React.useState(false);
 
   const isSellerMode = dashboardMode === 'SELLER';
+  const hasStore = Boolean(profile?.isOwnerShop);
+  const canFetchSellerData = isMounted && isSellerMode && hasStore;
 
   const {
     data: sellerData,
-    isPending: isSellerPending,
+    isLoading: isSellerLoading,
     isError: isSellerError,
-  } = useSellerDashboard(isMounted && isSellerMode);
+  } = useSellerDashboard(canFetchSellerData);
 
   const [revenuePeriod, setRevenuePeriod] = React.useState<'day' | 'week' | 'month'>('month');
-  const { data: revenueData } = useSellerRevenueQuery({ period: revenuePeriod });
-  const { data: lowStockAlerts } = useLowStockAlertsQuery();
+  const { data: revenueData } = useSellerRevenueQuery({ period: revenuePeriod }, false, {
+    enabled: canFetchSellerData,
+  });
+  const { data: lowStockAlerts } = useLowStockAlertsQuery({
+    enabled: canFetchSellerData,
+  });
 
   const {
     data: userData,
-    isPending: isUserPending,
+    isLoading: isUserLoading,
     isError: isUserError,
   } = useUserDashboard(isMounted && !isSellerMode);
 
@@ -76,8 +82,8 @@ const DashboardPage = () => {
 
   if (!isMounted) return null;
 
-  const isPending = isSellerMode ? isSellerPending : isUserPending;
-  const isError = isSellerMode ? isSellerError : isUserError;
+  const isPending = isSellerMode ? (hasStore ? isSellerLoading : false) : isUserLoading;
+  const isError = isSellerMode ? (hasStore ? isSellerError : false) : isUserError;
 
   if (isPending) {
     return (

@@ -54,26 +54,30 @@ const AddressDisplay = ({ lat, lng }: { lat: number; lng: number }) => {
   const [address, setAddress] = useState<string | null>(null);
 
   useEffect(() => {
+    let isCancelled = false;
     const fetchAddress = async () => {
       try {
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=vi`,
-        );
+        const res = await fetch(`/api/geocoding/reverse?lat=${lat}&lon=${lng}`);
         const data = await res.json();
-        if (data && data.display_name) {
+        if (!isCancelled && data && data.display_name) {
           const parts = data.display_name.split(',').map((s: string) => s.trim());
           const cleanParts = parts.filter(
             (p: string) => !/^\d{5,6}$/.test(p) && p !== 'Việt Nam' && p !== 'Vietnam',
           );
           setAddress(cleanParts.join(', '));
-        } else {
+        } else if (!isCancelled) {
           setAddress(`${lat.toFixed(4)}, ${lng.toFixed(4)}`);
         }
       } catch (_error) {
-        setAddress(`${lat.toFixed(4)}, ${lng.toFixed(4)}`);
+        if (!isCancelled) {
+          setAddress(`${lat.toFixed(4)}, ${lng.toFixed(4)}`);
+        }
       }
     };
     fetchAddress();
+    return () => {
+      isCancelled = true;
+    };
   }, [lat, lng]);
 
   return (

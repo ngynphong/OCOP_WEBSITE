@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { FiBox, FiMapPin, FiTruck, FiPlus } from 'react-icons/fi';
 import { Button } from '@/components/ui/AppButton';
 
@@ -10,9 +11,40 @@ import MaterialLotTab from '@/features/supply-chain/components/MaterialLotTab';
 
 import CreateSupplierModal from '@/features/supply-chain/components/CreateSupplierModal';
 
-export default function NguonNguyenLieuPage() {
-  const [activeTab, setActiveTab] = useState<'SUPPLIER' | 'FACILITY' | 'MATERIAL_LOT'>('SUPPLIER');
-  const [isModalOpen, setIsModalOpen] = useState(false);
+function NguonNguyenLieuContent() {
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get('tab');
+  const createParam = searchParams.get('create');
+
+  const defaultTab: 'SUPPLIER' | 'FACILITY' | 'MATERIAL_LOT' =
+    tabParam === 'FACILITY'
+      ? 'FACILITY'
+      : tabParam === 'MATERIAL_LOT'
+        ? 'MATERIAL_LOT'
+        : 'SUPPLIER';
+
+  const [selectedTab, setSelectedTab] = useState<'SUPPLIER' | 'FACILITY' | 'MATERIAL_LOT' | null>(
+    null,
+  );
+  const [prevTabParam, setPrevTabParam] = useState(tabParam);
+
+  // Điều chỉnh state theo URL ngay trong render (tránh cascading render của useEffect)
+  if (tabParam !== prevTabParam) {
+    setPrevTabParam(tabParam);
+    setSelectedTab(null);
+  }
+
+  const activeTab = selectedTab ?? defaultTab;
+
+  const [isModalOpenOverride, setIsModalOpenOverride] = useState<boolean | null>(null);
+  const [prevCreateParam, setPrevCreateParam] = useState(createParam);
+
+  if (createParam !== prevCreateParam) {
+    setPrevCreateParam(createParam);
+    setIsModalOpenOverride(null);
+  }
+
+  const isModalOpen = isModalOpenOverride ?? createParam === 'true';
 
   return (
     <div className="p-6 space-y-6">
@@ -25,7 +57,7 @@ export default function NguonNguyenLieuPage() {
         </div>
         <Button
           className="bg-emerald-600 hover:bg-emerald-700 text-white"
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => setIsModalOpenOverride(true)}
         >
           <FiPlus className="mr-2" /> Thêm mới
         </Button>
@@ -40,7 +72,7 @@ export default function NguonNguyenLieuPage() {
                 ? 'border-emerald-500 text-emerald-600 bg-emerald-50/50'
                 : 'border-transparent text-stone-500 hover:text-stone-700 hover:bg-stone-50'
             }`}
-            onClick={() => setActiveTab('SUPPLIER')}
+            onClick={() => setSelectedTab('SUPPLIER')}
           >
             <FiTruck className="mr-2 text-lg" /> Nhà cung cấp
           </button>
@@ -50,7 +82,7 @@ export default function NguonNguyenLieuPage() {
                 ? 'border-emerald-500 text-emerald-600 bg-emerald-50/50'
                 : 'border-transparent text-stone-500 hover:text-stone-700 hover:bg-stone-50'
             }`}
-            onClick={() => setActiveTab('FACILITY')}
+            onClick={() => setSelectedTab('FACILITY')}
           >
             <FiMapPin className="mr-2 text-lg" /> Cơ sở / Vùng trồng
           </button>
@@ -60,7 +92,7 @@ export default function NguonNguyenLieuPage() {
                 ? 'border-emerald-500 text-emerald-600 bg-emerald-50/50'
                 : 'border-transparent text-stone-500 hover:text-stone-700 hover:bg-stone-50'
             }`}
-            onClick={() => setActiveTab('MATERIAL_LOT')}
+            onClick={() => setSelectedTab('MATERIAL_LOT')}
           >
             <FiBox className="mr-2 text-lg" /> Lô nguyên liệu
           </button>
@@ -70,18 +102,32 @@ export default function NguonNguyenLieuPage() {
         <div className="p-6">
           {activeTab === 'SUPPLIER' && <SupplierTab />}
           {activeTab === 'FACILITY' && (
-            <FacilityTab isCreating={isModalOpen} setIsCreating={setIsModalOpen} />
+            <FacilityTab
+              isCreating={isModalOpen}
+              setIsCreating={(val) => setIsModalOpenOverride(val)}
+            />
           )}
           {activeTab === 'MATERIAL_LOT' && (
-            <MaterialLotTab isCreating={isModalOpen} setIsCreating={setIsModalOpen} />
+            <MaterialLotTab
+              isCreating={isModalOpen}
+              setIsCreating={(val) => setIsModalOpenOverride(val)}
+            />
           )}
         </div>
       </div>
 
       {/* Modals */}
       {activeTab === 'SUPPLIER' && (
-        <CreateSupplierModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+        <CreateSupplierModal isOpen={isModalOpen} onClose={() => setIsModalOpenOverride(false)} />
       )}
     </div>
+  );
+}
+
+export default function NguonNguyenLieuPage() {
+  return (
+    <Suspense fallback={<div className="p-6 text-stone-500">Đang tải...</div>}>
+      <NguonNguyenLieuContent />
+    </Suspense>
   );
 }

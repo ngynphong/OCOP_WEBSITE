@@ -27,6 +27,7 @@ import {
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/AppButton';
+import { useAuthProfile } from '@/features/auth/hooks/useAuthProfile';
 
 const STATUS_TABS = [
   { value: 'ALL', label: 'Tất cả' },
@@ -39,7 +40,10 @@ const STATUS_TABS = [
 ];
 
 function RevenueSummary({ isB2B = false }: { isB2B?: boolean }) {
-  const { data, isLoading } = useSellerRevenueQuery({ period: 'month' }, isB2B);
+  const { profile } = useAuthProfile();
+  const { data, isLoading } = useSellerRevenueQuery({ period: 'month' }, isB2B, {
+    enabled: !!profile?.isOwnerShop,
+  });
   const rev = data?.data as unknown as IRevenueRes;
 
   if (isLoading) return null;

@@ -18,11 +18,15 @@ const LOW_STOCK_KEY = 'seller-inventory-low-stock';
 
 // ─── Query Hooks ───────────────────────────────────────────────────────────────
 
-export const useInventoryListQuery = (params?: InventoryListParams) => {
+export const useInventoryListQuery = (
+  params?: InventoryListParams,
+  options?: { enabled?: boolean },
+) => {
   return useQuery({
     queryKey: [INVENTORY_KEY, params],
     queryFn: () => sellerInventoryApi.getInventory(params),
     staleTime: 30_000,
+    enabled: options?.enabled ?? true,
   });
 };
 
@@ -47,11 +51,12 @@ export const useInventoryLogsQuery = (
   });
 };
 
-export const useLowStockAlertsQuery = () => {
+export const useLowStockAlertsQuery = (options?: { enabled?: boolean }) => {
   return useQuery({
     queryKey: [LOW_STOCK_KEY],
     queryFn: () => sellerInventoryApi.getLowStockAlerts(),
     staleTime: 30_000,
+    enabled: options?.enabled ?? true,
   });
 };
 

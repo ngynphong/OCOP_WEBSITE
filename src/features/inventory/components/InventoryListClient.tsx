@@ -22,6 +22,7 @@ import {
 } from '@/features/inventory/hooks/useSellerInventory';
 import { InventoryItem, InventoryListParams } from '@/features/inventory/types/inventoryTypes';
 import { Pagination } from '@/components/ui/Pagination';
+import { useAuthProfile } from '@/features/auth/hooks/useAuthProfile';
 
 // ─── Static config ─────────────────────────────────────────────────────────────
 
@@ -207,12 +208,16 @@ function TableSkeleton() {
 // ─── Main component ────────────────────────────────────────────────────────────
 
 export default function InventoryListClient() {
+  const { profile } = useAuthProfile();
+  const hasStore = Boolean(profile?.isOwnerShop);
   const [pageNo, setPageNo] = useState(1);
   const [action, setAction] = useState<ActionState | null>(null);
 
   const params: InventoryListParams = { pageNo: pageNo, pageSize: PAGE_SIZE };
-  const { data, isPending, isError, refetch } = useInventoryListQuery(params);
-  const { data: lowStockData } = useLowStockAlertsQuery();
+  const { data, isPending, isError, refetch } = useInventoryListQuery(params, {
+    enabled: hasStore,
+  });
+  const { data: lowStockData } = useLowStockAlertsQuery({ enabled: hasStore });
 
   const items: InventoryItem[] = data?.data?.items ?? [];
   const total = data?.data?.totalElement ?? 0;

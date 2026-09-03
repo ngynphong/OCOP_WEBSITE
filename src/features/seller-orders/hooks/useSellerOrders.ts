@@ -187,22 +187,29 @@ export const useUpdateB2BShippingInfoMutation = () => {
 };
 
 // Khối thống kê và tài chính
-export const useSellerRevenueQuery = (params: IRevenueReq, isB2B = false) => {
+export const useSellerRevenueQuery = (
+  params: IRevenueReq,
+  isB2B = false,
+  options?: { enabled?: boolean },
+) => {
   return useQuery({
     queryKey: [...sellerOrderKeys.revenue(params), isB2B],
     queryFn: () =>
       isB2B ? sellerOrderApi.getB2BRevenue(params) : sellerOrderApi.getRevenue(params),
+    enabled: options?.enabled ?? true,
   });
 };
 
 export const useSellerRefundsQuery = (
   params: { pageNo?: number; pageSize?: number; status?: string },
   isB2B = false,
+  options?: { enabled?: boolean },
 ) => {
   return useQuery({
     queryKey: [...sellerOrderKeys.refunds(params), isB2B],
     queryFn: () =>
       isB2B ? sellerOrderApi.getB2BRefunds(params) : sellerOrderApi.getRefunds(params),
+    enabled: options?.enabled ?? true,
   });
 };
 

@@ -27,9 +27,13 @@ import {
   ArrowLeft,
   Loader2,
   RefreshCw,
+  Plus,
+  AlertCircle,
+  ExternalLink,
 } from 'lucide-react';
 import Link from 'next/link';
 import { format } from 'date-fns';
+import CreateFacilityModal from '@/features/supply-chain/components/CreateFacilityModal';
 
 const generateLotCode = () => {
   const timestamp = format(new Date(), 'yyyyMMddHHmmss');
@@ -100,6 +104,7 @@ export default function CreateProductionBatchPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [lockedProductId, setLockedProductId] = useState<number | null>(null);
+  const [isFacilityModalOpen, setIsFacilityModalOpen] = useState(false);
   const { useCreateProductionBatch, useGetProcessTemplates } = useProductionBatch();
   const createMutation = useCreateProductionBatch();
 
@@ -605,24 +610,79 @@ export default function CreateProductionBatchPage() {
 
                     {form.watch('isClosedLoop') && (
                       <div className="mt-4 pl-7 animate-in fade-in slide-in-from-top-2">
-                        <label className="block text-sm font-medium text-stone-700 mb-1">
-                          Cơ sở / Vùng trồng <span className="text-red-500">*</span>
-                        </label>
-                        <div className="relative">
-                          <select
-                            {...form.register('facilityId', { valueAsNumber: true })}
-                            className="w-full appearance-none rounded-xl text-gray-700 border border-slate-200 px-4 py-3 pr-10 text-sm focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none bg-white"
-                          >
-                            <option value="">-- Chọn Cơ sở / Vùng trồng --</option>
-                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                            {facilities?.map((f: any) => (
-                              <option key={f.id} value={f.id}>
-                                {f.name}
-                              </option>
-                            ))}
-                          </select>
-                          <ChevronRight className="w-4 h-4 text-slate-400 absolute right-4 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" />
+                        <div className="flex items-center justify-between mb-1.5">
+                          <label className="block text-sm font-medium text-stone-700">
+                            Cơ sở / Vùng trồng <span className="text-red-500">*</span>
+                          </label>
+                          <div className="flex items-center gap-3">
+                            <button
+                              type="button"
+                              onClick={() => setIsFacilityModalOpen(true)}
+                              className="text-xs text-emerald-600 hover:text-emerald-700 font-semibold flex items-center gap-1 cursor-pointer"
+                            >
+                              <Plus className="w-3.5 h-3.5" /> Thêm vùng trồng mới
+                            </button>
+                            <Link
+                              href="/dashboard/nguon-nguyen-lieu?tab=FACILITY&create=true"
+                              className="text-xs text-stone-500 hover:text-emerald-600 font-medium flex items-center gap-1 cursor-pointer"
+                              title="Chuyển đến màn hình Quản lý Vùng trồng"
+                            >
+                              Quản lý Vùng trồng <ExternalLink className="w-3 h-3" />
+                            </Link>
+                          </div>
                         </div>
+
+                        {!facilities || facilities.length === 0 ? (
+                          <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl space-y-3">
+                            <div className="flex items-start gap-2.5">
+                              <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
+                              <div>
+                                <p className="text-sm font-bold text-amber-900">
+                                  Chưa có Cơ sở / Vùng trồng nào được khai báo
+                                </p>
+                                <p className="text-xs text-amber-700 mt-0.5">
+                                  Để tạo lô sản xuất khép kín, bạn cần khai báo ít nhất một cơ sở
+                                  hoặc vùng trồng trong hệ thống.
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex flex-wrap items-center gap-2 pt-1">
+                              <Button
+                                type="button"
+                                variant="primary"
+                                size="sm"
+                                onClick={() => setIsFacilityModalOpen(true)}
+                                className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-xs"
+                              >
+                                <Plus className="mr-1 w-3.5 h-3.5" /> Khai báo ngay tại đây
+                              </Button>
+                              <Link
+                                href="/dashboard/nguon-nguyen-lieu?tab=FACILITY&create=true"
+                                className="inline-flex items-center justify-center px-3 py-1.5 text-xs font-semibold text-emerald-700 hover:text-emerald-800 bg-white hover:bg-emerald-50 rounded-lg border border-emerald-300 transition-colors shadow-xs"
+                              >
+                                Đi đến màn hình Tạo vùng trồng{' '}
+                                <ExternalLink className="ml-1.5 w-3 h-3" />
+                              </Link>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="relative">
+                            <select
+                              {...form.register('facilityId', { valueAsNumber: true })}
+                              className="w-full appearance-none rounded-xl text-gray-700 border border-slate-200 px-4 py-3 pr-10 text-sm focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none bg-white"
+                            >
+                              <option value="">-- Chọn Cơ sở / Vùng trồng --</option>
+                              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                              {facilities?.map((f: any) => (
+                                <option key={f.id} value={f.id}>
+                                  {f.name}
+                                </option>
+                              ))}
+                            </select>
+                            <ChevronRight className="w-4 h-4 text-slate-400 absolute right-4 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" />
+                          </div>
+                        )}
+
                         {form.formState.errors.facilityId && (
                           <p className="text-red-500 text-xs mt-1">
                             {form.formState.errors.facilityId.message}
@@ -958,6 +1018,11 @@ export default function CreateProductionBatchPage() {
           </div>
         </div>
       </div>
+
+      <CreateFacilityModal
+        isOpen={isFacilityModalOpen}
+        onClose={() => setIsFacilityModalOpen(false)}
+      />
     </div>
   );
 }
