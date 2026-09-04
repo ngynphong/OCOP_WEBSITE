@@ -20,10 +20,12 @@ import {
 } from '../../utils/ProductConstants';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { FiX, FiPlus } from 'react-icons/fi';
+import { Sparkles } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from 'react-toastify';
 import { AiStoryBuilder } from './AiStoryBuilder';
 import { AiStoryResponse } from '../../api/aiApi';
+import { useAiAssistantMutations } from '@/features/products/hooks/useAiAssistant';
 
 interface JournalsTabProps {
   productId: number;
@@ -34,9 +36,25 @@ export function JournalsTab({ productId }: JournalsTabProps) {
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [showAiConfirmModal, setShowAiConfirmModal] = useState(false);
+
   const { data, isPending } = useSellerJournalsQuery(productId);
   const { createJournal, isCreating, updateJournal, isUpdating, deleteJournal, isDeleting } =
     useSellerJournalMutations(productId);
+  const { generateJournalsFromTemplate, isGeneratingJournals } = useAiAssistantMutations();
+
+  const handleAiGenerate = async (force: boolean = false) => {
+    if (journals.length > 0 && !force) {
+      setShowAiConfirmModal(true);
+      return;
+    }
+    setShowAiConfirmModal(false);
+    try {
+      await generateJournalsFromTemplate({ productId, appendOnly: false });
+    } catch {
+      // Toast already handled in hook
+    }
+  };
 
   const journals: ProductJournal[] = data?.data ?? [];
 
@@ -121,11 +139,6 @@ export function JournalsTab({ productId }: JournalsTabProps) {
   };
 
   const onSubmit = async (formData: CreateJournalFormData) => {
-    if (selectedFiles.length === 0 && previewUrls.length === 0) {
-      toast.error('Vui lòng tải lên ít nhất một ảnh minh chứng');
-      return;
-    }
-
     const { ...submitData } = formData;
     if (editId) {
       const retainUrls = previewUrls.filter((url) => url.startsWith('http'));
@@ -133,7 +146,7 @@ export function JournalsTab({ productId }: JournalsTabProps) {
         journalId: editId,
         data: {
           ...submitData,
-          images: retainUrls,
+          existingImages: retainUrls,
         },
         files: selectedFiles,
       });
@@ -203,33 +216,84 @@ export function JournalsTab({ productId }: JournalsTabProps) {
 
       {/* Production Log Section */}
       <div className="space-y-4 border-t border-stone-100 pt-8">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-black text-stone-900 text-lg">Nhật ký Truy xuất & Minh chứng</h3>
-          <Button
-            id="tour-journal-manual-add"
-            onClick={() => {
-              setEditId(null);
-              reset({ stepOrder: journals.length + 1, images: [] });
-              setPreviewUrls([]);
-              setSelectedFiles([]);
-              setShowForm(true);
-              setTimeout(() => {
-                formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              }, 100);
-            }}
-            variant="outline"
-            size="sm"
-            leftIcon={<FiPlus />}
-            className="rounded-xl bg-white border-stone-200 text-stone-700 hover:bg-stone-50"
-          >
-            Thêm nhật ký
-          </Button>
+        <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
+          <div>
+            <h3 className="font-black text-stone-900 text-lg">Nhật ký Truy xuất & Minh chứng</h3>
+            <p className="text-xs text-stone-400">
+              Ghi lại câu chuyện nguồn gốc và hành trình sản xuất sản phẩm OCOP
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={() => handleAiGenerate(false)}
+              isLoading={isGeneratingJournals}
+              variant="outline"
+              size="sm"
+              leftIcon={<Sparkles className="w-3.5 h-3.5 text-emerald-600" />}
+              className="rounded-xl border-emerald-300 bg-emerald-50/60 text-emerald-700 hover:bg-emerald-100/70 font-semibold"
+            >
+              AI Tạo theo Quy trình chuẩn
+            </Button>
+            <Button
+              id="tour-journal-manual-add"
+              onClick={() => {
+                setEditId(null);
+                reset({ stepOrder: journals.length + 1, images: [] });
+                setPreviewUrls([]);
+                setSelectedFiles([]);
+                setShowForm(true);
+                setTimeout(() => {
+                  formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+              }}
+              variant="outline"
+              size="sm"
+              leftIcon={<FiPlus />}
+              className="rounded-xl bg-white border-stone-200 text-stone-700 hover:bg-stone-50"
+            >
+              Thêm nhật ký
+            </Button>
+          </div>
         </div>
 
         {/* Journal steps */}
         {journals.length === 0 ? (
-          <div className="flex items-center justify-center h-24 bg-stone-50 rounded-xl border border-dashed border-stone-200">
-            <p className="text-stone-400 text-sm">Chưa có bước nhật ký nào</p>
+          <div className="flex flex-col items-center justify-center p-8 bg-stone-50/80 rounded-2xl border border-dashed border-stone-200 text-center space-y-3">
+            <div className="w-12 h-12 rounded-full bg-emerald-100/70 text-emerald-600 flex items-center justify-center">
+              <Sparkles className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-stone-700 font-bold text-sm">Chưa có bước nhật ký nào</p>
+              <p className="text-stone-400 text-xs mt-1 max-w-md">
+                Bạn có thể tự thêm thủ công hoặc để AI tự động chuyển hóa các bước từ{' '}
+                <strong>Quy trình chuẩn</strong> thành nhật ký OCOP sinh động.
+              </p>
+            </div>
+            <div className="flex items-center gap-3 pt-2">
+              <Button
+                onClick={() => handleAiGenerate(false)}
+                isLoading={isGeneratingJournals}
+                size="sm"
+                leftIcon={<Sparkles className="w-4 h-4" />}
+                className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold"
+              >
+                AI Tạo từ Quy trình chuẩn
+              </Button>
+              <Button
+                onClick={() => {
+                  setEditId(null);
+                  reset({ stepOrder: 1, images: [] });
+                  setPreviewUrls([]);
+                  setSelectedFiles([]);
+                  setShowForm(true);
+                }}
+                variant="outline"
+                size="sm"
+                className="rounded-xl"
+              >
+                + Thêm thủ công
+              </Button>
+            </div>
           </div>
         ) : (
           <div className="space-y-3">
@@ -309,6 +373,21 @@ export function JournalsTab({ productId }: JournalsTabProps) {
             isOpen={!!deleteId}
             type="danger"
             isLoading={isDeleting}
+          />
+        )}
+
+        {/* Confirm AI Generation Modal */}
+        {showAiConfirmModal && (
+          <ConfirmModal
+            title="Tự động sinh nhật ký từ Quy trình chuẩn"
+            message="Sản phẩm đã có một số bước nhật ký. Bạn có chắc chắn muốn AI tạo lại toàn bộ hành trình nhật ký bám sát Quy trình chuẩn của sản phẩm này không?"
+            confirmText="Tạo mới bằng AI"
+            cancelText="Hủy"
+            onConfirm={() => handleAiGenerate(true)}
+            onCancel={() => setShowAiConfirmModal(false)}
+            isOpen={showAiConfirmModal}
+            type="warning"
+            isLoading={isGeneratingJournals}
           />
         )}
 
@@ -400,7 +479,10 @@ export function JournalsTab({ productId }: JournalsTabProps) {
 
             <div id="tour-journal-form-images">
               <label className="text-xs font-bold text-stone-500 block mb-2">
-                Ảnh hoạt động <span className="text-red-500">*</span>
+                Ảnh hoạt động{' '}
+                <span className="text-stone-400 font-normal">
+                  (Không bắt buộc - Có thể bổ sung ảnh thật sau)
+                </span>
               </label>
               <div className="flex flex-wrap gap-3">
                 {previewUrls.map((url, index) => (

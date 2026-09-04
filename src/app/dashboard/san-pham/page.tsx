@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import Image from 'next/image';
 import { FiPlus, FiTrash2, FiSend, FiCopy, FiSlash } from 'react-icons/fi';
 import { RiStarFill } from 'react-icons/ri';
@@ -269,11 +270,38 @@ export default function SellerProductsPage() {
                           </div>
                         </div>
                         {/* Status */}
-                        <span
-                          className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold whitespace-nowrap shrink-0 border ${STATUS_COLORS[product.status]}`}
-                        >
-                          {STATUS_LABELS[product.status]}
-                        </span>
+                        <div className="flex flex-col sm:items-end gap-1 shrink-0">
+                          <span
+                            className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold whitespace-nowrap border ${STATUS_COLORS[product.status]}`}
+                          >
+                            {STATUS_LABELS[product.status]}
+                          </span>
+                          {product.status === 'APPROVED' &&
+                            product.commercialStatus === 'AWAITING_LOT' && (
+                              <Link
+                                href={`/dashboard/lo-san-xuat/tao-moi?productId=${product.id}`}
+                                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold bg-amber-100 text-amber-900 hover:bg-amber-200 transition"
+                                title="Sản phẩm chưa có Lô sản xuất - Bấm để tạo Lô đưa hàng vào kho"
+                              >
+                                <span>📦 Chưa có Lô bán</span>
+                                <span className="underline">Tạo ngay</span>
+                              </Link>
+                            )}
+                          {product.status === 'APPROVED' &&
+                            product.commercialStatus === 'IN_PRODUCTION' && (
+                              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">
+                                <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                                Đang mùa vụ/chế biến
+                              </span>
+                            )}
+                          {product.status === 'APPROVED' &&
+                            product.commercialStatus === 'IN_STOCK' && (
+                              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                Đang mở bán
+                              </span>
+                            )}
+                        </div>
                       </div>
 
                       <div className="flex flex-col sm:flex-row sm:items-end justify-between mt-4 gap-4">

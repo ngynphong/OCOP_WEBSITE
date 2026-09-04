@@ -7,8 +7,11 @@ import { cn } from '@/lib/utils';
 import { ISupplyChainLot, TLotStatus } from '@/features/supply-chain/types/supplyChainTypes';
 import { LotStatusBadge } from '@/features/supply-chain/components/LotStatusBadge';
 import { SupplyChainTimeline } from '@/features/supply-chain/components/SupplyChainTimeline';
+import { BatchEventTimeline } from '@/features/supply-chain/components/BatchEventTimeline';
+import { StandardProcessWorkflow } from '@/features/supply-chain/components/StandardProcessWorkflow';
 import { TraceabilityReportModal } from '@/features/supply-chain/components/TraceabilityReportModal';
 import { FiPackage, FiShield, FiCheckCircle, FiAlertTriangle, FiStar } from 'react-icons/fi';
+import { Sprout, UserCheck, CalendarRange } from 'lucide-react';
 import { format } from 'date-fns';
 import Link from 'next/link';
 
@@ -106,7 +109,7 @@ const PublicTraceabilityPage = () => {
           <div className="p-4 flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-stone-500">Mã Lô</span>
-              <span className="text-sm font-bold text-stone-900 bg-stone-100 px-2 py-0.5 rounded">
+              <span className="text-sm font-mono font-bold text-stone-900 bg-stone-100 px-2 py-0.5 rounded">
                 {lot.lotCode}
               </span>
             </div>
@@ -134,6 +137,65 @@ const PublicTraceabilityPage = () => {
                 {lot.expiryDate ? format(new Date(lot.expiryDate), 'dd/MM/yyyy') : '---'}
               </span>
             </div>
+
+            {/* Vùng trồng & Nhật ký mùa vụ */}
+            {(lot.farmName || lot.responsiblePerson || lot.sourceCycleName) && (
+              <div className="border-t border-stone-100 pt-3 flex flex-col gap-2.5">
+                <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider">
+                  Vùng trồng & Nhật ký mùa vụ:
+                </span>
+
+                {lot.farmName && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-stone-500 flex items-center gap-1.5">
+                      <Sprout className="w-4 h-4 text-emerald-600" />
+                      Vườn / Trang trại
+                    </span>
+                    <span className="text-sm font-bold text-stone-900">{lot.farmName}</span>
+                  </div>
+                )}
+
+                {lot.responsiblePerson && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-stone-500 flex items-center gap-1.5">
+                      <UserCheck className="w-4 h-4 text-blue-600" />
+                      Người phụ trách
+                    </span>
+                    <span className="text-sm font-bold text-stone-900">
+                      {lot.responsiblePerson}
+                    </span>
+                  </div>
+                )}
+
+                {lot.sourceCycleName && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-stone-500 flex items-center gap-1.5">
+                      <CalendarRange className="w-4 h-4 text-amber-600" />
+                      Vụ mùa
+                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-sm font-bold text-stone-900">
+                        {lot.sourceCycleName}
+                      </span>
+                      {lot.sourceCycleStatus && (
+                        <span
+                          className={cn(
+                            'text-[10px] font-bold px-2 py-0.5 rounded-full border',
+                            lot.sourceCycleStatus === 'COMPLETED'
+                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                              : 'bg-amber-50 text-amber-700 border-amber-200',
+                          )}
+                        >
+                          {lot.sourceCycleStatus === 'COMPLETED'
+                            ? 'Đã hoàn tất vụ'
+                            : 'Đang canh tác'}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
@@ -177,13 +239,22 @@ const PublicTraceabilityPage = () => {
           </div>
         )}
 
+        {/* Standard Process Workflow */}
+        {lot.templateSteps && lot.templateSteps.length > 0 && (
+          <StandardProcessWorkflow
+            processTemplateName={lot.processTemplateName}
+            templateSteps={lot.templateSteps}
+            events={lot.events || []}
+          />
+        )}
+
         {/* Timeline Section */}
-        <div className="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden mt-2">
+        <div className="bg-white rounded-2xl shadow-xs border border-stone-200 overflow-hidden mt-1">
           <div className="p-4 border-b border-stone-100 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <FiCheckCircle className="w-5 h-5 text-indigo-500" />
               <h2 className="text-sm font-black text-stone-900 uppercase tracking-wider">
-                Hành trình sản phẩm
+                Nhật ký chuỗi cung ứng Lô hàng
               </h2>
             </div>
           </div>
@@ -195,8 +266,21 @@ const PublicTraceabilityPage = () => {
                   Thông tin hành trình đã bị ẩn do sản phẩm bị thu hồi.
                 </p>
               </div>
+            ) : lot.events && lot.events.length > 0 ? (
+              <BatchEventTimeline events={lot.events} templateSteps={lot.templateSteps || []} />
+            ) : lot.steps && lot.steps.length > 0 ? (
+              <SupplyChainTimeline steps={lot.steps} compact={true} />
             ) : (
-              <SupplyChainTimeline steps={lot.steps || []} compact={true} />
+              <div className="text-center py-8 space-y-2">
+                <FiPackage className="w-8 h-8 text-stone-300 mx-auto" />
+                <p className="text-sm font-bold text-stone-700">
+                  Chưa có nhật ký sự kiện nào được ghi nhận cho lô sản xuất này
+                </p>
+                <p className="text-xs text-stone-400 max-w-sm mx-auto">
+                  Các sự kiện canh tác, chế biến và kiểm định thực tế sẽ xuất hiện tại đây khi cơ sở
+                  sản xuất cập nhật.
+                </p>
+              </div>
             )}
           </div>
         </div>

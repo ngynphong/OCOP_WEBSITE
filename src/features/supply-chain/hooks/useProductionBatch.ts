@@ -8,6 +8,7 @@ import {
   ISupplyChainLot,
   ICreateProcessTemplateReq,
   ICreateLotAssignmentReq,
+  IUpdateQrStatusReq,
 } from '../types/supplyChainTypes';
 
 interface ApiErrorResponse {
@@ -108,6 +109,25 @@ export const useProductionBatch = () => {
       },
       onError: (error: ApiErrorResponse) => {
         toast.error(error?.response?.data?.message || 'Có lỗi xảy ra khi sinh mã QR');
+      },
+    });
+  };
+
+  const useUpdateLotQrStatus = () => {
+    return useMutation({
+      mutationFn: async ({ lotId, data }: { lotId: number; data: IUpdateQrStatusReq }) => {
+        const response = await supplyChainApi.updateLotQrStatus(lotId, data);
+        return response;
+      },
+      onSuccess: (_, variables) => {
+        toast.success('Cập nhật trạng thái tem QR thành công!');
+        queryClient.invalidateQueries({ queryKey: ['lot-qr-codes', variables.lotId] });
+        queryClient.invalidateQueries({ queryKey: ['lot-audit-logs', variables.lotId] });
+      },
+      onError: (error: ApiErrorResponse) => {
+        toast.error(
+          error?.response?.data?.message || 'Có lỗi xảy ra khi cập nhật trạng thái tem QR',
+        );
       },
     });
   };
@@ -253,6 +273,7 @@ export const useProductionBatch = () => {
     useHarvestAndLink,
     useGenerateQrCodes,
     useGetLotQrCodes,
+    useUpdateLotQrStatus,
     useGetLotAuditLogs,
     useGetProcessTemplates,
     useGetProcessTemplateById,

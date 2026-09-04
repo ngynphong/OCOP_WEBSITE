@@ -173,6 +173,9 @@ export interface Product {
   rejectionNote: string | null;
   approvedAt: string | null;
   inStock: boolean;
+  commercialStatus?: 'IN_STOCK' | 'AWAITING_LOT' | 'IN_PRODUCTION' | 'OUT_OF_STOCK' | string;
+  activeLotsCount?: number;
+  totalAvailableStock?: number;
   createdAt: string;
   updatedAt: string;
   // Flat API response properties for product lists
@@ -306,6 +309,7 @@ export interface UpdateJournalRequest {
   longitude?: number;
   activityDate?: string;
   images?: string[];
+  existingImages?: string[];
 }
 
 export interface ReorderJournalRequest {
@@ -435,17 +439,23 @@ export interface TraceProductInfo {
   appliedStandards?: string;
   complianceDocuments?: string;
   shop: {
-    id: number;
+    id?: number;
     name: string;
-    slug: string;
-    logoUrl: string;
+    slug?: string;
+    logoUrl?: string;
+    province?: string;
+    glnCode?: string | null;
   };
 }
 
 export interface TraceQrInfo {
   qrCode: string;
-  blockchainStatus: string;
-  blockchainRootHash: string | null;
+  status?: string;
+  certificationStatus?: string;
+  digitalLink?: string;
+  serialNumber?: string;
+  blockchainStatus?: string;
+  blockchainRootHash?: string | null;
   isCertified: boolean;
 }
 

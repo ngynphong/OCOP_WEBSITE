@@ -149,6 +149,7 @@ export function ProductDetailClient({ initialProduct }: { initialProduct?: Produ
       <StickyBottomCTA
         variantId={product.variants.find((v) => v.isDefault)?.id || product.variants[0]?.id || 0}
         inStock={product.inStock}
+        commercialStatus={product.commercialStatus}
         price={
           product.variants.find((v) => v.isDefault)?.price ||
           product.variants[0]?.price ||
@@ -182,7 +183,11 @@ export function ProductDetailClient({ initialProduct }: { initialProduct?: Produ
         </div>
 
         <div className="mt-16">
-          <ProductTraceability journals={product.journals} qrCode={product.qrCode} />
+          <ProductTraceability
+            journals={product.journals}
+            qrCode={product.qrCode}
+            productId={product.id}
+          />
         </div>
 
         {/* Reviews Section */}

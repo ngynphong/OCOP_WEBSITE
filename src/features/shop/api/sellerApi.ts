@@ -29,18 +29,22 @@ export const sellerApi = {
   },
 
   resubmitShop: (): Promise<ShopDetailResponse> => {
-    return axiosClient.post(API_ENDPOINTS.SELLER.SHOP_RESUBMIT);
+    return axiosClient.post(API_ENDPOINTS.SELLER.SHOP_RESUBMIT, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   updateShop: (data: UpdateShopRequest): Promise<ShopDetailResponse> => {
-    return axiosClient.put(API_ENDPOINTS.SELLER.SHOP, data);
+    return axiosClient.put(API_ENDPOINTS.SELLER.SHOP, data, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   uploadLogo: (file: File): Promise<ShopDetailResponse> => {
     const formData = new FormData();
     formData.append('file', file);
     return axiosClient.post(API_ENDPOINTS.SELLER.SHOP_LOGO, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+      headers: { 'Content-Type': 'multipart/form-data', 'X-Silent-Loading': 'true' },
     });
   },
 
@@ -48,7 +52,7 @@ export const sellerApi = {
     const formData = new FormData();
     formData.append('file', file);
     return axiosClient.post(API_ENDPOINTS.SELLER.SHOP_BANNER, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+      headers: { 'Content-Type': 'multipart/form-data', 'X-Silent-Loading': 'true' },
     });
   },
 
@@ -61,12 +65,14 @@ export const sellerApi = {
     formData.append('docType', docType);
     formData.append('file', file);
     return axiosClient.post(API_ENDPOINTS.SELLER.SHOP_DOCUMENTS, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+      headers: { 'Content-Type': 'multipart/form-data', 'X-Silent-Loading': 'true' },
     });
   },
 
   deleteDocument: (documentId: number | string): Promise<ShopDocumentDeleteResponse> => {
-    return axiosClient.delete(buildRoute(API_ENDPOINTS.SELLER.SHOP_DOCUMENTS, documentId));
+    return axiosClient.delete(buildRoute(API_ENDPOINTS.SELLER.SHOP_DOCUMENTS, documentId), {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   getMyShopPolicy: (): Promise<ShopPolicyResponse> => {
@@ -74,7 +80,9 @@ export const sellerApi = {
   },
 
   updatePolicy: (data: UpdateShopPolicyRequest): Promise<ShopPolicyResponse> => {
-    return axiosClient.put(API_ENDPOINTS.SELLER.SHOP_POLICY, data);
+    return axiosClient.put(API_ENDPOINTS.SELLER.SHOP_POLICY, data, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   getCurrentSubscription: (): Promise<ShopSubscriptionResponse> => {
@@ -86,7 +94,9 @@ export const sellerApi = {
   },
 
   createSubscription: (data: CreateSubscriptionRequest): Promise<ShopSubscriptionResponse> => {
-    return axiosClient.post(API_ENDPOINTS.SELLER.SHOP_SUBSCRIPTION_HISTORY, data);
+    return axiosClient.post(API_ENDPOINTS.SELLER.SHOP_SUBSCRIPTION_HISTORY, data, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   getBankAccount: (): Promise<BankAccountResponse> => {
@@ -94,6 +104,8 @@ export const sellerApi = {
   },
 
   updateBankAccount: (data: BankAccount): Promise<BankAccountResponse> => {
-    return axiosClient.put(API_ENDPOINTS.SELLER.SHOP_BANK_ACCOUNT, data);
+    return axiosClient.put(API_ENDPOINTS.SELLER.SHOP_BANK_ACCOUNT, data, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 };

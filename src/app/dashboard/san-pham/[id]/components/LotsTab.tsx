@@ -1,15 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+'use client';
+
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { FiPlus, FiPackage, FiClock } from 'react-icons/fi';
-import { Button } from '@/components/ui/AppButton';
-import { supplyChainApi } from '@/features/supply-chain/api/supplyChainApi';
-import { ISupplyChainLot, TLotStatus } from '@/features/supply-chain/types/supplyChainTypes';
-import { Product } from '@/features/products/types/productTypes';
-import { toast } from 'react-hot-toast';
+import {
+  Plus,
+  Package,
+  FileText,
+  Camera,
+  AlertTriangle,
+  CheckCircle2,
+  Filter,
+  MapPin,
+  Calendar,
+  User,
+} from 'lucide-react';
 import { format } from 'date-fns';
+import { vi } from 'date-fns/locale';
+import { Button } from '@/components/ui/AppButton';
+import { useProductionBatch } from '@/features/supply-chain/hooks/useProductionBatch';
+import {
+  ISupplyChainLot,
+  TLotStatus,
+  ILotListReq,
+} from '@/features/supply-chain/types/supplyChainTypes';
 import { LotStatusBadge } from '@/features/supply-chain/components/LotStatusBadge';
 import { Pagination } from '@/components/ui/Pagination';
+import { Product } from '@/features/products/types/productTypes';
+
+type TFilterTab = 'ALL' | 'FLAGGED' | 'PROCESSING' | 'ACTIVE';
 
 interface LotsTabProps {
   product: Product;
@@ -19,147 +37,314 @@ interface LotsTabProps {
 }
 
 export const LotsTab = ({ product }: LotsTabProps) => {
-  const router = useRouter();
-  const [lots, setLots] = useState<ISupplyChainLot[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-  const [totalPages, setTotalPages] = useState(0);
-  const [totalElements, setTotalElements] = useState(0);
+  const [activeTab, setActiveTab] = useState<TFilterTab>('ALL');
+  const [params, setParams] = useState<Omit<ILotListReq, 'productId'>>({
+    page: 1,
+    size: 9,
+  });
 
-  const fetchLots = React.useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const res = await supplyChainApi.getSellerLots({
-        page,
-        size: pageSize,
-        productId: product.id,
-      });
-      setLots(res.data.content);
-      setTotalPages(res.data.totalPages || 0);
-      setTotalElements(res.data.totalElements || 0);
-    } catch (error) {
-      console.error(error);
-      toast.error('Không thể tải danh sách lô hàng');
-    } finally {
-      setIsLoading(false);
+  const { useGetProductionBatches } = useProductionBatch();
+  const queryParams: ILotListReq = {
+    ...params,
+    productId: product.id,
+  };
+  const { data, isLoading } = useGetProductionBatches(queryParams);
+
+  const handleTabChange = (tab: TFilterTab) => {
+    setActiveTab(tab);
+    if (tab === 'ALL') {
+      setParams({ page: 1, size: params.size });
+    } else if (tab === 'FLAGGED') {
+      setParams({ page: 1, size: params.size, flaggedByAi: true });
+    } else if (tab === 'PROCESSING') {
+      setParams({ page: 1, size: params.size, status: 'PROCESSING' });
+    } else if (tab === 'ACTIVE') {
+      setParams({ page: 1, size: params.size, status: 'ACTIVE' });
     }
-  }, [page, pageSize, product.id]);
+  };
 
-  useEffect(() => {
-    fetchLots();
-  }, [fetchLots]);
-
-  if (isLoading && lots.length === 0) {
-    return (
-      <div className="space-y-4 animate-pulse">
-        <div className="h-12 bg-stone-100 rounded-xl" />
-        <div className="h-32 bg-stone-100 rounded-xl" />
-        <div className="h-32 bg-stone-100 rounded-xl" />
-      </div>
-    );
-  }
+  const lots = data?.data?.content || [];
+  const totalPages =
+    data?.data?.totalPages || Math.ceil((data?.data?.totalElements || 0) / params.size);
+  const totalElements = data?.data?.totalElements || 0;
 
   return (
     <div
       id="tour-lots-tab-content"
-      className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300"
+      className="space-y-4 md:space-y-6 pb-12 animate-in fade-in slide-in-from-bottom-2 duration-300"
     >
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+      {/* HEADER SECTION */}
+      <div className="flex flex-col md:flex-row justify-between md:items-center bg-white p-4 md:p-6 rounded-xl shadow-xs border border-slate-100 gap-4">
         <div>
-          <h3 className="text-lg font-black text-stone-900">Lịch sử sản xuất & Lô hàng</h3>
-          <p className="text-sm text-stone-500">Quản lý các đợt sản xuất và truy xuất nguồn gốc</p>
+          <h2 className="text-xl md:text-2xl font-bold text-slate-800 flex items-center gap-2">
+            <Package className="w-6 h-6 text-blue-600" />
+            Lịch sử sản xuất & Lô hàng
+          </h2>
+          <p className="text-sm text-slate-500 mt-1">
+            Theo dõi quy trình canh tác, chế biến và giám sát an toàn chất lượng sản phẩm
+          </p>
         </div>
         <Link
           href={`/dashboard/lo-san-xuat/tao-moi?productId=${product.id}`}
           id="tour-lots-tab-create-btn"
+          className="w-full md:w-auto block"
         >
-          <Button variant="primary" leftIcon={<FiPlus size={18} />} className="rounded-xl shrink-0">
-            Tạo lô hàng mới
+          <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-xs rounded-xl h-11 md:h-10 text-sm font-semibold flex items-center justify-center gap-2">
+            <Plus className="w-4 h-4" />
+            Bắt đầu Lô Mới
           </Button>
         </Link>
       </div>
 
-      {lots.length === 0 ? (
-        <div className="bg-stone-50 border border-dashed border-stone-200 rounded-2xl p-12 text-center flex flex-col items-center justify-center">
-          <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-stone-100 mb-4 text-stone-300">
-            <FiPackage size={32} />
+      {/* TABS LỌC THEO DÕI & GIÁM SÁT */}
+      <div className="flex flex-wrap items-center gap-2 p-1.5 bg-slate-100/90 rounded-xl border border-slate-200">
+        <button
+          type="button"
+          onClick={() => handleTabChange('ALL')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer ${
+            activeTab === 'ALL'
+              ? 'bg-white text-slate-800 shadow-xs border border-slate-200'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+          }`}
+        >
+          <Filter className="w-4 h-4" />
+          Tất cả lô
+        </button>
+        <button
+          type="button"
+          onClick={() => handleTabChange('FLAGGED')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer ${
+            activeTab === 'FLAGGED'
+              ? 'bg-rose-600 text-white shadow-xs'
+              : 'text-rose-700 bg-rose-50 hover:bg-rose-100/80 border border-rose-200'
+          }`}
+        >
+          <AlertTriangle className="w-4 h-4" />
+          Cảnh báo (Cần kiểm tra)
+        </button>
+        <button
+          type="button"
+          onClick={() => handleTabChange('PROCESSING')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer ${
+            activeTab === 'PROCESSING'
+              ? 'bg-white text-blue-700 shadow-xs border border-slate-200'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+          }`}
+        >
+          Đang chế biến
+        </button>
+        <button
+          type="button"
+          onClick={() => handleTabChange('ACTIVE')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer ${
+            activeTab === 'ACTIVE'
+              ? 'bg-white text-emerald-700 shadow-xs border border-slate-200'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+          }`}
+        >
+          Đã hoàn tất (Active)
+        </button>
+      </div>
+
+      {/* DANH SÁCH LÔ - DẠNG CARD */}
+      <div className="bg-transparent md:bg-white md:rounded-xl md:shadow-xs md:border md:border-slate-200">
+        {isLoading ? (
+          <div className="p-16 text-center text-slate-500 flex flex-col items-center justify-center gap-3">
+            <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            <span>Đang tải danh sách lô sản xuất...</span>
           </div>
-          <h4 className="text-stone-900 font-bold mb-1">Chưa có lô hàng nào</h4>
-          <p className="text-stone-500 text-sm max-w-sm mb-6">
-            Sản phẩm này chưa được gán lô sản xuất nào. Khởi tạo lô hàng đầu tiên để quản lý tồn kho
-            và truy xuất.
-          </p>
-          <Link href={`/dashboard/lo-san-xuat/tao-moi?productId=${product.id}`}>
-            <Button variant="primary" leftIcon={<FiPlus size={18} />}>
-              Khởi tạo lô hàng
-            </Button>
-          </Link>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {lots.map((lot) => (
+        ) : lots.length === 0 ? (
+          <div className="text-center py-16 bg-white md:bg-slate-50 m-0 md:m-4 rounded-xl md:rounded-lg shadow-xs md:shadow-none border border-slate-200 md:border-dashed md:border-slate-300">
             <div
-              key={lot.id}
-              className="bg-white border border-stone-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow cursor-pointer flex flex-col group"
-              onClick={() => router.push(`/dashboard/lo-san-xuat/${lot.id}`)}
+              className={`mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-4 ${
+                activeTab === 'FLAGGED' ? 'bg-rose-100 text-rose-600' : 'bg-blue-100 text-blue-600'
+              }`}
             >
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h4 className="font-bold text-stone-900 group-hover:text-emerald-600 transition-colors">
-                    {lot.lotCode}
-                  </h4>
-                  <p className="text-xs text-stone-500 mt-1">{lot.variantName || 'Mặc định'}</p>
-                </div>
-                <LotStatusBadge status={lot.status as TLotStatus} />
-              </div>
-
-              <div className="space-y-2 mt-auto">
-                <div className="flex justify-between text-sm">
-                  <span className="text-stone-500 flex items-center gap-1.5">
-                    <FiClock className="text-stone-400" /> Ngày SX
-                  </span>
-                  <span className="font-medium text-stone-700">
-                    {lot.productionDate ? format(new Date(lot.productionDate), 'dd/MM/yyyy') : '--'}
-                  </span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-stone-500 flex items-center gap-1.5">
-                    <FiPackage className="text-stone-400" /> Số lượng
-                  </span>
-                  <span className="font-medium text-stone-700">
-                    {lot.quantity} {lot.unit || 'sản phẩm'}
-                  </span>
-                </div>
-              </div>
-
-              <div className="mt-4 pt-4 border-t border-stone-100 flex justify-between items-center text-xs">
-                <span className="text-stone-400">
-                  {lot.eventCount ?? lot.events?.length ?? 0}/{lot.templateSteps?.length || 0} công
-                  đoạn
-                </span>
-                <span className="text-emerald-600 font-medium">Chi tiết &rarr;</span>
-              </div>
+              {activeTab === 'FLAGGED' ? (
+                <CheckCircle2 className="w-8 h-8 text-emerald-600" />
+              ) : (
+                <Package className="w-8 h-8" />
+              )}
             </div>
-          ))}
-        </div>
-      )}
+            <h3 className="text-lg font-semibold text-slate-700">
+              {activeTab === 'FLAGGED'
+                ? 'Không có lô nào bị gắn cờ cảnh báo.'
+                : 'Chưa có lô sản xuất nào'}
+            </h3>
+            <p className="text-slate-500 max-w-md mx-auto mt-2 text-sm px-4">
+              {activeTab === 'FLAGGED'
+                ? 'Tuyệt vời! Toàn bộ quy trình và liều lượng vật tư của các lô sản xuất đều tuân thủ đúng khuyến nghị của trợ lý AI.'
+                : 'Sản phẩm này chưa có lô sản xuất nào. Bấm vào nút bên dưới để bắt đầu lô mới.'}
+            </p>
+            {activeTab === 'ALL' && (
+              <Link href={`/dashboard/lo-san-xuat/tao-moi?productId=${product.id}`}>
+                <Button className="mt-6 bg-blue-600 hover:bg-blue-700 text-white rounded-xl">
+                  <Plus className="w-4 h-4 mr-2" /> Bắt đầu Lô Mới
+                </Button>
+              </Link>
+            )}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:p-4">
+            {lots.map((lot: ISupplyChainLot) => (
+              <div
+                key={lot.id}
+                className={`bg-white rounded-xl border shadow-xs overflow-hidden flex flex-col transition-all hover:shadow-md ${
+                  lot.isFlaggedByAi ? 'border-rose-300 ring-1 ring-rose-200' : 'border-slate-200'
+                }`}
+              >
+                {/* Header Card */}
+                <div className="p-4 border-b border-slate-100 flex justify-between items-start gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="text-xs text-slate-500 mb-1 flex items-center flex-wrap gap-1">
+                      Mã lô:{' '}
+                      <span className="font-mono font-medium text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded truncate">
+                        {lot.lotCode}
+                      </span>
+                    </div>
+                    <h3 className="font-bold text-base text-slate-800 line-clamp-1">
+                      {lot.productName || product.name}
+                    </h3>
+                    {lot.variantName && (
+                      <p className="text-xs text-slate-500 mt-0.5 truncate">
+                        Biến thể: {lot.variantName}
+                      </p>
+                    )}
+                  </div>
+                  <div className="shrink-0">
+                    <LotStatusBadge status={lot.status as TLotStatus} />
+                  </div>
+                </div>
 
-      {totalPages > 0 && (
-        <div className="pt-6 mt-6 border-t border-stone-100 flex justify-center">
-          <Pagination
-            currentPage={page}
-            totalPages={totalPages}
-            pageSize={pageSize}
-            totalElements={totalElements}
-            onPageChange={setPage}
-            onPageSizeChange={(size) => {
-              setPageSize(size);
-              setPage(1);
-            }}
-          />
-        </div>
-      )}
+                {/* Huy hiệu Giám sát Chất lượng AI */}
+                <div className="px-4 pt-3 pb-1">
+                  {lot.isFlaggedByAi ? (
+                    <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-lg text-xs font-semibold">
+                      <AlertTriangle className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+                      <span className="line-clamp-1">Cảnh báo AI: Phát hiện sai lệch</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-lg text-xs font-semibold">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <span>Đạt chuẩn kỹ thuật OCOP</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Body Card */}
+                <div className="p-4 flex-1 space-y-2.5">
+                  <div className="bg-slate-50/90 p-2.5 rounded-lg border border-slate-100 space-y-1.5 text-xs text-slate-600">
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-500 flex items-center gap-1.5">
+                        <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                        Vùng trồng:
+                      </span>
+                      <span
+                        className="font-semibold text-slate-800 truncate max-w-[160px]"
+                        title={lot.farmName || 'Cơ sở OCOP'}
+                      >
+                        {lot.farmName || 'Cơ sở OCOP'}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-500 flex items-center gap-1.5">
+                        <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                        Vụ mùa:
+                      </span>
+                      <span className="font-semibold text-slate-800">
+                        {lot.sourceCycleName || 'Đông Xuân 2026'}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-500 flex items-center gap-1.5">
+                        <User className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                        Phụ trách:
+                      </span>
+                      <span
+                        className="font-semibold text-slate-800 truncate max-w-[160px]"
+                        title={lot.responsiblePerson || 'Chủ hộ (Seller)'}
+                      >
+                        {lot.responsiblePerson || 'Chủ hộ (Seller)'}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-500 flex items-center gap-1.5">
+                        <Package className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                        Sản lượng:
+                      </span>
+                      <span className="font-bold text-slate-800">
+                        {lot.quantity} {lot.unit}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-between items-center text-xs text-slate-500 pt-0.5">
+                    <span>Ngày tạo:</span>
+                    <span className="text-slate-700">
+                      {lot.createdAt
+                        ? format(new Date(lot.createdAt), 'dd/MM/yyyy', { locale: vi })
+                        : 'N/A'}
+                    </span>
+                  </div>
+
+                  {/* Progress bar */}
+                  <div className="pt-1">
+                    <div className="flex justify-between text-xs text-slate-500 mb-1">
+                      <span>Tiến độ</span>
+                      <span>
+                        {lot.eventCount ?? lot.events?.length ?? 0}/{lot.templateSteps?.length || 0}{' '}
+                        công đoạn
+                      </span>
+                    </div>
+                    <div className="w-full bg-slate-100 rounded-full h-1.5">
+                      <div
+                        className={`h-1.5 rounded-full transition-all duration-500 ${
+                          lot.isFlaggedByAi ? 'bg-rose-500' : 'bg-emerald-500'
+                        }`}
+                        style={{
+                          width: `${(lot.templateSteps?.length || 0) > 0 ? ((lot.eventCount ?? lot.events?.length ?? 0) / (lot.templateSteps?.length || 1)) * 100 : 0}%`,
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer Buttons */}
+                <div className="p-3 bg-slate-50/80 border-t border-slate-100 grid grid-cols-2 gap-2">
+                  <Link href={`/dashboard/lo-san-xuat/${lot.id}`} className="block">
+                    <Button
+                      variant="outline"
+                      className="w-full bg-white text-slate-700 hover:bg-slate-100 hover:text-slate-900 h-9 rounded-lg px-2 text-xs font-semibold"
+                    >
+                      <FileText className="w-3.5 h-3.5 mr-1.5 shrink-0" />
+                      Chi tiết
+                    </Button>
+                  </Link>
+                  <Link href={`/dashboard/lo-san-xuat/${lot.id}?action=log`} className="block">
+                    <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white h-9 rounded-lg px-2 text-xs font-semibold">
+                      <Camera className="w-3.5 h-3.5 mr-1.5 shrink-0" />
+                      Ghi nhật ký
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            ))}
+
+            {totalPages > 0 && (
+              <div className="col-span-full pt-4 border-t border-slate-200">
+                <Pagination
+                  currentPage={params.page}
+                  totalPages={totalPages}
+                  pageSize={params.size}
+                  totalElements={totalElements}
+                  onPageChange={(page) => setParams((p) => ({ ...p, page }))}
+                  onPageSizeChange={(size) => setParams({ page: 1, size })}
+                />
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

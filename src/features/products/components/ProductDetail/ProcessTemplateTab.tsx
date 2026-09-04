@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { FiPlus, FiSave, FiZap, FiAlertCircle } from 'react-icons/fi';
+import { FiPlus, FiSave, FiZap, FiAlertCircle, FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { useProductionBatch } from '@/features/supply-chain/hooks/useProductionBatch';
 import {
   IProcessTemplate,
@@ -52,6 +52,7 @@ export function ProcessTemplateTab({
 
   const [isCreating, setIsCreating] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [isSystemTemplatesCollapsed, setIsSystemTemplatesCollapsed] = useState(false);
 
   const {
     register,
@@ -172,111 +173,128 @@ export function ProcessTemplateTab({
       </div>
       {systemTemplates.length > 0 && !isCreating && (
         <div className="mt-8">
-          <h3 className="text-lg font-black text-stone-900 mb-4">Mẫu quy trình hệ thống gợi ý</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {systemTemplates.map((template) => (
-              <div
-                key={template.id}
-                className="bg-stone-50 p-5 rounded-2xl border border-stone-200 flex flex-col justify-between"
-              >
-                <div>
-                  <h4 className="font-bold text-stone-800 text-base">{template.name}</h4>
-                  <p className="text-xs text-stone-500 mt-1 mb-3 line-clamp-2">
-                    {template.description || 'Quy trình chuẩn được hệ thống đề xuất.'}
-                  </p>
-                  <div className="flex flex-col gap-2 mb-4">
-                    {template.steps?.slice(0, 3).map((step, idx) => {
-                      let fieldCount = 0;
-                      let parsedFields: Array<{ label?: string; name?: string; unit?: string }> =
-                        [];
-                      if (step.dynamicFieldsSchema) {
-                        try {
-                          const p: unknown = JSON.parse(step.dynamicFieldsSchema);
-                          if (Array.isArray(p)) {
-                            parsedFields = p as Array<{
-                              label?: string;
-                              name?: string;
-                              unit?: string;
-                            }>;
-                            fieldCount = parsedFields.length;
-                          }
-                        } catch {}
-                      }
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2.5">
+              <h3 className="text-lg font-black text-stone-900">Mẫu quy trình hệ thống gợi ý</h3>
+              <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                {systemTemplates.length} mẫu
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsSystemTemplatesCollapsed((prev) => !prev)}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-stone-600 hover:text-stone-900 bg-stone-100 hover:bg-stone-200/80 rounded-xl transition cursor-pointer"
+            >
+              <span>{isSystemTemplatesCollapsed ? 'Mở rộng' : 'Thu gọn'}</span>
+              {isSystemTemplatesCollapsed ? <FiChevronDown size={14} /> : <FiChevronUp size={14} />}
+            </button>
+          </div>
+          {!isSystemTemplatesCollapsed && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {systemTemplates.map((template) => (
+                <div
+                  key={template.id}
+                  className="bg-stone-50 p-5 rounded-2xl border border-stone-200 flex flex-col justify-between"
+                >
+                  <div>
+                    <h4 className="font-bold text-stone-800 text-base">{template.name}</h4>
+                    <p className="text-xs text-stone-500 mt-1 mb-3 line-clamp-2">
+                      {template.description || 'Quy trình chuẩn được hệ thống đề xuất.'}
+                    </p>
+                    <div className="flex flex-col gap-2 mb-4">
+                      {template.steps?.slice(0, 3).map((step, idx) => {
+                        let fieldCount = 0;
+                        let parsedFields: Array<{ label?: string; name?: string; unit?: string }> =
+                          [];
+                        if (step.dynamicFieldsSchema) {
+                          try {
+                            const p: unknown = JSON.parse(step.dynamicFieldsSchema);
+                            if (Array.isArray(p)) {
+                              parsedFields = p as Array<{
+                                label?: string;
+                                name?: string;
+                                unit?: string;
+                              }>;
+                              fieldCount = parsedFields.length;
+                            }
+                          } catch {}
+                        }
 
-                      let ruleObj: { photo?: string; gps?: string } | null = null;
-                      if (step.evidenceRule) {
-                        try {
-                          ruleObj = JSON.parse(step.evidenceRule) as {
-                            photo?: string;
-                            gps?: string;
-                          };
-                        } catch {}
-                      }
+                        let ruleObj: { photo?: string; gps?: string } | null = null;
+                        if (step.evidenceRule) {
+                          try {
+                            ruleObj = JSON.parse(step.evidenceRule) as {
+                              photo?: string;
+                              gps?: string;
+                            };
+                          } catch {}
+                        }
 
-                      return (
-                        <div
-                          key={idx}
-                          className="bg-white p-2.5 rounded-xl border border-stone-200/80"
-                        >
-                          <div className="flex items-center justify-between text-xs font-bold text-stone-800">
-                            <span>
-                              {idx + 1}. {step.title}
-                            </span>
-                            {fieldCount > 0 && (
-                              <span className="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded border border-emerald-200">
-                                📋 {fieldCount} thông số
+                        return (
+                          <div
+                            key={idx}
+                            className="bg-white p-2.5 rounded-xl border border-stone-200/80"
+                          >
+                            <div className="flex items-center justify-between text-xs font-bold text-stone-800">
+                              <span>
+                                {idx + 1}. {step.title}
                               </span>
-                            )}
-                          </div>
-                          {(parsedFields.length > 0 ||
-                            ruleObj?.photo === 'REQUIRED' ||
-                            ruleObj?.gps === 'REQUIRED') && (
-                            <div className="flex flex-wrap items-center gap-1 mt-1.5 pt-1.5 border-t border-stone-100">
-                              {parsedFields.slice(0, 3).map((f, fIdx) => (
-                                <span
-                                  key={fIdx}
-                                  className="text-[10px] bg-stone-50 text-stone-600 px-1.5 py-0.5 rounded border border-stone-200/70"
-                                >
-                                  {f.label || f.name}
-                                  {f.unit ? ` (${f.unit})` : ''}
-                                </span>
-                              ))}
-                              {parsedFields.length > 3 && (
-                                <span className="text-[10px] text-stone-400 font-semibold">
-                                  +{parsedFields.length - 3}
-                                </span>
-                              )}
-                              {ruleObj?.photo === 'REQUIRED' && (
-                                <span className="text-[10px] bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded border border-amber-200 font-bold ml-auto">
-                                  📷 Ảnh
-                                </span>
-                              )}
-                              {ruleObj?.gps === 'REQUIRED' && (
-                                <span className="text-[10px] bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded border border-blue-200 font-bold">
-                                  📍 GPS
+                              {fieldCount > 0 && (
+                                <span className="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded border border-emerald-200">
+                                  {fieldCount} thông số
                                 </span>
                               )}
                             </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                    {template.steps && template.steps.length > 3 && (
-                      <span className="text-[11px] text-stone-400 font-medium pl-1">
-                        ... và còn {template.steps.length - 3} bước nữa
-                      </span>
-                    )}
+                            {(parsedFields.length > 0 ||
+                              ruleObj?.photo === 'REQUIRED' ||
+                              ruleObj?.gps === 'REQUIRED') && (
+                              <div className="flex flex-wrap items-center gap-1 mt-1.5 pt-1.5 border-t border-stone-100">
+                                {parsedFields.slice(0, 3).map((f, fIdx) => (
+                                  <span
+                                    key={fIdx}
+                                    className="text-[10px] bg-stone-50 text-stone-600 px-1.5 py-0.5 rounded border border-stone-200/70"
+                                  >
+                                    {f.label || f.name}
+                                    {f.unit ? ` (${f.unit})` : ''}
+                                  </span>
+                                ))}
+                                {parsedFields.length > 3 && (
+                                  <span className="text-[10px] text-stone-400 font-semibold">
+                                    +{parsedFields.length - 3}
+                                  </span>
+                                )}
+                                {ruleObj?.photo === 'REQUIRED' && (
+                                  <span className="text-[10px] bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded border border-amber-200 font-bold ml-auto">
+                                    Ảnh
+                                  </span>
+                                )}
+                                {ruleObj?.gps === 'REQUIRED' && (
+                                  <span className="text-[10px] bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded border border-blue-200 font-bold">
+                                    GPS
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                      {template.steps && template.steps.length > 3 && (
+                        <span className="text-[11px] text-stone-400 font-medium pl-1">
+                          ... và còn {template.steps.length - 3} bước nữa
+                        </span>
+                      )}
+                    </div>
                   </div>
+                  <button
+                    onClick={() => handleCloneSystemTemplate(template)}
+                    className="w-full py-2 bg-white border border-emerald-300 text-emerald-700 font-bold text-sm rounded-xl hover:bg-emerald-50 transition"
+                  >
+                    Sử dụng mẫu này
+                  </button>
                 </div>
-                <button
-                  onClick={() => handleCloneSystemTemplate(template)}
-                  className="w-full py-2 bg-white border border-emerald-300 text-emerald-700 font-bold text-sm rounded-xl hover:bg-emerald-50 transition"
-                >
-                  Sử dụng mẫu này
-                </button>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

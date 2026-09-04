@@ -9,6 +9,7 @@ interface StickyBottomCTAProps {
   variantId: number;
   price: number;
   inStock?: boolean;
+  commercialStatus?: string;
   onBuyNow?: () => void;
 }
 
@@ -16,6 +17,7 @@ export function StickyBottomCTA({
   variantId,
   price,
   inStock = true,
+  commercialStatus,
   onBuyNow,
 }: StickyBottomCTAProps) {
   const { mutate: addToCart, isPending } = useAddToCart();
@@ -40,7 +42,12 @@ export function StickyBottomCTA({
             variant="outline"
             className="flex-1 px-4 h-14 rounded-xl border-stone-200 relative active:scale-95 transition-transform"
             onClick={handleAddToCart}
-            disabled={isPending || inStock === false}
+            disabled={
+              isPending ||
+              inStock === false ||
+              commercialStatus === 'AWAITING_LOT' ||
+              commercialStatus === 'IN_PRODUCTION'
+            }
             aria-label="Thêm vào giỏ hàng"
           >
             {isPending ? (
@@ -55,9 +62,19 @@ export function StickyBottomCTA({
             variant="primary"
             className="flex-2 h-14 rounded-xl active:scale-95 transition-transform shadow-lg shadow-emerald-700/20"
             onClick={onBuyNow}
-            disabled={inStock === false}
+            disabled={
+              inStock === false ||
+              commercialStatus === 'AWAITING_LOT' ||
+              commercialStatus === 'IN_PRODUCTION'
+            }
           >
-            {inStock === false ? 'Hết hàng' : 'Mua ngay'}
+            {commercialStatus === 'AWAITING_LOT'
+              ? 'Chờ mẻ mới'
+              : commercialStatus === 'IN_PRODUCTION'
+                ? 'Đang thu hoạch'
+                : inStock === false
+                  ? 'Hết hàng'
+                  : 'Mua ngay'}
           </Button>
         </div>
       </div>

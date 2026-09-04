@@ -210,8 +210,15 @@ export interface ISupplyChainLot {
   sourceCycleId?: number;
   sourceCycleStatus?: string;
   sourceCycleName?: string;
+  sourceCycleExpectedYield?: number;
+  sourceCycleActualYield?: number;
+  sourceCycleUnit?: string;
   farmName?: string;
   responsiblePerson?: string;
+  rawYieldUsed?: number;
+  rawYieldUnit?: string;
+  packagingYieldRate?: number;
+  packagingRatioNotes?: string;
   recallInfo?: IRecallInfo;
   steps?: ISupplyChainStep[];
   events?: IEventInfo[];
@@ -222,14 +229,31 @@ export interface ISupplyChainLot {
   templateSteps?: IProcessTemplateStep[];
 }
 
+export type TQrStatus =
+  | 'RESERVED'
+  | 'PRINTED'
+  | 'ACTIVATED'
+  | 'RECALLED'
+  | 'DESTROYED'
+  | 'SUSPENDED'
+  | 'EXPIRED'
+  | 'SOLD_OUT';
+
 export interface ILotQrCode {
   id: number;
   token: string;
   serialNumber?: string;
   isMaster: boolean;
   qrUrl: string;
-  status: string;
+  status: TQrStatus | string;
   createdAt: string;
+  revokedAt?: string;
+}
+
+export interface IUpdateQrStatusReq {
+  qrIds?: number[];
+  status: TQrStatus;
+  note?: string;
 }
 
 export interface ILotAuditLog {
@@ -270,6 +294,12 @@ export interface ICreateLotReq {
   }[];
   isClosedLoop?: boolean;
   facilityId?: number;
+  sourceCycleId?: number;
+  rawYieldUsed?: number;
+  rawYieldUnit?: string;
+  packagingYieldRate?: number;
+  packagingRatioNotes?: string;
+  activateImmediately?: boolean;
 }
 
 export interface ILotListReq {

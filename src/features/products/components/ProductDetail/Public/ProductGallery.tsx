@@ -23,7 +23,9 @@ export const ProductGallery = memo(function ProductGallery({
   const mediaList = useMemo(() => {
     const list: { type: 'IMAGE'; url: string; id?: number | string }[] = [];
     sortedImages.forEach((img) => {
-      list.push({ type: 'IMAGE', url: img.url, id: img.id });
+      if (img.url && typeof img.url === 'string' && img.url.trim() !== '') {
+        list.push({ type: 'IMAGE', url: img.url.trim(), id: img.id });
+      }
     });
     if (list.length === 0) {
       list.push({ type: 'IMAGE', url: '/images/fresh-green-produce.jpg', id: 'fallback' });
@@ -123,7 +125,7 @@ export const ProductGallery = memo(function ProductGallery({
             )}
           >
             <Image
-              src={image.thumbnailUrl || image.url || '/images/placeholder-product.jpg'}
+              src={image.thumbnailUrl || image.url || '/images/default-image.png'}
               alt={image.altText || name}
               fill
               sizes="(max-width: 768px) 100vw, 50vw"

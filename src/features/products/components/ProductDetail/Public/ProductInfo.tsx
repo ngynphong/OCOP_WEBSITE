@@ -221,10 +221,58 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
 
           {/* Purchase Actions (Desktop) */}
           <div className="hidden md:flex flex-col gap-3">
-            {(selectedVariant ? selectedVariant.inStock === false : product.inStock === false) ? (
+            {product.commercialStatus === 'AWAITING_LOT' ? (
+              <div className="flex flex-col gap-3 p-4 bg-amber-50/70 border border-amber-200/80 rounded-2xl">
+                <div className="flex items-center gap-2 text-amber-900 font-bold text-sm">
+                  <span className="inline-block w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
+                  Sản phẩm OCOP mới duyệt • Đang chờ mẻ thu hoạch / xuất xưởng
+                </div>
+                <p className="text-amber-800/80 text-xs leading-relaxed">
+                  Sản phẩm đã đạt chuẩn OCOP {product.ocopStar} sao. Chủ thể đang chuẩn bị thu hoạch
+                  vụ mới hoặc đang trong công đoạn đóng gói để nhập kho mở bán.
+                </p>
+                <Button
+                  variant="outline"
+                  size="md"
+                  className="w-full bg-white border-amber-300 text-amber-800 hover:bg-amber-100/50 font-bold rounded-xl"
+                  onClick={() =>
+                    toast.success(
+                      'Đã ghi nhận yêu cầu! Bạn sẽ nhận được thông báo ngay khi mẻ mới lên kệ.',
+                    )
+                  }
+                >
+                  🔔 Nhận thông báo khi mở bán
+                </Button>
+              </div>
+            ) : product.commercialStatus === 'IN_PRODUCTION' ? (
+              <div className="flex flex-col gap-3 p-4 bg-emerald-50/70 border border-emerald-200/80 rounded-2xl">
+                <div className="flex items-center gap-2 text-emerald-900 font-bold text-sm">
+                  <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Vụ mùa đang canh tác & sơ chế đóng gói
+                </div>
+                <p className="text-emerald-800/80 text-xs leading-relaxed">
+                  Lô sản xuất đang được vận hành và ghi nhật ký chuỗi cung ứng chuẩn OCOP. Hàng sẽ
+                  sẵn sàng đặt mua ngay khi hoàn thành kiểm định KCS.
+                </p>
+                <Button
+                  variant="outline"
+                  size="md"
+                  className="w-full bg-white border-emerald-300 text-emerald-800 hover:bg-emerald-100/50 font-bold rounded-xl"
+                  onClick={() =>
+                    toast.success('Đã ghi nhận! Bạn sẽ nhận được thông báo khi lô hàng xuất xưởng.')
+                  }
+                >
+                  🔔 Nhận thông báo khi xuất xưởng
+                </Button>
+              </div>
+            ) : (
+                selectedVariant ? selectedVariant.inStock === false : product.inStock === false
+              ) ? (
               <div className="flex flex-col gap-3">
                 <div className="w-full py-4 bg-stone-100 text-stone-400 rounded-xl font-black text-center text-sm border border-stone-200 uppercase tracking-widest">
-                  Sản phẩm hiện đang hết hàng
+                  {product.commercialStatus === 'OUT_OF_STOCK'
+                    ? 'Tạm hết mẻ này • Mời theo dõi vụ tiếp theo'
+                    : 'Sản phẩm hiện đang hết hàng'}
                 </div>
                 <p className="text-center text-stone-400 text-xs font-medium">
                   Vui lòng quay lại sau hoặc chọn sản phẩm tương tự

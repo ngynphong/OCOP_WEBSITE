@@ -146,21 +146,33 @@ export const adminApi = {
     documentId: number | string,
     data: ShopActionRequest,
   ): Promise<AdminShopDocumentResponse> => {
-    return axiosClient.post(`${API_ENDPOINTS.ADMIN.SHOPS}/documents/${documentId}/verify`, data);
+    return axiosClient.post(`${API_ENDPOINTS.ADMIN.SHOPS}/documents/${documentId}/verify`, data, {
+      headers: {
+        'X-Silent-Loading': 'true',
+      },
+    });
   },
 
   rejectDocument: (
     documentId: number | string,
     data: ShopActionRequest,
   ): Promise<AdminShopDocumentResponse> => {
-    return axiosClient.post(`${API_ENDPOINTS.ADMIN.SHOPS}/documents/${documentId}/reject`, data);
+    return axiosClient.post(`${API_ENDPOINTS.ADMIN.SHOPS}/documents/${documentId}/reject`, data, {
+      headers: {
+        'X-Silent-Loading': 'true',
+      },
+    });
   },
 
   overridePlan: (
     shopId: number | string,
     data: OverridePlanRequest,
   ): Promise<AdminOverridePlanResponse> => {
-    return axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.SHOPS, shopId, 'override-plan'), data);
+    return axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.SHOPS, shopId, 'override-plan'), data, {
+      headers: {
+        'X-Silent-Loading': 'true',
+      },
+    });
   },
 
   updateShopOwner: (

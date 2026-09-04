@@ -1,9 +1,15 @@
 import { axiosClient } from '@/lib/axios';
-import { JournalStepType } from '../types/productTypes';
+import { JournalStepType, ProductJournal } from '../types/productTypes';
 
 export interface GenerateStoryRequest {
   productId: number;
   customPrompt?: string;
+}
+
+export interface GenerateJournalsFromTemplateRequest {
+  productId: number;
+  templateId?: number;
+  appendOnly?: boolean;
 }
 
 export interface AiStoryResponse {
@@ -50,5 +56,9 @@ export const aiApi = {
     return axiosClient.post<AiChatResponse>('/seller/ai/generate-process-step', data, {
       headers: { 'X-Silent-Loading': 'true' },
     });
+  },
+
+  generateJournalsFromTemplate: (data: GenerateJournalsFromTemplateRequest) => {
+    return axiosClient.post<ProductJournal[]>('/seller/ai/generate-journals-from-template', data);
   },
 };

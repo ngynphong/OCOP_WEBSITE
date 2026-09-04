@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import { Package } from 'lucide-react';
 import {
   useSellerImagesQuery,
   useSellerImageMutations,
@@ -76,13 +77,19 @@ export function ImagesTab({ productId }: ImagesTabProps) {
                 img.isPrimary ? 'border-emerald-400' : 'border-transparent hover:border-stone-200'
               }`}
             >
-              <Image
-                src={img.thumbnailUrl || img.url || ''}
-                alt={img.altText || 'Product image'}
-                fill
-                sizes="(max-width: 768px) 33vw, 25vw"
-                className="object-cover"
-              />
+              {img.thumbnailUrl || img.url ? (
+                <Image
+                  src={img.thumbnailUrl || img.url}
+                  alt={img.altText || 'Product image'}
+                  fill
+                  sizes="(max-width: 768px) 33vw, 25vw"
+                  className="object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-stone-100 text-stone-400">
+                  <Package className="w-8 h-8" />
+                </div>
+              )}
               {img.isPrimary && (
                 <span className="absolute top-1.5 left-1.5 bg-emerald-500 text-white text-[10px] font-black uppercase px-2 py-0.5 rounded-full shadow-lg shadow-emerald-500/20">
                   Chính

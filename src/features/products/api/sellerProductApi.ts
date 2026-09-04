@@ -209,7 +209,13 @@ export const sellerProductApi = {
     const formData = new FormData();
 
     Object.entries(data).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && key !== 'images' && key !== 'retainImages') {
+      if (
+        value !== undefined &&
+        value !== null &&
+        key !== 'images' &&
+        key !== 'retainImages' &&
+        key !== 'existingImages'
+      ) {
         if (Array.isArray(value)) {
           value.forEach((v) => formData.append(key, v.toString()));
         } else {
@@ -218,8 +224,9 @@ export const sellerProductApi = {
       }
     });
 
-    if (data.images && data.images.length > 0) {
-      data.images.forEach((img) => formData.append('images', img));
+    const retainUrls = data.existingImages || data.images;
+    if (retainUrls && retainUrls.length > 0) {
+      retainUrls.forEach((img) => formData.append('existingImages', img));
     }
 
     if (files && files.length > 0) {

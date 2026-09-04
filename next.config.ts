@@ -91,6 +91,10 @@ const nextConfig: NextConfig = {
         destination: '/images/:file',
       },
       {
+        source: '/01/:gtin/10/:lotCode/21/:serial',
+        destination: '/trace/01-:gtin-10-:lotCode?serial=:serial',
+      },
+      {
         source: '/01/:gtin/10/:lotCode',
         destination: '/trace/01-:gtin-10-:lotCode',
       },

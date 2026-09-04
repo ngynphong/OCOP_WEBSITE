@@ -22,6 +22,7 @@ import {
   ILotTaskResponse,
   ILotAssignment,
   ICreateLotAssignmentReq,
+  IUpdateQrStatusReq,
 } from '../types/supplyChainTypes';
 
 export const supplyChainApi = {
@@ -157,6 +158,20 @@ export const supplyChainApi = {
   getLotQrCodes: async (lotId: number) => {
     return axiosClient.get<unknown, { data: ILotQrCode[] }>(
       `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/${lotId}/qrs`,
+    );
+  },
+
+  updateLotQrStatus: async (lotId: number, data: IUpdateQrStatusReq) => {
+    return axiosClient.patch<unknown, { data: void }>(
+      `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/${lotId}/qrs/status`,
+      data,
+    );
+  },
+
+  resolveLotByQr: async (code: string) => {
+    return axiosClient.get<unknown, { data: ISupplyChainLot }>(
+      `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_LOTS}/resolve-qr`,
+      { params: { code } },
     );
   },
 
