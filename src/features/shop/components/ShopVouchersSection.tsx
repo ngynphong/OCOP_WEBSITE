@@ -66,27 +66,35 @@ export function ShopVouchersSection({ shopSlug }: ShopVouchersSectionProps) {
   if (!vouchers || vouchers.length === 0) return null;
 
   return (
-    <div className="w-full mt-6 bg-linear-to-r from-red-50/70 via-rose-50/40 to-orange-50/50 p-5 rounded-2xl border border-red-100 shadow-xs">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2.5">
-          <div className="p-2 bg-red-600 text-white rounded-xl shadow-xs">
-            <Ticket className="w-5 h-5" />
+    <div className="w-full rounded-2xl border border-red-200/70 bg-gradient-to-br from-red-50/50 via-white to-rose-50/20 p-3 sm:p-4 md:p-5 shadow-2xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-2.5 mb-3 sm:mb-3.5">
+        <div className="flex items-center gap-2 sm:gap-2.5">
+          <div className="w-7 h-7 sm:w-8 h-8 rounded-lg sm:rounded-xl bg-red-600 text-white flex items-center justify-center shadow-xs shrink-0">
+            <Ticket className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </div>
           <div>
-            <h3 className="text-base font-black text-stone-900 tracking-tight flex items-center gap-2 uppercase">
-              MÃ GIẢM GIÁ CỦA SHOP
-              <span className="px-2 py-0.5 text-xs font-bold bg-red-100 text-red-600 rounded-full">
-                {vouchers.length} ưu đãi
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <h3 className="text-xs sm:text-base font-bold text-stone-900 tracking-tight">
+                MÃ GIẢM GIÁ GIAN HÀNG
+              </h3>
+              <span className="px-1.5 sm:px-2 py-0.5 rounded text-[8px] sm:text-[9px] font-bold uppercase bg-red-600 text-white tracking-wider">
+                ƯU ĐÃI
               </span>
-            </h3>
-            <p className="text-xs text-stone-500 font-medium">
+            </div>
+            <p className="text-[10px] sm:text-[11px] text-stone-500 font-medium">
               Lưu mã để sử dụng khi thanh toán các sản phẩm của cửa hàng
             </p>
           </div>
         </div>
+
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          <span className="px-2 sm:px-2.5 py-0.5 bg-white/90 border border-red-200 rounded-md sm:rounded-lg text-[10px] sm:text-[11px] font-bold text-red-700 shadow-2xs">
+            {vouchers.length} mã ưu đãi có sẵn
+          </span>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 overflow-x-auto pb-2 md:pb-0 snap-x hide-scrollbar scrollbar-none">
         {vouchers.map((voucher) => {
           const isSaved = savedIds.has(voucher.id);
           const isCopied = copiedCode === voucher.code;
@@ -95,31 +103,31 @@ export function ShopVouchersSection({ shopSlug }: ShopVouchersSectionProps) {
             <motion.div
               key={voucher.id}
               whileHover={{ y: -3 }}
-              className="relative flex bg-white border border-red-100 rounded-2xl overflow-hidden shadow-xs hover:shadow-lg hover:shadow-red-900/5 transition-all group min-h-[120px]"
+              className="relative flex bg-white border border-red-100 rounded-xl sm:rounded-2xl overflow-hidden shadow-xs hover:shadow-lg hover:shadow-red-900/5 transition-all group min-h-[110px] sm:min-h-[120px] min-w-[260px] sm:min-w-[300px] md:min-w-0 snap-start shrink-0 md:shrink"
             >
               {/* Left Stub */}
-              <div className="w-24 bg-linear-to-br from-red-500 to-rose-600 flex flex-col items-center justify-center border-r border-dashed border-white/40 relative shrink-0 p-2 text-center text-white">
-                <div className="absolute top-0 right-0 w-3.5 h-3.5 bg-rose-50/60 rounded-full translate-x-1/2 -translate-y-1/2" />
-                <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-rose-50/60 rounded-full translate-x-1/2 translate-y-1/2" />
+              <div className="w-20 sm:w-24 bg-linear-to-br from-red-500 to-rose-600 flex flex-col items-center justify-center border-r border-dashed border-white/40 relative shrink-0 p-2 text-center text-white">
+                <div className="absolute top-0 right-0 w-3 h-3 sm:w-3.5 sm:h-3.5 bg-rose-50/60 rounded-full translate-x-1/2 -translate-y-1/2" />
+                <div className="absolute bottom-0 right-0 w-3 h-3 sm:w-3.5 sm:h-3.5 bg-rose-50/60 rounded-full translate-x-1/2 translate-y-1/2" />
 
-                <span className="font-black text-xl leading-none">
+                <span className="font-black text-lg sm:text-xl leading-none">
                   {voucher.type === 'PERCENT' ? (
                     `${voucher.discountValue}%`
                   ) : (
-                    <span className="text-sm">
+                    <span className="text-xs sm:text-sm">
                       {voucher.discountValue >= 1000
                         ? `${voucher.discountValue / 1000}k`
                         : formatCurrencyVND(voucher.discountValue)}
                     </span>
                   )}
                 </span>
-                <span className="text-[9px] text-red-100 font-black uppercase tracking-widest mt-1">
+                <span className="text-[8px] sm:text-[9px] text-red-100 font-black uppercase tracking-widest mt-1">
                   GIẢM GIÁ
                 </span>
               </div>
 
               {/* Right Content */}
-              <div className="flex-1 p-3.5 flex flex-col justify-between overflow-hidden">
+              <div className="flex-1 p-2.5 sm:p-3.5 flex flex-col justify-between overflow-hidden">
                 <div className="space-y-1">
                   <div className="flex items-center justify-between gap-1">
                     <span className="px-2 py-0.5 bg-stone-100 text-stone-800 rounded-md text-[10px] font-black uppercase tracking-wider font-mono border border-stone-200">

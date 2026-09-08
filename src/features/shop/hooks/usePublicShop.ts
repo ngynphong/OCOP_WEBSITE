@@ -28,6 +28,33 @@ export const usePublicShopPolicyQuery = (slug: string) => {
   });
 };
 
+export const usePublicShopCategoriesQuery = (slug: string) => {
+  return useQuery({
+    queryKey: ['public-shop-categories', slug],
+    queryFn: () => shopPublicApi.getShopCategories(slug),
+    enabled: !!slug,
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const usePublicShopBestSellersQuery = (slug: string, limit = 4) => {
+  return useQuery({
+    queryKey: ['public-shop-best-sellers', slug, limit],
+    queryFn: () => shopPublicApi.getShopBestSellers(slug, limit),
+    enabled: !!slug,
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const usePublicShopFeaturedProductsQuery = (slug: string, limit = 4) => {
+  return useQuery({
+    queryKey: ['public-shop-featured-products', slug, limit],
+    queryFn: () => shopPublicApi.getShopFeaturedProducts(slug, limit),
+    enabled: !!slug,
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
 export const useSubscriptionPlansQuery = () => {
   return useQuery({
     queryKey: ['subscription-plans'],

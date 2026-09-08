@@ -5,7 +5,6 @@ import {
   FiUserPlus,
   FiUsers,
   FiCheckCircle,
-  FiAlertCircle,
   FiSlash,
   FiShield,
   FiLayers,

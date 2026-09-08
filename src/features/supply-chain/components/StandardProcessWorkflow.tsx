@@ -350,7 +350,7 @@ export const StandardProcessWorkflow = ({
                       <div className="flex flex-wrap gap-1.5">
                         {dynamicFields.map((df, dfIdx) => (
                           <span
-                            key={df.key || dfIdx}
+                            key={df.key ? `${df.key}-${dfIdx}` : dfIdx}
                             className="text-[11px] font-medium bg-white px-2 py-0.5 rounded border border-stone-200 text-stone-700 flex items-center gap-1"
                           >
                             <FileCheck2 className="w-3 h-3 text-emerald-600" />
@@ -375,7 +375,7 @@ export const StandardProcessWorkflow = ({
                       <div className="flex flex-col gap-1">
                         {matchingEvents.map((ev, evIdx) => (
                           <div
-                            key={ev.id || evIdx}
+                            key={`${ev.sourceType || 'ev'}-${ev.stepType || 'step'}-${ev.id ?? 'noId'}-${evIdx}`}
                             className="bg-white p-2 rounded-lg border border-emerald-100 flex items-center justify-between text-xs"
                           >
                             <div className="flex items-center gap-2">

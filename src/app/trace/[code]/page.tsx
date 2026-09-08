@@ -23,14 +23,23 @@ import {
   UserCheck,
   CalendarRange,
   Boxes,
+  Copy,
 } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
 
+import { useQuery } from '@tanstack/react-query';
 import {
   useTraceDetailQuery,
   useRecordScanMutation,
 } from '@/features/products/hooks/usePublicProducts';
-import { ProductJournal, TraceQrInfo } from '@/features/products/types/productTypes';
+import {
+  ProductJournal,
+  TraceQrInfo,
+  TraceProductInfo,
+} from '@/features/products/types/productTypes';
+import { publicProductApi } from '@/features/products/api/publicProductApi';
+import { supplyChainApi } from '@/features/supply-chain/api/supplyChainApi';
 import { BatchEventTimeline } from '@/features/supply-chain/components/BatchEventTimeline';
 import { StandardProcessWorkflow } from '@/features/supply-chain/components/StandardProcessWorkflow';
 import { ISupplyChainLot } from '@/features/supply-chain/types/supplyChainTypes';
@@ -149,33 +158,141 @@ function getCodeStatus(lot?: ISupplyChainLot, qr?: TraceQrInfo) {
 function TraceContent({ code }: { code: string }) {
   const searchParams = useSearchParams();
   const serial = searchParams.get('serial');
-  const { data, isLoading, isError } = useTraceDetailQuery(code);
+
+  const isLotCode = code.startsWith('LOT-');
+
+  // 1. Quét QR sản phẩm chuẩn
+  const { data: traceData, isLoading: isTraceLoading } = useTraceDetailQuery(
+    isLotCode ? undefined : code,
+    {
+      enabled: !isLotCode && !!code,
+    },
+  );
+
   const { mutate: recordScan } = useRecordScanMutation();
 
   useEffect(() => {
-    if (code) recordScan(code);
-  }, [code, recordScan]);
+    if (code && !isLotCode) {
+      recordScan(code);
+    }
+  }, [code, isLotCode, recordScan]);
+
+  // 2. Truy xuất theo mã Lô sản xuất thực tế khi URL là /trace/LOT-...
+  const { data: lotResp, isLoading: isLotLoading } = useQuery({
+    queryKey: ['supply-chain-lot-public', code],
+    queryFn: () => supplyChainApi.getLotByCode(code),
+    enabled: isLotCode && !!code,
+    retry: false,
+  });
+
+  const lotFromDirectApi = lotResp?.data;
+  const targetProductId = !traceData?.data?.product ? lotFromDirectApi?.productId : undefined;
+
+  // 3. Lấy thông tin nông sản/chủ thể OCOP nếu tra cứu trực tiếp qua Lô
+  const { data: productResp, isLoading: isProductLoading } = useQuery({
+    queryKey: ['public-product-detail', targetProductId],
+    queryFn: () => publicProductApi.getProduct(targetProductId!),
+    enabled: !!targetProductId,
+    retry: false,
+  });
+
+  const fallbackProductInfo: TraceProductInfo | undefined = productResp?.data
+    ? {
+        id: productResp.data.id,
+        name: productResp.data.name || lotFromDirectApi?.productName || 'Chưa cập nhật',
+        ocopStar: String(productResp.data.ocopStar ?? 0),
+        certificationNumber: 'Chưa cập nhật',
+        thumbnailUrl:
+          productResp.data.images?.find((img) => img.isPrimary)?.url ||
+          productResp.data.images?.[0]?.url ||
+          productResp.data.thumbnailUrl ||
+          '',
+        ingredients: productResp.data.ingredients,
+        packagingMaterial: productResp.data.packagingMaterial,
+        appliedStandards: productResp.data.appliedStandards,
+        complianceDocuments: productResp.data.complianceDocuments,
+        shop: {
+          id: productResp.data.shop?.id,
+          name: productResp.data.shop?.name || lotFromDirectApi?.shopName || 'Chưa cập nhật',
+          province: productResp.data.province?.name || productResp.data.provinceName || undefined,
+        },
+      }
+    : lotFromDirectApi
+      ? {
+          id: lotFromDirectApi.productId,
+          name: lotFromDirectApi.productName || 'Chưa cập nhật',
+          ocopStar: '3',
+          certificationNumber: 'Chưa cập nhật',
+          thumbnailUrl: '',
+          shop: {
+            name: lotFromDirectApi.shopName || 'Chưa cập nhật',
+          },
+        }
+      : undefined;
+
+  const product: TraceProductInfo | undefined = traceData?.data?.product || fallbackProductInfo;
+
+  // 4. Lấy danh sách các lô của sản phẩm nếu tra cứu theo mã QR sản phẩm
+  const { data: productLotsResp } = useQuery({
+    queryKey: ['public-lots-product-page', product?.id],
+    queryFn: () => supplyChainApi.getPublicLots({ productId: product!.id, page: 0, size: 10 }),
+    enabled: !!product?.id && !isLotCode,
+    staleTime: 60 * 1000,
+  });
+  const productLots: ISupplyChainLot[] = productLotsResp?.data?.content || [];
+
+  const [selectedLotCode, setSelectedLotCode] = React.useState<string | null>(null);
+
+  // Truy vấn chi tiết lô được chọn (nếu người dùng chuyển đổi lô)
+  const { data: selectedLotDetailResp } = useQuery({
+    queryKey: ['supply-chain-lot-selected', selectedLotCode],
+    queryFn: () => supplyChainApi.getLotByCode(selectedLotCode!),
+    enabled: !!selectedLotCode,
+    retry: false,
+  });
+
+  const activeLot: ISupplyChainLot | undefined = selectedLotCode
+    ? selectedLotDetailResp?.data || productLots.find((l) => l.lotCode === selectedLotCode)
+    : traceData?.data?.lot ||
+      lotFromDirectApi ||
+      (productLots.length > 0 ? productLots[0] : undefined);
+
+  const lot: ISupplyChainLot | undefined = activeLot;
+
+  const qr: TraceQrInfo = traceData?.data?.qr || {
+    qrCode: lot?.lotCode || code,
+    digitalLink: lot?.digitalLink,
+    status: lot?.status || 'ACTIVE',
+    certificationStatus: productResp?.data?.qrCode ? 'CERTIFIED' : 'UNVERIFIED',
+    isCertified: true,
+  };
+  const journals: ProductJournal[] = traceData?.data?.journals || productResp?.data?.journals || [];
+  const scanCount = traceData?.data?.scanCount ?? productResp?.data?.qrCode?.scanCount ?? 0;
+
+  const isLoading = isLotCode
+    ? isLotLoading || (!!targetProductId && isProductLoading)
+    : isTraceLoading;
 
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-stone-50">
         <div className="flex flex-col items-center gap-3 text-stone-400">
-          <Loader2 className="w-8 h-8 animate-spin" />
+          <Loader2 className="w-8 h-8 animate-spin text-emerald-700" />
           <p className="text-sm font-medium">Đang tải thông tin truy xuất...</p>
         </div>
       </div>
     );
   }
 
-  if (isError || !data?.data) {
+  if (!product && !lot) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-stone-50 p-6">
         <div className="flex flex-col items-center gap-4 text-center max-w-sm">
           <XCircle className="w-12 h-12 text-red-400" />
           <h1 className="text-xl font-black text-stone-900">Không tìm thấy thông tin</h1>
           <p className="text-stone-500 text-sm">
-            Mã QR <span className="font-mono font-bold text-stone-700">{code}</span> không hợp lệ
-            hoặc chưa được đăng ký trên hệ thống.
+            Mã định danh <span className="font-mono font-bold text-stone-700">{code}</span> không
+            hợp lệ hoặc chưa được đăng ký trên hệ thống.
           </p>
           <Link
             href="/"
@@ -188,7 +305,6 @@ function TraceContent({ code }: { code: string }) {
     );
   }
 
-  const { product, qr, journals, scanCount, lot } = data.data;
   const sortedJournals = [...journals].sort((a, b) => a.stepOrder - b.stepOrder);
   const codeStatus = getCodeStatus(lot, qr);
   const isRecalled = lot?.status === 'RECALLED';
@@ -275,86 +391,126 @@ function TraceContent({ code }: { code: string }) {
                     </span>
                   </div>
                 )}
-                {/* <div className="flex items-center justify-between pt-2 border-t border-stone-100 text-xs">
-                  <span className="text-stone-400">Tiêu chuẩn định danh</span>
-                  <span className="font-semibold text-stone-700">GS1 Digital Link</span>
-                </div> */}
+                <div className="flex flex-col gap-1.5 pt-2.5 border-t border-stone-100 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="text-stone-500 font-medium">Tiêu chuẩn định danh</span>
+                    <span className="font-semibold text-stone-800">GS1 Digital Link</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-stone-500 font-medium shrink-0">Digital Link</span>
+                    {qr?.digitalLink || lot?.digitalLink ? (
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <span
+                          className="font-mono text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 truncate max-w-[170px]"
+                          title={qr?.digitalLink || lot?.digitalLink}
+                        >
+                          {qr?.digitalLink || lot?.digitalLink}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const dl = qr?.digitalLink || lot?.digitalLink || '';
+                            const fullUrl = dl.startsWith('http')
+                              ? dl
+                              : typeof window !== 'undefined'
+                                ? `${window.location.origin}${dl}`
+                                : dl;
+                            if (typeof navigator !== 'undefined' && navigator.clipboard) {
+                              navigator.clipboard.writeText(fullUrl);
+                              toast.success('Đã sao chép Digital Link');
+                            }
+                          }}
+                          className="p-1 text-stone-400 hover:text-emerald-700 hover:bg-stone-100 rounded transition shrink-0 cursor-pointer"
+                          title="Sao chép Digital Link"
+                        >
+                          <Copy className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ) : (
+                      <span className="text-xs text-stone-400 font-medium italic">
+                        Chưa cập nhật
+                      </span>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
 
             {/* Khối 2: Thông tin OCOP & Sản phẩm */}
-            <div className="bg-white rounded-2xl shadow-xs border border-stone-200 overflow-hidden">
-              <div className="p-4 border-b border-stone-100 flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-stone-100 text-stone-700 flex items-center justify-center shrink-0 border border-stone-200/60">
-                    <Star className="w-4.5 h-4.5 fill-amber-500 text-amber-500" />
-                  </div>
-                  <div>
-                    <h2 className="text-sm font-black text-stone-900 uppercase tracking-wider">
-                      Thông tin OCOP
-                    </h2>
-                    <p className="text-[11px] text-stone-400">Hồ sơ nông sản & chủ thể</p>
-                  </div>
-                </div>
-                <span className="text-xs font-bold text-amber-800 bg-amber-50/80 px-2.5 py-1 rounded-full border border-amber-200/80 flex items-center gap-1">
-                  <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
-                  <span>{product.ocopStar} sao</span>
-                </span>
-              </div>
-              <div className="p-4 flex flex-col gap-4">
-                <div className="relative w-full aspect-4/3 sm:aspect-video lg:aspect-square rounded-xl overflow-hidden border border-stone-200 bg-stone-50 flex items-center justify-center">
-                  {product.thumbnailUrl && product.thumbnailUrl.trim() !== '' ? (
-                    <Image
-                      src={product.thumbnailUrl}
-                      alt={product.name}
-                      fill
-                      className="object-cover hover:scale-105 transition-transform duration-500"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center text-stone-400 bg-stone-100 p-4">
-                      <Package className="w-12 h-12 opacity-40 mb-2" />
-                      <span className="text-xs text-stone-500 font-medium">
-                        Sản phẩm chứng nhận OCOP
-                      </span>
+            {product && (
+              <div className="bg-white rounded-2xl shadow-xs border border-stone-200 overflow-hidden">
+                <div className="p-4 border-b border-stone-100 flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-stone-100 text-stone-700 flex items-center justify-center shrink-0 border border-stone-200/60">
+                      <Star className="w-4.5 h-4.5 fill-amber-500 text-amber-500" />
                     </div>
-                  )}
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <h3 className="text-base sm:text-lg font-black text-stone-900 leading-snug">
-                    {product.name}
-                  </h3>
-                  <div className="flex flex-col gap-2 pt-2 border-t border-stone-100">
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="text-stone-500 flex items-center gap-1">
-                        <Store className="w-3.5 h-3.5 text-stone-400" /> Chủ thể
-                      </span>
-                      <span className="font-bold text-stone-900 truncate max-w-[180px]">
-                        {product.shop.name}
-                      </span>
+                    <div>
+                      <h2 className="text-sm font-black text-stone-900 uppercase tracking-wider">
+                        Thông tin OCOP
+                      </h2>
+                      <p className="text-[11px] text-stone-400">Hồ sơ nông sản & chủ thể</p>
                     </div>
-                    {product.shop.province && (
-                      <div className="flex justify-between items-center text-xs">
-                        <span className="text-stone-500 flex items-center gap-1">
-                          <MapPin className="w-3.5 h-3.5 text-stone-400" /> Địa bàn
-                        </span>
-                        <span className="font-semibold text-stone-700">
-                          {product.shop.province}
+                  </div>
+                  <span className="text-xs font-bold text-amber-800 bg-amber-50/80 px-2.5 py-1 rounded-full border border-amber-200/80 flex items-center gap-1">
+                    <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
+                    <span>{product.ocopStar} sao</span>
+                  </span>
+                </div>
+                <div className="p-4 flex flex-col gap-4">
+                  <div className="relative w-full aspect-4/3 sm:aspect-video lg:aspect-square rounded-xl overflow-hidden border border-stone-200 bg-stone-50 flex items-center justify-center">
+                    {product.thumbnailUrl && product.thumbnailUrl.trim() !== '' ? (
+                      <Image
+                        src={product.thumbnailUrl}
+                        alt={product.name}
+                        fill
+                        className="object-cover hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center text-stone-400 bg-stone-100 p-4">
+                        <Package className="w-12 h-12 opacity-40 mb-2" />
+                        <span className="text-xs text-stone-500 font-medium">
+                          Sản phẩm chứng nhận OCOP
                         </span>
                       </div>
                     )}
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="text-stone-500 flex items-center gap-1">
-                        <FileText className="w-3.5 h-3.5 text-stone-400" /> Số chứng nhận
-                      </span>
-                      <span className="font-bold text-stone-900">
-                        {product.certificationNumber || 'Đang cập nhật'}
-                      </span>
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <h3 className="text-base sm:text-lg font-black text-stone-900 leading-snug">
+                      {product.name}
+                    </h3>
+                    <div className="flex flex-col gap-2 pt-2 border-t border-stone-100">
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="text-stone-500 flex items-center gap-1">
+                          <Store className="w-3.5 h-3.5 text-stone-400" /> Chủ thể
+                        </span>
+                        <span className="font-bold text-stone-900 truncate max-w-[180px]">
+                          {product.shop.name}
+                        </span>
+                      </div>
+                      {product.shop.province && (
+                        <div className="flex justify-between items-center text-xs">
+                          <span className="text-stone-500 flex items-center gap-1">
+                            <MapPin className="w-3.5 h-3.5 text-stone-400" /> Địa bàn
+                          </span>
+                          <span className="font-semibold text-stone-700">
+                            {product.shop.province}
+                          </span>
+                        </div>
+                      )}
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="text-stone-500 flex items-center gap-1">
+                          <FileText className="w-3.5 h-3.5 text-stone-400" /> Số chứng nhận
+                        </span>
+                        <span className="font-bold text-stone-900">
+                          {product.certificationNumber || 'Chưa cập nhật'}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
 
             {/* Khối 3: Vùng Trồng & Mùa Vụ Canh Tác (Tách sang cột trái) */}
             {(lot?.farmName || lot?.responsiblePerson || lot?.sourceCycleName) && (
@@ -423,10 +579,7 @@ function TraceContent({ code }: { code: string }) {
             )}
 
             {/* Khối 4: Thông tin sản phẩm bổ sung */}
-            {(product.ingredients ||
-              product.packagingMaterial ||
-              product.appliedStandards ||
-              product.complianceDocuments) && (
+            {product && (
               <div className="bg-white rounded-2xl shadow-xs border border-stone-200 overflow-hidden">
                 <div className="p-4 border-b border-stone-100 flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-xl bg-stone-100 text-stone-700 flex items-center justify-center shrink-0 border border-stone-200/60">
@@ -440,35 +593,61 @@ function TraceContent({ code }: { code: string }) {
                   </div>
                 </div>
                 <div className="p-4 flex flex-col gap-3">
-                  {product.ingredients && (
-                    <div className="flex flex-col gap-1">
-                      <span className="text-[11px] font-bold text-stone-500 uppercase">
-                        Thành phần
-                      </span>
-                      <span className="text-xs text-stone-800">{product.ingredients}</span>
-                    </div>
-                  )}
-                  {product.packagingMaterial && (
-                    <div className="flex flex-col gap-1 mt-1">
-                      <span className="text-[11px] font-bold text-stone-500 uppercase">
-                        Chất liệu bao bì
-                      </span>
-                      <span className="text-xs text-stone-800">{product.packagingMaterial}</span>
-                    </div>
-                  )}
-                  {product.appliedStandards && (
-                    <div className="flex flex-col gap-1 mt-1">
-                      <span className="text-[11px] font-bold text-stone-500 uppercase">
-                        Tiêu chuẩn áp dụng
-                      </span>
-                      <span className="text-xs text-stone-800">{product.appliedStandards}</span>
-                    </div>
-                  )}
-                  {product.complianceDocuments && (
-                    <div className="flex flex-col gap-1 mt-1">
-                      <span className="text-[11px] font-bold text-stone-500 uppercase">
-                        Tài liệu công bố
-                      </span>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[11px] font-bold text-stone-500 uppercase">
+                      Thành phần
+                    </span>
+                    <span
+                      className={cn(
+                        'text-xs',
+                        product.ingredients?.trim() ? 'text-stone-800' : 'text-stone-400 italic',
+                      )}
+                    >
+                      {product.ingredients?.trim() ? product.ingredients : 'Chưa cập nhật'}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col gap-1 mt-1">
+                    <span className="text-[11px] font-bold text-stone-500 uppercase">
+                      Chất liệu bao bì
+                    </span>
+                    <span
+                      className={cn(
+                        'text-xs',
+                        product.packagingMaterial?.trim()
+                          ? 'text-stone-800'
+                          : 'text-stone-400 italic',
+                      )}
+                    >
+                      {product.packagingMaterial?.trim()
+                        ? product.packagingMaterial
+                        : 'Chưa cập nhật'}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col gap-1 mt-1">
+                    <span className="text-[11px] font-bold text-stone-500 uppercase">
+                      Tiêu chuẩn áp dụng
+                    </span>
+                    <span
+                      className={cn(
+                        'text-xs',
+                        product.appliedStandards?.trim()
+                          ? 'text-stone-800'
+                          : 'text-stone-400 italic',
+                      )}
+                    >
+                      {product.appliedStandards?.trim()
+                        ? product.appliedStandards
+                        : 'Chưa cập nhật'}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col gap-1 mt-1">
+                    <span className="text-[11px] font-bold text-stone-500 uppercase">
+                      Tài liệu công bố
+                    </span>
+                    {product.complianceDocuments?.trim() ? (
                       <div className="flex flex-col gap-2 mt-1">
                         {product.complianceDocuments.split(',').map((docLink, idx) => (
                           <a
@@ -482,8 +661,10 @@ function TraceContent({ code }: { code: string }) {
                           </a>
                         ))}
                       </div>
-                    </div>
-                  )}
+                    ) : (
+                      <span className="text-xs text-stone-400 italic">Chưa cập nhật</span>
+                    )}
+                  </div>
                 </div>
               </div>
             )}
@@ -491,8 +672,38 @@ function TraceContent({ code }: { code: string }) {
 
           {/* ================= CỘT PHẢI (Nội dung chính: Lô, Quy trình, Timeline) ================= */}
           <div className="lg:col-span-8 flex flex-col gap-6">
+            {/* Lựa chọn lô sản xuất nếu sản phẩm có nhiều lô */}
+            {productLots.length > 1 && (
+              <div className="bg-white rounded-2xl shadow-xs border border-stone-200 p-4 flex flex-col gap-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-black text-stone-900 uppercase tracking-wider flex items-center gap-1.5">
+                    <Boxes className="w-4 h-4 text-emerald-700" />
+                    Các lô sản xuất đang lưu hành ({productLots.length})
+                  </span>
+                  <span className="text-[11px] text-stone-400">Chọn lô để xem hồ sơ</span>
+                </div>
+                <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                  {productLots.map((pLot) => (
+                    <button
+                      key={pLot.id}
+                      type="button"
+                      onClick={() => setSelectedLotCode(pLot.lotCode)}
+                      className={cn(
+                        'px-3 py-1.5 rounded-xl text-xs font-mono font-bold border transition whitespace-nowrap cursor-pointer',
+                        lot?.lotCode === pLot.lotCode
+                          ? 'bg-emerald-800 text-white border-emerald-800 shadow-xs'
+                          : 'bg-stone-50 text-stone-700 border-stone-200 hover:bg-stone-100',
+                      )}
+                    >
+                      {pLot.lotCode}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Khối 1: Thông tin Lô Hàng & Quy cách xuất xưởng */}
-            {lot && (
+            {lot ? (
               <div className="bg-white rounded-2xl shadow-xs border border-stone-200 overflow-hidden">
                 <div className="p-4 sm:p-5 border-b border-stone-100 flex items-center justify-between flex-wrap gap-2">
                   <div className="flex items-center gap-2.5">
@@ -530,7 +741,7 @@ function TraceContent({ code }: { code: string }) {
                       <span className="text-sm font-bold text-stone-900">
                         {lot.productionDate
                           ? new Date(lot.productionDate).toLocaleDateString('vi-VN')
-                          : 'Đang cập nhật'}
+                          : 'Chưa cập nhật'}
                       </span>
                     </div>
 
@@ -541,7 +752,7 @@ function TraceContent({ code }: { code: string }) {
                       <span className="text-sm font-bold text-stone-900">
                         {lot.expiryDate
                           ? new Date(lot.expiryDate).toLocaleDateString('vi-VN')
-                          : 'Theo NSX'}
+                          : 'Chưa cập nhật'}
                       </span>
                     </div>
 
@@ -552,7 +763,7 @@ function TraceContent({ code }: { code: string }) {
                       <span className="text-sm font-bold text-stone-900">
                         {lot.quantity
                           ? `${lot.quantity} ${lot.unit || 'sản phẩm'}`
-                          : 'Đang cập nhật'}
+                          : 'Chưa cập nhật'}
                       </span>
                     </div>
                   </div>
@@ -568,6 +779,22 @@ function TraceContent({ code }: { code: string }) {
                     </div>
                   )}
                 </div>
+              </div>
+            ) : (
+              <div className="bg-white rounded-2xl shadow-xs border border-stone-200 p-6 flex flex-col items-center text-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-stone-100 flex items-center justify-center text-stone-400">
+                  <Package className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-black text-stone-900 uppercase tracking-wider">
+                    Thông tin Lô Hàng & Quy Cách Xuất Xưởng
+                  </h3>
+                  <p className="text-xs text-stone-500 mt-1 max-w-md leading-relaxed">
+                    Sản phẩm này chưa có lô sản xuất nào được phát hành lưu hành trên hệ thống chuỗi
+                    cung ứng.
+                  </p>
+                </div>
+                <span className="text-xs text-stone-400 italic">Chưa cập nhật thông tin lô</span>
               </div>
             )}
 

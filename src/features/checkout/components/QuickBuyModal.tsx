@@ -25,15 +25,28 @@ interface QuickBuyModalProps {
   onClose: () => void;
   product: Product;
   selectedVariant: ProductVariant;
+  initialQuantity?: number;
 }
 
-export function QuickBuyModal({ isOpen, onClose, product, selectedVariant }: QuickBuyModalProps) {
+export function QuickBuyModal({
+  isOpen,
+  onClose,
+  product,
+  selectedVariant,
+  initialQuantity = 1,
+}: QuickBuyModalProps) {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const { data: addresses } = useUserAddresses({ enabled: isOpen && isAuthenticated });
   const [selectedAddress, setSelectedAddress] = useState<Address | undefined>(undefined);
   const [selectedShipping, setSelectedShipping] = useState<ShippingProvider | undefined>(undefined);
   const [selectedPayment, setSelectedPayment] = useState<PaymentMethod | undefined>(undefined);
-  const [qty, setQty] = useState(1);
+  const [qty, setQty] = useState(initialQuantity);
+
+  React.useEffect(() => {
+    if (isOpen) {
+      setQty(initialQuantity > 0 ? initialQuantity : 1);
+    }
+  }, [isOpen, initialQuantity]);
   const { mutate: buyNow, isPending: isSubmitting } = useBuyNow();
   const { data: paymentMethods } = usePaymentMethods({ enabled: isOpen && isAuthenticated });
   const { mutateAsync: estimateFee } = useEstimateShippingFee();

@@ -63,6 +63,12 @@ export function ProductTraceability({
 
   const lots: ISupplyChainLot[] = lotsResp?.data?.content || [];
 
+  const [origin, setOrigin] = React.useState('');
+
+  React.useEffect(() => {
+    setOrigin(window.location.origin);
+  }, []);
+
   React.useEffect(() => {
     if (code && isAuthenticated) {
       recordScan(code);
@@ -71,8 +77,32 @@ export function ProductTraceability({
 
   const scanCount = traceData?.data?.scanCount ?? qrCode?.scanCount ?? 0;
 
+  const isQrRevoked =
+    qrCode?.status === 'CANCELLED' ||
+    qrCode?.status === 'REJECTED' ||
+    qrCode?.certificationStatus === 'REJECTED';
+
+  const isQrVerified = Boolean(
+    qrCode &&
+    !isQrRevoked &&
+    (qrCode.isVerified ||
+      qrCode.isCertified ||
+      qrCode.certificationStatus === 'CERTIFIED' ||
+      qrCode.status === 'ACTIVE' ||
+      qrCode.status === undefined),
+  );
+
+  const qrStatusText = !qrCode
+    ? 'Chưa kích hoạt'
+    : isQrRevoked
+      ? 'Đã vô hiệu hóa'
+      : isQrVerified
+        ? 'Đã xác minh'
+        : 'Chờ kiểm chứng';
+
   const handleCopyLotUrl = (lotCode: string) => {
-    const url = `${typeof window !== 'undefined' ? window.location.origin : ''}/truy-xuat/${lotCode}`;
+    const baseUrl = origin || (typeof window !== 'undefined' ? window.location.origin : '');
+    const url = `${baseUrl}/trace/${lotCode}`;
     if (typeof navigator !== 'undefined' && navigator.clipboard) {
       navigator.clipboard.writeText(url);
       toast.success('Đã sao chép liên kết truy xuất lô!');
@@ -97,28 +127,6 @@ export function ProductTraceability({
               Minh bạch hành trình trang trại đến bàn ăn thông qua mã QR.
             </p>
           </div>
-
-          {/* Certification Badges */}
-          {/* <div className="flex flex-wrap gap-3">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-stone-50 rounded-lg border border-stone-100">
-              <Award className="w-4 h-4 text-amber-500" />
-              <span className="text-[10px] font-black text-stone-900 uppercase tracking-wider">
-                VietGAP
-              </span>
-            </div>
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-stone-50 rounded-lg border border-stone-100">
-              <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-              <span className="text-[10px] font-black text-stone-900 uppercase tracking-wider">
-                VSATTP
-              </span>
-            </div>
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-stone-50 rounded-lg border border-stone-100">
-              <FileText className="w-4 h-4 text-blue-500" />
-              <span className="text-[10px] font-black text-stone-900 uppercase tracking-wider">
-                GlobalGAP
-              </span>
-            </div>
-          </div> */}
         </div>
 
         {/* QR Scanner Mock UI */}
@@ -130,18 +138,21 @@ export function ProductTraceability({
                 <span className="text-[9px] font-black text-stone-400 uppercase tracking-widest">
                   Kiểm chứng trực tiếp
                 </span>
-                <h4 className="text-sm font-bold text-stone-900 leading-tight">Mã QR Blockchain</h4>
+                <h4 className="text-sm font-bold text-stone-900 leading-tight">Mã QR Truy Xuất</h4>
               </div>
               <QrCode className="w-5 h-5 text-green-700" />
             </div>
 
             <div className="aspect-square w-full max-w-[130px] mx-auto p-3 bg-white rounded-xl border border-stone-200 flex items-center justify-center">
-              {qrCode?.qrUrl ? (
-                <QRCode
-                  value={`${typeof window !== 'undefined' ? window.location.origin : ''}${qrCode.qrUrl}`}
-                  size={104}
-                  level="M"
-                />
+              {origin && qrCode?.qrUrl ? (
+                <Link
+                  href={qrCode.qrUrl}
+                  target="_blank"
+                  className="group/qr flex items-center justify-center relative cursor-pointer"
+                  title="Nhấn để xem trang truy xuất nguồn gốc"
+                >
+                  <QRCode value={`${origin}${qrCode.qrUrl}`} size={104} level="M" />
+                </Link>
               ) : (
                 <QrCode className="w-16 h-16 text-stone-300" />
               )}
@@ -151,17 +162,21 @@ export function ProductTraceability({
               <div
                 className={cn(
                   'p-2.5 rounded-lg flex items-center justify-between gap-4 border',
-                  qrCode?.isVerified
-                    ? 'bg-green-50/80 border-green-200'
-                    : qrCode
-                      ? 'bg-amber-50/80 border-amber-200'
-                      : 'bg-stone-50 border-stone-200',
+                  !qrCode
+                    ? 'bg-stone-50 border-stone-200'
+                    : isQrRevoked
+                      ? 'bg-red-50/80 border-red-200'
+                      : isQrVerified
+                        ? 'bg-green-50/80 border-green-200'
+                        : 'bg-amber-50/80 border-amber-200',
                 )}
               >
                 <div className="flex items-center gap-2.5">
                   <div className="w-7 h-7 bg-white rounded flex items-center justify-center shadow-xs">
-                    {qrCode?.isVerified ? (
+                    {isQrVerified ? (
                       <CheckCircle2 className="w-4 h-4 text-green-600" />
+                    ) : isQrRevoked ? (
+                      <X className="w-4 h-4 text-red-600" />
                     ) : (
                       <ShieldCheck className="w-4 h-4 text-amber-600" />
                     )}
@@ -170,11 +185,13 @@ export function ProductTraceability({
                     <p
                       className={cn(
                         'text-[8px] font-black uppercase tracking-wider leading-none mb-0.5',
-                        qrCode?.isVerified
-                          ? 'text-green-800'
-                          : qrCode
-                            ? 'text-amber-800'
-                            : 'text-stone-500',
+                        !qrCode
+                          ? 'text-stone-500'
+                          : isQrRevoked
+                            ? 'text-red-800'
+                            : isQrVerified
+                              ? 'text-green-800'
+                              : 'text-amber-800',
                       )}
                     >
                       Trạng thái
@@ -182,25 +199,23 @@ export function ProductTraceability({
                     <p
                       className={cn(
                         'text-[11px] font-bold',
-                        qrCode?.isVerified
-                          ? 'text-green-900'
-                          : qrCode
-                            ? 'text-amber-900'
-                            : 'text-stone-700',
+                        !qrCode
+                          ? 'text-stone-700'
+                          : isQrRevoked
+                            ? 'text-red-900'
+                            : isQrVerified
+                              ? 'text-green-900'
+                              : 'text-amber-900',
                       )}
                     >
-                      {qrCode?.isVerified
-                        ? 'Đã xác minh'
-                        : qrCode
-                          ? 'Chờ kiểm chứng'
-                          : 'Chưa kích hoạt'}
+                      {qrStatusText}
                     </p>
                   </div>
                 </div>
                 <div
                   className={cn(
                     'flex flex-col items-end border-l pl-4',
-                    qrCode?.isVerified ? 'border-green-200' : 'border-stone-200',
+                    isQrVerified ? 'border-green-200' : 'border-stone-200',
                   )}
                 >
                   <p className="text-[8px] font-black text-stone-400 uppercase tracking-wider leading-none mb-0.5">
@@ -352,7 +367,7 @@ export function ProductTraceability({
 
                 <div className="flex items-center gap-2 pt-3 border-t border-stone-100">
                   <Link
-                    href={`/truy-xuat/${lot.lotCode}`}
+                    href={`/trace/${lot.lotCode}`}
                     className="flex-1 text-center py-2 px-3 bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5"
                   >
                     <span>Hồ sơ truy xuất lô</span>
@@ -376,8 +391,9 @@ export function ProductTraceability({
       {/* Timeline Section: Storytelling (Giữ nguyên vẹn) */}
       <div className="flex flex-col gap-8 pt-8 border-t border-stone-100">
         <div className="text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-50 text-amber-800 rounded-full text-xs font-bold mb-2">
-            ✨ Hành trình sản phẩm OCOP
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-800 rounded-full text-xs font-bold mb-2">
+            <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+            <span>Hành trình sản phẩm OCOP</span>
           </div>
           <h3 className="text-xl font-black text-stone-900 tracking-tight mb-1">
             Quy trình & Nhật ký sản xuất
@@ -388,105 +404,119 @@ export function ProductTraceability({
           </p>
         </div>
 
-        <div className="relative pt-6">
-          {/* Timeline vertical bar */}
-          <div className="absolute left-[23px] top-4 bottom-4 w-1 bg-stone-100 md:left-1/2 md:-ml-0.5" />
+        {sortedJournals.length === 0 ? (
+          <div className="p-8 bg-stone-50/70 rounded-2xl border border-dashed border-stone-200 text-center space-y-1 max-w-xl mx-auto w-full my-2">
+            <p className="text-sm font-semibold text-stone-500 italic">
+              Chưa cập nhật nhật ký sản xuất
+            </p>
+            <p className="text-xs text-stone-400">
+              Nhật ký các công đoạn canh tác và kiểm định cho sản phẩm này đang được chủ thể cập
+              nhật.
+            </p>
+          </div>
+        ) : (
+          <div className="relative pt-6">
+            {/* Timeline vertical bar */}
+            <div className="absolute left-[23px] top-4 bottom-4 w-1 bg-stone-100 md:left-1/2 md:-ml-0.5" />
 
-          <div className="flex flex-col gap-8 relative">
-            {sortedJournals.map((journal, index) => {
-              const isEven = index % 2 === 0;
+            <div className="flex flex-col gap-8 relative">
+              {sortedJournals.map((journal, index) => {
+                const isEven = index % 2 === 0;
 
-              return (
-                <div
-                  key={journal.id}
-                  className={cn(
-                    'flex flex-col relative md:flex-row md:items-center',
-                    isEven ? 'md:flex-row' : 'md:flex-row-reverse',
-                  )}
-                >
-                  {/* Dot */}
-                  <div className="absolute left-[15px] top-0 w-5 h-5 bg-white border-4 border-green-600 rounded-full z-10 md:left-1/2 md:-ml-2.5 md:top-1/2 md:-mt-2.5 shadow-[0_0_0_8px_white]" />
-
-                  {/* Content side */}
+                return (
                   <div
+                    key={journal.id}
                     className={cn(
-                      'pl-10 md:pl-0 md:w-1/2',
-                      isEven ? 'md:pr-12 md:text-right' : 'md:pl-12 md:text-left',
+                      'flex flex-col relative md:flex-row md:items-center',
+                      isEven ? 'md:flex-row' : 'md:flex-row-reverse',
                     )}
                   >
+                    {/* Dot */}
+                    <div className="absolute left-[15px] top-0 w-5 h-5 bg-white border-4 border-emerald-600 rounded-full z-10 md:left-1/2 md:-ml-2.5 md:top-1/2 md:-mt-2.5 shadow-[0_0_0_8px_white]" />
+
+                    {/* Content side */}
                     <div
                       className={cn(
-                        'flex flex-col gap-3 group',
-                        isEven ? 'md:items-end' : 'md:items-start',
+                        'pl-10 md:pl-0 md:w-1/2',
+                        isEven ? 'md:pr-12 md:text-right' : 'md:pl-12 md:text-left',
                       )}
                     >
-                      <div className="flex items-center gap-2 px-2 py-0.5 bg-green-50 text-green-700 rounded text-[9px] font-black uppercase tracking-wider w-fit">
-                        B. {journal.stepOrder}
-                        {journal.blockchainStatus === 'CONFIRMED' && (
-                          <CheckCircle2 className="w-3 h-3" />
-                        )}
-                      </div>
-
-                      <h3 className="text-base font-black text-stone-900 group-hover:text-green-700 transition-colors leading-tight">
-                        {journal.title}
-                      </h3>
-
                       <div
                         className={cn(
-                          'flex flex-wrap gap-3 text-[9px] text-stone-400 font-black uppercase tracking-[0.2em]',
-                          isEven ? 'justify-end' : 'justify-start',
+                          'flex flex-col gap-3 group',
+                          isEven ? 'md:items-end' : 'md:items-start',
                         )}
                       >
-                        <div className="flex items-center gap-1.5 bg-stone-50 px-2 py-0.5 rounded-sm">
-                          <Calendar className="w-2.5 h-2.5 text-stone-300" />
-                          {new Date(journal.activityDate).toLocaleDateString('vi-VN')}
+                        <div className="flex items-center gap-2 px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded text-[9px] font-black uppercase tracking-wider w-fit">
+                          B. {journal.stepOrder}
+                          {journal.blockchainStatus === 'CONFIRMED' && (
+                            <CheckCircle2 className="w-3 h-3" />
+                          )}
                         </div>
-                        <div className="flex items-center gap-1.5 bg-stone-50 px-2 py-0.5 rounded-sm">
-                          <MapPin className="w-2.5 h-2.5 text-stone-300" />
-                          {journal.location}
-                        </div>
-                      </div>
 
-                      <p className="text-stone-600 leading-relaxed font-medium text-sm">
-                        {journal.description}
-                      </p>
+                        <h3 className="text-base font-black text-stone-900 group-hover:text-emerald-700 transition-colors leading-tight">
+                          {journal.title || 'Chưa cập nhật tiêu đề'}
+                        </h3>
 
-                      {journal.images && journal.images.length > 0 && (
                         <div
                           className={cn(
-                            'flex flex-wrap gap-2 mt-3',
+                            'flex flex-wrap gap-3 text-[9px] text-stone-400 font-black uppercase tracking-[0.2em]',
                             isEven ? 'justify-end' : 'justify-start',
                           )}
                         >
-                          {journal.images
-                            .filter((img) =>
-                              Boolean(img && typeof img === 'string' && img.trim() !== ''),
-                            )
-                            .map((img, idx) => (
-                              <div
-                                key={idx}
-                                className="relative w-14 h-14 rounded-lg overflow-hidden shadow-md border border-stone-100 hover:scale-110 transition-all cursor-pointer"
-                              >
-                                <Image
-                                  src={img}
-                                  alt={`${journal.title} ${idx}`}
-                                  fill
-                                  className="object-cover"
-                                />
-                              </div>
-                            ))}
+                          <div className="flex items-center gap-1.5 bg-stone-50 px-2 py-0.5 rounded-sm">
+                            <Calendar className="w-2.5 h-2.5 text-stone-300" />
+                            {journal.activityDate
+                              ? new Date(journal.activityDate).toLocaleDateString('vi-VN')
+                              : 'Chưa cập nhật'}
+                          </div>
+                          <div className="flex items-center gap-1.5 bg-stone-50 px-2 py-0.5 rounded-sm">
+                            <MapPin className="w-2.5 h-2.5 text-stone-300" />
+                            {journal.location || 'Chưa cập nhật'}
+                          </div>
                         </div>
-                      )}
-                    </div>
-                  </div>
 
-                  {/* Empty side for layout on desktop */}
-                  <div className="hidden md:block md:w-1/2" />
-                </div>
-              );
-            })}
+                        <p className="text-stone-600 leading-relaxed font-medium text-sm">
+                          {journal.description || 'Chưa cập nhật'}
+                        </p>
+
+                        {journal.images && journal.images.length > 0 && (
+                          <div
+                            className={cn(
+                              'flex flex-wrap gap-2 mt-3',
+                              isEven ? 'justify-end' : 'justify-start',
+                            )}
+                          >
+                            {journal.images
+                              .filter((img) =>
+                                Boolean(img && typeof img === 'string' && img.trim() !== ''),
+                              )
+                              .map((img, idx) => (
+                                <div
+                                  key={idx}
+                                  className="relative w-14 h-14 rounded-lg overflow-hidden shadow-md border border-stone-100 hover:scale-110 transition-all cursor-pointer"
+                                >
+                                  <Image
+                                    src={img}
+                                    alt={`${journal.title} ${idx}`}
+                                    fill
+                                    className="object-cover"
+                                  />
+                                </div>
+                              ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Empty side for layout on desktop */}
+                    <div className="hidden md:block md:w-1/2" />
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Modal QR Code Lô sản xuất */}
@@ -519,7 +549,7 @@ export function ProductTraceability({
             <div className="p-5 bg-stone-50 rounded-2xl border border-stone-200 flex flex-col items-center justify-center gap-3">
               <div className="bg-white p-3.5 rounded-xl shadow-xs border border-stone-100">
                 <QRCode
-                  value={`${typeof window !== 'undefined' ? window.location.origin : ''}/truy-xuat/${selectedLotForQr.lotCode}`}
+                  value={`${origin || ''}/trace/${selectedLotForQr.lotCode}`}
                   size={168}
                   level="Q"
                 />
@@ -531,34 +561,34 @@ export function ProductTraceability({
 
             {/* Lot details */}
             <div className="bg-stone-50/70 p-3.5 rounded-2xl border border-stone-100 text-xs space-y-1.5 text-stone-600">
-              {selectedLotForQr.variantName && (
-                <div className="flex justify-between">
-                  <span className="text-stone-400">Phân loại:</span>
-                  <span className="font-bold text-stone-800">{selectedLotForQr.variantName}</span>
-                </div>
-              )}
-              {selectedLotForQr.productionDate && (
-                <div className="flex justify-between">
-                  <span className="text-stone-400">Ngày sản xuất:</span>
-                  <span className="font-bold text-stone-800">
-                    {new Date(selectedLotForQr.productionDate).toLocaleDateString('vi-VN')}
-                  </span>
-                </div>
-              )}
-              {selectedLotForQr.expiryDate && (
-                <div className="flex justify-between">
-                  <span className="text-stone-400">Hạn sử dụng:</span>
-                  <span className="font-bold text-stone-800">
-                    {new Date(selectedLotForQr.expiryDate).toLocaleDateString('vi-VN')}
-                  </span>
-                </div>
-              )}
-              {selectedLotForQr.farmName && (
-                <div className="flex justify-between">
-                  <span className="text-stone-400">Nông trại / Cơ sở:</span>
-                  <span className="font-bold text-stone-800">{selectedLotForQr.farmName}</span>
-                </div>
-              )}
+              <div className="flex justify-between">
+                <span className="text-stone-400">Phân loại:</span>
+                <span className="font-bold text-stone-800">
+                  {selectedLotForQr.variantName || 'Chưa cập nhật'}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-stone-400">Ngày sản xuất:</span>
+                <span className="font-bold text-stone-800">
+                  {selectedLotForQr.productionDate
+                    ? new Date(selectedLotForQr.productionDate).toLocaleDateString('vi-VN')
+                    : 'Chưa cập nhật'}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-stone-400">Hạn sử dụng:</span>
+                <span className="font-bold text-stone-800">
+                  {selectedLotForQr.expiryDate
+                    ? new Date(selectedLotForQr.expiryDate).toLocaleDateString('vi-VN')
+                    : 'Chưa cập nhật'}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-stone-400">Nông trại / Cơ sở:</span>
+                <span className="font-bold text-stone-800">
+                  {selectedLotForQr.farmName || 'Chưa cập nhật'}
+                </span>
+              </div>
             </div>
 
             {/* Action buttons */}
@@ -572,7 +602,7 @@ export function ProductTraceability({
                 <span>Sao chép link</span>
               </button>
               <Link
-                href={`/truy-xuat/${selectedLotForQr.lotCode}`}
+                href={`/trace/${selectedLotForQr.lotCode}`}
                 className="flex-1 py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm shadow-emerald-200"
               >
                 <span>Hồ sơ chi tiết</span>

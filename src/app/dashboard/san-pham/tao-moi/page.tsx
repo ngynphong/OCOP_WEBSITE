@@ -177,6 +177,49 @@ export default function CreateProductPage() {
           />
         </div>
 
+        {/* Tiêu chuẩn & Quy cách OCOP */}
+        <div className="p-4 bg-stone-50/70 rounded-2xl border border-stone-200/80 space-y-4">
+          <h4 className="text-xs font-bold text-stone-700 uppercase tracking-wider">
+            Hồ sơ tiêu chuẩn & Quy cách OCOP
+          </h4>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="text-xs font-bold text-stone-500 uppercase tracking-widest block mb-1.5">
+                Tiêu chuẩn chất lượng
+              </label>
+              <input
+                {...register('appliedStandards')}
+                placeholder="VD: VietGAP, HACCP, ISO 22000, OCOP..."
+                className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-800 bg-white outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 transition"
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-bold text-stone-500 uppercase tracking-widest block mb-1.5">
+                Chất liệu bao bì
+              </label>
+              <input
+                {...register('packagingMaterial')}
+                placeholder="VD: Hũ thủy tinh nắp thiếc, Túi Kraft..."
+                className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-800 bg-white outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 transition"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="text-xs font-bold text-stone-500 uppercase tracking-widest block mb-1.5">
+              Thành phần sản phẩm
+            </label>
+            <textarea
+              {...register('ingredients')}
+              rows={2}
+              placeholder="VD: 100% búp trà Shan Tuyết cổ thụ tự nhiên..."
+              className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-800 bg-white outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 transition resize-none"
+            />
+          </div>
+        </div>
+
         {/* Description */}
         <div>
           <label className="text-xs font-bold text-stone-500 uppercase tracking-widest block mb-1.5">

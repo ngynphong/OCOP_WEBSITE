@@ -86,6 +86,10 @@ const getEventIcon = (eventType: string, entityType?: string) => {
       return <FiXCircle className="text-red-500" />;
     case 'PRODUCT_RECOMMENDATION':
       return <FiGift className="text-pink-500" />;
+    case 'SHOP_NEW_PRODUCT':
+      return <FiShoppingBag className="text-emerald-600" />;
+    case 'SHOP_NEW_VOUCHER':
+      return <FiGift className="text-rose-500" />;
     case 'JOURNAL_REMINDER':
       return <FiInfo className="text-emerald-500" />;
     default:

@@ -4,15 +4,13 @@ import React, { useState } from 'react';
 import { usePublicShopDetailQuery } from '@/features/shop/hooks/usePublicShop';
 import { ShopProfileHeader } from './ShopProfileHeader';
 import { ShopProductsTab } from './ShopProductsTab';
-import { ShopPolicyTab } from './ShopPolicyTab';
 import { ShopInfoTab } from './ShopInfoTab';
-import { ShopVouchersSection } from './ShopVouchersSection';
-import { FiAlertCircle, FiLoader } from 'react-icons/fi';
+import { FiAlertCircle, FiLoader, FiPackage, FiInfo } from 'react-icons/fi';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/AppButton';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 
-type TabType = 'PRODUCTS' | 'POLICY' | 'INFO';
+type TabType = 'PRODUCTS' | 'INFO';
 
 interface PublicShopProfileProps {
   shopSlug: string;
@@ -20,14 +18,15 @@ interface PublicShopProfileProps {
 
 export const PublicShopProfile = ({ shopSlug }: PublicShopProfileProps) => {
   const [activeTab, setActiveTab] = useState<TabType>('PRODUCTS');
+  const [totalProductsCount, setTotalProductsCount] = useState<number | undefined>(undefined);
   const { data, isPending, isError, refetch } = usePublicShopDetailQuery(shopSlug);
 
   if (isPending) {
     return (
-      <div className="w-full flex justify-center items-center h-screen">
-        <div className="flex flex-col items-center gap-4 text-emerald-600">
+      <div className="w-full flex justify-center items-center h-[70vh]">
+        <div className="flex flex-col items-center gap-3 text-emerald-600">
           <FiLoader className="animate-spin" size={32} />
-          <p className="font-semibold">Đang tải thông tin cửa hàng...</p>
+          <p className="font-bold text-sm text-stone-600">Đang tải thông tin gian hàng OCOP...</p>
         </div>
       </div>
     );
@@ -35,19 +34,21 @@ export const PublicShopProfile = ({ shopSlug }: PublicShopProfileProps) => {
 
   if (isError || !data?.data) {
     return (
-      <div className="w-full flex justify-center items-center py-32 px-4">
-        <div className="flex flex-col items-center gap-4 p-8 bg-red-50 text-red-500 rounded-xl max-w-md text-center">
-          <FiAlertCircle size={48} />
-          <h2 className="text-xl font-bold">Không tìm thấy cửa hàng</h2>
-          <p className="text-sm">
-            Cửa hàng không tồn tại hoặc đã bị ẩn. Vui lòng kiểm tra lại đường dẫn.
+      <div className="w-full flex justify-center items-center py-28 px-4">
+        <div className="flex flex-col items-center gap-4 p-8 bg-white border border-rose-100 shadow-sm rounded-2xl max-w-md text-center">
+          <div className="w-14 h-14 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center">
+            <FiAlertCircle size={28} />
+          </div>
+          <h2 className="text-lg font-black text-stone-900">Không tìm thấy cửa hàng</h2>
+          <p className="text-xs sm:text-sm text-stone-500 leading-relaxed">
+            Cửa hàng không tồn tại hoặc đã tạm dừng hoạt động. Vui lòng kiểm tra lại đường dẫn.
           </p>
           <Button
             onClick={() => refetch()}
             variant="outline"
-            className="mt-4 border-red-200 hover:bg-red-100"
+            className="mt-2 border-stone-200 text-stone-700 hover:bg-stone-50 font-bold text-xs"
           >
-            Thử lại
+            Tải lại trang
           </Button>
         </div>
       </div>
@@ -58,51 +59,71 @@ export const PublicShopProfile = ({ shopSlug }: PublicShopProfileProps) => {
 
   const breadcrumbItems = [
     { label: 'Trang chủ', href: '/' },
-    { label: 'Sản phẩm', href: '/san-pham' },
+    { label: 'Cửa hàng', href: '/shops' },
     { label: shop.name },
   ];
 
-  const tabClasses = (tab: TabType) =>
-    cn(
-      'px-6 py-4 text-sm sm:text-base font-bold transition-all border-b-2 whitespace-nowrap',
-      activeTab === tab
-        ? 'border-emerald-500 text-emerald-600'
-        : 'border-transparent text-stone-500 hover:text-stone-800 hover:border-stone-300',
-    );
-
   return (
-    <div className="min-h-screen bg-stone-50 pb-24">
+    <div className="min-h-screen bg-stone-50/70 pb-24">
       {/* Breadcrumb Container */}
       <div className="bg-white border-b border-stone-100">
-        <div className="container mx-auto px-4 sm:px-6 py-4">
+        <div className="container mx-auto px-3 sm:px-6 py-2.5 sm:py-3.5">
           <Breadcrumb items={breadcrumbItems} />
         </div>
       </div>
 
-      <ShopProfileHeader shop={shop} />
+      {/* Main Profile Header */}
+      <ShopProfileHeader shop={shop} totalProductsCount={totalProductsCount} />
 
-      <div className="container mx-auto px-4 sm:px-6">
-        <ShopVouchersSection shopSlug={shopSlug} />
-      </div>
+      {/* Navigation Tabs Bar */}
+      <div className="container mx-auto px-3 sm:px-6 mt-2.5 sm:mt-4">
+        <div className="sticky top-0 z-20 bg-stone-50/95 backdrop-blur-md py-2 sm:py-2.5 border-b border-stone-200">
+          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto hide-scrollbar scrollbar-none pb-0.5">
+            <button
+              onClick={() => setActiveTab('PRODUCTS')}
+              className={cn(
+                'flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all shrink-0 shadow-2xs whitespace-nowrap',
+                activeTab === 'PRODUCTS'
+                  ? 'bg-emerald-600 text-white'
+                  : 'bg-white text-stone-600 hover:text-stone-900 hover:bg-stone-50 border border-stone-200/80',
+              )}
+            >
+              <FiPackage size={15} />
+              <span>Tất cả sản phẩm</span>
+              {totalProductsCount !== undefined && (
+                <span
+                  className={cn(
+                    'px-1.5 sm:px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-black',
+                    activeTab === 'PRODUCTS'
+                      ? 'bg-emerald-700/70 text-white'
+                      : 'bg-stone-100 text-stone-600',
+                  )}
+                >
+                  {totalProductsCount}
+                </span>
+              )}
+            </button>
 
-      <div className="container mx-auto px-4 sm:px-6 mt-6">
-        {/* Navigation Tabs */}
-        <div className="flex items-center overflow-x-auto hide-scrollbar border-b border-stone-200">
-          <button onClick={() => setActiveTab('PRODUCTS')} className={tabClasses('PRODUCTS')}>
-            Tất cả sản phẩm
-          </button>
-          <button onClick={() => setActiveTab('POLICY')} className={tabClasses('POLICY')}>
-            Chính sách cửa hàng
-          </button>
-          <button onClick={() => setActiveTab('INFO')} className={tabClasses('INFO')}>
-            Hồ sơ & Thông tin
-          </button>
+            <button
+              onClick={() => setActiveTab('INFO')}
+              className={cn(
+                'flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all shrink-0 shadow-2xs whitespace-nowrap',
+                activeTab === 'INFO'
+                  ? 'bg-emerald-600 text-white'
+                  : 'bg-white text-stone-600 hover:text-stone-900 hover:bg-stone-50 border border-stone-200/80',
+              )}
+            >
+              <FiInfo size={15} />
+              <span>Hồ sơ & Giới thiệu</span>
+            </button>
+          </div>
         </div>
 
         {/* Tab Content */}
         <div className="w-full">
-          {activeTab === 'PRODUCTS' && <ShopProductsTab shopSlug={shopSlug} />}
-          {activeTab === 'POLICY' && <ShopPolicyTab shopSlug={shopSlug} />}
+          {activeTab === 'PRODUCTS' && (
+            <ShopProductsTab shopSlug={shopSlug} onTotalCountChange={setTotalProductsCount} />
+          )}
           {activeTab === 'INFO' && <ShopInfoTab shop={shop} />}
         </div>
       </div>

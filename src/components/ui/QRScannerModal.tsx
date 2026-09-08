@@ -53,7 +53,10 @@ const QRScannerModal = ({ isOpen, onClose }: QRScannerModalProps) => {
           if (decodedText.includes('/trace/')) {
             const parts = decodedText.split('/trace/');
             code = parts[parts.length - 1];
-            // Xóa các query params nếu có
+            code = code.split('?')[0];
+          } else if (decodedText.includes('/truy-xuat/')) {
+            const parts = decodedText.split('/truy-xuat/');
+            code = parts[parts.length - 1];
             code = code.split('?')[0];
           }
 

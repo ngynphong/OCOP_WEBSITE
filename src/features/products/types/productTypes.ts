@@ -118,10 +118,15 @@ export interface ProductQrCode {
   id: number;
   qrCode: string;
   qrUrl: string;
-  qrImageUrl: string;
-  qrImageHighResUrl: string;
-  blockchainStatus: BlockchainStatus;
-  blockchainRootHash: string | null;
+  digitalLink?: string | null;
+  qrImageUrl?: string | null;
+  qrImageHighResUrl?: string | null;
+  status?: string;
+  certificationStatus?: string;
+  blockchainStatus?: BlockchainStatus;
+  blockchainRootHash?: string | null;
+  certRootHash?: string | null;
+  isCertified?: boolean;
   isVerified: boolean;
   scanCount: number;
   lastScannedAt: string | null;
@@ -394,6 +399,7 @@ export interface PublicCategory {
   sortOrder: number;
   isActive: boolean;
   parentId: number | null;
+  productCount?: number;
   children: PublicCategory[];
 }
 

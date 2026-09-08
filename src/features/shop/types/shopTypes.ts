@@ -35,6 +35,7 @@ export interface ShopInfo {
   businessRegNo: string;
   ratingAvg: number;
   totalReviews: number;
+  followerCount?: number;
   planName: string;
   approvedAt: string | null;
   createdAt: string;

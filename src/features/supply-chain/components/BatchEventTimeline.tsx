@@ -225,8 +225,10 @@ export const BatchEventTimeline = ({ events, templateSteps }: BatchEventTimeline
               )
             : [];
 
+          const eventKey = `${event.sourceType || 'ev'}-${event.stepType || 'step'}-${event.id ?? 'noId'}-${eventIdx}`;
+
           return (
-            <li key={event.id || eventIdx}>
+            <li key={eventKey}>
               <div className="relative pb-8">
                 {eventIdx !== events.length - 1 ? (
                   <span
@@ -321,7 +323,7 @@ export const BatchEventTimeline = ({ events, templateSteps }: BatchEventTimeline
                     {/* Khối Thông số đo lường sinh thái & kỹ thuật (eventData) */}
                     {validDataEntries.length > 0 && (
                       <div className="mt-2.5 grid grid-cols-2 sm:grid-cols-3 gap-2 bg-stone-50/70 p-2.5 rounded-xl border border-stone-200/70">
-                        {validDataEntries.map(([key, value]) => {
+                        {validDataEntries.map(([key, value], entryIdx) => {
                           const fieldLabel = getFieldLabel(event.templateStepId, key);
                           const icon = getMetricIcon(fieldLabel);
                           const displayValue =
@@ -333,7 +335,7 @@ export const BatchEventTimeline = ({ events, templateSteps }: BatchEventTimeline
 
                           return (
                             <div
-                              key={key}
+                              key={`${key}-${entryIdx}`}
                               className="bg-white p-2 rounded-lg border border-stone-100 flex flex-col gap-0.5 shadow-2xs"
                             >
                               <span className="text-[10px] font-semibold text-stone-500 flex items-center gap-1 truncate">
@@ -385,7 +387,7 @@ export const BatchEventTimeline = ({ events, templateSteps }: BatchEventTimeline
                         </span>
 
                         <div className="flex flex-wrap gap-2.5">
-                          {event.evidenceDocuments.map((doc: IEvidenceDocument) => {
+                          {event.evidenceDocuments.map((doc: IEvidenceDocument, docIdx: number) => {
                             const rawUrl = doc.fileUrl ? doc.fileUrl.trim() : '';
                             const isValidUrl =
                               rawUrl !== '' &&
@@ -400,9 +402,13 @@ export const BatchEventTimeline = ({ events, templateSteps }: BatchEventTimeline
                               (Boolean(doc.mimeType?.startsWith('image/')) ||
                                 Boolean(rawUrl.match(/\.(jpg|jpeg|png|webp|gif|svg)(\?.*)?$/i)));
 
+                            const docKey = doc.id
+                              ? `doc-${doc.id}-${docIdx}`
+                              : `doc-url-${docIdx}-${rawUrl || 'nourl'}`;
+
                             return (
                               <div
-                                key={doc.id}
+                                key={docKey}
                                 className="flex items-center gap-2.5 p-2 bg-white border border-stone-200 rounded-xl hover:border-emerald-300 hover:shadow-xs transition-all max-w-full"
                               >
                                 {isImage ? (

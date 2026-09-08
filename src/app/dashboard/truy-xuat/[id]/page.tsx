@@ -173,7 +173,7 @@ const LotDetailPage = () => {
   if (loading) return <div className="p-8 text-center">Đang tải...</div>;
   if (!lot) return <div className="p-8 text-center text-gray-700">Không tìm thấy lô hàng</div>;
 
-  const publicUrl = `${window.location.origin}/truy-xuat/${lot.lotCode}`;
+  const publicUrl = `${window.location.origin}/trace/${lot.lotCode}`;
 
   return (
     <div className="space-y-8">

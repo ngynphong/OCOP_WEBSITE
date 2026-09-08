@@ -7,7 +7,6 @@ import {
   Plus,
   Package,
   FileText,
-  Camera,
   AlertTriangle,
   CheckCircle2,
   Filter,
@@ -280,7 +279,7 @@ export default function ProductionBatchPage() {
                 </div>
 
                 {/* Footer Buttons */}
-                <div className="p-3 bg-slate-50/80 border-t border-slate-100 grid grid-cols-2 gap-2">
+                <div className="p-3 bg-slate-50/80 border-t border-slate-100 grid grid-cols-1 gap-2">
                   <Link href={`/dashboard/lo-san-xuat/${lot.id}`} className="block">
                     <Button
                       variant="outline"
@@ -290,12 +289,14 @@ export default function ProductionBatchPage() {
                       Chi tiết
                     </Button>
                   </Link>
+                  {/* Tạm thời ẩn nút Ghi nhật ký trên web
                   <Link href={`/dashboard/lo-san-xuat/${lot.id}?action=log`} className="block">
                     <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white h-9 rounded-lg px-2 text-xs font-semibold">
                       <Camera className="w-3.5 h-3.5 mr-1.5 shrink-0" />
                       Ghi nhật ký
                     </Button>
                   </Link>
+                  */}
                 </div>
               </div>
             ))}

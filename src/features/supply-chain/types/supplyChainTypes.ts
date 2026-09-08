@@ -119,6 +119,7 @@ export type TStepFieldType = 'TEXT' | 'NUMBER' | 'DATE' | 'DATETIME' | 'SELECT' 
 export interface IStepField {
   id?: string;
   key: string;
+  name?: string;
   label: string;
   type: TStepFieldType;
   required: boolean;

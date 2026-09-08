@@ -23,6 +23,11 @@ import { useWishlistStatus } from '@/features/wishlist/hooks/useWishlist';
 import { useAppSelector } from '@/store/hooks';
 import dynamic from 'next/dynamic';
 
+const ProductSpecs = dynamic(() =>
+  import('@/features/products/components/ProductDetail/Public/ProductSpecs').then(
+    (mod) => mod.ProductSpecs,
+  ),
+);
 const ProductStory = dynamic(() =>
   import('@/features/products/components/ProductDetail/Public/ProductStory').then(
     (mod) => mod.ProductStory,
@@ -173,6 +178,11 @@ export function ProductDetailClient({ initialProduct }: { initialProduct?: Produ
           </div>
         </div>
 
+        {/* Specifications & Standards Section */}
+        <div id="specs">
+          <ProductSpecs product={product} />
+        </div>
+
         {/* Storytelling Section: Magazine Layout */}
         <div id="story">
           <ProductStory
@@ -290,11 +300,11 @@ export function ProductDetailClient({ initialProduct }: { initialProduct?: Produ
                     Sản phẩm liên quan
                   </span>
                   <h2 className="text-xl font-black text-stone-900 tracking-tighter">
-                    Từ cơ sở {product.shop.name}
+                    Từ cơ sở {product.shop?.name || 'Chưa cập nhật'}
                   </h2>
                 </div>
                 <Link
-                  href={`/shop/${product.shop.slug}`}
+                  href={product.shop?.slug ? `/cua-hang/${product.shop.slug}` : '#'}
                   className="group flex items-center gap-3 text-stone-900 font-black uppercase tracking-[0.2em] text-[10px] hover:text-green-700 transition-colors"
                 >
                   Xem tất cả
@@ -337,11 +347,15 @@ export function ProductDetailClient({ initialProduct }: { initialProduct?: Produ
                     Đặc sản tỉnh nhà
                   </span>
                   <h2 className="text-xl font-black text-stone-900 tracking-tighter">
-                    Sản phẩm từ {product.province?.name}
+                    Sản phẩm từ {product.province?.name || 'Chưa cập nhật'}
                   </h2>
                 </div>
                 <Link
-                  href={`/san-pham?provinceIds=${product.province?.id}`}
+                  href={
+                    product.province?.id
+                      ? `/san-pham?provinceIds=${product.province.id}`
+                      : '/san-pham'
+                  }
                   className="group flex items-center gap-3 text-stone-900 font-black uppercase tracking-[0.2em] text-[10px] hover:text-green-700 transition-colors"
                 >
                   Khám phá thêm

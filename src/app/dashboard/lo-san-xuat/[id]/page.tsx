@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import React, { useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import { FiArrowLeft, FiPlus, FiZap } from 'react-icons/fi';
 import {
   Sprout,
@@ -23,8 +23,6 @@ import QRCode from 'react-qr-code';
 import { Button } from '@/components/ui/AppButton';
 import { Modal } from '@/components/ui/Modal';
 import { useProductionBatch } from '@/features/supply-chain/hooks/useProductionBatch';
-import { BatchEventTimeline } from '@/features/supply-chain/components/BatchEventTimeline';
-import { AddBatchEventForm } from '@/features/supply-chain/components/AddBatchEventForm';
 import { LotStatusBadge } from '@/features/supply-chain/components/LotStatusBadge';
 import { LotAssignmentsTab } from '@/features/supply-chain/components/LotAssignmentsTab';
 import { PrintQrModal } from '@/features/supply-chain/components/PrintQrModal';
@@ -138,10 +136,8 @@ const AuditDataRenderer = ({ data }: { data: unknown }) => {
 export default function ProductionBatchDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const searchParams = useSearchParams();
   const lotId = Number(params.id);
 
-  const [isAddEventModalOpen, setIsAddEventModalOpen] = useState(false);
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
   const [selectedQrIds, setSelectedQrIds] = useState<number[]>([]);
@@ -152,12 +148,6 @@ export default function ProductionBatchDetailPage() {
   const [activeTab, setActiveTab] = useState<
     'INFO' | 'ASSIGNMENTS' | 'TIMELINE' | 'PACKAGING' | 'AUDIT'
   >('INFO');
-
-  useEffect(() => {
-    if (searchParams.get('action') === 'log') {
-      setIsAddEventModalOpen(true);
-    }
-  }, [searchParams]);
 
   const {
     useGetProductionBatchDetail,
@@ -278,6 +268,7 @@ export default function ProductionBatchDetailPage() {
           <FiArrowLeft /> Quay lại
         </button>
 
+        {/* Tạm thời ẩn nút Ghi nhận công đoạn trên web
         {lot?.status !== 'ACTIVE' && lot?.status !== 'SOLD_OUT' && (
           <Button
             id="tour-journal-add"
@@ -288,6 +279,7 @@ export default function ProductionBatchDetailPage() {
             <FiPlus className="mr-2" /> Ghi nhận công đoạn
           </Button>
         )}
+        */}
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden">
@@ -328,6 +320,7 @@ export default function ProductionBatchDetailPage() {
           >
             Phân công nhân sự
           </button>
+          {/* Tạm thời ẩn tab Nhật ký truy xuất trên web
           <button
             id="tour-journal"
             className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
@@ -339,6 +332,7 @@ export default function ProductionBatchDetailPage() {
           >
             Nhật ký truy xuất
           </button>
+          */}
           <button
             id="tour-qr-tab"
             className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
@@ -557,6 +551,7 @@ export default function ProductionBatchDetailPage() {
 
           {activeTab === 'ASSIGNMENTS' && lot && <LotAssignmentsTab lot={lot} />}
 
+          {/* Tạm thời ẩn hiển thị nội dung timeline nhật ký trên web
           {activeTab === 'TIMELINE' && (
             <div className="mt-4">
               <BatchEventTimeline
@@ -565,6 +560,7 @@ export default function ProductionBatchDetailPage() {
               />
             </div>
           )}
+          */}
 
           {activeTab === 'PACKAGING' && (
             <div className="space-y-6">
@@ -885,11 +881,13 @@ export default function ProductionBatchDetailPage() {
         </div>
       </div>
 
+      {/* Tạm thời ẩn modal Ghi nhận công đoạn trên web
       {lot?.status !== 'ACTIVE' && lot?.status !== 'SOLD_OUT' && (
         <AddBatchEventForm
           isOpen={isAddEventModalOpen}
           onClose={() => setIsAddEventModalOpen(false)}
           lotId={lotId}
+          lotCode={lot?.lotCode}
           productId={lot.productId || 0}
           templateSteps={templateSteps}
           sourceCycleId={lot.sourceCycleId}
@@ -899,6 +897,7 @@ export default function ProductionBatchDetailPage() {
           }
         />
       )}
+      */}
 
       <Modal
         isOpen={isTemplateModalOpen}
