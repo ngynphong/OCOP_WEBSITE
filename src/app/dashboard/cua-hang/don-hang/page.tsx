@@ -82,7 +82,10 @@ function OrdersManagementContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [activeMainTab, setActiveMainTab] = useState<'orders' | 'refunds' | 'payouts'>('orders');
+  const tabParam = searchParams.get('tab');
+  const initialTab =
+    tabParam === 'payouts' || tabParam === 'refunds' || tabParam === 'orders' ? tabParam : 'orders';
+  const [activeMainTab, setActiveMainTab] = useState<'orders' | 'refunds' | 'payouts'>(initialTab);
   const [isB2B, setIsB2B] = useState<boolean>(false);
 
   const currentStatus = searchParams.get('status') || 'ALL';

@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FiPlus, FiTrash2, FiSend, FiCopy, FiSlash } from 'react-icons/fi';
@@ -11,6 +11,7 @@ import {
   useSellerProductMutations,
 } from '@/features/products/hooks/useSellerProducts';
 import { Product, ProductStatus, ProductListParams } from '@/features/products/types/productTypes';
+import { sellerProductApi } from '@/features/products/api/sellerProductApi';
 import { Button } from '@/components/ui/AppButton';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { FlashSaleManagementTab } from '@/features/flash-sale/components/FlashSaleManagementTab';
@@ -41,11 +42,18 @@ const STATUS_COLORS: Record<ProductStatus, string> = {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default function SellerProductsPage() {
+function SellerProductsContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const tabParam = searchParams.get('tab');
+  const openCreateParam = searchParams.get('openCreate');
+  const productIdParam = searchParams.get('productId');
+
   const [params, setParams] = useState<ProductListParams>({ pageNo: 1, pageSize: 10 });
   const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState<'PRODUCTS' | 'FLASH_SALE'>('PRODUCTS');
+  const activeTab: 'PRODUCTS' | 'FLASH_SALE' =
+    tabParam === 'FLASH_SALE' ? 'FLASH_SALE' : 'PRODUCTS';
   const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
   const [isFlashSaleDrawerOpen, setIsFlashSaleDrawerOpen] = useState(false);
   const [activeChatProductId, setActiveChatProductId] = useState<number | null>(null);
@@ -83,6 +91,58 @@ export default function SellerProductsPage() {
 
   const isSelected = (id: number) => selectedProducts.some((p) => p.id === id);
 
+  // Handle openCreate & productId from query params
+  useEffect(() => {
+    if (!openCreateParam && !productIdParam) return;
+
+    let isMounted = true;
+    const pid = productIdParam ? Number(productIdParam) : null;
+
+    if (pid) {
+      sellerProductApi
+        .getProduct(pid)
+        .then((res) => {
+          if (isMounted && res.data) {
+            setSelectedProducts([res.data]);
+            setIsFlashSaleDrawerOpen(true);
+          }
+        })
+        .catch(() => {
+          if (isMounted) {
+            setIsFlashSaleDrawerOpen(true);
+          }
+        });
+    } else {
+      const timer = setTimeout(() => {
+        if (isMounted) {
+          setIsFlashSaleDrawerOpen(true);
+        }
+      }, 0);
+      return () => clearTimeout(timer);
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [openCreateParam, productIdParam]);
+
+  const handleTabChange = (newTab: 'PRODUCTS' | 'FLASH_SALE') => {
+    const newParams = new URLSearchParams(window.location.search);
+    newParams.set('tab', newTab);
+    newParams.delete('openCreate');
+    newParams.delete('productId');
+    router.replace(`/dashboard/san-pham?${newParams.toString()}`, { scroll: false });
+  };
+
+  const handleCloseFlashSaleDrawer = () => {
+    setIsFlashSaleDrawerOpen(false);
+    setSelectedProducts([]);
+    const newParams = new URLSearchParams(window.location.search);
+    newParams.delete('openCreate');
+    newParams.delete('productId');
+    router.replace(`/dashboard/san-pham?${newParams.toString()}`, { scroll: false });
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -104,7 +164,7 @@ export default function SellerProductsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex flex-wrap gap-2">
           <button
-            onClick={() => setActiveTab('PRODUCTS')}
+            onClick={() => handleTabChange('PRODUCTS')}
             className={`px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest border transition-all cursor-pointer ${
               activeTab === 'PRODUCTS'
                 ? 'bg-green-600 text-white border-green-600 shadow-lg shadow-green-600/20'
@@ -114,7 +174,7 @@ export default function SellerProductsPage() {
             Sản phẩm của tôi
           </button>
           <button
-            onClick={() => setActiveTab('FLASH_SALE')}
+            onClick={() => handleTabChange('FLASH_SALE')}
             className={`px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest border transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'FLASH_SALE'
                 ? 'bg-red-600 text-white border-red-600 shadow-lg shadow-red-600/20'
@@ -179,7 +239,10 @@ export default function SellerProductsPage() {
 
       {/* Tab Content */}
       {activeTab === 'FLASH_SALE' ? (
-        <FlashSaleManagementTab role="SELLER" />
+        <FlashSaleManagementTab
+          role="SELLER"
+          onCreateClick={() => setIsFlashSaleDrawerOpen(true)}
+        />
       ) : (
         <div className="space-y-3">
           {products.length === 0 ? (
@@ -446,10 +509,7 @@ export default function SellerProductsPage() {
       {/* Flash Sale Registration Drawer */}
       <FlashSaleFormDrawer
         isOpen={isFlashSaleDrawerOpen}
-        onClose={() => {
-          setIsFlashSaleDrawerOpen(false);
-          setSelectedProducts([]);
-        }}
+        onClose={handleCloseFlashSaleDrawer}
         products={selectedProducts}
       />
 
@@ -480,5 +540,13 @@ export default function SellerProductsPage() {
         />
       )}
     </div>
+  );
+}
+
+export default function SellerProductsPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center animate-pulse">Đang tải sản phẩm...</div>}>
+      <SellerProductsContent />
+    </Suspense>
   );
 }

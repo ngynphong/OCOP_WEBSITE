@@ -1,6 +1,14 @@
 'use client';
 
-import { FiXCircle, FiCheckCircle, FiClock, FiPackage, FiEdit2, FiEye } from 'react-icons/fi';
+import {
+  FiXCircle,
+  FiCheckCircle,
+  FiClock,
+  FiPackage,
+  FiEdit2,
+  FiEye,
+  FiZap,
+} from 'react-icons/fi';
 import {
   useSellerFlashSalesQuery,
   useSellerFlashSaleMutations,
@@ -16,9 +24,10 @@ import { useState } from 'react';
 
 interface FlashSaleManagementProps {
   role: 'ADMIN' | 'SELLER';
+  onCreateClick?: () => void;
 }
 
-export function FlashSaleManagementTab({ role }: FlashSaleManagementProps) {
+export function FlashSaleManagementTab({ role, onCreateClick }: FlashSaleManagementProps) {
   const [editingFlashSale, setEditingFlashSale] = useState<FlashSale | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -45,13 +54,38 @@ export function FlashSaleManagementTab({ role }: FlashSaleManagementProps) {
 
   return (
     <div className="space-y-4">
+      {role === 'SELLER' && onCreateClick && (
+        <div className="flex justify-end">
+          <Button
+            variant="primary"
+            leftIcon={<FiZap className="fill-current" />}
+            onClick={onCreateClick}
+            className="bg-red-600 hover:bg-red-700 text-white"
+          >
+            Đăng ký Flash Sale mới
+          </Button>
+        </div>
+      )}
+
       {flashSales.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-64 bg-stone-50 rounded-xl border border-dashed border-stone-200">
           <p className="text-stone-400 font-bold">Chưa có chương trình Flash Sale nào</p>
           {role === 'SELLER' && (
-            <p className="text-xs text-stone-400 mt-1">
-              Hãy bắt đầu bằng cách chọn sản phẩm tham gia Flash Sale
-            </p>
+            <div className="text-center mt-2">
+              <p className="text-xs text-stone-400 mb-3">
+                Hãy bắt đầu bằng cách chọn sản phẩm tham gia Flash Sale
+              </p>
+              {onCreateClick && (
+                <Button
+                  variant="primary"
+                  leftIcon={<FiZap className="fill-current" />}
+                  onClick={onCreateClick}
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                >
+                  Đăng ký Flash Sale ngay
+                </Button>
+              )}
+            </div>
           )}
         </div>
       ) : (

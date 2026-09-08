@@ -98,6 +98,9 @@ export const API_ENDPOINTS = {
     FLASH_SALES: '/seller/flash-sales',
     DASHBOARD: '/seller/dashboard',
     CHAT_ROOMS: '/seller/chat/rooms',
+    GROWTH_OVERVIEW: '/seller/growth/overview',
+    GROWTH_OPPORTUNITIES: '/seller/growth/opportunities',
+    GROWTH_PRODUCTS: '/seller/growth/products',
   },
   ADMIN: {
     BLOG: '/admin/blog',

@@ -144,6 +144,14 @@ const MENU_GROUPS: MenuGroup[] = [
     roles: ['SELLER'],
     items: [
       {
+        id: 'seller-growth',
+        label: 'Tăng trưởng doanh số',
+        icon: FiTrendingUp,
+        href: '/dashboard/tang-truong',
+        roles: ['SELLER'],
+        permission: 'seller.shop.manage',
+      },
+      {
         id: 'product',
         label: 'Sản phẩm',
         icon: FiPackage,
