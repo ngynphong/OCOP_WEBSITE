@@ -23,9 +23,10 @@ import { FiX, FiPlus } from 'react-icons/fi';
 import { Sparkles } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from 'react-toastify';
-import { AiStoryBuilder } from './AiStoryBuilder';
-import { AiStoryResponse } from '../../api/aiApi';
+// import { AiStoryBuilder } from './AiStoryBuilder';
+// import { AiStoryResponse } from '../../api/aiApi';
 import { useAiAssistantMutations } from '@/features/products/hooks/useAiAssistant';
+import { useProductionBatch } from '@/features/supply-chain/hooks/useProductionBatch';
 
 interface JournalsTabProps {
   productId: number;
@@ -37,20 +38,41 @@ export function JournalsTab({ productId }: JournalsTabProps) {
   const [editId, setEditId] = useState<number | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [showAiConfirmModal, setShowAiConfirmModal] = useState(false);
+  const [selectedTemplateId, setSelectedTemplateId] = useState<number | null>(null);
 
   const { data, isPending } = useSellerJournalsQuery(productId);
+  const { useGetProcessTemplates } = useProductionBatch();
+  const { data: templates = [] } = useGetProcessTemplates(productId);
+
+  const bestTemplate =
+    templates.length > 0
+      ? [...templates].sort(
+          (a, b) => (b.steps?.length || 0) - (a.steps?.length || 0) || b.id - a.id,
+        )[0]
+      : null;
+
+  const activeTemplateId = selectedTemplateId ?? bestTemplate?.id ?? null;
+
   const { createJournal, isCreating, updateJournal, isUpdating, deleteJournal, isDeleting } =
     useSellerJournalMutations(productId);
   const { generateJournalsFromTemplate, isGeneratingJournals } = useAiAssistantMutations();
 
   const handleAiGenerate = async (force: boolean = false) => {
-    if (journals.length > 0 && !force) {
+    if (templates.length === 0) {
+      toast.error('Sản phẩm chưa có Quy trình chuẩn nào. Vui lòng thiết lập quy trình trước!');
+      return;
+    }
+    if ((journals.length > 0 || templates.length > 1) && !force) {
       setShowAiConfirmModal(true);
       return;
     }
-    setShowAiConfirmModal(false);
     try {
-      await generateJournalsFromTemplate({ productId, appendOnly: false });
+      await generateJournalsFromTemplate({
+        productId,
+        templateId: activeTemplateId ? Number(activeTemplateId) : undefined,
+        appendOnly: false,
+      });
+      setShowAiConfirmModal(false);
     } catch {
       // Toast already handled in hook
     }
@@ -190,35 +212,35 @@ export function JournalsTab({ productId }: JournalsTabProps) {
 
   if (isPending) return <div className="h-48 bg-stone-100 rounded-xl animate-pulse" />;
 
-  const handleStepSelected = (step: NonNullable<AiStoryResponse['extractedJournals']>[0]) => {
-    setEditId(null);
-    reset({
-      stepType: step.stepType,
-      title: step.title,
-      description: step.description,
-      stepOrder: journals.length + 1,
-      location: '',
-      activityDate: new Date().toISOString().split('T')[0],
-      images: [],
-    });
-    setPreviewUrls([]);
-    setSelectedFiles([]);
-    setShowForm(true);
-    setTimeout(() => {
-      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 100);
-    toast.info('Đã tải chi tiết bước. Vui lòng bổ sung Ngày và Ảnh minh chứng!');
-  };
+  // const handleStepSelected = (step: NonNullable<AiStoryResponse['extractedJournals']>[0]) => {
+  //   setEditId(null);
+  //   reset({
+  //     stepType: step.stepType,
+  //     title: step.title,
+  //     description: step.description,
+  //     stepOrder: journals.length + 1,
+  //     location: '',
+  //     activityDate: new Date().toISOString().split('T')[0],
+  //     images: [],
+  //   });
+  //   setPreviewUrls([]);
+  //   setSelectedFiles([]);
+  //   setShowForm(true);
+  //   setTimeout(() => {
+  //     formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  //   }, 100);
+  //   toast.info('Đã tải chi tiết bước. Vui lòng bổ sung Ngày và Ảnh minh chứng!');
+  // };
 
   return (
     <div id="tour-journals-tab-content" className="space-y-8">
-      <AiStoryBuilder productId={productId} onStepSelected={handleStepSelected} />
+      {/* <AiStoryBuilder productId={productId} onStepSelected={handleStepSelected} /> */}
 
       {/* Production Log Section */}
       <div className="space-y-4 border-t border-stone-100 pt-8">
         <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
           <div>
-            <h3 className="font-black text-stone-900 text-lg">Nhật ký Truy xuất & Minh chứng</h3>
+            <h3 className="font-black text-stone-900 text-lg">Câu chuyện sản phẩm</h3>
             <p className="text-xs text-stone-400">
               Ghi lại câu chuyện nguồn gốc và hành trình sản xuất sản phẩm OCOP
             </p>
@@ -380,7 +402,11 @@ export function JournalsTab({ productId }: JournalsTabProps) {
         {showAiConfirmModal && (
           <ConfirmModal
             title="Tự động sinh nhật ký từ Quy trình chuẩn"
-            message="Sản phẩm đã có một số bước nhật ký. Bạn có chắc chắn muốn AI tạo lại toàn bộ hành trình nhật ký bám sát Quy trình chuẩn của sản phẩm này không?"
+            message={
+              journals.length > 0
+                ? 'Sản phẩm đã có một số bước nhật ký. Bạn có chắc chắn muốn AI tạo lại toàn bộ hành trình nhật ký bám sát Quy trình chuẩn dưới đây không?'
+                : 'Chọn Quy trình chuẩn bạn muốn AI dựa vào để sinh toàn bộ các bước nhật ký:'
+            }
             confirmText="Tạo mới bằng AI"
             cancelText="Hủy"
             onConfirm={() => handleAiGenerate(true)}
@@ -388,7 +414,36 @@ export function JournalsTab({ productId }: JournalsTabProps) {
             isOpen={showAiConfirmModal}
             type="warning"
             isLoading={isGeneratingJournals}
-          />
+          >
+            {templates.length > 0 && (
+              <div className="mt-3 bg-stone-50 p-3 rounded-xl border border-stone-200">
+                <label className="block text-xs font-bold text-stone-700 mb-1.5">
+                  Quy trình chuẩn áp dụng:
+                </label>
+                <select
+                  value={activeTemplateId ?? ''}
+                  onChange={(e) => setSelectedTemplateId(Number(e.target.value))}
+                  className="w-full text-xs font-semibold bg-white border border-stone-300 rounded-lg p-2 text-stone-800 focus:outline-none focus:border-emerald-500"
+                >
+                  {templates.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.name} ({t.steps?.length || 0} bước){' '}
+                      {t.id === bestTemplate?.id ? '★ Khuyên dùng' : ''}
+                    </option>
+                  ))}
+                </select>
+                {activeTemplateId && (
+                  <p className="text-[11px] text-stone-500 mt-2">
+                    AI sẽ tự động chuyển hóa đầy đủ{' '}
+                    <strong className="text-emerald-700">
+                      {templates.find((t) => t.id === activeTemplateId)?.steps?.length || 0} bước
+                    </strong>{' '}
+                    kỹ thuật trong quy trình này thành các câu chuyện nhật ký OCOP sinh động.
+                  </p>
+                )}
+              </div>
+            )}
+          </ConfirmModal>
         )}
 
         {/* Add journal form */}

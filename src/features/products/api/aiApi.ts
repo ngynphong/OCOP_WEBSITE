@@ -43,7 +43,9 @@ export interface AiChatResponse {
 
 export const aiApi = {
   generateStory: (data: GenerateStoryRequest) => {
-    return axiosClient.post<AiStoryResponse>('/seller/ai/generate-story', data);
+    return axiosClient.post<AiStoryResponse>('/seller/ai/generate-story', data, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   chat: (data: AiChatRequest) => {
@@ -59,6 +61,8 @@ export const aiApi = {
   },
 
   generateJournalsFromTemplate: (data: GenerateJournalsFromTemplateRequest) => {
-    return axiosClient.post<ProductJournal[]>('/seller/ai/generate-journals-from-template', data);
+    return axiosClient.post<ProductJournal[]>('/seller/ai/generate-journals-from-template', data, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 };

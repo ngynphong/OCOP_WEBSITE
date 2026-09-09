@@ -195,7 +195,7 @@ export const sellerProductApi = {
       buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'journals'),
       formData,
       {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: { 'Content-Type': 'multipart/form-data', 'X-Silent-Loading': 'true' },
       },
     );
   },
@@ -239,7 +239,7 @@ export const sellerProductApi = {
       buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'journals', journalId),
       formData,
       {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: { 'Content-Type': 'multipart/form-data', 'X-Silent-Loading': 'true' },
       },
     );
   },
@@ -247,6 +247,9 @@ export const sellerProductApi = {
   deleteJournal: (productId: number, journalId: number): Promise<void> => {
     return axiosClient.delete(
       buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'journals', journalId),
+      {
+        headers: { 'X-Silent-Loading': 'true' },
+      },
     );
   },
 
@@ -254,7 +257,9 @@ export const sellerProductApi = {
     productId: number,
     data: ReorderJournalRequest,
   ): Promise<JournalListResponse> => {
-    return axiosClient.put(`${API_ENDPOINTS.SELLER.PRODUCTS}/${productId}/journals/reorder`, data);
+    return axiosClient.put(`${API_ENDPOINTS.SELLER.PRODUCTS}/${productId}/journals/reorder`, data, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   getQr: (productId: number): Promise<QrCodeResponse> => {

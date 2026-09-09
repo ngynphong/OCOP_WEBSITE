@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { X, Sparkles, Tag, CheckCircle2, ExternalLink, Clock, Loader2, Flame } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import toast from 'react-hot-toast';
 import { voucherApi } from '@/features/vouchers/api/voucherApi';
 import { useGrowthMutations } from '../hooks/useGrowth';
 import { GrowthOpportunity } from '../types';
@@ -29,6 +28,11 @@ export const GrowthQuickActionModal: React.FC<Props> = ({ isOpen, opportunity, o
   // Auto-generate voucher code e.g. OCOP10-ABCD
   const autoCode = `${prefix}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
 
+  const voucherTitle = prefix.toUpperCase().includes('TRIAN')
+    ? 'Voucher Tri Ân'
+    : 'Ưu Đãi Đặc Biệt';
+  const voucherName = `${voucherTitle} - Giảm ${discountPercent}% (${opportunity.productName || 'Toàn shop'})`;
+
   const handle1ClickVoucher = async () => {
     setIsExecuting(true);
     try {
@@ -40,7 +44,7 @@ export const GrowthQuickActionModal: React.FC<Props> = ({ isOpen, opportunity, o
 
       await voucherApi.createSellerVoucher({
         code: autoCode,
-        name: `Ưu đãi tăng trưởng - Giảm ${discountPercent}% (${opportunity.productName || 'Toàn shop'})`,
+        name: voucherName,
         type: 'PERCENT',
         discountValue: discountPercent,
         maxDiscount: 50000,
@@ -52,10 +56,9 @@ export const GrowthQuickActionModal: React.FC<Props> = ({ isOpen, opportunity, o
       });
 
       await executeOpportunity.mutateAsync({ id: opportunity.id, silent: true });
-      toast.success(`🎉 Đã tạo mã ${autoCode} và tăng điểm Tăng trưởng!`);
       onClose();
-    } catch {
-      toast.error('Không thể tạo voucher tự động. Vui lòng thử lại.');
+    } catch (error) {
+      console.error('Error creating voucher:', error);
     } finally {
       setIsExecuting(false);
     }
@@ -130,6 +133,13 @@ export const GrowthQuickActionModal: React.FC<Props> = ({ isOpen, opportunity, o
                 </span>
               </div>
 
+              <div className="bg-white/80 p-2.5 rounded-xl border border-emerald-100 text-xs">
+                <span className="text-gray-500 text-[10px] block">
+                  Tên voucher hiển thị cho khách
+                </span>
+                <span className="font-semibold text-emerald-900 text-xs">{voucherName}</span>
+              </div>
+
               <div className="grid grid-cols-2 gap-2 text-xs">
                 <div className="bg-white/80 p-2.5 rounded-xl border border-emerald-100">
                   <span className="text-gray-500 text-[10px] block">Mức giảm giá</span>
@@ -159,11 +169,11 @@ export const GrowthQuickActionModal: React.FC<Props> = ({ isOpen, opportunity, o
             <div className="p-4 rounded-2xl bg-gradient-to-br from-rose-50 to-orange-50 border border-rose-200/60 space-y-3">
               <div className="flex items-center justify-between">
                 <span className="inline-flex items-center gap-1.5 text-xs font-bold text-rose-800">
-                  <Flame className="w-4 h-4 text-rose-600 fill-rose-500" /> Đăng ký Flash Sale xả
-                  hàng
+                  <Flame className="w-4 h-4 text-rose-600 fill-rose-500" /> Đăng ký tham gia Flash
+                  Sale
                 </span>
-                <span className="text-[11px] font-bold bg-white px-2 py-0.5 rounded-lg border border-rose-200 text-rose-700">
-                  Giảm 20%
+                <span className="text-[11px] font-medium bg-white px-2.5 py-0.5 rounded-lg border border-rose-200 text-rose-700">
+                  Chiến dịch Flash Sale
                 </span>
               </div>
 
@@ -184,17 +194,19 @@ export const GrowthQuickActionModal: React.FC<Props> = ({ isOpen, opportunity, o
                   </span>
                 </div>
                 <div className="bg-white/80 p-2.5 rounded-xl border border-rose-100">
-                  <span className="text-gray-500 text-[10px] block">Mức giảm đề xuất</span>
-                  <span className="font-semibold text-gray-800">20% giá niêm yết</span>
+                  <span className="text-gray-500 text-[10px] block">Mức giảm giá</span>
+                  <span className="font-semibold text-gray-800">Shop tự thiết lập khi tạo</span>
                 </div>
                 <div className="bg-white/80 p-2.5 rounded-xl border border-rose-100">
-                  <span className="text-gray-500 text-[10px] block">Tác động kỳ vọng</span>
-                  <span className="font-semibold text-rose-700">Tăng 3x tốc độ xuất kho</span>
+                  <span className="text-gray-500 text-[10px] block">Mục tiêu</span>
+                  <span className="font-semibold text-rose-700">
+                    {opportunity.estimatedLift || 'Hỗ trợ giải phóng tồn kho'}
+                  </span>
                 </div>
               </div>
 
               <p className="text-[11px] text-rose-900 leading-relaxed font-medium">
-                ⚡ Nhấn nút bên dưới để mở ngay biểu mẫu đăng ký Flash Sale. Hệ thống sẽ tự động ghi
+                Nhấn nút bên dưới để mở ngay biểu mẫu đăng ký Flash Sale. Hệ thống sẽ tự động ghi
                 nhận và cộng điểm Tăng trưởng ngay khi bạn hoàn tất đăng ký!
               </p>
             </div>

@@ -58,10 +58,10 @@ export const SellerWalletSummaryCard: React.FC<Props> = ({ wallet, isLoading = f
           </div>
 
           <Link
-            href="/dashboard/cua-hang/don-hang?tab=payouts"
-            className="text-xs font-medium text-emerald-700 hover:text-emerald-800 flex items-center gap-1"
+            href="/dashboard/seller-wallet"
+            className="text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-xl transition-colors"
           >
-            Chi tiết kỳ quyết toán <ArrowRight className="w-3.5 h-3.5" />
+            Ví tiền & đối soát <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 

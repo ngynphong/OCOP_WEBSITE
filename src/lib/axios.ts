@@ -56,9 +56,16 @@ const processQueue = (error: Error | null, token: string | null = null) => {
   failedQueue = [];
 };
 
+interface CustomRequestConfig extends InternalAxiosRequestConfig {
+  _isSilent?: boolean;
+  _retry?: boolean;
+}
+
 // =================== REQUEST INTERCEPTOR ===================
 const onRequest = (config: InternalAxiosRequestConfig) => {
+  const customConfig = config as CustomRequestConfig;
   const isSilent = config.headers?.['X-Silent-Loading'] === 'true';
+  customConfig._isSilent = isSilent;
 
   if (!isSilent) {
     updateLoadingState(1);
@@ -81,8 +88,8 @@ const onRequest = (config: InternalAxiosRequestConfig) => {
 };
 
 const onRequestError = (error: AxiosError) => {
-  const isSilent = error.config?.headers?.['X-Silent-Loading'] === 'true';
-  if (!isSilent) {
+  const customConfig = error.config as CustomRequestConfig | undefined;
+  if (!customConfig?._isSilent) {
     updateLoadingState(-1);
   }
   return Promise.reject(error);
@@ -93,7 +100,10 @@ publicAxiosClient.interceptors.request.use(onRequest, onRequestError);
 
 // =================== RESPONSE INTERCEPTOR LOGIC ===================
 const onResponse = (response: AxiosResponse) => {
-  updateLoadingState(-1);
+  const customConfig = response.config as CustomRequestConfig | undefined;
+  if (!customConfig?._isSilent) {
+    updateLoadingState(-1);
+  }
   const resData = response.data;
 
   if (resData && typeof resData.code === 'number' && resData.code !== 1000) {
@@ -113,8 +123,11 @@ const onResponse = (response: AxiosResponse) => {
 };
 
 const onResponseError = async (error: AxiosError) => {
-  updateLoadingState(-1);
-  const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+  const customConfig = error.config as CustomRequestConfig | undefined;
+  if (!customConfig?._isSilent) {
+    updateLoadingState(-1);
+  }
+  const originalRequest = error.config as CustomRequestConfig | undefined;
 
   // 1. Lỗi mạng hoặc server không phản hồi
   if (!error.response) {

@@ -28,7 +28,7 @@ import { setDashboardMode } from '@/store/features/authSlice';
 import { useUnreadCountScope } from '@/features/notifications/hooks/useNotifications';
 import { useUnreadChatCount } from '@/features/chat/hooks/useChatRooms';
 import Image from 'next/image';
-import { IoTicket } from 'react-icons/io5';
+import { IoTicket, IoWalletOutline } from 'react-icons/io5';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
@@ -148,6 +148,14 @@ const MENU_GROUPS: MenuGroup[] = [
         label: 'Tăng trưởng doanh số',
         icon: FiTrendingUp,
         href: '/dashboard/tang-truong',
+        roles: ['SELLER'],
+        permission: 'seller.shop.manage',
+      },
+      {
+        id: 'seller-wallet',
+        label: 'Ví tiền người bán',
+        icon: IoWalletOutline,
+        href: '/dashboard/seller-wallet',
         roles: ['SELLER'],
         permission: 'seller.shop.manage',
       },

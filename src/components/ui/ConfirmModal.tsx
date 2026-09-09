@@ -18,6 +18,7 @@ export interface ConfirmModalProps {
   onCancel: () => void;
   type?: 'danger' | 'warning' | 'info' | 'success';
   isLoading?: boolean;
+  children?: React.ReactNode;
 }
 
 export function ConfirmModal({
@@ -30,6 +31,7 @@ export function ConfirmModal({
   onCancel,
   type = 'warning',
   isLoading = false,
+  children,
 }: ConfirmModalProps) {
   const mounted = useSyncExternalStore(emptySubscribe, getSnapshot, getServerSnapshot);
 
@@ -102,9 +104,10 @@ export function ConfirmModal({
             </div>
 
             {/* Content text */}
-            <div className="flex flex-col text-center sm:text-left mt-2 sm:mt-0">
+            <div className="flex flex-col text-center sm:text-left mt-2 sm:mt-0 w-full">
               <h3 className="text-lg font-bold text-stone-900 mb-2">{title}</h3>
               <p className="text-sm text-stone-600 leading-relaxed">{message}</p>
+              {children && <div className="mt-3 text-left w-full">{children}</div>}
             </div>
           </div>
 

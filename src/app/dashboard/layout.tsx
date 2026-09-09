@@ -81,6 +81,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const isSeller = profile?.roles?.includes('SELLER');
 
   const getPageTitle = () => {
+    if (pathname.includes('/seller-wallet') || pathname.includes('/vi-tien'))
+      return 'Ví tiền người bán';
+    if (pathname.includes('/tang-truong')) return 'Tăng trưởng doanh số';
     if (pathname.includes('/ho-so')) return 'Hồ sơ cá nhân';
     if (pathname.includes('/don-hang')) return 'Đơn hàng của tôi';
     if (pathname.includes('/dia-chi')) return 'Địa chỉ nhận hàng';
