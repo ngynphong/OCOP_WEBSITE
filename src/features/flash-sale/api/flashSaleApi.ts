@@ -15,15 +15,21 @@ import { FlashSaleBuyRequest } from '@/features/checkout/types/checkoutTypes';
 export const flashSaleApi = {
   // ─── Public API ────────────────────────────────────────────────────────────
   getActiveFlashSales: (categoryId?: number): Promise<FlashSaleListResponse> =>
-    publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.FLASH_SALES}/active`, { params: { categoryId } }),
+    publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.FLASH_SALES}/active`, {
+      params: { categoryId },
+      headers: { 'X-Silent-Loading': 'true' },
+    }),
 
   getUpcomingFlashSales: (categoryId?: number): Promise<FlashSaleListResponse> =>
     publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.FLASH_SALES}/upcoming`, {
       params: { categoryId },
+      headers: { 'X-Silent-Loading': 'true' },
     }),
 
   getFlashSaleDetail: (id: number): Promise<FlashSaleDetailResponse> =>
-    publicAxiosClient.get(buildRoute(API_ENDPOINTS.PUBLIC.FLASH_SALES, id)),
+    publicAxiosClient.get(buildRoute(API_ENDPOINTS.PUBLIC.FLASH_SALES, id), {
+      headers: { 'X-Silent-Loading': 'true' },
+    }),
 
   buyFlashSaleItem: (
     flashSaleItemId: number,
@@ -33,7 +39,9 @@ export const flashSaleApi = {
 
   // ─── Seller API ────────────────────────────────────────────────────────────
   getSellerFlashSales: (): Promise<FlashSaleListResponse> =>
-    axiosClient.get(API_ENDPOINTS.SELLER.FLASH_SALES),
+    axiosClient.get(API_ENDPOINTS.SELLER.FLASH_SALES, {
+      headers: { 'X-Silent-Loading': 'true' },
+    }),
 
   createFlashSale: (data: CreateFlashSaleRequest): Promise<FlashSaleDetailResponse> =>
     axiosClient.post(API_ENDPOINTS.SELLER.FLASH_SALES, data),
@@ -42,21 +50,34 @@ export const flashSaleApi = {
     axiosClient.put(buildRoute(API_ENDPOINTS.SELLER.FLASH_SALES, id), data),
 
   cancelSellerFlashSale: (id: number): Promise<FlashSaleDetailResponse> =>
-    axiosClient.post(buildRoute(API_ENDPOINTS.SELLER.FLASH_SALES, id, 'cancel')),
+    axiosClient.post(buildRoute(API_ENDPOINTS.SELLER.FLASH_SALES, id, 'cancel'), {
+      headers: { 'X-Silent-Loading': 'true' },
+    }),
 
-  activateSellerFlashSale: (id: number): Promise<FlashSaleDetailResponse> =>
-    axiosClient.post(buildRoute(API_ENDPOINTS.SELLER.FLASH_SALES, id, 'activate')),
+  scheduleSellerFlashSale: (id: number): Promise<FlashSaleDetailResponse> =>
+    axiosClient.post(buildRoute(API_ENDPOINTS.SELLER.FLASH_SALES, id, 'schedule'), {
+      headers: { 'X-Silent-Loading': 'true' },
+    }),
 
   // ─── Admin API ─────────────────────────────────────────────────────────────
   getAdminFlashSales: (params?: Record<string, unknown>): Promise<FlashSaleAdminListResponse> =>
-    axiosClient.get(API_ENDPOINTS.ADMIN.FLASH_SALES, { params }),
+    axiosClient.get(API_ENDPOINTS.ADMIN.FLASH_SALES, {
+      params,
+      headers: { 'X-Silent-Loading': 'true' },
+    }),
 
   getAdminFlashSaleDetail: (id: number): Promise<FlashSaleDetailResponse> =>
-    axiosClient.get(buildRoute(API_ENDPOINTS.ADMIN.FLASH_SALES, id)),
+    axiosClient.get(buildRoute(API_ENDPOINTS.ADMIN.FLASH_SALES, id), {
+      headers: { 'X-Silent-Loading': 'true' },
+    }),
 
   cancelAdminFlashSale: (id: number): Promise<FlashSaleDetailResponse> =>
-    axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.FLASH_SALES, id, 'cancel')),
+    axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.FLASH_SALES, id, 'cancel'), {
+      headers: { 'X-Silent-Loading': 'true' },
+    }),
 
   approveAdminFlashSale: (id: number): Promise<FlashSaleDetailResponse> =>
-    axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.FLASH_SALES, id, 'approve')),
+    axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.FLASH_SALES, id, 'approve'), {
+      headers: { 'X-Silent-Loading': 'true' },
+    }),
 };

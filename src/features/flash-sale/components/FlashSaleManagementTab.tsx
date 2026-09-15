@@ -39,7 +39,7 @@ export function FlashSaleManagementTab({ role, onCreateClick }: FlashSaleManagem
   const query = role === 'ADMIN' ? adminQuery : sellerQuery;
   const { data, isPending, isError } = query;
 
-  const { cancelFlashSale: sellerCancel, activateFlashSale } = useSellerFlashSaleMutations();
+  const { cancelFlashSale: sellerCancel, scheduleFlashSale } = useSellerFlashSaleMutations();
   const { approveFlashSale, cancelFlashSale: adminCancel } = useAdminFlashSaleMutations();
 
   const flashSales: FlashSale[] =
@@ -103,7 +103,7 @@ export function FlashSaleManagementTab({ role, onCreateClick }: FlashSaleManagem
                     className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
                       fs.status === 'ACTIVE'
                         ? 'bg-emerald-100 text-emerald-600'
-                        : fs.status === 'UPCOMING'
+                        : fs.status === 'SCHEDULED'
                           ? 'bg-amber-100 text-amber-600'
                           : fs.status === 'DRAFT'
                             ? 'bg-stone-100 text-stone-500'
@@ -191,7 +191,7 @@ export function FlashSaleManagementTab({ role, onCreateClick }: FlashSaleManagem
                   </Button>
                 )}
 
-                {role === 'ADMIN' && fs.status === 'UPCOMING' && (
+                {role === 'ADMIN' && fs.status === 'DRAFT' && (
                   <Button
                     variant="primary"
                     leftIcon={<FiCheckCircle />}
@@ -201,7 +201,7 @@ export function FlashSaleManagementTab({ role, onCreateClick }: FlashSaleManagem
                   </Button>
                 )}
 
-                {role === 'SELLER' && (fs.status === 'UPCOMING' || fs.status === 'DRAFT') && (
+                {role === 'SELLER' && fs.status === 'DRAFT' && (
                   <Button
                     variant="outline"
                     className="border-stone-200 text-stone-600 hover:bg-stone-50"
@@ -215,17 +215,15 @@ export function FlashSaleManagementTab({ role, onCreateClick }: FlashSaleManagem
                   </Button>
                 )}
 
-                {role === 'SELLER' &&
-                  (fs.status === 'UPCOMING' || fs.status === 'DRAFT') &&
-                  !fs.active && (
-                    <Button
-                      variant="primary"
-                      leftIcon={<FiCheckCircle />}
-                      onClick={() => activateFlashSale(fs.id)}
-                    >
-                      Kích hoạt ngay
-                    </Button>
-                  )}
+                {role === 'SELLER' && fs.status === 'DRAFT' && !fs.active && (
+                  <Button
+                    variant="primary"
+                    leftIcon={<FiCheckCircle />}
+                    onClick={() => scheduleFlashSale(fs.id)}
+                  >
+                    Lên lịch
+                  </Button>
+                )}
 
                 <Button
                   variant="outline"

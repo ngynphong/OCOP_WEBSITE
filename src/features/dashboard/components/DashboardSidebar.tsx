@@ -18,6 +18,7 @@ import {
   FiLifeBuoy,
   FiChevronDown,
   FiBell,
+  FiCalendar,
 } from 'react-icons/fi';
 import { BiSupport } from 'react-icons/bi';
 import { FaWarehouse } from 'react-icons/fa';
@@ -143,6 +144,14 @@ const MENU_GROUPS: MenuGroup[] = [
     icon: FiPackage,
     roles: ['SELLER'],
     items: [
+      {
+        id: 'seller-events',
+        label: 'Sự kiện của sàn',
+        icon: FiCalendar,
+        href: '/dashboard/su-kien',
+        roles: ['SELLER'],
+        permission: 'seller.shop.manage',
+      },
       {
         id: 'seller-growth',
         label: 'Tăng trưởng doanh số',

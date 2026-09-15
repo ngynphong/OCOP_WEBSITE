@@ -11,6 +11,8 @@ export const API_ENDPOINTS = {
     QUICK_LINKS: '/home/quick-links',
     SUPPLY_CHAIN_LOTS: '/supply-chain/lots',
     PAYMENT_GATEWAYS: '/payment-gateways',
+    EVENTS_ACTIVE: '/events/active',
+    EVENTS: '/events',
   },
   AUTH: {
     LOGIN: '/auth/login',
@@ -134,6 +136,8 @@ export const API_ENDPOINTS = {
     FLASH_SALES: '/admin/flash-sales',
     DASHBOARD: '/admin/dashboard',
     COMPLAINTS: '/admin/complaints',
+    EVENTS: '/admin/events',
+    EVENTS_UPLOAD: '/admin/events/upload-asset',
   },
   STAFF: {
     ME_PROFILE: '/staff/me/profile',

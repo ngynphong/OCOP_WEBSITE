@@ -23,6 +23,7 @@ import {
   FiSettings,
   FiUserCheck,
   FiKey,
+  FiCalendar,
 } from 'react-icons/fi';
 import { FaWarehouse } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -227,6 +228,13 @@ const MENU_GROUPS: MenuGroup[] = [
         icon: FiCheckSquare,
         href: '/admin/policies',
         id: 'admin-policies',
+        permissions: [PERMISSIONS.BLOG_MANAGE],
+      },
+      {
+        label: 'Sự kiện & Campaign',
+        icon: FiCalendar,
+        href: '/admin/events',
+        id: 'events',
         permissions: [PERMISSIONS.BLOG_MANAGE],
       },
       {

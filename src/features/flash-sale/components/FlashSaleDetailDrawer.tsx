@@ -132,7 +132,7 @@ export function FlashSaleDetailDrawer({
                               'px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest',
                               flashSale.status === 'ACTIVE'
                                 ? 'bg-emerald-100 text-emerald-600'
-                                : flashSale.status === 'UPCOMING'
+                                : flashSale.status === 'SCHEDULED'
                                   ? 'bg-amber-100 text-amber-600'
                                   : flashSale.status === 'DRAFT'
                                     ? 'bg-stone-100 text-stone-500'
@@ -276,7 +276,7 @@ export function FlashSaleDetailDrawer({
             </div>
 
             {/* Footer Actions */}
-            {!isPending && flashSale && flashSale.status === 'UPCOMING' && (
+            {!isPending && flashSale && flashSale.status === 'SCHEDULED' && (
               <div className="p-6 bg-white border-t border-stone-100 grid grid-cols-2 gap-4 shrink-0">
                 <Button
                   variant="outline"

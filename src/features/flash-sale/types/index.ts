@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { ResponseBase } from '@/features/admin/types/adminTypes';
 
-export type FlashSaleStatus = 'DRAFT' | 'UPCOMING' | 'ACTIVE' | 'FINISHED' | 'CANCELLED';
+export type FlashSaleStatus = 'DRAFT' | 'SCHEDULED' | 'ACTIVE' | 'ENDED' | 'CANCELLED';
 
 // ─── Zod Schemas ─────────────────────────────────────────────────────────────
 
@@ -82,6 +82,7 @@ export interface FlashSale {
   endTime: string;
   secondsLeft: number;
   status: FlashSaleStatus;
+  scope: 'SHOP' | 'EVENT';
   items: FlashSaleItem[];
   active: boolean;
 }

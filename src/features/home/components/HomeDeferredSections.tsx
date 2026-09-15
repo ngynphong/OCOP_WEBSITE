@@ -110,7 +110,7 @@ export function HomeDeferredSections() {
           </div>
 
           <div className="relative z-20 w-full flex flex-col items-center">
-            <TestimonialSection />
+            {/* <TestimonialSection /> */}
             <QRTraceabilitySection />
             <NewsletterSection />
           </div>

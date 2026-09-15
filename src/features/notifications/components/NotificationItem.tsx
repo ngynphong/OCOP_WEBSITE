@@ -16,6 +16,8 @@ import {
   FiStar,
   FiDollarSign,
   FiGift,
+  FiZap,
+  FiCalendar,
 } from 'react-icons/fi';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -27,8 +29,24 @@ const getEventMessage = (
   if (payload?.message) return payload.message as string;
 
   const productName = payload?.productName || '';
+  const eventName = payload?.eventName || 'Sự kiện sàn';
+  const shopName = payload?.shopName || 'Shop';
+  const slotName = payload?.slotName || 'Khung giờ';
 
   switch (eventType) {
+    case 'EVENT_REGISTRATION_OPEN':
+      return `Sự kiện "${eventName}" đã mở đăng ký Flash Sale cho người bán.`;
+    case 'EVENT_APPLICATION_SUBMITTED':
+      return `${shopName} đã gửi hồ sơ đăng ký Flash Sale cho sự kiện "${eventName}".`;
+    case 'EVENT_APPLICATION_CHANGES_REQUESTED':
+      return `Hồ sơ đăng ký sự kiện "${eventName}" cần chỉnh sửa bổ sung.`;
+    case 'EVENT_APPLICATION_APPROVED':
+      return `Hồ sơ đăng ký tham gia sự kiện "${eventName}" đã được phê duyệt.`;
+    case 'EVENT_APPLICATION_REJECTED':
+      return `Hồ sơ đăng ký tham gia sự kiện "${eventName}" đã bị từ chối.`;
+    case 'EVENT_FLASH_SALE_REMINDER':
+      return `Khung giờ Flash Sale "${slotName}" thuộc sự kiện "${eventName}" sắp bắt đầu.`;
+
     case 'QUOTATION_RECEIVED':
       return `đã gửi yêu cầu báo giá sỉ cho sản phẩm "${productName}".`;
     case 'QUOTATION_REPLIED':
@@ -76,6 +94,17 @@ const getEventIcon = (eventType: string, entityType?: string) => {
   }
 
   switch (eventType) {
+    case 'EVENT_REGISTRATION_OPEN':
+    case 'EVENT_FLASH_SALE_REMINDER':
+      return <FiZap className="text-amber-500 fill-amber-500/20" />;
+    case 'EVENT_APPLICATION_SUBMITTED':
+      return <FiCalendar className="text-blue-500" />;
+    case 'EVENT_APPLICATION_APPROVED':
+      return <FiCheckCircle className="text-emerald-500" />;
+    case 'EVENT_APPLICATION_CHANGES_REQUESTED':
+      return <FiInfo className="text-amber-500" />;
+    case 'EVENT_APPLICATION_REJECTED':
+      return <FiXCircle className="text-red-500" />;
     case 'ORDER_PLACED':
       return <FiShoppingBag className="text-blue-500" />;
     case 'ORDER_SHIPPED':
@@ -94,6 +123,7 @@ const getEventIcon = (eventType: string, entityType?: string) => {
       return <FiInfo className="text-emerald-500" />;
     default:
       if (entityType === 'ORDER') return <FiShoppingBag className="text-blue-500" />;
+      if (entityType === 'EVENT') return <FiCalendar className="text-amber-500" />;
       return <FiInfo className="text-stone-400" />;
   }
 };

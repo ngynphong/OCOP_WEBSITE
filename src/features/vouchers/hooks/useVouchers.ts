@@ -57,10 +57,11 @@ export const useSellerVoucherMutations = () => {
 };
 
 // --- Admin Hooks ---
-export const useAdminVouchers = (page = 1, size = 10) => {
+export const useAdminVouchers = (page = 1, size = 10, enabled = true) => {
   return useQuery({
     queryKey: VOUCHER_KEYS.adminVouchers(page, size),
     queryFn: () => voucherApi.getAdminVouchers({ pageNo: page, pageSize: size }),
+    enabled,
   });
 };
 

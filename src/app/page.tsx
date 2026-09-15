@@ -31,28 +31,42 @@ import { HomeDeferredSections } from '@/features/home/components/HomeDeferredSec
 import { HomeFloatingWidgets } from '@/features/home/components/HomeFloatingWidgets';
 import { HomeDeferredFooter } from '@/features/home/components/HomeDeferredFooter';
 import { getHomeBanners } from '@/features/home/api/homeServerApi';
+import { getActiveEventServer } from '@/features/events/api/eventApi';
+import { EventThemeProvider } from '@/features/events/components/EventThemeProvider';
+import { EventProvider } from '@/features/events/components/EventProvider';
+import { EventSectionsRenderer } from '@/features/events/components/EventSectionsRenderer';
 
 export default async function Home() {
-  const banners = await getHomeBanners();
+  const [banners, activeEvent] = await Promise.all([getHomeBanners(), getActiveEventServer()]);
 
   return (
-    <div className="min-h-screen flex flex-col font-sans bg-[#f6faf4] md:bg-transparent relative">
-      {/* Background Layer */}
-      <AmbientBackground banners={banners} />
+    <EventProvider activeEvent={activeEvent}>
+      <EventThemeProvider theme={activeEvent?.theme}>
+        <div className="min-h-screen flex flex-col font-sans bg-[#f6faf4] md:bg-transparent relative">
+          {/* Background Layer */}
+          <AmbientBackground banners={banners} />
 
-      {/* Content Layer */}
-      <Header />
+          {/* Content Layer */}
+          <Header />
 
-      <main className="relative z-10 flex-1 flex flex-col justify-start items-center w-full overflow-x-hidden bg-[#f6faf4] md:bg-transparent">
-        <div className="w-full pb-12 flex flex-col justify-start items-center">
-          <div className="w-full">
-            <HeroSection banners={banners} />
-          </div>
-          <HomeDeferredSections />
+          <main className="relative z-10 flex-1 flex flex-col justify-start items-center w-full overflow-x-hidden bg-[#f6faf4] md:bg-transparent">
+            <div className="w-full pb-12 flex flex-col justify-start items-center">
+              {activeEvent ? (
+                <div className="w-full">
+                  <EventSectionsRenderer event={activeEvent} />
+                </div>
+              ) : (
+                <div className="w-full">
+                  <HeroSection banners={banners} />
+                </div>
+              )}
+              <HomeDeferredSections />
+            </div>
+          </main>
+          <HomeFloatingWidgets />
+          <HomeDeferredFooter />
         </div>
-      </main>
-      <HomeFloatingWidgets />
-      <HomeDeferredFooter />
-    </div>
+      </EventThemeProvider>
+    </EventProvider>
   );
 }

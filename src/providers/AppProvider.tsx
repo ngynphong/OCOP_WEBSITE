@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
 import { makeStore } from '@/store/store';
 import { WebSocketProvider } from '@/features/notifications/providers/WebSocketProvider';
+import { GlobalPolicyConsentModal } from '@/features/policies/components/GlobalPolicyConsentModal';
 import { GlobalAuthHandler } from './GlobalAuthHandler';
 
 const emptySubscribe = () => () => {};
@@ -47,16 +48,6 @@ const LoadingOverlay = dynamic(
 
 const ReactQueryDevtools = dynamic(
   () => import('@tanstack/react-query-devtools').then((mod) => mod.ReactQueryDevtools),
-  {
-    ssr: false,
-  },
-);
-
-const GlobalPolicyConsentModal = dynamic(
-  () =>
-    import('@/features/policies/components/GlobalPolicyConsentModal').then(
-      (mod) => mod.GlobalPolicyConsentModal,
-    ),
   {
     ssr: false,
   },

@@ -182,7 +182,7 @@ function SellerProductsContent() {
             }`}
           >
             <FiZap className={activeTab === 'FLASH_SALE' ? 'fill-current' : ''} />
-            Flash Sale
+            Flash Sale của shop
           </button>
         </div>
 
@@ -194,7 +194,7 @@ function SellerProductsContent() {
                 className="flex items-center gap-2 px-6 py-2 bg-red-600 text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-red-600/20 hover:bg-red-700 transition-all animate-in slide-in-from-right-4 cursor-pointer"
               >
                 <FiZap className="fill-current" />
-                Flash Sale ({selectedProducts.length})
+                Flash Sale của shop ({selectedProducts.length})
               </button>
             )}
             <div className="flex flex-wrap gap-2">
@@ -412,7 +412,7 @@ function SellerProductsContent() {
                                 setSelectedProducts([product]);
                                 setIsFlashSaleDrawerOpen(true);
                               }}
-                              title="Tham gia Flash Sale"
+                              title="Tạo Flash Sale của shop"
                               className="p-2 rounded-lg text-red-500 hover:bg-red-50 hover:shadow-sm transition cursor-pointer"
                             >
                               <FiZap size={16} className="fill-current" />

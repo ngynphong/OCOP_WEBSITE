@@ -39,10 +39,10 @@ export const useSellerFlashSaleMutations = () => {
     },
   });
 
-  const activateMutation = useMutation({
-    mutationFn: (id: number) => flashSaleApi.activateSellerFlashSale(id),
+  const scheduleMutation = useMutation({
+    mutationFn: (id: number) => flashSaleApi.scheduleSellerFlashSale(id),
     onSuccess: () => {
-      toast.success('Đã kích hoạt Flash Sale!');
+      toast.success('Đã lên lịch Flash Sale!');
       queryClient.invalidateQueries({ queryKey: ['seller', 'flash-sales'] });
     },
   });
@@ -54,7 +54,7 @@ export const useSellerFlashSaleMutations = () => {
     isUpdating: updateMutation.isPending,
     cancelFlashSale: cancelMutation.mutateAsync,
     isCanceling: cancelMutation.isPending,
-    activateFlashSale: activateMutation.mutateAsync,
-    isActivating: activateMutation.isPending,
+    scheduleFlashSale: scheduleMutation.mutateAsync,
+    isScheduling: scheduleMutation.isPending,
   };
 };
