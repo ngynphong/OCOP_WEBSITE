@@ -66,9 +66,9 @@ export function ConfirmModal({
       btnConfirm: 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500',
     },
     success: {
-      icon: <CheckCircle2 className="w-6 h-6 text-green-600" />,
-      bgIcon: 'bg-green-100',
-      btnConfirm: 'bg-green-600 hover:bg-green-700 focus:ring-green-500',
+      icon: <CheckCircle2 className="w-6 h-6 text-emerald-600" />,
+      bgIcon: 'bg-emerald-100',
+      btnConfirm: 'bg-emerald-600 hover:bg-emerald-700 focus:ring-emerald-500',
     },
   };
 

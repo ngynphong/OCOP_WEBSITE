@@ -98,7 +98,7 @@ export function EventHeroSection({ event, device }: EventHeroSectionProps) {
               {/* Event Badge */}
               <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-600/90 border border-amber-400/40 text-amber-200 text-xs sm:text-sm font-semibold tracking-wide shadow-md backdrop-blur-sm animate-pulse">
                 <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-300" />
-                <span>CHIẾN DỊCH ĐẶC BIỆT</span>
+                <span>SỰ KIỆN ĐẶC BIỆT</span>
               </div>
 
               {/* Event Title */}

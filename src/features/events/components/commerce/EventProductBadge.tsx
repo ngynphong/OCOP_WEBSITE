@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { Sparkles } from 'lucide-react';
 
 interface EventProductBadgeProps {
   label?: string;
@@ -39,7 +40,7 @@ export function EventProductBadge({
       className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] sm:text-xs font-black uppercase tracking-wider shadow-sm ${className}`}
       style={getBadgeStyle()}
     >
-      <span>✨</span>
+      <Sparkles className="w-3 h-3 inline" />
       <span>{label}</span>
     </span>
   );

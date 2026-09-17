@@ -1,41 +1,21 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import React from 'react';
+import Image from 'next/image';
 import { Check, Clock3, Loader2, Pencil, Plus, RotateCcw, Trash2, X } from 'lucide-react';
-import toast from 'react-hot-toast';
-import { eventCommerceApi } from '@/features/events/api/eventCommerceApi';
+import { Button } from '@/components/ui/AppButton';
 import type {
   EventFlashSale,
-  EventFlashSaleApplication,
   EventFlashSaleApplicationStatus,
-  EventFlashSaleReviewInput,
-  EventFlashSaleSlotInput,
 } from '@/features/events/types/eventCommerceTypes';
 import type { EventDetailResponse } from '@/features/events/types/eventTypes';
-
-const EMPTY_FORM: EventFlashSaleSlotInput = {
-  name: '',
-  startTime: '',
-  endTime: '',
-};
-
-const STATUS_LABELS: Record<string, string> = {
-  DRAFT: 'Bản nháp',
-  SCHEDULED: 'Đã lên lịch',
-  ACTIVE: 'Đang diễn ra',
-  ENDED: 'Đã kết thúc',
-  CANCELLED: 'Đã hủy',
-  SUBMITTED: 'Chờ duyệt',
-  CHANGES_REQUESTED: 'Cần chỉnh sửa',
-  PARTIALLY_APPROVED: 'Duyệt một phần',
-  APPROVED: 'Đã duyệt',
-  REJECTED: 'Từ chối',
-  WITHDRAWN: 'Đã rút',
-};
-
-const toInputDateTime = (value: string) => (value ? value.slice(0, 16) : '');
-const formatDateTime = (value: string) => new Date(value).toLocaleString('vi-VN');
-const formatPrice = (value: number) => `${Number(value).toLocaleString('vi-VN')} đ`;
+import {
+  useEventFlashSaleManagement,
+  STATUS_LABELS,
+  formatDateTime,
+  formatPrice,
+  toInputDateTime,
+} from '@/features/admin/hooks/useEventFlashSaleManagement';
 
 interface Props {
   event: EventDetailResponse;
@@ -43,156 +23,36 @@ interface Props {
 }
 
 export function EventFlashSaleManagement({ event, onSlotsChange }: Props) {
-  const [slots, setSlots] = useState<EventFlashSale[]>([]);
-  const [applications, setApplications] = useState<EventFlashSaleApplication[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [editingSlotId, setEditingSlotId] = useState<number | null>(null);
-  const [showSlotForm, setShowSlotForm] = useState(false);
-  const [slotForm, setSlotForm] = useState<EventFlashSaleSlotInput>(EMPTY_FORM);
-  const [slotFilter, setSlotFilter] = useState<number | undefined>();
-  const [statusFilter, setStatusFilter] = useState<EventFlashSaleApplicationStatus | undefined>();
-  const [decisions, setDecisions] = useState<
-    Record<number, EventFlashSaleReviewInput['items'][number]>
-  >({});
-
-  const load = useCallback(async () => {
-    try {
-      setLoading(true);
-      const [slotData, applicationData] = await Promise.all([
-        eventCommerceApi.getAdminFlashSaleSlots(event.id),
-        eventCommerceApi.getEventFlashSaleApplications(event.id, {
-          slotId: slotFilter,
-          status: statusFilter,
-        }),
-      ]);
-      setSlots(slotData);
-      setApplications(applicationData);
-      onSlotsChange?.(slotData);
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Không thể tải dữ liệu Flash Sale');
-    } finally {
-      setLoading(false);
-    }
-  }, [event.id, onSlotsChange, slotFilter, statusFilter]);
-
-  useEffect(() => {
-    void load();
-  }, [load]);
-
-  const eventSlots = useMemo(() => slots.filter((slot) => !slot.legacy), [slots]);
-  const legacySlots = useMemo(() => slots.filter((slot) => slot.legacy), [slots]);
-  const pendingItems = applications.reduce(
-    (total, application) =>
-      total + application.items.filter((item) => item.status === 'PENDING').length,
-    0,
-  );
-
-  const openCreateForm = () => {
-    setEditingSlotId(null);
-    setSlotForm({
-      ...EMPTY_FORM,
-      startTime: toInputDateTime(event.startAt),
-      endTime: toInputDateTime(event.endAt),
-      sortOrder: eventSlots.length,
-    });
-    setShowSlotForm(true);
-  };
-
-  const openEditForm = (slot: EventFlashSale) => {
-    setEditingSlotId(slot.id);
-    setSlotForm({
-      name: slot.name,
-      bannerUrl: slot.bannerUrl,
-      startTime: toInputDateTime(slot.startTime),
-      endTime: toInputDateTime(slot.endTime),
-      sortOrder: slot.sortOrder,
-    });
-    setShowSlotForm(true);
-  };
-
-  const saveSlot = async (eventForm: React.FormEvent) => {
-    eventForm.preventDefault();
-    try {
-      setSaving(true);
-      const payload = {
-        ...slotForm,
-        startTime: `${slotForm.startTime}:00`,
-        endTime: `${slotForm.endTime}:00`,
-      };
-      if (editingSlotId) {
-        await eventCommerceApi.updateFlashSaleSlot(event.id, editingSlotId, payload);
-        toast.success('Đã cập nhật khung giờ');
-      } else {
-        await eventCommerceApi.createFlashSaleSlot(event.id, payload);
-        toast.success('Đã tạo khung giờ Flash Sale');
-      }
-      setShowSlotForm(false);
-      setSlotForm(EMPTY_FORM);
-      await load();
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Không thể lưu khung giờ');
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const deleteSlot = async (slot: EventFlashSale) => {
-    if (!confirm(`Xóa khung giờ “${slot.name}”?`)) return;
-    try {
-      await eventCommerceApi.deleteFlashSaleSlot(event.id, slot.id);
-      toast.success('Đã xóa khung giờ');
-      await load();
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Không thể xóa khung giờ đã có đăng ký');
-    }
-  };
-
-  const unlinkLegacy = async (slot: EventFlashSale) => {
-    if (!confirm(`Gỡ Flash Sale legacy “${slot.name}” khỏi sự kiện?`)) return;
-    try {
-      await eventCommerceApi.unlinkFlashSale(event.id, slot.flashSaleId);
-      toast.success('Đã gỡ liên kết legacy');
-      await load();
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Không thể gỡ liên kết');
-    }
-  };
-
-  const setDecision = (
-    itemId: number,
-    decision: EventFlashSaleReviewInput['items'][number]['decision'],
-  ) => {
-    setDecisions((current) => ({
-      ...current,
-      [itemId]: { applicationItemId: itemId, decision, note: current[itemId]?.note },
-    }));
-  };
-
-  const reviewApplication = async (application: EventFlashSaleApplication) => {
-    const reviewable = application.items.filter((item) => item.status === 'PENDING');
-    const selected = reviewable.map((item) => decisions[item.id]).filter(Boolean);
-    if (selected.length !== reviewable.length) {
-      toast.error('Vui lòng chọn quyết định cho tất cả sản phẩm đang chờ duyệt');
-      return;
-    }
-    try {
-      setSaving(true);
-      await eventCommerceApi.reviewEventFlashSaleApplication(application.id, { items: selected });
-      toast.success('Đã lưu kết quả xét duyệt');
-      setDecisions({});
-      await load();
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Không thể xét duyệt hồ sơ');
-    } finally {
-      setSaving(false);
-    }
-  };
+  const {
+    applications,
+    loading,
+    saving,
+    showSlotForm,
+    setShowSlotForm,
+    slotForm,
+    setSlotForm,
+    slotFilter,
+    setSlotFilter,
+    statusFilter,
+    setStatusFilter,
+    decisions,
+    setDecision,
+    eventSlots,
+    legacySlots,
+    pendingItems,
+    openCreateForm,
+    openEditForm,
+    saveSlot,
+    deleteSlot,
+    unlinkLegacy,
+    reviewApplication,
+    refresh,
+  } = useEventFlashSaleManagement({ event, onSlotsChange });
 
   if (loading) {
     return (
       <div className="flex justify-center py-16">
-        <Loader2 className="h-7 w-7 animate-spin text-amber-600" />
+        <Loader2 className="h-7 w-7 animate-spin text-emerald-600" />
       </div>
     );
   }
@@ -208,7 +68,7 @@ export function EventFlashSaleManagement({ event, onSlotsChange }: Props) {
         <Stat label="Sản phẩm chờ duyệt" value={pendingItems} accent />
       </div>
 
-      <section className="rounded-2xl border border-amber-200 bg-amber-50/40 p-4">
+      <section className="rounded-2xl border border-emerald-200 bg-emerald-50/40 p-4">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <h3 className="font-bold text-gray-900">Khung giờ Flash Sale của sự kiện</h3>
@@ -216,19 +76,21 @@ export function EventFlashSaleManagement({ event, onSlotsChange }: Props) {
               Seller đăng ký sản phẩm trực tiếp vào các khung giờ này.
             </p>
           </div>
-          <button
+          <Button
             type="button"
             onClick={openCreateForm}
-            className="inline-flex items-center gap-2 rounded-xl bg-amber-600 px-4 py-2 text-sm font-bold text-white hover:bg-amber-700"
+            variant="primary"
+            size="sm"
+            leftIcon={<Plus className="h-4 w-4" />}
           >
-            <Plus className="h-4 w-4" /> Tạo khung giờ
-          </button>
+            Tạo khung giờ
+          </Button>
         </div>
 
         {showSlotForm && (
           <form
             onSubmit={saveSlot}
-            className="mt-4 grid gap-3 rounded-xl border border-amber-200 bg-white p-4 md:grid-cols-2"
+            className="mt-4 grid gap-3 rounded-xl border border-emerald-200 bg-white p-4 md:grid-cols-2"
           >
             <label className="text-xs font-semibold text-gray-700">
               Tên khung giờ
@@ -236,7 +98,7 @@ export function EventFlashSaleManagement({ event, onSlotsChange }: Props) {
                 required
                 value={slotForm.name}
                 onChange={(e) => setSlotForm({ ...slotForm, name: e.target.value })}
-                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 placeholder="Giờ vàng buổi tối"
               />
             </label>
@@ -245,7 +107,7 @@ export function EventFlashSaleManagement({ event, onSlotsChange }: Props) {
               <input
                 value={slotForm.bannerUrl || ''}
                 onChange={(e) => setSlotForm({ ...slotForm, bannerUrl: e.target.value })}
-                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
               />
             </label>
             <label className="text-xs font-semibold text-gray-700">
@@ -257,7 +119,7 @@ export function EventFlashSaleManagement({ event, onSlotsChange }: Props) {
                 min={toInputDateTime(event.startAt)}
                 max={toInputDateTime(event.endAt)}
                 onChange={(e) => setSlotForm({ ...slotForm, startTime: e.target.value })}
-                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
               />
             </label>
             <label className="text-xs font-semibold text-gray-700">
@@ -269,23 +131,27 @@ export function EventFlashSaleManagement({ event, onSlotsChange }: Props) {
                 min={toInputDateTime(event.startAt)}
                 max={toInputDateTime(event.endAt)}
                 onChange={(e) => setSlotForm({ ...slotForm, endTime: e.target.value })}
-                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
               />
             </label>
             <div className="flex justify-end gap-2 md:col-span-2">
-              <button
+              <Button
                 type="button"
                 onClick={() => setShowSlotForm(false)}
-                className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                variant="ghost"
+                size="sm"
               >
                 Hủy
-              </button>
-              <button
+              </Button>
+              <Button
+                type="submit"
                 disabled={saving}
-                className="rounded-lg bg-amber-600 px-4 py-2 text-sm font-bold text-white disabled:opacity-50"
+                isLoading={saving}
+                variant="primary"
+                size="sm"
               >
-                {saving ? 'Đang lưu...' : 'Lưu khung giờ'}
-              </button>
+                Lưu khung giờ
+              </Button>
             </div>
           </form>
         )}
@@ -296,7 +162,7 @@ export function EventFlashSaleManagement({ event, onSlotsChange }: Props) {
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <div className="flex items-center gap-2">
-                    <Clock3 className="h-4 w-4 text-amber-600" />
+                    <Clock3 className="h-4 w-4 text-emerald-600" />
                     <strong className="text-sm text-gray-700">{slot.name}</strong>
                     <Badge>{STATUS_LABELS[slot.status] || slot.status}</Badge>
                   </div>
@@ -372,8 +238,8 @@ export function EventFlashSaleManagement({ event, onSlotsChange }: Props) {
             </select>
             <button
               type="button"
-              onClick={() => void load()}
-              className="rounded-lg border border-gray-300 p-2 text-gray-500"
+              onClick={refresh}
+              className="rounded-lg border border-gray-300 p-2 text-gray-500 cursor-pointer hover:bg-gray-50"
             >
               <RotateCcw className="h-4 w-4" />
             </button>
@@ -404,12 +270,14 @@ export function EventFlashSaleManagement({ event, onSlotsChange }: Props) {
                       className="grid gap-3 px-4 py-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
                     >
                       <div className="flex min-w-0 items-center gap-3">
-                        <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-gray-100">
+                        <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-gray-100 relative">
                           {item.thumbnailUrl ? (
-                            <img
+                            <Image
                               src={item.thumbnailUrl}
-                              alt=""
-                              className="h-full w-full object-cover"
+                              alt={item.productName || ''}
+                              fill
+                              unoptimized
+                              className="object-cover"
                             />
                           ) : null}
                         </div>
@@ -460,13 +328,15 @@ export function EventFlashSaleManagement({ event, onSlotsChange }: Props) {
                 </div>
                 {canReview && (
                   <footer className="flex justify-end border-t border-gray-100 bg-gray-50 px-4 py-3">
-                    <button
+                    <Button
                       disabled={saving}
+                      isLoading={saving}
                       onClick={() => void reviewApplication(application)}
-                      className="cursor-pointer rounded-lg bg-gray-900 px-4 py-2 text-xs font-bold text-white disabled:opacity-50"
+                      variant="primary"
+                      size="sm"
                     >
                       Lưu kết quả xét duyệt
-                    </button>
+                    </Button>
                   </footer>
                 )}
               </article>
@@ -525,7 +395,7 @@ function Stat({
 }) {
   return (
     <div
-      className={`rounded-xl border p-4 ${accent ? 'border-amber-200 bg-amber-50' : 'border-gray-200 bg-white'}`}
+      className={`rounded-xl border p-4 ${accent ? 'border-emerald-200 bg-emerald-50' : 'border-gray-200 bg-white'}`}
     >
       <p className="text-xs text-gray-500">{label}</p>
       <p className="mt-1 text-2xl font-black text-gray-900">{value}</p>

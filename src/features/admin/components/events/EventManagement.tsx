@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import {
   Plus,
@@ -18,109 +18,33 @@ import {
   Layers,
   ShoppingBag,
 } from 'lucide-react';
-import { eventApi } from '@/features/events/api/eventApi';
-import type {
-  EventResponse,
-  CampaignEventStatus,
-  EventDetailResponse,
+import type { CampaignEventStatus, EventType } from '@/features/events/types/eventTypes';
+import {
+  getEventTypeLabel,
+  getEventTypeBadgeClass,
+  EVENT_TYPE_CONFIG,
 } from '@/features/events/types/eventTypes';
-import { EventFormModal } from './EventFormModal';
-import toast from 'react-hot-toast';
+import { ConfirmModal } from '@/components/ui/ConfirmModal';
+import { Button } from '@/components/ui/AppButton';
+import { useAdminEventsManagement } from '@/features/admin/hooks/useAdminEvents';
 
 export function EventManagement() {
-  const [events, setEvents] = useState<EventResponse[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [statusFilter, setStatusFilter] = useState<CampaignEventStatus | 'ALL'>('ALL');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingEvent, setEditingEvent] = useState<EventDetailResponse | null>(null);
-
-  const fetchEvents = useCallback(async () => {
-    try {
-      setLoading(true);
-      const res = await eventApi.getAdminEvents({
-        status: statusFilter === 'ALL' ? undefined : statusFilter,
-        page: 0,
-        size: 50,
-      });
-      setEvents(res.items || []);
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Không thể tải danh sách sự kiện';
-      toast.error(message);
-    } finally {
-      setLoading(false);
-    }
-  }, [statusFilter]);
-
-  useEffect(() => {
-    void fetchEvents();
-  }, [fetchEvents]);
-
-  const handlePublish = async (id: number) => {
-    if (!confirm('Bạn có chắc chắn muốn xuất bản sự kiện này?')) return;
-    try {
-      await eventApi.publishEvent(id);
-      toast.success('Xuất bản sự kiện thành công!');
-      fetchEvents();
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Xuất bản thất bại';
-      toast.error(message);
-    }
-  };
-
-  const handlePause = async (id: number) => {
-    if (!confirm('Bạn có chắc muốn tạm dừng sự kiện này?')) return;
-    try {
-      await eventApi.pauseEvent(id);
-      toast.success('Đã tạm dừng sự kiện!');
-      fetchEvents();
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Tạm dừng thất bại';
-      toast.error(message);
-    }
-  };
-
-  const handleClone = async (id: number) => {
-    try {
-      await eventApi.cloneEvent(id);
-      toast.success('Nhân bản sự kiện thành công!');
-      fetchEvents();
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Nhân bản thất bại';
-      toast.error(message);
-    }
-  };
-
-  const handleDelete = async (id: number) => {
-    if (!confirm('Bạn có chắc muốn xóa vĩnh viễn bản nháp sự kiện này?')) return;
-    try {
-      await eventApi.deleteEvent(id);
-      toast.success('Xóa sự kiện thành công!');
-      fetchEvents();
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Xóa thất bại';
-      toast.error(message);
-    }
-  };
-
-  const handleOpenEdit = async (id: number) => {
-    try {
-      const detail = await eventApi.getAdminEventById(id);
-      setEditingEvent(detail);
-      setIsModalOpen(true);
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Lỗi lấy chi tiết sự kiện';
-      toast.error(message);
-    }
-  };
-
-  // Filter local search query
-  const filteredEvents = events.filter(
-    (e) =>
-      e.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      e.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      e.slug.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  const {
+    events: filteredEvents,
+    loading,
+    statusFilter,
+    setStatusFilter,
+    searchQuery,
+    setSearchQuery,
+    confirmModal,
+    closeConfirmModal,
+    isActionLoading,
+    fetchEvents,
+    handlePublish,
+    handlePause,
+    handleClone,
+    handleDelete,
+  } = useAdminEventsManagement();
 
   const renderStatusBadge = (status: CampaignEventStatus) => {
     switch (status) {
@@ -161,6 +85,19 @@ export function EventManagement() {
     }
   };
 
+  const renderTypeBadge = (type?: string) => {
+    return (
+      <span
+        className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold border ${getEventTypeBadgeClass(
+          type,
+        )}`}
+        title={type ? EVENT_TYPE_CONFIG[type as EventType]?.description : undefined}
+      >
+        {getEventTypeLabel(type)}
+      </span>
+    );
+  };
+
   return (
     <div className="space-y-6">
       {/* Top Banner */}
@@ -177,16 +114,11 @@ export function EventManagement() {
           </p>
         </div>
 
-        <button
-          onClick={() => {
-            setEditingEvent(null);
-            setIsModalOpen(true);
-          }}
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Tạo Sự Kiện Mới</span>
-        </button>
+        <Link href="/admin/events/create">
+          <Button variant="primary" size="md" leftIcon={<Plus className="w-4 h-4" />}>
+            Tạo Sự Kiện Mới
+          </Button>
+        </Link>
       </div>
 
       {/* Filter and Search Bar */}
@@ -199,7 +131,7 @@ export function EventManagement() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Tìm theo tên, mã sự kiện..."
-            className="w-full pl-9 pr-4 py-2 text-gray-700 text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="w-full pl-9 pr-4 py-2 text-gray-700 text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
           />
         </div>
 
@@ -211,7 +143,7 @@ export function EventManagement() {
               onClick={() => setStatusFilter(st)}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
                 statusFilter === st
-                  ? 'bg-amber-600 text-white shadow-sm'
+                  ? 'bg-emerald-600 text-white shadow-sm'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
@@ -256,7 +188,7 @@ export function EventManagement() {
               {loading ? (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center text-gray-400">
-                    <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-amber-500" />
+                    <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-emerald-500" />
                     <span>Đang tải danh sách sự kiện...</span>
                   </td>
                 </tr>
@@ -269,18 +201,14 @@ export function EventManagement() {
                 </tr>
               ) : (
                 filteredEvents.map((evt) => (
-                  <tr key={evt.id} className="hover:bg-amber-50/20 transition-colors">
+                  <tr key={evt.id} className="hover:bg-emerald-50/20 transition-colors">
                     <td className="px-6 py-4">
                       <div className="font-bold text-gray-900">{evt.name}</div>
                       <div className="text-xs text-gray-500 font-mono flex items-center gap-2 mt-0.5">
                         <span>{evt.code}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <span className="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded-md">
-                        {evt.type}
-                      </span>
-                    </td>
+                    <td className="px-6 py-4">{renderTypeBadge(evt.type)}</td>
                     <td className="px-6 py-4">
                       <div className="text-xs text-gray-700 flex items-center gap-1.5 font-medium">
                         <Calendar className="w-3.5 h-3.5 text-gray-400" />
@@ -292,7 +220,7 @@ export function EventManagement() {
                     <td className="px-6 py-4">{renderStatusBadge(evt.status)}</td>
                     <td className="px-6 py-4">
                       <div className="text-xs text-gray-600 flex items-center gap-1.5">
-                        <Layers className="w-3.5 h-3.5 text-amber-600" />
+                        <Layers className="w-3.5 h-3.5 text-emerald-600" />
                         <span>{evt.sectionCount || 2} Sections</span>
                       </div>
                     </td>
@@ -301,7 +229,7 @@ export function EventManagement() {
                         {/* Preview button */}
                         <Link
                           href={`/admin/events/${evt.id}/preview`}
-                          className="p-1.5 text-gray-500 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer"
+                          className="p-1.5 text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors cursor-pointer"
                           title="Xem trước (Preview)"
                         >
                           <Eye className="w-4 h-4" />
@@ -310,7 +238,7 @@ export function EventManagement() {
                         {/* Publish / Pause button */}
                         {evt.status === 'LIVE' ? (
                           <button
-                            onClick={() => handlePause(evt.id)}
+                            onClick={() => handlePause(evt.id, evt.name)}
                             className="p-1.5 text-amber-600 hover:text-amber-700 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer"
                             title="Tạm dừng sự kiện"
                           >
@@ -318,7 +246,7 @@ export function EventManagement() {
                           </button>
                         ) : evt.status === 'DRAFT' || evt.status === 'PAUSED' ? (
                           <button
-                            onClick={() => handlePublish(evt.id)}
+                            onClick={() => handlePublish(evt.id, evt.name)}
                             className="p-1.5 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors cursor-pointer"
                             title="Xuất bản sự kiện"
                           >
@@ -329,7 +257,7 @@ export function EventManagement() {
                         {/* Commerce & Collections Management */}
                         <Link
                           href={`/admin/events/${evt.id}/commerce`}
-                          className="p-1.5 text-amber-600 hover:text-amber-700 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer"
+                          className="p-1.5 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors cursor-pointer"
                           title="Quản lý thương mại (Bộ sưu tập, Flash Sale, Voucher)"
                         >
                           <ShoppingBag className="w-4 h-4" />
@@ -345,18 +273,18 @@ export function EventManagement() {
                         </button>
 
                         {/* Edit button */}
-                        <button
-                          onClick={() => handleOpenEdit(evt.id)}
-                          className="p-1.5 text-gray-500 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer"
-                          title="Chỉnh sửa"
+                        <Link
+                          href={`/admin/events/${evt.id}/edit`}
+                          className="p-1.5 text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors cursor-pointer"
+                          title="Chỉnh sửa sự kiện"
                         >
                           <Edit2 className="w-4 h-4" />
-                        </button>
+                        </Link>
 
                         {/* Delete button (only when DRAFT) */}
                         {evt.status === 'DRAFT' && (
                           <button
-                            onClick={() => handleDelete(evt.id)}
+                            onClick={() => handleDelete(evt.id, evt.name)}
                             className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
                             title="Xóa nháp"
                           >
@@ -373,19 +301,18 @@ export function EventManagement() {
         </div>
       </div>
 
-      {/* Modal */}
-      {isModalOpen && (
-        <EventFormModal
-          key={editingEvent?.id || 'new-event'}
-          isOpen={isModalOpen}
-          onClose={() => {
-            setIsModalOpen(false);
-            setEditingEvent(null);
-          }}
-          onSuccess={fetchEvents}
-          initialData={editingEvent}
-        />
-      )}
+      {/* Confirm Action Modal */}
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        confirmText={confirmModal.confirmText}
+        cancelText={confirmModal.cancelText}
+        type={confirmModal.type}
+        isLoading={isActionLoading}
+        onConfirm={() => void confirmModal.onConfirm()}
+        onCancel={closeConfirmModal}
+      />
     </div>
   );
 }

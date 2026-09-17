@@ -1,7 +1,53 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 
 import React from 'react';
+import { Sparkles, Flag, Snowflake, Moon } from 'lucide-react';
 import type { ConceptPackId } from '../../types/eventTypes';
+
+// Deterministic static coordinates to prevent SSR/Client floating-point hydration mismatches
+const MOONCAKE_PETALS_R36 = [
+  { deg: 0, cx: 36, cy: 0 },
+  { deg: 30, cx: 31.18, cy: 18 },
+  { deg: 60, cx: 18, cy: 31.18 },
+  { deg: 90, cx: 0, cy: 36 },
+  { deg: 120, cx: -18, cy: 31.18 },
+  { deg: 150, cx: -31.18, cy: 18 },
+  { deg: 180, cx: -36, cy: 0 },
+  { deg: 210, cx: -31.18, cy: -18 },
+  { deg: 240, cx: -18, cy: -31.18 },
+  { deg: 270, cx: 0, cy: -36 },
+  { deg: 300, cx: 18, cy: -31.18 },
+  { deg: 330, cx: 31.18, cy: -18 },
+] as const;
+
+const DONG_SON_RAYS_R20 = [
+  { deg: 0, x2: 20, y2: 0 },
+  { deg: 30, x2: 17.32, y2: 10 },
+  { deg: 60, x2: 10, y2: 17.32 },
+  { deg: 90, x2: 0, y2: 20 },
+  { deg: 120, x2: -10, y2: 17.32 },
+  { deg: 150, x2: -17.32, y2: 10 },
+  { deg: 180, x2: -20, y2: 0 },
+  { deg: 210, x2: -17.32, y2: -10 },
+  { deg: 240, x2: -10, y2: -17.32 },
+  { deg: 270, x2: 0, y2: -20 },
+  { deg: 300, x2: 10, y2: -17.32 },
+  { deg: 330, x2: 17.32, y2: -10 },
+] as const;
+
+const MOONCAKE_PETALS_R28 = [
+  { deg: 0, cx: 28, cy: 0 },
+  { deg: 36, cx: 22.65, cy: 16.46 },
+  { deg: 72, cx: 8.65, cy: 26.63 },
+  { deg: 108, cx: -8.65, cy: 26.63 },
+  { deg: 144, cx: -22.65, cy: 16.46 },
+  { deg: 180, cx: -28, cy: 0 },
+  { deg: 216, cx: -22.65, cy: -16.46 },
+  { deg: 252, cx: -8.65, cy: -26.63 },
+  { deg: 288, cx: 8.65, cy: -26.63 },
+  { deg: 324, cx: 22.65, cy: -16.46 },
+] as const;
 
 interface EventCornerDecorationsProps {
   conceptId?: ConceptPackId;
@@ -41,6 +87,7 @@ export function EventCornerDecorations({
     <div
       className="pointer-events-none absolute inset-0 z-20 overflow-hidden select-none"
       aria-hidden="true"
+      suppressHydrationWarning
     >
       {/* 1. Họa tiết góc trên bên trái (Top Left Corner) */}
       <div className={leftClasses}>
@@ -126,7 +173,7 @@ export function EventCornerDecorations({
               stroke="#F59E0B"
               strokeWidth="1.5"
             />
-            <circle cx="40,50" r="7" fill="#FDE047" />
+            <circle cx="40" cy="50" r="7" fill="#FDE047" />
           </svg>
         ) : conceptId === 'DAI_LE' ? (
           // Lá cờ đỏ sao vàng Việt Nam uốn lượn góc trái
@@ -273,11 +320,11 @@ export function EventCornerDecorations({
               {/* Thân bánh tròn hoa cúc */}
               <circle cx="0" cy="0" r="38" fill="#D97706" stroke="#B45309" strokeWidth="2" />
               {/* Các cánh hoa bánh nướng xung quanh */}
-              {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((deg) => (
+              {MOONCAKE_PETALS_R36.map((petal) => (
                 <circle
-                  key={deg}
-                  cx={Math.cos((deg * Math.PI) / 180) * 36}
-                  cy={Math.sin((deg * Math.PI) / 180) * 36}
+                  key={petal.deg}
+                  cx={petal.cx}
+                  cy={petal.cy}
                   r="7"
                   fill="#F59E0B"
                   stroke="#B45309"
@@ -305,13 +352,13 @@ export function EventCornerDecorations({
               />
               <circle cx="0" cy="0" r="26" fill="none" stroke="#D97706" strokeWidth="1" />
               {/* Mặt trời 12 tia sáng ở tâm */}
-              {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((deg) => (
+              {DONG_SON_RAYS_R20.map((ray) => (
                 <line
-                  key={deg}
+                  key={ray.deg}
                   x1="0"
                   y1="0"
-                  x2={Math.cos((deg * Math.PI) / 180) * 20}
-                  y2={Math.sin((deg * Math.PI) / 180) * 20}
+                  x2={ray.x2}
+                  y2={ray.y2}
                   stroke="#D97706"
                   strokeWidth="1.5"
                 />
@@ -412,8 +459,9 @@ export function EventHeroFestiveSticker({ conceptId }: { conceptId?: ConceptPack
           </g>
         </svg>
         <div className="text-left pr-1">
-          <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-700 uppercase tracking-wider mb-0.5">
-            🧧 Tết Bính Ngọ 2026
+          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-700 uppercase tracking-wider mb-0.5">
+            <Sparkles className="w-3 h-3 text-red-600" />
+            <span>Tết Bính Ngọ 2026</span>
           </span>
           <p className="text-xs font-bold text-gray-900 leading-tight">Bánh Chưng Tranh Tết</p>
           <p className="text-[11px] text-amber-700 font-medium">Khai xuân đón lộc OCOP</p>
@@ -453,8 +501,9 @@ export function EventHeroFestiveSticker({ conceptId }: { conceptId?: ConceptPack
           />
         </svg>
         <div className="text-left pr-1">
-          <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-700 uppercase tracking-wider mb-0.5">
-            🇻🇳 Đại Lễ Non Sông
+          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-700 uppercase tracking-wider mb-0.5">
+            <Flag className="w-3 h-3 text-red-600" />
+            <span>Đại Lễ Non Sông</span>
           </span>
           <p className="text-xs font-bold text-gray-900 leading-tight">Tự Hào Nông Sản Việt</p>
           <p className="text-[11px] text-red-600 font-medium">Bản sắc quê hương đất nước</p>
@@ -484,8 +533,9 @@ export function EventHeroFestiveSticker({ conceptId }: { conceptId?: ConceptPack
           <circle cx="45" cy="3" r="4.5" fill="#FFFFFF" />
         </svg>
         <div className="text-left pr-1">
-          <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-700 uppercase tracking-wider mb-0.5">
-            ❄️ Giáng Sinh Rộn Ràng
+          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-700 uppercase tracking-wider mb-0.5">
+            <Snowflake className="w-3 h-3 text-blue-600" />
+            <span>Giáng Sinh Rộn Ràng</span>
           </span>
           <p className="text-xs font-bold text-gray-900 leading-tight">Người Tuyết Mùa Đông</p>
           <p className="text-[11px] text-blue-600 font-medium">Ấm áp quà tặng cuối năm</p>
@@ -502,11 +552,11 @@ export function EventHeroFestiveSticker({ conceptId }: { conceptId?: ConceptPack
           {/* Bánh Trung Thu nướng */}
           <g transform="translate(42, 40)">
             <circle cx="0" cy="0" r="30" fill="#D97706" stroke="#B45309" strokeWidth="2" />
-            {[0, 36, 72, 108, 144, 180, 216, 252, 288, 324].map((deg) => (
+            {MOONCAKE_PETALS_R28.map((petal) => (
               <circle
-                key={deg}
-                cx={Math.cos((deg * Math.PI) / 180) * 28}
-                cy={Math.sin((deg * Math.PI) / 180) * 28}
+                key={petal.deg}
+                cx={petal.cx}
+                cy={petal.cy}
                 r="5.5"
                 fill="#F59E0B"
                 stroke="#B45309"
@@ -528,8 +578,9 @@ export function EventHeroFestiveSticker({ conceptId }: { conceptId?: ConceptPack
           </g>
         </svg>
         <div className="text-left pr-1">
-          <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 uppercase tracking-wider mb-0.5">
-            🥮 Rằm Tháng Tám
+          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 uppercase tracking-wider mb-0.5">
+            <Moon className="w-3 h-3 text-amber-700" />
+            <span>Rằm Tháng Tám</span>
           </span>
           <p className="text-xs font-bold text-gray-900 leading-tight">Bánh Trung Thu Cổ Truyền</p>
           <p className="text-[11px] text-amber-700 font-medium">Trông trăng phá cỗ sum vầy</p>

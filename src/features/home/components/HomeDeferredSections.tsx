@@ -33,9 +33,9 @@ const CategoryShowcase = dynamic(() =>
 const DailyDiscoverFeed = dynamic(() =>
   import('@/features/home/components/DailyDiscoverFeed').then((mod) => mod.DailyDiscoverFeed),
 );
-const TestimonialSection = dynamic(() =>
-  import('@/features/home/components/TestimonialSection').then((mod) => mod.TestimonialSection),
-);
+// const TestimonialSection = dynamic(() =>
+//   import('@/features/home/components/TestimonialSection').then((mod) => mod.TestimonialSection),
+// );
 const QRTraceabilitySection = dynamic(() =>
   import('@/features/home/components/QRTraceabilitySection').then(
     (mod) => mod.QRTraceabilitySection,

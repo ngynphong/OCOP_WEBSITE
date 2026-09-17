@@ -1,12 +1,25 @@
 'use client';
 
 import React from 'react';
-import { X, Sparkles, Eye } from 'lucide-react';
+import { X, Sparkles, Eye, Flag, Moon, Snowflake } from 'lucide-react';
 
 interface EventSvgGalleryModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
+const MOONCAKE_PETALS_R28 = [
+  { deg: 0, cx: 28, cy: 0 },
+  { deg: 36, cx: 22.65, cy: 16.46 },
+  { deg: 72, cx: 8.65, cy: 26.63 },
+  { deg: 108, cx: -8.65, cy: 26.63 },
+  { deg: 144, cx: -22.65, cy: 16.46 },
+  { deg: 180, cx: -28, cy: 0 },
+  { deg: 216, cx: -22.65, cy: -16.46 },
+  { deg: 252, cx: -8.65, cy: -26.63 },
+  { deg: 288, cx: 8.65, cy: -26.63 },
+  { deg: 324, cx: 22.65, cy: -16.46 },
+];
 
 export function EventSvgGalleryModal({ isOpen, onClose }: EventSvgGalleryModalProps) {
   if (!isOpen) return null;
@@ -41,7 +54,7 @@ export function EventSvgGalleryModal({ isOpen, onClose }: EventSvgGalleryModalPr
           {/* Nhóm 1: Cụm Linh Vật Hero */}
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-base">🌟</span>
+              <Sparkles className="w-4 h-4 text-amber-500" />
               <h4 className="text-xs font-bold text-gray-900 uppercase tracking-wider">
                 1. Cụm Linh Vật & Biểu Tượng Lễ Hội Đặc Trưng
               </h4>
@@ -133,8 +146,9 @@ export function EventSvgGalleryModal({ isOpen, onClose }: EventSvgGalleryModalPr
                   </svg>
                 </div>
                 <div>
-                  <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-700 uppercase mb-1">
-                    🧧 Tết Cổ Truyền
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-700 uppercase mb-1">
+                    <Sparkles className="w-3 h-3 text-red-600" />
+                    <span>Tết Cổ Truyền</span>
                   </span>
                   <h5 className="text-sm font-bold text-gray-900">Bánh Chưng Xanh & Bao Lì Xì</h5>
                   <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">
@@ -173,8 +187,9 @@ export function EventSvgGalleryModal({ isOpen, onClose }: EventSvgGalleryModalPr
                   </svg>
                 </div>
                 <div>
-                  <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-700 uppercase mb-1">
-                    🇻🇳 Đại Lễ 2/9 • 30/4
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-700 uppercase mb-1">
+                    <Flag className="w-3 h-3 text-red-600" />
+                    <span>Đại Lễ 2/9 • 30/4</span>
                   </span>
                   <h5 className="text-sm font-bold text-gray-900">Lá Cờ Đỏ Sao Vàng Việt Nam</h5>
                   <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">
@@ -197,11 +212,11 @@ export function EventSvgGalleryModal({ isOpen, onClose }: EventSvgGalleryModalPr
                         stroke="#B45309"
                         strokeWidth="2"
                       />
-                      {[0, 36, 72, 108, 144, 180, 216, 252, 288, 324].map((deg) => (
+                      {MOONCAKE_PETALS_R28.map((petal) => (
                         <circle
-                          key={deg}
-                          cx={Math.cos((deg * Math.PI) / 180) * 28}
-                          cy={Math.sin((deg * Math.PI) / 180) * 28}
+                          key={petal.deg}
+                          cx={petal.cx}
+                          cy={petal.cy}
                           r="5.5"
                           fill="#F59E0B"
                           stroke="#B45309"
@@ -239,8 +254,9 @@ export function EventSvgGalleryModal({ isOpen, onClose }: EventSvgGalleryModalPr
                   </svg>
                 </div>
                 <div>
-                  <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 uppercase mb-1">
-                    🥮 Đêm Hội Trăng Rằm
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 uppercase mb-1">
+                    <Moon className="w-3 h-3 text-amber-700" />
+                    <span>Đêm Hội Trăng Rằm</span>
                   </span>
                   <h5 className="text-sm font-bold text-gray-900">Bánh Trung Thu Cổ Truyền</h5>
                   <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">
@@ -281,8 +297,9 @@ export function EventSvgGalleryModal({ isOpen, onClose }: EventSvgGalleryModalPr
                   </svg>
                 </div>
                 <div>
-                  <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-700 uppercase mb-1">
-                    ❄️ Noel & Năm Mới
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-700 uppercase mb-1">
+                    <Snowflake className="w-3 h-3 text-blue-600" />
+                    <span>Noel & Năm Mới</span>
                   </span>
                   <h5 className="text-sm font-bold text-gray-900">Chú Người Tuyết Mùa Đông</h5>
                   <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">
@@ -443,7 +460,7 @@ export function EventSvgGalleryModal({ isOpen, onClose }: EventSvgGalleryModalPr
                       stroke="#F59E0B"
                       strokeWidth="2"
                     />
-                    <circle cx="80,48" cy="48" r="8" fill="#FDE047" />
+                    <circle cx="80" cy="48" r="8" fill="#FDE047" />
                   </svg>
                 </div>
                 <h5 className="text-xs font-bold text-gray-900">Lồng Đèn Ông Sao Trung Thu</h5>
@@ -526,7 +543,7 @@ export function EventSvgGalleryModal({ isOpen, onClose }: EventSvgGalleryModalPr
           {/* Nhóm 3: Hạt Khí Quyển Rơi (Atmospheric Particles) */}
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-base">🌸</span>
+              <Sparkles className="w-4 h-4 text-pink-500" />
               <h4 className="text-xs font-bold text-gray-900 uppercase tracking-wider">
                 3. Hiệu Ứng Khí Quyển Động & Cánh Hoa Rơi
               </h4>

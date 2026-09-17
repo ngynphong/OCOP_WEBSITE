@@ -52,11 +52,21 @@ export function EventCountdownSection({
   return (
     <div className={`w-full max-w-7xl mx-auto my-3 ${isForcedMobile ? 'px-1' : 'px-4'}`}>
       <div
-        className={`bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 rounded-2xl shadow-lg border border-amber-300/30 text-white ${
+        className={`rounded-2xl shadow-xl border border-white/25 bg-origin-border bg-clip-border bg-no-repeat text-white transition-all duration-300 ${
           isForcedMobile
             ? 'p-3 flex flex-col items-center gap-3 text-center'
             : 'p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4'
         }`}
+        style={{
+          background:
+            'var(--event-countdown-bg, linear-gradient(135deg, #DC2626 0%, #F59E0B 100%))',
+          backgroundOrigin: 'border-box',
+          backgroundClip: 'border-box',
+          backgroundRepeat: 'no-repeat',
+          borderColor: 'rgba(255, 255, 255, 0.25)',
+          boxShadow:
+            '0 10px 25px -5px var(--event-glow, rgba(0, 0, 0, 0.25)), inset 0 1px 0 0 rgba(255, 255, 255, 0.35)',
+        }}
       >
         <div
           className={`flex items-center gap-2.5 ${

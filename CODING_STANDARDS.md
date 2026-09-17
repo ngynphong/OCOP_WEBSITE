@@ -1,116 +1,121 @@
-# 🏗️ Kiến trúc & Tiêu chuẩn Code (Production-Ready)
+# Architecture & Coding Standards (Production-Ready)
 
-Dự án này tuân thủ Kiến trúc Feature-Driven Development kết hợp với Domain-Driven Design (DDD) trong môi trường Next.js 16 (App Router). Dưới đây là bộ quy tắc chuẩn để đảm bảo mã nguồn dễ bảo trì, mở rộng và đúng chuẩn production.
+This project strictly adheres to Feature-Driven Development combined with Domain-Driven Design (DDD) under the Next.js 16 App Router environment. Below is the standardized rule set ensuring maintainability, scalability, and enterprise-level production readiness.
 
-## 🎯 1. Phân tầng Kiến Trúc (Directory Structure & Architecture)
+## 1. Directory Structure & Architecture Layers
 
-- **`src/app/` (Routing Layer):** Chỉ chứa logic điều hướng (page, layout, error, loading). Server Components là mặc định. Gọi API trực tiếp tại đây nếu là fetch data tĩnh, ngược lại truyền Server Data xuống Client Components thông qua props. TUYỆT ĐỐI không chứa logic nghiệp vụ phức tạp ở đây.
-- **`src/features/<Tên Domain>/` (Domain Layer):** Đây là TRÁI TIM của hệ thống. Mọi logic nghiệp vụ phải chia theo từng Domain (Auth, Products, Cart...). Trong mỗi Domain, bắt buộc chia nhỏ:
-  - `api/`: Các hàm gọi API (sử dụng Axios) phục vụ riêng cho Domain này.
-  - `hooks/`: Custom hooks sử dụng React Query (để fetch/mutate data) kết hợp xử lý logic.
-  - `components/`: Client/Server UI Components CHỈ dùng riêng trong feature này.
-  - `types/`: Zod schemas & TypeScript Interfaces của riêng nghiệp vụ đó.
-  - `utils/`: Hàm trợ giúp (nếu có riêng cho domain).
-- **`src/components/` (Shared UI Layer):** Chỉ chứa các "Dumb/Presentational Components" tái sử dụng toàn cục (AppButton, AppInput, Modal, Table). KHÔNG được gán logic gọi API vào đây.
-- **`src/store/` (Global State):** Chỉ dùng Redux Toolkit cho các State Toàn Cục (ví dụ: Auth Session, UI Theme, Modal Open/Close). KHÔNG dùng Redux để lưu trữ kết quả fetch API.
-- **`src/lib/` (Infrastructure Layer):** Chứa các config cho các thư viện bên thứ 3 (Axios instance, cấu hình Tailwind, Zod global error map).
+- **`src/app/` (Routing Layer):** Contains routing logic exclusively (page, layout, error, loading, template, not-found). Server Components are the default. Direct data fetching here is permitted only for static data fetching; otherwise, pass server data down to Client Components via props. NEVER place complex business logic in this layer.
+- **`src/features/<DomainName>/` (Domain Core Layer):** This is the CORE of the application. All business logic must be encapsulated per domain (e.g., Auth, Products, Cart, Events). Each domain feature must be structured into:
+  - `api/`: API call functions (using Axios) scoped exclusively to this domain.
+  - `hooks/`: Custom hooks using TanStack React Query (`useQuery`, `useMutation`) combined with domain business logic.
+  - `components/`: UI components used ONLY within this feature.
+  - `types/`: Domain-specific Zod schemas and TypeScript interfaces/types.
+  - `utils/`: Domain-specific helper/utility functions.
+- **`src/components/` (Shared UI Layer):** Contains only globally reusable "Dumb/Presentational Components" (e.g., AppButton, AppInput, Modal, Table). NEVER attach API calls or domain business logic here.
+- **`src/store/` (Global State):** Redux Toolkit is strictly reserved for Global Client UI State (e.g., Auth Session tokens, UI Theme, Modal Open/Close states). NEVER use Redux to store API fetch results or cache server entities.
+- **`src/lib/` (Infrastructure Layer):** Infrastructure integrations and third-party library configurations (Axios instance with global interceptors, Tailwind configuration helpers, Zod global error maps).
 
-## 🚀 2. State Management & Data Fetching (Quy tắc sinh tử)
+## 2. State Management & Data Fetching (Non-Negotiable Rules)
 
-1. **Server State (Dữ liệu từ API):** TUYỆT ĐỐI 100% bằng **TanStack React Query** (`@tanstack/react-query`). KHÔNG dùng `useEffect` + `useState` và KHÔNG dùng **RTK Query** để gọi API để đảm bảo tính nhất quán của dự án.
-2. **Client State (Trạng thái cục bộ/toàn cục UI):**
-   - State dùng 1 chỗ: Dùng `useState` / `useReducer`.
-   - State chia sẻ toàn hệ thống: Dùng **Redux Toolkit** (Slices) để lưu trữ trạng thái UI, Auth Session, Modals.
-3. Luôn định nghĩa `staleTime` và `retry` logic cẩn thận, đặc biệt với React Query (như đã cấu hình tại `AppProvider`).
+1. **Server State (API Data):** 100% managed via **TanStack React Query** (`@tanstack/react-query`). NEVER use `useEffect + useState` or **RTK Query** for API requests to maintain codebase consistency.
+2. **Client State (Local/Global UI State):**
+   - Single-component state: Use `useState` or `useReducer`.
+   - Cross-system shared state: Use **Redux Toolkit** (Slices) for UI flags, Auth sessions, and global modal states.
+3. Always configure `staleTime`, `gcTime`, and `retry` strategies deliberately (as preconfigured in `AppProvider`).
 
-## 🛡️ 3. Type-Safety & Validation
+## 3. Type Safety & Schema Validation
 
-1. **TypeScript 100%:** cấm sử dụng `any`. Bắt buộc dùng `interface` hoặc `type`.
-2. **Data Validation (Zod):**
-   - Mọi form request từ User PHẢI được validation bằng Zod.
-   - Thường xuyên bọc Data trả về từ API Backend thông qua Zod để đảm bảo Runtime Type-Safety nếu hệ thống API không ổn định.
-3. Không định nghĩa type rải rác. Type thuộc về feature nào, nằm ở `features/<domain>/types/`.
+1. **Strict TypeScript (100%):** Usage of `any` is strictly prohibited. Always use explicit `interface` or `type`.
+2. **Runtime Schema Validation (Zod):**
+   - Every user input form and mutation payload MUST be validated against a Zod schema.
+   - Validate incoming API payloads via Zod schemas when runtime contract safety is required.
+3. No scattered types: Types belonging to a feature must reside in `src/features/<domain>/types/`.
 
-## ✨ 4. Styling & UI Components
+## 4. Styling & UI Components
 
-1. Sử dụng **Tailwind CSS v4** + `clsx` & `tailwind-merge` thông qua hàm tiện ích `cn(...mảng_class)`.
-2. Không viết inline styles: Dùng Tailwind classes. Xử lý logic dynamic class chuyên nghiệp bằng `cn()`.
-3. Toàn bộ UI tuân thủ nguyên tắc Responsive-First (Mobile -> Desktop).
+1. Standardize on **Tailwind CSS v4** + `clsx` and `tailwind-merge` via the `cn(...classes)` utility function.
+2. No inline styles: Rely exclusively on Tailwind classes. Handle dynamic conditional classes using `cn()`.
+3. Mobile-First Responsive Design: Always design and implement layouts mobile-first (`base` -> `sm` -> `md` -> `lg` -> `xl`).
 
-## ⚡ 5. Error Handling & Performance
+## 5. Error Handling & API Resilience
 
 1. **Centralized API Error Handling:**
-   - Dự án sử dụng bộ đánh chặn (Interceptor) tại `src/lib/axios.ts` để xử lý lỗi tập trung.
-   - **Quy tắc Vàng:** Tuyệt đối KHÔNG dùng `try-catch` tại tầng `api/` hoặc trong `mutationFn` của React Query chỉ để `throw error`.
-   - Lỗi sẽ được Interceptor tự động bắt, hiển thị `toast.error` và chuyển đổi thành `AppError` thống nhất.
-   - Chỉ dùng `try-catch` khi cần xử lý logic nghiệp vụ đặc biệt (VD: dữ liệu dự phòng, bỏ qua lỗi cụ thể).
-   - SUCCESS CODE mặc định là **1000** (Kiểm tra dữ liệu trả về `resData.code === 1000`).
-2. Luôn xử lý triệt để 3 trạng thái: UI Loading Skeleton (`isPending`), Error State (`isError` + Error Boundaries/`error.tsx`), và Empty State (Data rỗng).
-3. **Memoization:** Cẩn trọng với `React.memo`, `useMemo` và `useCallback`. Chỉ dùng khi có render thực sự nặng hoặc truyền func props vào component con có bọc `React.memo()`.
-4. **Standalone Hooks Principle (BẮT BUỘC):** Tuyệt đối KHÔNG được định nghĩa `useQuery` hoặc `useMutation` bên trong một function/hook khác (Hook-Inside-Hook anti-pattern). Mọi query hooks phải là standalone exported functions để tránh memory leak từ `QueryObserver`.
+   - Global Axios interceptor at `src/lib/axios.ts` handles errors centrally.
+   - **Golden Rule:** NEVER wrap API functions in `try-catch` within `api/` or inside React Query's `mutationFn` simply to rethrow the error (`throw err`).
+   - The Axios interceptor automatically intercepts failures, triggers standardized toasts, and transforms payloads into structured `AppError` instances.
+   - Only use `try-catch` when implementing domain-specific fallback logic or intentional error suppression.
+   - Standard API success code contract: `resData.code === 1000`.
+2. Explicitly handle all 3 states across all asynchronous views: Loading Skeletons (`isPending` / `isLoading`), Error State (`isError` + Error Boundaries / `error.tsx`), and Empty State.
+3. **Memoization Discipline:** Use `React.memo`, `useMemo`, and `useCallback` judiciously. Only apply them for heavy computations or when passing callback references to memoized children.
+4. **Standalone Hooks Principle (MANDATORY):** NEVER define `useQuery` or `useMutation` inside another function or hook (Hook-Inside-Hook anti-pattern). All query and mutation hooks must be standalone exported functions to prevent memory leaks in `QueryObserver`.
 
-## ⚡ 7. Tối ưu Hiệu năng & Tài nguyên (Performance & Resource Management)
+## 6. Clean Code & Architecture Conventions
 
-1. **Static Data Hoisting:** Các mảng dữ liệu tĩnh, cấu hình menu, danh sách KPI... PHẢI được đưa ra ngoài component (hoist) hoặc bọc trong `useMemo` để tránh việc React khởi tạo lại object mới mỗi lần render gây áp lực lên Garbage Collector.
-2. **Auth Hook Optimization:** Tách biệt giữa `useAuthProfile` (chỉ dùng để lấy data user) và `useAuth` (chứa các mutations). Điều này giúp tránh khởi tạo hàng loạt mutations không cần thiết tại các Layout/Header.
-3. **Global Loading Control:**
-   - Interceptor tại `lib/axios.ts` phải sử dụng **Request Counter** (bộ đếm request) để quản lý `isLoading`.
-   - Chỉ tắt loading khi request CUỐI CÙNG hoàn thành.
-   - Luôn sử dụng debounce (khoảng 50ms) cho trạng thái loading để tránh flickering (nháy màn hình) và cascade re-renders.
-4. **Animation Efficiency:** Ưu tiên sử dụng **CSS Animation** thuần cho các thành phần lặp vô tận (Spinner, Pulse, Rotate) thay vì dùng Framer Motion. Framer Motion chỉ dùng cho các hiệu ứng chuyển cảnh (Entrance/Exit) hoặc tương tác người dùng phức tạp.
-
-## 📦 6. Quy Tắc Viết Code Rõ Ràng (Clean Code)
-
-- **Single Responsibility Principle:** Một component làm 1 việc duy nhất. Nếu file component dài quá 200 dòng, ĐÓ LÀ DẤU HIỆU CẦN CHIA NHỎ.
+- **Single Responsibility Principle:** A component must do one thing well. If a component file exceeds 200 lines, treat it as a strong signal to decompose into subcomponents or extract hooks.
+- **View Components Rule:** UI components (`.tsx`) must be "dumb" and strictly handle rendering props and callbacks. Extract all state, form handling (`useForm`), and React Query operations into dedicated custom hooks in `hooks/`.
 - **Naming Conventions:**
-  - Component/File export component: `PascalCase.tsx`.
-  - Hàm, hooks, service, utils: `camelCase.ts`. (VD: `useAuth.ts`, `authApi.ts`).
-  - Interface/Types: Bắt đầu bằng chữ in hoa (Ví dụ: `IUser`, `UserDTO`) hoặc hậu tố (Ví dụ: `AuthResponse`).
+  - Component files: `PascalCase.tsx` (e.g., `ProductCard.tsx`).
+  - Functions, custom hooks, utilities, API files: `camelCase.ts` (e.g., `useAuth.ts`, `authApi.ts`).
+  - Interfaces & Types: UpperCamelCase with descriptive prefixes or suffixes (e.g., `UserDto`, `AuthResponse`).
 
-## ⚡ 8. Xử lý lỗi Hydration (Next.js Hydration Error)
+## 7. Performance & Resource Optimization
 
-Lỗi Hydration xảy ra khi HTML server-rendered không khớp với DOM ban đầu của Client. Điều này thường do các thành phần động (Carousel, Animation, Date, Browser APIs). ### Quy tắc xử lý:
+1. **Static Data Hoisting:** Static lookup tables, menu items, KPI definitions, and configuration arrays MUST be hoisted outside the component scope or wrapped in `useMemo` to eliminate unnecessary object allocations on re-renders and reduce Garbage Collection pressure.
+2. **Auth Hook Segregation:** Separate read-only user queries (`useAuthProfile`) from write actions (`useAuth` with mutations). This avoids instantiating mutation pipelines inside layout shells or navigation bars.
+3. **Global Loading Counter:**
+   - The Axios interceptor at `src/lib/axios.ts` utilizes an active request counter to drive `isLoading`.
+   - The loading overlay is dismissed only when the final in-flight request resolves.
+   - A debounce threshold (~50ms) is applied to prevent visual flickering and cascade re-renders.
+4. **Animation Efficiency:** Prefer pure CSS animations for infinite looping elements (Spinners, Pulses, Rotations). Reserve Framer Motion for entrance/exit transitions and complex gesture-driven interactions.
 
-1. **Sử dụng `isMounted` pattern:** Đối với các Client Components có logic động hoặc sử dụng Browser APIs (`window`, `localStorage`, `matchMedia`...), bắt buộc bọc phần render nhạy cảm bằng trạng thái mount.
-   `tsx
+## 8. Hydration Error Mitigation (Next.js App Router)
+
+Hydration errors occur when server-rendered HTML mismatches initial client DOM trees. This typically stems from non-deterministic values (dates, random numbers, carousels, or direct browser APIs).
+
+### Mitigation Rules:
+
+1. **`isMounted` Pattern:** For Client Components utilizing browser APIs (`window`, `localStorage`, `matchMedia`) or dynamic client-only state, wrap sensitive rendering blocks:
+
+```tsx
 const [isMounted, setIsMounted] = useState(false);
+
 useEffect(() => {
   const timer = setTimeout(() => setIsMounted(true), 0);
   return () => clearTimeout(timer);
 }, []);
-if (!isMounted) return <Skeleton />; // Hoặc null/placeholder cố định
+
+if (!isMounted) return <Skeleton />; // Or null / deterministic placeholder
 return <DynamicContent />;
-`
-   _Lưu ý: Sử dụng `setTimeout` để tránh lỗi lint "Calling setState synchronously within an effect"._
-2. **Hạn chế `suppressHydrationWarning`:** Chỉ dùng như lựa chọn cuối cùng cho các trường hợp không thể kiểm soát (ví dụ: timestamp từ thư viện bên thứ 3, browser extensions) và chỉ áp dụng ở mức độ thẻ HTML thấp nhất có thể.
-3. **Tuyệt đối không sử dụng `typeof window !== 'undefined'` trực tiếp trong block render**: Điều này gây ra mismatch HTML giữa server và client. Hãy chuyển logic đó vào `useEffect`.
-4. **HTML Nesting:** Tuân thủ đúng quy tắc lồng thẻ HTML (không lồng `<div>` trong `<p>`, `<a>` trong `<a>`...) để tránh việc trình duyệt tự ý sửa cấu trúc DOM gây lỗi Hydration.
+```
 
-## ⚡ 9. Quy tắc triển khai Infinite Scroll (Cuộn vô hạn) - BẮT BUỘC
+_Note: Using `setTimeout(..., 0)` prevents ESLint warnings regarding synchronous `setState` inside effects._ 2. **Minimize `suppressHydrationWarning`:** Use only as a last resort for third-party extensions or browser-injected timestamps, scoped to the lowest possible HTML element. 3. **Never use `typeof window !== 'undefined'` directly inside JSX rendering blocks:** This causes immediate server/client mismatch. Move window-dependent logic into `useEffect`. 4. **Valid HTML Nesting:** Strictly follow semantic HTML rules (e.g., do not nest `<div>` inside `<p>`, or `<a>` inside `<a>`) to prevent browsers from automatically repairing DOM trees and breaking hydration.
 
-Để tránh các lỗi phổ biến như trùng lặp Key, Flickering (nháy màn hình), hoặc Reference Error khi triển khai Infinite Scroll, dự án quy định quy trình chuẩn như sau:
+## 9. Infinite Scroll Implementation Standards (MANDATORY)
 
-### A. Tầng Hook & API (`src/features/<domain>/hooks/&api/`)
+To prevent key collisions, UI flickering, and reference errors in infinite scroll feeds, follow this standard pattern:
 
-1. **Sử dụng `useInfiniteQuery`:** Luôn dùng `useInfiniteQuery` từ React Query.
-2. **Silent Loading Header:** Đối với các yêu cầu fetch trang tiếp theo (`fetchNextPage`), phải đính kèm header `X-Silent-Loading: true` để tránh kích hoạt `LoadingOverlay` toàn hệ thống (đã được cấu hình xử lý tại `lib/axios.ts`).
-3. **getNextPageParam:** Phải xử lý logic trang cuối dựa trên dữ liệu trả về từ backend (thường là `page < totalPages`).
+### A. Hook & API Layer (`src/features/<domain>/hooks/` & `api/`)
 
-### B. Tầng Component (`src/app/` hoặc `features/components/`)
+1. **Use `useInfiniteQuery`:** Always leverage TanStack Query's `useInfiniteQuery`.
+2. **Silent Loading Header:** When fetching subsequent pages via `fetchNextPage`, attach the header `X-Silent-Loading: true` to suppress the full-screen `LoadingOverlay` (handled in `src/lib/axios.ts`).
+3. **`getNextPageParam`:** Compute pagination parameters cleanly based on backend pagination contracts (e.g., `lastPage.data.page < lastPage.data.totalPages ? lastPage.data.page + 1 : undefined`).
 
-1. **Unique Key Generation:** TUYỆT ĐỐI không chỉ dùng `order.id` hoặc `product.id` làm key. Vì dữ liệu các trang có thể bị trùng hoặc cache cũ, key phải kết hợp: `key={`${item.id}-${index}`} ` để đảm bảo định danh duy nhất.
-2. **Dữ liệu hiển thị:** Sử dụng `data.pages.flatMap(page => page.data.content)` để gộp dữ liệu từ tất cả các trang vào một mảng phẳng.
-3. **Trigger Điểm Cuộn:** Sử dụng `react-intersection-observer`. Đặt trigger (loading indicator) ở cuối danh sách.
-4. **Kiểm soát re-fetch:** Chỉ gọi `fetchNextPage` khi thỏa mãn: `inView && hasNextPage && !isFetchingNextPage`.
+### B. Component Layer (`src/app/` or `src/features/<domain>/components/`)
+
+1. **Unique Key Generation:** NEVER rely solely on `item.id` as the key. Because page data may overlap during invalidations or cache updates, compose composite keys: `key={`${item.id}-${pageIndex}-${index}`}` to guarantee uniqueness.
+2. **Data Flattening:** Use `data.pages.flatMap((page) => page.data.content)` to project paginated responses into a flat array.
+3. **Scroll Trigger Sentinel:** Use `react-intersection-observer`. Position the trigger element at the bottom of the feed list.
+4. **Controlled Fetch Guard:** Only trigger `fetchNextPage()` when: `inView && hasNextPage && !isFetchingNextPage`.
 
 ---
 
-**🛑 CHECKLIST TRƯỚC KHI COMMIT LÊN PRODUCTION:**
+## Production Commit Checklist
 
-- [ ] Tính năng đã nằm đúng thư mục theo `Feature-Driven` chưa?
-- [ ] Gọi API bằng React Query theo dạng Standalone Hooks chưa?
-- [ ] Các mảng dữ liệu tĩnh đã được hoist ra ngoài component chưa?
-- [ ] Loading state có bị flicker hay gây re-render toàn app không?
-- [ ] Forms và tham số đầu vào đã có Zod validation chưa?
-- [ ] Thành phần Client Component đã xử lý Hydration (isMounted) chưa?
-- [ ] Không có Warning `any` và không thừa `console.log`?
+- [ ] Feature files are strictly organized within their corresponding domain in `src/features/`.
+- [ ] API interactions use TanStack React Query via standalone exported custom hooks.
+- [ ] View components are dumb and free of direct queries, mutations, or complex forms.
+- [ ] Static lookup objects and config arrays are hoisted outside component render functions.
+- [ ] Asynchronous UI states are handled completely (Loading Skeleton, Error Boundary, Empty State).
+- [ ] Input forms and mutation payloads have complete Zod validation schemas.
+- [ ] Client Components accessing browser APIs implement the `isMounted` hydration guard.
+- [ ] Zero TypeScript `any` types, zero dead imports, and no leftover `console.log` statements.

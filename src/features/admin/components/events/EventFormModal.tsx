@@ -25,103 +25,20 @@ import type {
   AtmosphereEffectType,
   EventThemeDecorations,
 } from '@/features/events/types/eventTypes';
+import { EVENT_TYPE_CONFIG } from '@/features/events/types/eventTypes';
 import { CONCEPT_PACKS, type ConceptPack } from '@/features/events/constants/decorationPacks';
 import { slugify } from '@/utils/slugify';
 import toast from 'react-hot-toast';
 
-interface ThemePreset {
-  id: string;
-  name: string;
-  subtitle: string;
-  primary: string;
-  secondary: string;
-  surface: string;
-  icon: string;
-  badge: string;
-}
+import {
+  type ThemePreset,
+  THEME_PRESETS,
+  PRESET_ICONS,
+  CONCEPT_ICONS,
+} from '@/features/events/constants/themePresets';
 
-export const THEME_PRESETS: ThemePreset[] = [
-  {
-    id: 'tet_xuan',
-    name: 'Tết & Xuân Sum Vầy',
-    subtitle: 'Đỏ son may mắn & Vàng kim tài lộc',
-    primary: '#DC2626',
-    secondary: '#F59E0B',
-    surface: '#FEF2F2',
-    icon: '🧧',
-    badge: 'Tết Nguyên Đán',
-  },
-  {
-    id: 'mua_vang',
-    name: 'Mùa Vàng Bội Thu',
-    subtitle: 'Vàng rơm óng ả & Xanh lá lúa non',
-    primary: '#D97706',
-    secondary: '#16A34A',
-    surface: '#FFFBEB',
-    icon: '🌾',
-    badge: 'Nông Sản Vàng',
-  },
-  {
-    id: 'ocop_xanh',
-    name: 'Nông Sản Xanh / Eco',
-    subtitle: 'Xanh ngọc đại ngàn & Xanh đọt chuối',
-    primary: '#15803D',
-    secondary: '#84CC16',
-    surface: '#F0FDF4',
-    icon: '🍃',
-    badge: 'Hữu Cơ Sinh Thái',
-  },
-  {
-    id: 'le_hoi_viet',
-    name: 'Đại Lễ & Tự Hào Bản Sắc',
-    subtitle: 'Đỏ cờ trang nghiêm & Vàng sao rực rỡ',
-    primary: '#B91C1C',
-    secondary: '#EAB308',
-    surface: '#FFF1F2',
-    icon: '🇻🇳',
-    badge: '2/9 • 30/4',
-  },
-  {
-    id: 'sieu_sale',
-    name: 'Mega Sale & Flash Sale',
-    subtitle: 'Tím Neon hiện đại & Hồng rực kích cầu',
-    primary: '#7C3AED',
-    secondary: '#F43F5E',
-    surface: '#FAF5FF',
-    icon: '⚡',
-    badge: '9.9 • 11.11 • Sale',
-  },
-  {
-    id: 'tay_bac',
-    name: 'Hương Rừng Vùng Cao',
-    subtitle: 'Nâu đất bazan ấm & Xanh chàm mộc mạc',
-    primary: '#9A3412',
-    secondary: '#0284C7',
-    surface: '#FFF7ED',
-    icon: '🏔️',
-    badge: 'Tây Bắc • Tây Nguyên',
-  },
-  {
-    id: 'miet_vuon',
-    name: 'Phù Sa Miệt Vườn',
-    subtitle: 'Xanh sông nước & Cam chín mọng Nam Bộ',
-    primary: '#0F766E',
-    secondary: '#EA580C',
-    surface: '#F0FDFA',
-    icon: '🍊',
-    badge: 'Đặc Sản Miền Tây',
-  },
-  {
-    id: 'trung_thu',
-    name: 'Đêm Hội Trăng Rằm',
-    subtitle: 'Xanh chàm đêm thu & Vàng ánh trăng rằm',
-    primary: '#1E1B4B',
-    secondary: '#FACC15',
-    surface: '#FEFCE8',
-    icon: '🥮',
-    badge: 'Tết Trung Thu',
-  },
-];
+export type { ThemePreset };
+export { THEME_PRESETS, PRESET_ICONS, CONCEPT_ICONS };
 
 interface EventFormModalProps {
   isOpen: boolean;
@@ -196,6 +113,13 @@ export function EventFormModal({ isOpen, onClose, onSuccess, initialData }: Even
   const [secondaryColor, setSecondaryColor] = useState(initialColors.secondary);
   const [surfaceColor, setSurfaceColor] = useState(initialColors.surface);
   const [selectedPresetId, setSelectedPresetId] = useState<string | null>(() => {
+    if (initialData?.theme?.code) {
+      const directCode = initialData.theme.code.replace(/^THEME_/i, '').toLowerCase();
+      const match = THEME_PRESETS.find(
+        (p) => p.id === directCode || p.id === initialData.theme?.code,
+      );
+      if (match) return match.id;
+    }
     const found = THEME_PRESETS.find(
       (p) =>
         p.primary.toLowerCase() === initialColors.primary.toLowerCase() &&
@@ -340,7 +264,7 @@ export function EventFormModal({ isOpen, onClose, onSuccess, initialData }: Even
         bannerMobileUrl,
         theme: {
           name: `Theme ${name}`,
-          code: `THEME_${code}`,
+          code: selectedPresetId || (code ? `THEME_${code}` : 'tet_xuan'),
           colorsJson: JSON.stringify({
             primary: primaryColor,
             secondary: secondaryColor,
@@ -419,15 +343,13 @@ export function EventFormModal({ isOpen, onClose, onSuccess, initialData }: Even
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value as EventType)}
-                className="w-full px-3.5 py-2 rounded-xl text-gray-700 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm bg-white"
+                className="w-full px-3.5 py-2 rounded-xl text-gray-700 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm bg-white"
               >
-                <option value="SEASONAL">Theo mùa (Tết, Trung Thu, Noel...)</option>
-                <option value="CULTURAL">Lễ hội / Văn hóa (2/9, 30/4, Ngày nhà giáo...)</option>
-                <option value="COMMERCE">Thương mại số (Mega Sale 9.9, 11.11, Flash Sale)</option>
-                <option value="REGIONAL">
-                  Tuần lễ vùng miền (Tây Bắc, Miền Tây, Tây Nguyên...)
-                </option>
-                <option value="COMMUNITY">Cộng đồng (Nông sản xanh, Sống khỏe...)</option>
+                {Object.values(EVENT_TYPE_CONFIG).map((cfg) => (
+                  <option key={cfg.id} value={cfg.id}>
+                    {cfg.description}
+                  </option>
+                ))}
               </select>
               <p className="mt-1 text-[11px] text-gray-400">
                 Phân loại để hệ thống áp dụng cấu hình và phân bổ vị trí hiển thị phù hợp.
@@ -772,7 +694,17 @@ export function EventFormModal({ isOpen, onClose, onSuccess, initialData }: Even
                     )}
                     <div>
                       <div className="flex items-center gap-1.5 mb-1">
-                        <span className="text-base">{preset.icon}</span>
+                        {(() => {
+                          const PresetIcon = PRESET_ICONS[preset.id] || Sparkles;
+                          return (
+                            <div
+                              className="w-5 h-5 rounded-md flex items-center justify-center text-white shrink-0 shadow-2xs"
+                              style={{ backgroundColor: preset.primary }}
+                            >
+                              <PresetIcon className="w-3 h-3" />
+                            </div>
+                          );
+                        })()}
                         <span className="text-xs font-bold text-gray-800 line-clamp-1">
                           {preset.name}
                         </span>
@@ -985,7 +917,14 @@ export function EventFormModal({ isOpen, onClose, onSuccess, initialData }: Even
                     )}
                     <div>
                       <div className="flex items-center gap-1.5 mb-1">
-                        <span className="text-base">{pack.icon}</span>
+                        {(() => {
+                          const ConceptIcon = CONCEPT_ICONS[pack.id] || Sparkles;
+                          return (
+                            <div className="w-5 h-5 rounded-md bg-amber-100 text-amber-800 flex items-center justify-center shrink-0 shadow-2xs">
+                              <ConceptIcon className="w-3 h-3" />
+                            </div>
+                          );
+                        })()}
                         <span className="text-xs font-bold text-gray-800 line-clamp-1">
                           {pack.name}
                         </span>

@@ -2,6 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
+import { Ticket, Copy, Check } from 'lucide-react';
 import { useAppSelector } from '@/store/hooks';
 import { useSavedVouchers, useSaveVoucherMutations } from '@/features/vouchers/hooks/useVouchers';
 import type { EventVoucher } from '../../types/eventCommerceTypes';
@@ -58,7 +59,7 @@ export function EventVoucherSection({ vouchers }: EventVoucherSectionProps) {
             borderColor: 'var(--event-primary, #DC2626)',
           }}
         >
-          <span>🎟️</span>
+          <Ticket className="w-3.5 h-3.5" />
           <span>Ưu đãi chiến dịch</span>
         </div>
         <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
@@ -88,7 +89,7 @@ export function EventVoucherSection({ vouchers }: EventVoucherSectionProps) {
                 className="w-28 sm:w-32 flex flex-col items-center justify-center p-3 text-white relative text-center"
                 style={{ backgroundColor: 'var(--event-primary, #DC2626)' }}
               >
-                <span className="text-2xl mb-1">🎟️</span>
+                <Ticket className="w-6 h-6 mb-1" />
                 <span className="text-xs font-black uppercase tracking-wider leading-tight">
                   {v.shopName ? 'Shop' : 'Toàn Sàn'}
                 </span>
@@ -125,7 +126,15 @@ export function EventVoucherSection({ vouchers }: EventVoucherSectionProps) {
                     onClick={() => handleCopy(v.code)}
                     className="text-xs font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 transition cursor-pointer"
                   >
-                    {copiedCode === v.code ? '✓ Đã sao chép' : '📋 Sao chép mã'}
+                    {copiedCode === v.code ? (
+                      <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
+                        <Check className="w-3.5 h-3.5" /> Đã sao chép
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1">
+                        <Copy className="w-3.5 h-3.5" /> Sao chép mã
+                      </span>
+                    )}
                   </button>
 
                   <button
@@ -141,7 +150,15 @@ export function EventVoucherSection({ vouchers }: EventVoucherSectionProps) {
                       !isSaved ? { backgroundColor: 'var(--event-primary, #DC2626)' } : undefined
                     }
                   >
-                    {isSaved ? '✓ Đã lưu ví' : isSaving ? 'Đang lưu...' : 'Lưu Mã'}
+                    {isSaved ? (
+                      <span className="flex items-center gap-1">
+                        <Check className="w-3.5 h-3.5" /> Đã lưu ví
+                      </span>
+                    ) : isSaving ? (
+                      'Đang lưu...'
+                    ) : (
+                      'Lưu Mã'
+                    )}
                   </button>
                 </div>
               </div>

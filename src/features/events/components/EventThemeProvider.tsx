@@ -42,13 +42,25 @@ export function EventThemeProvider({
     }
   }
 
+  const primary = parsedColors.primary || '#DC2626';
+  const secondary = parsedColors.secondary || '#F59E0B';
+  const surface = parsedColors.surface || '#FFF1F2';
+
   // Xây dựng style inline dựa trên token thiết kế của sự kiện
   const styleVars: Record<string, string> = {
-    '--event-primary': parsedColors.primary || '#D32F2F',
-    '--event-secondary': parsedColors.secondary || '#FFD700',
-    '--event-surface': parsedColors.surface || '#FFF8F0',
-    '--event-text': parsedColors.text || '#1E1E1E',
-    '--event-accent': parsedColors.accent || '#E53935',
+    '--event-primary': primary,
+    '--event-secondary': secondary,
+    '--event-surface': surface,
+    '--event-text': parsedColors.text || '#0F172A',
+    '--event-text-muted': parsedColors.textMuted || '#64748B',
+    '--event-accent': parsedColors.accent || primary,
+    '--event-bg':
+      parsedColors.pageBg || `linear-gradient(180deg, ${surface} 0%, #FFFFFF 50%, ${surface} 100%)`,
+    '--event-card-bg': parsedColors.cardBg || '#FFFFFF',
+    '--event-card-border': parsedColors.cardBorder || `${primary}26`,
+    '--event-countdown-bg':
+      parsedColors.countdownBg || `linear-gradient(135deg, ${primary} 0%, ${secondary} 100%)`,
+    '--event-glow': parsedColors.glow || `${primary}26`,
   };
 
   return (

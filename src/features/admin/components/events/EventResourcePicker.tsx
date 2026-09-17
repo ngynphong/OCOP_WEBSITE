@@ -22,7 +22,7 @@ interface EventResourcePickerProps {
   emptyMessage: string;
   noResultsMessage: string;
   icon: ReactNode;
-  accent: 'amber' | 'red';
+  accent?: 'emerald' | 'amber' | 'red';
   isLoading?: boolean;
   isError?: boolean;
   disabled?: boolean;
@@ -45,7 +45,7 @@ export function EventResourcePicker({
   emptyMessage,
   noResultsMessage,
   icon,
-  accent,
+  accent = 'emerald',
   isLoading = false,
   isError = false,
   disabled = false,
@@ -82,19 +82,26 @@ export function EventResourcePicker({
   }, [options, searchTerm]);
 
   const accentStyles =
-    accent === 'amber'
+    accent === 'emerald'
       ? {
-          focus: 'focus-visible:ring-amber-500/30 focus-visible:border-amber-400',
-          icon: 'bg-amber-50 text-amber-600 border-amber-200',
-          selected: 'bg-amber-50/80 border-amber-200',
-          check: 'text-amber-600',
+          focus: 'focus-visible:ring-emerald-500/30 focus-visible:border-emerald-500',
+          icon: 'bg-emerald-50 text-emerald-600 border-emerald-200',
+          selected: 'bg-emerald-50/80 border-emerald-300',
+          check: 'text-emerald-600',
         }
-      : {
-          focus: 'focus-visible:ring-red-500/30 focus-visible:border-red-400',
-          icon: 'bg-red-50 text-red-600 border-red-200',
-          selected: 'bg-red-50/80 border-red-200',
-          check: 'text-red-600',
-        };
+      : accent === 'amber'
+        ? {
+            focus: 'focus-visible:ring-amber-500/30 focus-visible:border-amber-400',
+            icon: 'bg-amber-50 text-amber-600 border-amber-200',
+            selected: 'bg-amber-50/80 border-amber-200',
+            check: 'text-amber-600',
+          }
+        : {
+            focus: 'focus-visible:ring-red-500/30 focus-visible:border-red-400',
+            icon: 'bg-red-50 text-red-600 border-red-200',
+            selected: 'bg-red-50/80 border-red-200',
+            check: 'text-red-600',
+          };
 
   return (
     <div

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Zap, Flame } from 'lucide-react';
 import type { EventFlashSale } from '../../types/eventCommerceTypes';
 
 interface EventFlashSaleSectionProps {
@@ -66,10 +67,10 @@ export function EventFlashSaleSection({ flashSales }: EventFlashSaleSectionProps
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-black/10 dark:border-white/10">
           <div className="flex items-center gap-3">
             <div
-              className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shadow-md text-white"
+              className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-md text-white"
               style={{ backgroundColor: 'var(--event-primary, #DC2626)' }}
             >
-              ⚡
+              <Zap className="w-6 h-6" />
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -125,8 +126,8 @@ export function EventFlashSaleSection({ flashSales }: EventFlashSaleSectionProps
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-4xl">
-                      ⚡
+                    <div className="w-full h-full flex items-center justify-center text-slate-400">
+                      <Zap className="w-8 h-8 opacity-30" />
                     </div>
                   )}
 
@@ -182,7 +183,14 @@ export function EventFlashSaleSection({ flashSales }: EventFlashSaleSectionProps
                               : 'text-slate-500'
                           }
                         >
-                          {isAlmostGone ? '🔥 Sắp cháy hàng' : `Đã bán ${item.soldQuantity}`}
+                          {isAlmostGone ? (
+                            <span className="flex items-center gap-1 text-red-600 dark:text-red-400 font-bold">
+                              <Flame className="w-3 h-3" />
+                              <span>Sắp cháy hàng</span>
+                            </span>
+                          ) : (
+                            `Đã bán ${item.soldQuantity}`
+                          )}
                         </span>
                         <span className="text-slate-400 font-medium">
                           Còn {item.remainingStock}
@@ -193,10 +201,11 @@ export function EventFlashSaleSection({ flashSales }: EventFlashSaleSectionProps
                     {/* CTA Button */}
                     <Link
                       href={`/product/${item.productSlug}`}
-                      className="mt-3 w-full block text-center py-2 px-3 rounded-xl text-xs font-bold text-white transition-all shadow-md group-hover:scale-[1.02] cursor-pointer"
+                      className="mt-3 w-full flex items-center justify-center gap-1.5 text-center py-2 px-3 rounded-xl text-xs font-bold text-white transition-all shadow-md group-hover:scale-[1.02] cursor-pointer"
                       style={{ backgroundColor: 'var(--event-primary, #DC2626)' }}
                     >
-                      ⚡ Săn Ngay
+                      <Zap className="w-3.5 h-3.5" />
+                      <span>Săn Ngay</span>
                     </Link>
                   </div>
                 </div>

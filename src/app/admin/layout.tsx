@@ -5,7 +5,7 @@ import AdminSidebar from '@/features/admin/components/core/AdminSidebar';
 import AdminHeader from '@/features/admin/components/core/AdminHeader';
 import { useAuthProfile } from '@/features/auth/hooks/useAuthProfile';
 import { usePermission } from '@/features/auth/hooks/usePermission';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { setLoading } from '@/store/features/uiSlice';
@@ -22,6 +22,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const { isAdminUser } = usePermission();
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const pathname = usePathname();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(false);
 
   // Quick-check tại store (chỉ có roles từ token) để redirect sớm
@@ -60,6 +61,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (!isInitialized || isLoadingProfile || (isAuthenticated && !profile)) {
     return <div className="h-screen w-full bg-[#F5F3EF]" />;
+  }
+
+  // Khi ở trang preview sự kiện: hiển thị chế độ toàn màn hình Studio (ẩn Sidebar và Header Admin)
+  const isPreviewMode = Boolean(pathname?.endsWith('/preview'));
+  if (isPreviewMode) {
+    return <div className="min-h-screen w-full bg-slate-950 overflow-hidden">{children}</div>;
   }
 
   return (

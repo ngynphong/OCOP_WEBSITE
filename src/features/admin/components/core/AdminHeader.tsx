@@ -28,6 +28,11 @@ const BREADCRUMB_MAP: Record<string, string> = {
   'shipping-providers': 'Vận chuyển',
   subscriptions: 'Gói đăng ký',
   inventory: 'Kho hàng',
+  events: 'Sự kiện',
+  create: 'Tạo mới',
+  edit: 'Chỉnh sửa',
+  commerce: 'Thương mại',
+  preview: 'Xem trước',
 };
 
 const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {

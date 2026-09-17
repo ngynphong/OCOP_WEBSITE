@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { Zap, Package, Ticket, Gift } from 'lucide-react';
 
 interface EventStickyNavProps {
   hasFlashSale?: boolean;
@@ -55,10 +56,10 @@ export function EventStickyNav({
   };
 
   const navItems = [
-    { id: 'flash-sale', label: 'Flash Sale Giờ Vàng', icon: '⚡', show: hasFlashSale },
-    { id: 'collections', label: 'Bộ Sưu Tập OCOP', icon: '📦', show: hasCollections },
-    { id: 'vouchers', label: 'Mã Giảm Giá Sàn', icon: '🎟️', show: hasVouchers },
-    { id: 'activities', label: 'Lì Xì & Minigame', icon: '🎁', show: hasActivities },
+    { id: 'flash-sale', label: 'Flash Sale Giờ Vàng', icon: Zap, show: hasFlashSale },
+    { id: 'collections', label: 'Bộ Sưu Tập OCOP', icon: Package, show: hasCollections },
+    { id: 'vouchers', label: 'Mã Giảm Giá Sàn', icon: Ticket, show: hasVouchers },
+    { id: 'activities', label: 'Lì Xì & Minigame', icon: Gift, show: hasActivities },
   ].filter((item) => item.show);
 
   if (navItems.length === 0) return null;
@@ -66,10 +67,10 @@ export function EventStickyNav({
   return (
     <nav
       aria-label="Điều hướng nhanh sự kiện"
-      className={`sticky top-[64px] z-40 w-full transition-all duration-300 ${
+      className={`sticky top-14 z-40 w-full transition-all duration-300 ${
         isScrolled
-          ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-md py-2 border-b border-black/5 dark:border-white/10'
-          : 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm py-3 border-y border-black/5 dark:border-white/5'
+          ? 'bg-white/95 backdrop-blur-md shadow-md py-2 border-b border-slate-200/80'
+          : 'bg-white/85 backdrop-blur-sm py-3 border-y border-slate-200/60'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -81,14 +82,14 @@ export function EventStickyNav({
                 key={item.id}
                 type="button"
                 onClick={() => scrollToSection(item.id)}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer shadow-sm ${
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer shadow-xs ${
                   isActive
                     ? 'text-white shadow-md scale-105 ring-2 ring-white/50'
-                    : 'bg-white/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700'
+                    : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-200/80'
                 }`}
                 style={isActive ? { backgroundColor: 'var(--event-primary, #DC2626)' } : undefined}
               >
-                <span className="text-base leading-none">{item.icon}</span>
+                <item.icon className="w-3.5 h-3.5 shrink-0" />
                 <span>{item.label}</span>
               </button>
             );

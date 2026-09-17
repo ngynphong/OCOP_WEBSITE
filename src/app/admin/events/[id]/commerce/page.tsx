@@ -1,45 +1,16 @@
 'use client';
 
-import { use, useCallback, useEffect, useState } from 'react';
+import { use } from 'react';
 import Link from 'next/link';
 import { AlertTriangle, ArrowLeft, Loader2, RefreshCw } from 'lucide-react';
 import AdminHeader from '@/features/admin/components/core/AdminHeader';
 import { EventCommerceManagement } from '@/features/admin/components/events/EventCommerceManagement';
-import { eventApi } from '@/features/events/api/eventApi';
-import type { EventDetailResponse } from '@/features/events/types/eventTypes';
+import { useEventDetail } from '@/features/admin/hooks/useEventDetail';
 
 export default function AdminEventCommercePage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
   const eventId = Number(resolvedParams.id);
-  const [event, setEvent] = useState<EventDetailResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const loadEvent = useCallback(async () => {
-    if (!Number.isInteger(eventId) || eventId <= 0) {
-      setEvent(null);
-      setError('Mã sự kiện không hợp lệ.');
-      setLoading(false);
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await eventApi.getAdminEventById(eventId);
-      setEvent(data);
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Không thể tải thông tin sự kiện';
-      setEvent(null);
-      setError(message);
-    } finally {
-      setLoading(false);
-    }
-  }, [eventId]);
-
-  useEffect(() => {
-    void loadEvent();
-  }, [loadEvent]);
+  const { event, loading, error, refresh } = useEventDetail(eventId);
 
   return (
     <div className="flex min-h-screen flex-col bg-gray-50/50">
@@ -71,7 +42,7 @@ export default function AdminEventCommercePage({ params }: { params: Promise<{ i
                 {Number.isInteger(eventId) && eventId > 0 && (
                   <button
                     type="button"
-                    onClick={() => void loadEvent()}
+                    onClick={refresh}
                     className="inline-flex items-center gap-2 rounded-xl bg-amber-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-amber-700"
                   >
                     <RefreshCw className="h-4 w-4" />

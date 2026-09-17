@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { usePublicProductsQuery } from '@/features/products/hooks/usePublicProducts';
 import type { Product } from '@/features/products/types/productTypes';
+import { Button } from '@/components/ui/AppButton';
 import { useDebounce } from '@/hooks/useDebounce';
 
 const PAGE_SIZE = 12;
@@ -122,9 +123,9 @@ export function EventProductPicker({
         </div>
 
         <div className="border-b border-gray-100 bg-gray-50/70 px-5 py-3">
-          <label className="flex h-11 items-center gap-2 rounded-xl border border-gray-300 bg-white px-3 shadow-2xs focus-within:border-red-400 focus-within:ring-2 focus-within:ring-red-500/15">
+          <label className="flex h-11 items-center gap-2 rounded-xl border border-gray-300 bg-white px-3 shadow-2xs focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-500/20">
             {productsQuery.isFetching && searchTerm === debouncedSearchTerm ? (
-              <Loader2 className="h-4 w-4 shrink-0 animate-spin text-red-500" />
+              <Loader2 className="h-4 w-4 shrink-0 animate-spin text-emerald-600" />
             ) : (
               <Search className="h-4 w-4 shrink-0 text-gray-400" />
             )}
@@ -205,8 +206,8 @@ export function EventProductPicker({
                     onClick={() => toggleProduct(product.id)}
                     className={`group relative flex min-w-0 items-center gap-3 rounded-xl border p-2.5 text-left transition ${
                       isSelected
-                        ? 'border-red-400 bg-red-50/70 ring-2 ring-red-500/10'
-                        : 'border-gray-200 bg-white hover:border-red-200 hover:bg-red-50/30'
+                        ? 'border-emerald-500 bg-emerald-50/70 ring-2 ring-emerald-500/20'
+                        : 'border-gray-200 bg-white hover:border-emerald-200 hover:bg-emerald-50/30'
                     } ${isLinked ? 'cursor-not-allowed bg-gray-50 opacity-65' : 'cursor-pointer'}`}
                   >
                     <span
@@ -235,7 +236,7 @@ export function EventProductPicker({
                         </span>
                       )}
                       <span className="mt-1.5 flex items-center gap-2 text-[11px]">
-                        <span className="font-bold text-red-600">
+                        <span className="font-bold text-emerald-700">
                           {formatCurrency(product.minPrice)}
                         </span>
                         {product.ocopStar > 0 && (
@@ -254,7 +255,7 @@ export function EventProductPicker({
                       <span
                         className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border ${
                           isSelected
-                            ? 'border-red-600 bg-red-600 text-white'
+                            ? 'border-emerald-600 bg-emerald-600 text-white'
                             : 'border-gray-300 bg-white text-transparent'
                         }`}
                       >
@@ -275,7 +276,7 @@ export function EventProductPicker({
               onClick={() => setPageNo((current) => Math.max(1, current - 1))}
               disabled={pageNo <= 1 || productsQuery.isFetching}
               aria-label="Trang trước"
-              className="rounded-lg border border-gray-200 p-2 text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-35"
+              className="rounded-lg border border-gray-200 p-2 text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-35 cursor-pointer"
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
@@ -287,30 +288,33 @@ export function EventProductPicker({
               onClick={() => setPageNo((current) => Math.min(totalPage, current + 1))}
               disabled={pageNo >= totalPage || productsQuery.isFetching}
               aria-label="Trang sau"
-              className="rounded-lg border border-gray-200 p-2 text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-35"
+              className="rounded-lg border border-gray-200 p-2 text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-35 cursor-pointer"
             >
               <ChevronRight className="h-4 w-4" />
             </button>
           </div>
 
           <div className="flex items-center justify-end gap-2">
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="sm"
               onClick={onClose}
               disabled={isSubmitting}
-              className="rounded-lg border border-gray-300 px-4 py-2.5 text-xs font-bold text-gray-700 hover:bg-gray-50 disabled:opacity-50"
             >
               Hủy
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="primary"
+              size="sm"
               onClick={() => void onConfirm(Array.from(selectedIds))}
               disabled={selectedIds.size === 0 || isSubmitting}
-              className="inline-flex min-w-36 items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+              isLoading={isSubmitting}
+              className="min-w-36"
             >
-              {isSubmitting && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
               Thêm {selectedIds.size > 0 ? selectedIds.size : ''} sản phẩm
-            </button>
+            </Button>
           </div>
         </div>
       </div>
