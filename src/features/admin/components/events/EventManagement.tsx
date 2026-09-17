@@ -17,6 +17,8 @@ import {
   Clock,
   Layers,
   ShoppingBag,
+  BarChart3,
+  ShieldAlert,
 } from 'lucide-react';
 import type { CampaignEventStatus, EventType } from '@/features/events/types/eventTypes';
 import {
@@ -27,8 +29,19 @@ import {
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { Button } from '@/components/ui/AppButton';
 import { useAdminEventsManagement } from '@/features/admin/hooks/useAdminEvents';
+import { EventAnalyticsModal } from './analytics';
 
 export function EventManagement() {
+  const [analyticsModal, setAnalyticsModal] = React.useState<{
+    isOpen: boolean;
+    eventId: number | null;
+    eventName: string;
+  }>({
+    isOpen: false,
+    eventId: null,
+    eventName: '',
+  });
+
   const {
     events: filteredEvents,
     loading,
@@ -38,6 +51,11 @@ export function EventManagement() {
     setSearchQuery,
     confirmModal,
     closeConfirmModal,
+    killModal,
+    handleOpenKillModal,
+    handleCloseKillModal,
+    setKillReason,
+    handleConfirmKill,
     isActionLoading,
     fetchEvents,
     handlePublish,
@@ -281,6 +299,32 @@ export function EventManagement() {
                           <Edit2 className="w-4 h-4" />
                         </Link>
 
+                        {/* Analytics button */}
+                        <button
+                          onClick={() =>
+                            setAnalyticsModal({
+                              isOpen: true,
+                              eventId: evt.id,
+                              eventName: evt.name,
+                            })
+                          }
+                          className="p-1.5 text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-lg transition-colors cursor-pointer"
+                          title="Thống kê chiến dịch (GMV, Ngân sách, Đơn hàng)"
+                        >
+                          <BarChart3 className="w-4 h-4" />
+                        </button>
+
+                        {/* Emergency Kill (Panic Switch) - only for LIVE events */}
+                        {evt.status === 'LIVE' && (
+                          <button
+                            onClick={() => handleOpenKillModal(evt.id, evt.name)}
+                            className="p-1.5 text-red-600 hover:text-white hover:bg-red-600 rounded-lg transition-all cursor-pointer border border-red-200 bg-red-50/70"
+                            title="DỪNG KHẨN CẤP (Panic Switch - Hạ ngay lập tức & Xóa sạch cache)"
+                          >
+                            <ShieldAlert className="w-4 h-4 animate-pulse" />
+                          </button>
+                        )}
+
                         {/* Delete button (only when DRAFT) */}
                         {evt.status === 'DRAFT' && (
                           <button
@@ -312,6 +356,40 @@ export function EventManagement() {
         isLoading={isActionLoading}
         onConfirm={() => void confirmModal.onConfirm()}
         onCancel={closeConfirmModal}
+      />
+
+      {/* Emergency Kill (Panic Switch) Modal */}
+      <ConfirmModal
+        isOpen={killModal.isOpen}
+        title="KÍCH HOẠT DỪNG KHẨN CẤP (PANIC SWITCH)"
+        message={`CẢNH BÁO CAO: Bạn có chắc chắn muốn dừng khẩn cấp sự kiện "${killModal.eventName}" ngay lập tức? Toàn bộ cache Redis (trang chủ, chi tiết sự kiện, danh mục bộ sưu tập) sẽ bị xóa sạch ngay tức thì để ngăn chặn rủi ro.`}
+        confirmText="DỪNG KHẨN CẤP NGAY"
+        cancelText="Hủy bỏ"
+        type="danger"
+        isLoading={isActionLoading}
+        onConfirm={handleConfirmKill}
+        onCancel={handleCloseKillModal}
+      >
+        <div className="mt-4 text-left">
+          <label className="block text-xs font-semibold text-stone-700 mb-1">
+            Lý do dừng khẩn cấp (tùy chọn):
+          </label>
+          <textarea
+            value={killModal.reason}
+            onChange={(e) => setKillReason(e.target.value)}
+            placeholder="Ví dụ: Phát hiện gian lận voucher/minigame, sai lệch giá sản phẩm..."
+            rows={2}
+            className="w-full text-xs p-2.5 rounded-lg border border-stone-300 focus:outline-none focus:ring-2 focus:ring-red-500 text-stone-800"
+          />
+        </div>
+      </ConfirmModal>
+
+      {/* Analytics Modal */}
+      <EventAnalyticsModal
+        isOpen={analyticsModal.isOpen}
+        eventId={analyticsModal.eventId}
+        eventName={analyticsModal.eventName}
+        onClose={() => setAnalyticsModal((prev) => ({ ...prev, isOpen: false }))}
       />
     </div>
   );

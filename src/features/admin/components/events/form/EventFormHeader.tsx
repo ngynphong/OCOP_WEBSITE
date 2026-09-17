@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Eye, ShoppingBag, Save } from 'lucide-react';
+import { ArrowLeft, Eye, ShoppingBag, Save, BarChart3 } from 'lucide-react';
 import { Button } from '@/components/ui/AppButton';
 
 export interface EventFormHeaderProps {
@@ -83,6 +83,16 @@ export function EventFormHeader({
             >
               <Button variant="outline" size="sm" leftIcon={<ShoppingBag className="w-4 h-4" />}>
                 Quản lý Thương Mại
+              </Button>
+            </Link>
+
+            <Link
+              href={`/admin/events/${eventId}/analytics`}
+              className="hidden lg:inline-flex"
+              title="Xem báo cáo thống kê hiệu quả chiến dịch"
+            >
+              <Button variant="outline" size="sm" leftIcon={<BarChart3 className="w-4 h-4" />}>
+                Thống Kê
               </Button>
             </Link>
           </>

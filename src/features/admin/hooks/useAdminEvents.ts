@@ -39,6 +39,7 @@ export function useAdminEventMutations() {
   const invalidateEventQueries = () => {
     queryClient.invalidateQueries({ queryKey: ['admin-events'] });
     queryClient.invalidateQueries({ queryKey: ['admin-event-detail'] });
+    queryClient.invalidateQueries({ queryKey: ['admin-event-analytics'] });
   };
 
   const publishMutation = useMutation({
@@ -73,11 +74,24 @@ export function useAdminEventMutations() {
     },
   });
 
+  const emergencyKillMutation = useMutation({
+    mutationFn: ({ id, reason }: { id: number; reason?: string }) =>
+      eventApi.emergencyKillEvent(id, reason),
+    onSuccess: (data) => {
+      toast.error(
+        `ĐÃ KÍCH HOẠT PANIC SWITCH! Sự kiện "${data.name}" đã dừng khẩn cấp và dọn sạch cache.`,
+        { duration: 5000 },
+      );
+      invalidateEventQueries();
+    },
+  });
+
   return {
     publishMutation,
     pauseMutation,
     cloneMutation,
     deleteMutation,
+    emergencyKillMutation,
     invalidateEventQueries,
   };
 }
@@ -197,6 +211,50 @@ export function useAdminEventsManagement() {
     setConfirmModal((prev) => ({ ...prev, isOpen: false }));
   };
 
+  // Emergency Kill (Panic Switch) State
+  const [killModal, setKillModal] = useState<{
+    isOpen: boolean;
+    eventId: number | null;
+    eventName: string;
+    reason: string;
+  }>({
+    isOpen: false,
+    eventId: null,
+    eventName: '',
+    reason: '',
+  });
+
+  const handleOpenKillModal = (id: number, name: string) => {
+    setKillModal({
+      isOpen: true,
+      eventId: id,
+      eventName: name,
+      reason: '',
+    });
+  };
+
+  const handleCloseKillModal = () => {
+    setKillModal((prev) => ({ ...prev, isOpen: false }));
+  };
+
+  const setKillReason = (reason: string) => {
+    setKillModal((prev) => ({ ...prev, reason }));
+  };
+
+  const handleConfirmKill = async () => {
+    if (!killModal.eventId) return;
+    try {
+      setIsActionLoading(true);
+      await mutations.emergencyKillMutation.mutateAsync({
+        id: killModal.eventId,
+        reason: killModal.reason.trim() || undefined,
+      });
+      handleCloseKillModal();
+    } finally {
+      setIsActionLoading(false);
+    }
+  };
+
   return {
     events,
     rawEvents,
@@ -210,12 +268,18 @@ export function useAdminEventsManagement() {
     setSearchQuery,
     confirmModal,
     closeConfirmModal,
+    killModal,
+    handleOpenKillModal,
+    handleCloseKillModal,
+    setKillReason,
+    handleConfirmKill,
     isActionLoading:
       isActionLoading ||
       mutations.publishMutation.isPending ||
       mutations.pauseMutation.isPending ||
       mutations.cloneMutation.isPending ||
-      mutations.deleteMutation.isPending,
+      mutations.deleteMutation.isPending ||
+      mutations.emergencyKillMutation.isPending,
     handlePublish,
     handlePause,
     handleClone,

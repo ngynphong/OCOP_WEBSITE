@@ -293,3 +293,42 @@ export interface CreateEventInput {
 }
 
 export type UpdateEventInput = CreateEventInput;
+
+export interface MinigameAnalyticsDto {
+  isActive: boolean;
+  budgetLimit: number;
+  totalClaimedValue: number;
+  budgetBurnRate: number;
+  totalSpins: number;
+  totalWinners: number;
+  freeSpinsPerDay?: number;
+}
+
+export interface EventTopProductDto {
+  productId: number;
+  productName: string;
+  shopName: string;
+  soldQty: number;
+  totalRevenue: number;
+}
+
+export interface EventTopShopDto {
+  shopId?: number;
+  shopName: string;
+  orderCount: number;
+  totalRevenue: number;
+}
+
+export interface EventAnalyticsResponse {
+  eventId: number;
+  eventName: string;
+  eventCode: string;
+  status: CampaignEventStatus;
+  totalGmv: number;
+  totalOrders: number;
+  totalParticipatingProducts: number;
+  totalParticipatingShops: number;
+  minigameStats?: MinigameAnalyticsDto | null;
+  topProducts: EventTopProductDto[];
+  topShops: EventTopShopDto[];
+}

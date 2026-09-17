@@ -8,6 +8,7 @@ import type {
   CreateEventInput,
   UpdateEventInput,
   CampaignEventStatus,
+  EventAnalyticsResponse,
 } from '../types/eventTypes';
 
 export interface PageResponse<T> {
@@ -118,6 +119,7 @@ export const eventApi = {
   pauseEvent: async (id: number): Promise<EventDetailResponse> => {
     const res = (await axiosClient.post<ResponseBase<EventDetailResponse>>(
       `${API_ENDPOINTS.ADMIN.EVENTS}/${id}/pause`,
+      {},
       {
         headers: { 'X-Silent-Loading': 'true' },
       },
@@ -125,9 +127,28 @@ export const eventApi = {
     return res.data;
   },
 
+  emergencyKillEvent: async (id: number, reason?: string): Promise<EventDetailResponse> => {
+    const res = (await axiosClient.post<ResponseBase<EventDetailResponse>>(
+      `${API_ENDPOINTS.ADMIN.EVENTS}/${id}/kill`,
+      reason ? { reason } : {},
+    )) as unknown as ResponseBase<EventDetailResponse>;
+    return res.data;
+  },
+
+  getEventAnalytics: async (id: number): Promise<EventAnalyticsResponse> => {
+    const res = (await axiosClient.get<ResponseBase<EventAnalyticsResponse>>(
+      `${API_ENDPOINTS.ADMIN.EVENTS}/${id}/analytics`,
+      {
+        headers: { 'X-Silent-Loading': 'true' },
+      },
+    )) as unknown as ResponseBase<EventAnalyticsResponse>;
+    return res.data;
+  },
+
   cloneEvent: async (id: number): Promise<EventDetailResponse> => {
     const res = (await axiosClient.post<ResponseBase<EventDetailResponse>>(
       `${API_ENDPOINTS.ADMIN.EVENTS}/${id}/clone`,
+      {},
       {
         headers: { 'X-Silent-Loading': 'true' },
       },
