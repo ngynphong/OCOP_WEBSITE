@@ -22,7 +22,7 @@ export const VIETNAM_MAP_BOUNDS: [[number, number], [number, number]] = [
 
 export const VIETNAM_CENTER: [number, number] = [16.04, 107.5];
 export const VIETNAM_DEFAULT_ZOOM = 6;
-export const VIETNAM_MIN_ZOOM = 5;
+export const VIETNAM_MIN_ZOOM = 6;
 export const VIETNAM_MAX_ZOOM = 19;
 export const PROVINCE_FOCUS_ZOOM = 9;
 

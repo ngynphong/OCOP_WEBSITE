@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/AppButton';
 import { FiMapPin, FiInfo, FiLayers, FiAlertCircle } from 'react-icons/fi';
+import { Sprout } from 'lucide-react';
 import { useCreateFacility } from '../hooks/useFacility';
 import MapPickerWrapper from './map/MapPickerWrapper';
 import { LocationSelects } from './LocationSelects';
@@ -117,7 +118,8 @@ export default function CreateFacilityModal({ isOpen, onClose }: Props) {
 
         <div>
           <h3 className="text-sm font-semibold text-stone-900 uppercase tracking-wider mb-4 pb-2 border-b border-stone-100 flex items-center gap-2">
-            🌿 Cây trồng / Vật nuôi
+            <Sprout className="w-4 h-4 text-emerald-600" />
+            <span>Cây trồng / Vật nuôi</span>
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -165,6 +167,9 @@ export default function CreateFacilityModal({ isOpen, onClose }: Props) {
                   }}
                   onChangeBoundary={(boundaryJson: string) => {
                     form.setValue('boundary', boundaryJson);
+                  }}
+                  onAreaCalculated={(areaM2: number) => {
+                    form.setValue('areaSize', areaM2);
                   }}
                 />
               </div>

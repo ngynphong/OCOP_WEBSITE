@@ -185,6 +185,9 @@ export function CreateFacilityForm({ onClose, initialData }: CreateFacilityFormP
                 onChangeBoundary={(boundaryJson: string) => {
                   form.setValue('boundary', boundaryJson);
                 }}
+                onAreaCalculated={(areaM2: number) => {
+                  form.setValue('areaSize', areaM2);
+                }}
               />
             </div>
             {/* Hidden fields just to store data for react-hook-form */}
