@@ -35,7 +35,6 @@ export const LoadingOverlay = memo(function LoadingOverlay() {
               width={100}
               height={30}
               className="w-11 sm:w-14 h-auto object-contain scale-110"
-              priority
             />
           </div>
 

@@ -17,11 +17,11 @@ async function fetchBlogServer(slug: string) {
   }
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}): Promise<Metadata> {
+interface BlogDetailPageProps {
+  params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: BlogDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
   const blog = await fetchBlogServer(slug);
 
@@ -42,7 +42,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function BlogDetailPage({ params }: { params: { slug: string } }) {
+export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
   const { slug } = await params;
   const blog = await fetchBlogServer(slug);
 
@@ -73,7 +73,7 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
       )}
       <Header />
       <main>
-        <BlogArticle />
+        <BlogArticle initialBlog={blog} />
       </main>
       <Footer />
     </div>

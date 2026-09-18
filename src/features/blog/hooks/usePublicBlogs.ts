@@ -1,6 +1,6 @@
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 import { publicBlogApi } from '../api/publicBlogApi';
-import { BlogListParams } from '../types/blogTypes';
+import { BlogListParams, BlogDetailResponse } from '../types/blogTypes';
 
 export const PUBLIC_BLOG_KEYS = {
   all: ['public-blogs'] as const,
@@ -26,12 +26,13 @@ export const useInfinitePublicBlogsQuery = (params: Omit<BlogListParams, 'pageNo
   });
 };
 
-export const usePublicBlogDetailQuery = (slug: string) => {
+export const usePublicBlogDetailQuery = (slug: string, initialData?: BlogDetailResponse) => {
   return useQuery({
     queryKey: PUBLIC_BLOG_KEYS.detail(slug),
     queryFn: () => publicBlogApi.getBlogBySlug(slug),
     enabled: !!slug,
     staleTime: 10 * 60 * 1000,
+    initialData,
   });
 };
 

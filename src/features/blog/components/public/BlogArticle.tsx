@@ -9,6 +9,7 @@ import { usePublicBlogDetailQuery } from '../../hooks/usePublicBlogs';
 import { useParams } from 'next/navigation';
 import { BlogLeftSidebar } from './BlogLeftSidebar';
 import { BlogRightSidebar, TOCItem } from './BlogRightSidebar';
+import { Blog } from '../../types/blogTypes';
 
 const generateTOCAndProcessHTML = (html: string, fallbackAlt: string = 'Hình ảnh') => {
   const toc: TOCItem[] = [];
@@ -62,10 +63,17 @@ const generateTOCAndProcessHTML = (html: string, fallbackAlt: string = 'Hình �
   return { toc, processedHtml };
 };
 
-export const BlogArticle = () => {
+interface BlogArticleProps {
+  initialBlog?: Blog | null;
+}
+
+export const BlogArticle = ({ initialBlog }: BlogArticleProps = {}) => {
   const params = useParams();
-  const slug = params.slug as string;
-  const { data: blogRes, isLoading, isError } = usePublicBlogDetailQuery(slug);
+  const slug = (params?.slug as string) || '';
+  const initialData = initialBlog
+    ? { code: 1000, message: 'Success', data: initialBlog }
+    : undefined;
+  const { data: blogRes, isLoading, isError } = usePublicBlogDetailQuery(slug, initialData);
 
   const { toc, processedHtml } = (() => {
     if (!blogRes?.data?.content) return { toc: [], processedHtml: '' };
