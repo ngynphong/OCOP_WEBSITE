@@ -18,6 +18,7 @@ import { usePublicCategoriesQuery } from '@/features/products/hooks/usePublicPro
 import { useLocation } from '@/features/admin/hooks/useLocation';
 import { flattenCategories } from '../../utils/productUtils';
 import { PRODUCT_UNITS } from '../../utils/ProductConstants';
+import { PROVINCES_34_MAP, PROVINCES_63_MAP, ProvinceMode } from '@/constants/regions-map';
 
 interface InfoTabProps {
   productId: number;
@@ -41,6 +42,7 @@ export function InfoTab({ productId }: InfoTabProps) {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<CreateProductFormData>({
     resolver: zodResolver(createProductSchema),
@@ -91,7 +93,63 @@ export function InfoTab({ productId }: InfoTabProps) {
     isPending: isLoadingProvinces,
     isError: isErrorProvinces,
   } = useProvinces();
-  const provinces = provincesData?.data ?? [];
+  const provinces = React.useMemo(() => provincesData?.data ?? [], [provincesData?.data]);
+
+  const [originMode, setOriginMode] = React.useState<ProvinceMode>('63');
+  const [selectedProv34Code, setSelectedProv34Code] = React.useState<string>('');
+
+  const currentOriginProvId = watch('originProvinceId');
+  React.useEffect(() => {
+    if (currentOriginProvId && provinces.length > 0) {
+      const pObj = provinces.find((p) => p.id === currentOriginProvId);
+      if (pObj) {
+        const p63 = Object.values(PROVINCES_63_MAP).find(
+          (x) =>
+            x.name.toLowerCase().includes(pObj.name.toLowerCase()) ||
+            pObj.name.toLowerCase().includes(x.name.toLowerCase()),
+        );
+        if (p63?.parent34Code) {
+          setSelectedProv34Code(p63.parent34Code);
+        }
+      }
+    }
+  }, [currentOriginProvId, provinces]);
+
+  const selectedProv34 = selectedProv34Code ? PROVINCES_34_MAP[selectedProv34Code] : undefined;
+  const constituentProvinces = React.useMemo(() => {
+    if (!selectedProv34?.constituentNames) return [];
+    return selectedProv34.constituentNames.map((name) => {
+      const found = provinces.find(
+        (p) =>
+          p.name.toLowerCase().includes(name.toLowerCase()) ||
+          name.toLowerCase().includes(p.name.toLowerCase()),
+      );
+      return {
+        name,
+        backendId: found?.id,
+      };
+    });
+  }, [selectedProv34, provinces]);
+
+  const handleSelect34Province = (code: string) => {
+    setSelectedProv34Code(code);
+    if (!code) {
+      setValue('originProvinceId', undefined as unknown as number);
+      return;
+    }
+    const p34 = PROVINCES_34_MAP[code];
+    if (p34) {
+      const firstConstituentName = p34.constituentNames?.[0] || p34.name;
+      const found = provinces.find(
+        (p) =>
+          p.name.toLowerCase().includes(firstConstituentName.toLowerCase()) ||
+          firstConstituentName.toLowerCase().includes(p.name.toLowerCase()),
+      );
+      if (found) {
+        setValue('originProvinceId', found.id, { shouldValidate: true, shouldDirty: true });
+      }
+    }
+  };
 
   const onSubmit = async (formData: CreateProductFormData) => {
     try {
@@ -245,22 +303,101 @@ export function InfoTab({ productId }: InfoTabProps) {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="text-xs font-bold text-stone-500 uppercase tracking-widest block mb-1.5">
-            Tỉnh / Nơi sản xuất
-          </label>
-          <select
-            {...register('originProvinceId', { valueAsNumber: true })}
-            className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-800 outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition bg-white"
-          >
-            <option value="" disabled={isErrorProvinces}>
-              {isErrorProvinces ? 'Không thể tải tỉnh/thành' : '-- Chọn tỉnh/thành --'}
-            </option>
-            {provinces.map((prov) => (
-              <option key={prov.id} value={prov.id}>
-                {prov.name}
+          <div className="flex items-center justify-between mb-1.5">
+            <label className="text-xs font-bold text-stone-500 uppercase tracking-widest block">
+              Tỉnh / Nơi sản xuất
+            </label>
+            <div className="inline-flex p-0.5 bg-stone-100 rounded-lg border border-stone-200 text-[10px] font-bold">
+              <button
+                type="button"
+                onClick={() => setOriginMode('63')}
+                className={`px-1.5 py-0.5 rounded transition-all ${
+                  originMode === '63'
+                    ? 'bg-emerald-600 text-white shadow-2xs'
+                    : 'text-stone-600 hover:text-stone-900'
+                }`}
+              >
+                63 Tỉnh
+              </button>
+              <button
+                type="button"
+                onClick={() => setOriginMode('34')}
+                className={`px-1.5 py-0.5 rounded transition-all flex items-center gap-1 ${
+                  originMode === '34'
+                    ? 'bg-emerald-600 text-white shadow-2xs'
+                    : 'text-stone-600 hover:text-stone-900'
+                }`}
+              >
+                <span>34 Tỉnh</span>
+                <span className="text-[8px] px-1 py-0.1 bg-amber-400 text-stone-900 rounded-full font-black">
+                  Mới
+                </span>
+              </button>
+            </div>
+          </div>
+
+          {originMode === '63' ? (
+            <select
+              {...register('originProvinceId', { valueAsNumber: true })}
+              className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-800 outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition bg-white"
+            >
+              <option value="" disabled={isErrorProvinces}>
+                {isErrorProvinces ? 'Không thể tải tỉnh/thành' : '-- Chọn tỉnh/thành --'}
               </option>
-            ))}
-          </select>
+              {provinces.map((prov) => (
+                <option key={prov.id} value={prov.id}>
+                  {prov.name}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <div className="space-y-2">
+              <select
+                value={selectedProv34Code}
+                onChange={(e) => handleSelect34Province(e.target.value)}
+                className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-stone-800 outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition bg-white"
+              >
+                <option value="">-- Chọn theo 34 tỉnh quy hoạch mới --</option>
+                {Object.values(PROVINCES_34_MAP)
+                  .sort((a, b) => a.name.localeCompare(b.name, 'vi'))
+                  .map((p) => (
+                    <option key={p.code} value={p.code}>
+                      {p.name}
+                      {p.constituentNames && p.constituentNames.length > 1
+                        ? ` (gồm ${p.constituentNames.join(', ')})`
+                        : ''}
+                    </option>
+                  ))}
+              </select>
+
+              {constituentProvinces.length > 1 && (
+                <div>
+                  <label className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider block mb-1">
+                    Thuộc địa bàn gốc trong đề án sáp nhập:
+                  </label>
+                  <select
+                    value={watch('originProvinceId') || ''}
+                    onChange={(e) => {
+                      const val = Number(e.target.value);
+                      setValue('originProvinceId', val, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      });
+                    }}
+                    className="w-full border border-emerald-300 bg-emerald-50/50 rounded-xl px-3 py-2 text-xs text-stone-800 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition"
+                  >
+                    <option value="">-- Chọn địa bàn gốc tương ứng --</option>
+                    {constituentProvinces.map((c) => (
+                      <option key={c.name} value={c.backendId || ''} disabled={!c.backendId}>
+                        {c.name} {!c.backendId ? '(chưa có ID)' : ''}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
+          )}
+
           {errors.originProvinceId && (
             <p className="text-xs text-red-500 mt-1">{errors.originProvinceId.message}</p>
           )}

@@ -27,11 +27,12 @@ const ShopDetailSidebar: React.FC<ShopDetailSidebarProps> = React.memo(({ shop }
           </div>
 
           <div className="absolute top-0 left-0 w-full h-24 group-hover:opacity-30 transition-opacity">
-            {shop.bannerUrl ? (
-              <Image src={shop.bannerUrl} alt="Banner" fill className="object-cover rounded-xl" />
-            ) : (
-              <div className="w-full h-full bg-gray-50 rounded-xl"></div>
-            )}
+            <Image
+              src={shop.bannerUrl || '/images/background.jpg'}
+              alt="Banner"
+              fill
+              className="object-cover rounded-xl"
+            />
           </div>
 
           <h3 className="text-2xl font-black text-stone-900 mb-1 leading-tight">{shop.name}</h3>

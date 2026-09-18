@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -20,6 +20,7 @@ import { useLocationQuery } from '@/features/shop/hooks/useLocationQuery';
 import { ShopInfo } from '@/features/shop/types/shopTypes';
 import { Button } from '@/components/ui/AppButton';
 import { CustomSelect } from '@/components/ui/CustomSelect';
+import { PROVINCES_34_MAP, ProvinceMode } from '@/constants/regions-map';
 
 interface FeaturedShop extends ShopInfo {
   ocopStar?: number;
@@ -29,7 +30,9 @@ export function PublicShopList() {
   const [pageNo, setPageNo] = useState(1);
   const [keyword, setKeyword] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [provinceMode, setProvinceMode] = useState<ProvinceMode>('63');
   const [selectedProvinceId, setSelectedProvinceId] = useState<number | undefined>();
+  const [selectedProvince34Code, setSelectedProvince34Code] = useState<string | undefined>();
   const [allShops, setAllShops] = useState<FeaturedShop[]>([]);
   const pageSize = 12;
 
@@ -41,7 +44,7 @@ export function PublicShopList() {
     pageNo,
     pageSize,
     keyword: searchQuery || undefined,
-    provinceId: selectedProvinceId,
+    provinceId: provinceMode === '63' ? selectedProvinceId : undefined,
   });
 
   const { provinces } = useLocationQuery();
@@ -72,6 +75,42 @@ export function PublicShopList() {
     (p) => p.id === selectedProvinceId,
   )?.name;
 
+  // Lọc client cho chế độ 34 tỉnh (so khớp các tỉnh thành hợp nhất với shop.provinceName)
+  const displayedShops = useMemo(() => {
+    if (provinceMode === '34' && selectedProvince34Code) {
+      const p34 = PROVINCES_34_MAP[selectedProvince34Code];
+      if (!p34) return allShops;
+      const constituents = (p34.constituentNames || [p34.name]).map((c) => c.toLowerCase());
+      return allShops.filter((shop) => {
+        const norm = (shop.provinceName || '').toLowerCase();
+        return constituents.some((c) => norm.includes(c) || c.includes(norm));
+      });
+    }
+    return allShops;
+  }, [allShops, provinceMode, selectedProvince34Code]);
+
+  const province63Options = useMemo(
+    () => [
+      { label: 'Tất cả khu vực (63 Tỉnh)', value: '' },
+      ...(provinces?.data?.data?.map((p) => ({
+        label: p.name,
+        value: String(p.id),
+      })) || []),
+    ],
+    [provinces?.data?.data],
+  );
+
+  const province34Options = useMemo(() => {
+    const list = Object.values(PROVINCES_34_MAP).sort((a, b) => a.name.localeCompare(b.name, 'vi'));
+    return [
+      { label: 'Tất cả khu vực (34 Tỉnh mới)', value: '' },
+      ...list.map((p) => ({
+        label: `${p.name}${p.constituentNames && p.constituentNames.length > 1 ? ` (gồm ${p.constituentNames.join(', ')})` : ''}`,
+        value: p.code,
+      })),
+    ];
+  }, []);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setPageNo(1);
@@ -80,6 +119,11 @@ export function PublicShopList() {
 
   const handleProvinceChange = (val: string | number) => {
     setSelectedProvinceId(val ? Number(val) : undefined);
+    setPageNo(1);
+  };
+
+  const handleProvince34Change = (val: string | number) => {
+    setSelectedProvince34Code(val ? String(val) : undefined);
     setPageNo(1);
   };
 
@@ -93,6 +137,8 @@ export function PublicShopList() {
     setKeyword('');
     setSearchQuery('');
     setSelectedProvinceId(undefined);
+    setSelectedProvince34Code(undefined);
+    setProvinceMode('63');
     setPageNo(1);
   };
 
@@ -182,25 +228,64 @@ export function PublicShopList() {
         {/* Categories / Filters & Counter Bar */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 mb-6">
           <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+            {/* Mode Switcher 63 vs 34 */}
+            <div className="inline-flex p-0.5 bg-stone-100 rounded-xl border border-stone-200 text-xs font-bold shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  setProvinceMode('63');
+                  setSelectedProvince34Code(undefined);
+                }}
+                className={`px-2.5 py-1.5 rounded-lg transition-all ${
+                  provinceMode === '63'
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'text-stone-600 hover:text-stone-900'
+                }`}
+              >
+                63 Tỉnh
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setProvinceMode('34');
+                  setSelectedProvinceId(undefined);
+                }}
+                className={`px-2.5 py-1.5 rounded-lg transition-all flex items-center gap-1 ${
+                  provinceMode === '34'
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'text-stone-600 hover:text-stone-900'
+                }`}
+              >
+                <span>34 Tỉnh</span>
+                <span className="text-[9px] px-1 py-0.2 bg-amber-400 text-stone-900 font-extrabold rounded-full">
+                  Mới
+                </span>
+              </button>
+            </div>
+
             <div className="flex items-center gap-2 p-1.5 w-full sm:w-auto">
-              <Filter className="w-4 h-4 text-emerald-600 ml-2.5 shrink-0" />
-              <CustomSelect
-                value={selectedProvinceId || ''}
-                onChange={handleProvinceChange}
-                options={[
-                  { label: 'Tất cả khu vực', value: '' },
-                  ...(provinces?.data?.data?.map((p) => ({
-                    label: p.name,
-                    value: p.id,
-                  })) || []),
-                ]}
-                placeholder="Chọn khu vực"
-                className="sm:w-52"
-              />
+              <Filter className="w-4 h-4 text-emerald-600 ml-1 shrink-0" />
+              {provinceMode === '63' ? (
+                <CustomSelect
+                  value={selectedProvinceId ? String(selectedProvinceId) : ''}
+                  onChange={handleProvinceChange}
+                  options={province63Options}
+                  placeholder="Chọn tỉnh thành (63)"
+                  className="sm:w-56"
+                />
+              ) : (
+                <CustomSelect
+                  value={selectedProvince34Code || ''}
+                  onChange={handleProvince34Change}
+                  options={province34Options}
+                  placeholder="Chọn tỉnh thành (34 mới)"
+                  className="sm:w-64"
+                />
+              )}
             </div>
 
             {/* Active Filter Chips */}
-            {(searchQuery || selectedProvinceId) && (
+            {(searchQuery || selectedProvinceId || selectedProvince34Code) && (
               <div className="flex items-center gap-2 flex-wrap text-xs">
                 {searchQuery && (
                   <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/80 font-medium">
@@ -214,13 +299,26 @@ export function PublicShopList() {
                     </button>
                   </span>
                 )}
-                {selectedProvinceName && (
+                {selectedProvinceName && provinceMode === '63' && (
                   <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-teal-50 text-teal-800 border border-teal-200/80 font-medium">
                     Khu vực: {selectedProvinceName}
                     <button
                       onClick={() => handleProvinceChange('')}
                       className="hover:text-teal-950 cursor-pointer"
                       aria-label="Xóa bộ lọc khu vực"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </span>
+                )}
+                {selectedProvince34Code && provinceMode === '34' && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-300 font-medium">
+                    Khu vực (34 Tỉnh):{' '}
+                    {PROVINCES_34_MAP[selectedProvince34Code]?.name || selectedProvince34Code}
+                    <button
+                      onClick={() => handleProvince34Change('')}
+                      className="hover:text-emerald-950 cursor-pointer"
+                      aria-label="Xóa bộ lọc khu vực 34 tỉnh"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -237,9 +335,9 @@ export function PublicShopList() {
           </div>
 
           {/* Results counter */}
-          {!isLoading && allShops.length > 0 && (
+          {!isLoading && displayedShops.length > 0 && (
             <span className="text-xs font-semibold text-stone-500 shrink-0">
-              Hiển thị <strong className="text-stone-800">{allShops.length}</strong> /{' '}
+              Hiển thị <strong className="text-stone-800">{displayedShops.length}</strong> /{' '}
               {totalElements} gian hàng
             </span>
           )}
@@ -247,7 +345,7 @@ export function PublicShopList() {
 
         {/* Grid List */}
         <AnimatePresence mode="wait">
-          {allShops.length === 0 && !isLoading ? (
+          {displayedShops.length === 0 && !isLoading ? (
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -262,7 +360,7 @@ export function PublicShopList() {
               </h3>
               <p className="text-stone-600 mb-8 max-w-md mx-auto text-sm sm:text-base leading-relaxed">
                 Chúng tôi không thể tìm thấy gian hàng nào khớp với bộ lọc của bạn. Hãy thử thay đổi
-                từ khóa hoặc xóa bộ lọc khu vực.
+                từ khóa hoặc chọn khu vực khác.
               </p>
               <Button
                 onClick={clearFilters}
@@ -279,7 +377,7 @@ export function PublicShopList() {
               animate={{ opacity: 1 }}
               transition={{ staggerChildren: 0.08 }}
             >
-              {allShops.map((shop) => (
+              {displayedShops.map((shop) => (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -296,17 +394,13 @@ export function PublicShopList() {
 
                   {/* Card Header Background Banner */}
                   <div className="h-36 bg-stone-900 relative overflow-hidden">
-                    {shop.bannerUrl ? (
-                      <Image
-                        src={shop.bannerUrl}
-                        alt={shop.name}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                        className="object-cover opacity-85 group-hover:scale-105 transition-transform duration-500"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 bg-gradient-to-br from-emerald-800 to-teal-900" />
-                    )}
+                    <Image
+                      src={shop.bannerUrl || '/images/background.jpg'}
+                      alt={shop.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                      className="object-cover opacity-85 group-hover:scale-105 transition-transform duration-500"
+                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
 
                     {/* Star Rating Badge */}

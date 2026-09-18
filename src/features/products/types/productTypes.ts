@@ -49,6 +49,8 @@ export interface ProductProvince {
   id: number;
   name: string;
   code: string;
+  parent34Code?: string;
+  parent34Name?: string;
 }
 
 export interface WholesalePrice {
@@ -188,6 +190,8 @@ export interface Product {
   shopSlug?: string;
   categoryName?: string;
   provinceName?: string | null;
+  parent34Code?: string | null;
+  province34Name?: string | null;
   shop: ProductShop;
   category: ProductCategory;
   brand: ProductBrand | null;
@@ -355,6 +359,7 @@ export interface PublicProductListParams {
   shopSlug?: string;
   categoryIds?: number[];
   provinceId?: number;
+  province34Code?: string;
   ocopStar?: number;
   minPrice?: number;
   maxPrice?: number;

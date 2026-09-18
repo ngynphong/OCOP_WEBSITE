@@ -5,6 +5,16 @@ export interface Province {
   name: string;
   code: string;
   region: 'NORTH' | 'CENTRAL' | 'SOUTH' | 'HIGHLAND';
+  parent34Code?: string;
+}
+
+export interface Province34 {
+  id: number;
+  name: string;
+  code: string;
+  region: 'NORTH' | 'CENTRAL' | 'SOUTH' | 'HIGHLAND';
+  constituentProvinces?: string;
+  administrativeCenter?: string;
 }
 
 export interface District {
@@ -20,5 +30,6 @@ export interface Ward {
 }
 
 export type ProvinceListResponse = ResponseBase<Province[]>;
+export type Province34ListResponse = ResponseBase<Province34[]>;
 export type DistrictListResponse = ResponseBase<District[]>;
 export type WardListResponse = ResponseBase<Ward[]>;

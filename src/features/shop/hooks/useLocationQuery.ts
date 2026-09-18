@@ -11,6 +11,12 @@ export const useLocationQuery = (provinceId?: number, districtId?: number, regio
     staleTime: 30 * 60 * 1000,
   });
 
+  const provinces34 = useQuery({
+    queryKey: ['location-provinces-34', region],
+    queryFn: () => locationApi.getProvinces34(region),
+    staleTime: 30 * 60 * 1000,
+  });
+
   const districts = useQuery({
     queryKey: ['location-districts', provinceId],
     queryFn: () => locationApi.getDistricts(provinceId!),
@@ -25,5 +31,5 @@ export const useLocationQuery = (provinceId?: number, districtId?: number, regio
     staleTime: 15 * 60 * 1000,
   });
 
-  return { provinces, districts, wards };
+  return { provinces, provinces34, districts, wards };
 };

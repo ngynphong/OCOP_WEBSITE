@@ -57,10 +57,14 @@ interface ProductListClientProps {
   initialProducts?: ProductListResponse | null;
 }
 
+import { PROVINCES_34_MAP, ProvinceMode } from '@/constants/regions-map';
+
 export function ProductListClient({ initialProducts }: ProductListClientProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRatings, setSelectedRatings] = useState<number[]>([]);
+  const [provinceMode, setProvinceMode] = useState<ProvinceMode>('63');
   const [selectedProvinceId, setSelectedProvinceId] = useState<number | null>(null);
+  const [selectedProvince34Code, setSelectedProvince34Code] = useState<string | null>(null);
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<number[]>([]);
   const [selectedBrandIds, setSelectedBrandIds] = useState<number[]>([]);
   const [minPrice, setMinPrice] = useState<number>(0);
@@ -100,7 +104,8 @@ export function ProductListClient({ initialProducts }: ProductListClientProps) {
     maxPrice: debouncedMaxPrice < MAX_PRICE_LIMIT ? debouncedMaxPrice : undefined,
     sort: sort,
     categoryIds: selectedCategoryIds.length > 0 ? selectedCategoryIds : undefined,
-    provinceId: selectedProvinceId || undefined,
+    provinceId: provinceMode === '63' ? selectedProvinceId || undefined : undefined,
+    province34Code: provinceMode === '34' ? selectedProvince34Code || undefined : undefined,
     brandIds: selectedBrandIds.length > 0 ? selectedBrandIds : undefined,
   };
 
@@ -110,6 +115,7 @@ export function ProductListClient({ initialProducts }: ProductListClientProps) {
     !debouncedSearch &&
     selectedRatings.length === 0 &&
     selectedProvinceId === null &&
+    selectedProvince34Code === null &&
     selectedCategoryIds.length === 0 &&
     selectedBrandIds.length === 0 &&
     debouncedMinPrice === 0 &&
@@ -132,6 +138,8 @@ export function ProductListClient({ initialProducts }: ProductListClientProps) {
     setSearchQuery('');
     setSelectedRatings([]);
     setSelectedProvinceId(null);
+    setSelectedProvince34Code(null);
+    setProvinceMode('63');
     setSelectedCategoryIds([]);
     setSelectedBrandIds([]);
     setMinPrice(0);
@@ -232,6 +240,16 @@ export function ProductListClient({ initialProducts }: ProductListClientProps) {
                   setSelectedProvinceId(v);
                   setPage(0);
                 }}
+                provinceMode={provinceMode}
+                setProvinceMode={(m) => {
+                  setProvinceMode(m);
+                  setPage(0);
+                }}
+                selectedProvince34Code={selectedProvince34Code}
+                setSelectedProvince34Code={(code) => {
+                  setSelectedProvince34Code(code);
+                  setPage(0);
+                }}
                 minPrice={minPrice}
                 maxPrice={maxPrice}
                 setMaxPrice={(v) => {
@@ -288,9 +306,19 @@ export function ProductListClient({ initialProducts }: ProductListClientProps) {
                         setSelectedRatings(v);
                         setPage(0);
                       }}
+                      provinceMode={provinceMode}
+                      setProvinceMode={(m) => {
+                        setProvinceMode(m);
+                        setPage(0);
+                      }}
                       selectedProvinceId={selectedProvinceId}
                       setSelectedProvinceId={(v) => {
                         setSelectedProvinceId(v);
+                        setPage(0);
+                      }}
+                      selectedProvince34Code={selectedProvince34Code}
+                      setSelectedProvince34Code={(code) => {
+                        setSelectedProvince34Code(code);
                         setPage(0);
                       }}
                       minPrice={minPrice}
@@ -347,6 +375,16 @@ export function ProductListClient({ initialProducts }: ProductListClientProps) {
                 >
                   {getProvinceName(selectedProvinceId)}{' '}
                   <X className="w-3 h-3 text-stone-400 group-hover:text-red-500" />
+                </span>
+              )}
+              {selectedProvince34Code && (
+                <span
+                  onClick={() => setSelectedProvince34Code(null)}
+                  className="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-50 border border-emerald-300 shadow-xs text-emerald-800 text-xs font-semibold rounded-full cursor-pointer hover:border-red-300 hover:text-red-600 transition group"
+                >
+                  Khu vực (34 Tỉnh):{' '}
+                  {PROVINCES_34_MAP[selectedProvince34Code]?.name || selectedProvince34Code}{' '}
+                  <X className="w-3 h-3 text-emerald-600 group-hover:text-red-500" />
                 </span>
               )}
               {selectedBrandIds.map((id) => (

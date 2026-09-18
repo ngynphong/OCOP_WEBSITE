@@ -4,6 +4,7 @@ import { buildRoute } from '@/lib/routeBuilder';
 
 import {
   ProvinceListResponse,
+  Province34ListResponse,
   DistrictListResponse,
   WardListResponse,
 } from '@/features/admin/types/locationTypes';
@@ -12,6 +13,15 @@ import { ResponseBase } from '@/features/admin/types/adminTypes';
 export const locationApi = {
   getProvinces: (region?: string): Promise<ProvinceListResponse> => {
     return axiosClient.get(API_ENDPOINTS.LOCATION.PROVINCES, {
+      params: { region },
+      headers: {
+        'X-Silent-Loading': 'true',
+      },
+    });
+  },
+
+  getProvinces34: (region?: string): Promise<Province34ListResponse> => {
+    return axiosClient.get(API_ENDPOINTS.LOCATION.PROVINCES_34, {
       params: { region },
       headers: {
         'X-Silent-Loading': 'true',

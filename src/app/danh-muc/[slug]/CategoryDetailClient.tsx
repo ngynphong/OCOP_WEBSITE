@@ -24,6 +24,7 @@ import { useWishlistStatus } from '@/features/wishlist/hooks/useWishlist';
 import { useAppSelector } from '@/store/hooks';
 import { useDebounce } from '@/hooks/useDebounce';
 import { Button } from '@/components/ui/AppButton';
+import { PROVINCES_34_MAP, ProvinceMode } from '@/constants/regions-map';
 
 const MAX_PRICE_LIMIT = 5000000;
 const PAGE_SIZE = 12;
@@ -60,7 +61,9 @@ export function CategoryDetailClient() {
   // Filter States
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRatings, setSelectedRatings] = useState<number[]>([]);
+  const [provinceMode, setProvinceMode] = useState<ProvinceMode>('63');
   const [selectedProvinceId, setSelectedProvinceId] = useState<number | null>(null);
+  const [selectedProvince34Code, setSelectedProvince34Code] = useState<string | null>(null);
   const [selectedSubCategoryId, setSelectedSubCategoryId] = useState<number | null>(null);
   const [minPrice, setMinPrice] = useState<number>(0);
   const [maxPrice, setMaxPrice] = useState<number>(MAX_PRICE_LIMIT);
@@ -108,7 +111,8 @@ export function CategoryDetailClient() {
     pageSize: PAGE_SIZE,
     keyword: debouncedSearch || undefined,
     categoryIds: targetCategoryIds,
-    provinceId: selectedProvinceId || undefined,
+    provinceId: provinceMode === '63' ? selectedProvinceId || undefined : undefined,
+    province34Code: provinceMode === '34' ? selectedProvince34Code || undefined : undefined,
     ocopStar: selectedRatings.length === 1 ? selectedRatings[0] : undefined,
     minPrice: debouncedMinPrice > 0 ? debouncedMinPrice : undefined,
     maxPrice: debouncedMaxPrice < MAX_PRICE_LIMIT ? debouncedMaxPrice : undefined,
@@ -137,6 +141,8 @@ export function CategoryDetailClient() {
     setSearchQuery('');
     setSelectedRatings([]);
     setSelectedProvinceId(null);
+    setSelectedProvince34Code(null);
+    setProvinceMode('63');
     setSelectedSubCategoryId(null);
     setMinPrice(0);
     setMaxPrice(MAX_PRICE_LIMIT);
@@ -145,6 +151,7 @@ export function CategoryDetailClient() {
 
   const hasActiveFilters =
     selectedProvinceId !== null ||
+    selectedProvince34Code !== null ||
     selectedRatings.length > 0 ||
     selectedSubCategoryId !== null ||
     minPrice > 0 ||
@@ -342,6 +349,16 @@ export function CategoryDetailClient() {
                   setSelectedProvinceId(v);
                   setPage(0);
                 }}
+                provinceMode={provinceMode}
+                setProvinceMode={(m) => {
+                  setProvinceMode(m);
+                  setPage(0);
+                }}
+                selectedProvince34Code={selectedProvince34Code}
+                setSelectedProvince34Code={(code) => {
+                  setSelectedProvince34Code(code);
+                  setPage(0);
+                }}
                 minPrice={minPrice}
                 maxPrice={maxPrice}
                 setMaxPrice={(v) => {
@@ -387,9 +404,19 @@ export function CategoryDetailClient() {
                       setSelectedRatings(v);
                       setPage(0);
                     }}
+                    provinceMode={provinceMode}
+                    setProvinceMode={(m) => {
+                      setProvinceMode(m);
+                      setPage(0);
+                    }}
                     selectedProvinceId={selectedProvinceId}
                     setSelectedProvinceId={(v) => {
                       setSelectedProvinceId(v);
+                      setPage(0);
+                    }}
+                    selectedProvince34Code={selectedProvince34Code}
+                    setSelectedProvince34Code={(code) => {
+                      setSelectedProvince34Code(code);
                       setPage(0);
                     }}
                     minPrice={minPrice}
@@ -455,6 +482,17 @@ export function CategoryDetailClient() {
                   >
                     {getProvinceName(selectedProvinceId)}{' '}
                     <X className="w-3 h-3 text-stone-400 group-hover:text-red-500" />
+                  </span>
+                )}
+
+                {selectedProvince34Code !== null && (
+                  <span
+                    onClick={() => setSelectedProvince34Code(null)}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-50 border border-emerald-300 shadow-xs text-emerald-800 text-xs font-semibold rounded-full cursor-pointer hover:border-red-300 hover:text-red-600 transition group"
+                  >
+                    Khu vực (34 Tỉnh):{' '}
+                    {PROVINCES_34_MAP[selectedProvince34Code]?.name || selectedProvince34Code}{' '}
+                    <X className="w-3 h-3 text-emerald-600 group-hover:text-red-500" />
                   </span>
                 )}
 

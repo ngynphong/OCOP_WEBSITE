@@ -5,6 +5,7 @@ import { FiMapPin, FiInfo, FiLayers, FiAlertCircle } from 'react-icons/fi';
 import { useCreateFacility } from '../hooks/useFacility';
 import MapPickerWrapper from './map/MapPickerWrapper';
 import { LocationSelects } from './LocationSelects';
+import { findProvince } from '@/constants/regions-map';
 
 interface Props {
   isOpen: boolean;
@@ -17,6 +18,7 @@ export default function CreateFacilityModal({ isOpen, onClose }: Props) {
     register,
     formState: { errors },
   } = form;
+  const provinceCode = form.watch('provinceCode');
 
   return (
     <Modal
@@ -156,6 +158,7 @@ export default function CreateFacilityModal({ isOpen, onClose }: Props) {
                   latitude={form.watch('latitude')}
                   longitude={form.watch('longitude')}
                   boundary={form.watch('boundary')}
+                  initialProvinceName={provinceCode ? findProvince(provinceCode)?.name : undefined}
                   onChangeLocation={(lat: number, lng: number) => {
                     form.setValue('latitude', lat);
                     form.setValue('longitude', lng);

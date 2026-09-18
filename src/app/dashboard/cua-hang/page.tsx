@@ -176,9 +176,12 @@ export default function SellerShopPage() {
       >
         {/* Banner */}
         <div className="relative h-36 bg-linear-to-r from-green-600 to-emerald-500 overflow-hidden group">
-          {shop.bannerUrl && (
-            <Image src={shop.bannerUrl} fill alt="Banner" className="w-full h-full object-cover" />
-          )}
+          <Image
+            src={shop.bannerUrl || '/images/background.jpg'}
+            fill
+            alt="Banner"
+            className="w-full h-full object-cover"
+          />
           <label className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
             <div className="flex flex-col items-center gap-1 text-white">
               {isUploadingBanner ? (

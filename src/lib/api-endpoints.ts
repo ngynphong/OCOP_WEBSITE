@@ -63,6 +63,7 @@ export const API_ENDPOINTS = {
   },
   LOCATION: {
     PROVINCES: '/location/provinces',
+    PROVINCES_34: '/location/provinces-34',
     DISTRICTS: '/location/districts',
     WARDS: '/location/wards',
   },

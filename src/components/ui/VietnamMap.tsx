@@ -1,73 +1,157 @@
-import React, { useState, memo, useCallback } from 'react';
+'use client';
+
+import React, { useState, memo, useCallback, useMemo } from 'react';
 import { ComposableMap, Geographies, Geography, ZoomableGroup, Marker } from 'react-simple-maps';
-import { useRouter } from 'next/navigation';
+import {
+  ProvinceMode,
+  MacroRegionKey,
+  RegionId,
+  ProvinceInfo,
+  findProvince,
+  isProvinceInRegion,
+  getRegionColor,
+} from '@/constants/regions-map';
 
-const geoUrl = '/maps/vn-topo.json';
+export interface VietnamMapProps {
+  mode?: ProvinceMode;
+  selectedProvince?: string | null;
+  selectedRegionId?: RegionId | 'all';
+  selectedMacroRegion?: MacroRegionKey;
+  onSelectProvince?: (provinceName: string, info?: ProvinceInfo) => void;
+  className?: string;
+}
 
-interface MapGeography {
-  properties: {
-    name?: string;
-    NAME_1?: string;
-    ten_tinh?: string;
-  };
+interface MapGeographyProperties {
+  name?: string;
+  NAME_1?: string;
+  ten_tinh?: string;
+  'woe-name'?: string;
+  code?: string;
+  regionId?: RegionId;
+  regionName?: string;
+  constituentNames?: string[];
+}
+
+interface TooltipData {
+  name: string;
+  regionName?: string;
+  constituentNames?: string[];
+  mode: ProvinceMode;
 }
 
 const VietnamMap = memo(function VietnamMap({
-  onSelectProvince,
+  mode = '63',
   selectedProvince,
-}: {
-  onSelectProvince: (provinceName: string) => void;
-  selectedProvince?: string | null;
-}) {
-  const router = useRouter();
-  const [tooltip, setTooltip] = useState('');
+  selectedRegionId = 'all',
+  selectedMacroRegion = 'all',
+  onSelectProvince,
+  className = 'relative w-full h-[540px] mx-auto',
+}: VietnamMapProps) {
+  const [tooltip, setTooltip] = useState<TooltipData | null>(null);
 
-  const handleProvinceClick = useCallback(
-    (geo: MapGeography | { properties: { name: string } }) => {
-      const provinceName =
-        geo.properties.name ||
-        (geo as MapGeography).properties.NAME_1 ||
-        (geo as MapGeography).properties.ten_tinh ||
-        '';
+  // Chọn nguồn dữ liệu bản đồ tương ứng theo chế độ
+  const geoUrl = useMemo(() => {
+    return mode === '34' ? '/maps/vn-34-provinces.geojson' : '/maps/vn-topo.json';
+  }, [mode]);
 
-      if (onSelectProvince) onSelectProvince(provinceName);
-
-      // Push url
-      router.push(`/vung-mien?province=${encodeURIComponent(provinceName)}`, { scroll: false });
-    },
-    [onSelectProvince, router],
-  );
-
-  const handleMouseEnter = useCallback((geo: MapGeography) => {
-    const name = geo.properties.name || geo.properties.NAME_1 || geo.properties.ten_tinh || '';
-    setTooltip(name);
+  // Trích xuất tên tỉnh từ thuộc tính của Geography
+  const getGeoProvinceName = useCallback((properties: MapGeographyProperties): string => {
+    return (
+      properties.name || properties['woe-name'] || properties.NAME_1 || properties.ten_tinh || ''
+    );
   }, []);
 
-  const handleMouseLeave = useCallback(() => setTooltip(''), []);
+  // Xử lý khi click vào tỉnh
+  const handleProvinceClick = useCallback(
+    (properties: MapGeographyProperties) => {
+      const rawName = getGeoProvinceName(properties);
+      const info = findProvince(rawName, mode);
+      const finalName = info?.name || rawName;
 
-  // Helper to check if a province is selected
-  const isSelected = useCallback(
-    (geo: MapGeography) => {
-      if (!selectedProvince) return false;
-      const name = geo.properties.name || geo.properties.NAME_1 || geo.properties.ten_tinh || '';
-      return (
-        name.toLowerCase().includes(selectedProvince.toLowerCase()) ||
-        selectedProvince.toLowerCase().includes(name.toLowerCase())
-      );
+      if (onSelectProvince) {
+        onSelectProvince(finalName, info);
+      }
     },
-    [selectedProvince],
+    [getGeoProvinceName, mode, onSelectProvince],
   );
 
+  // Xử lý hover
+  const handleMouseEnter = useCallback(
+    (properties: MapGeographyProperties) => {
+      const rawName = getGeoProvinceName(properties);
+      const info = findProvince(rawName, mode);
+      const finalName = info?.name || rawName;
+
+      setTooltip({
+        name: finalName,
+        regionName: info?.regionName,
+        constituentNames: info?.constituentNames,
+        mode,
+      });
+    },
+    [getGeoProvinceName, mode],
+  );
+
+  const handleMouseLeave = useCallback(() => setTooltip(null), []);
+
+  // Kiểm tra tỉnh có đang được chọn không
+  const checkIsSelected = useCallback(
+    (properties: MapGeographyProperties) => {
+      if (!selectedProvince) return false;
+      const rawName = getGeoProvinceName(properties);
+      const info = findProvince(rawName, mode);
+
+      if (info) {
+        if (info.name.toLowerCase() === selectedProvince.toLowerCase()) return true;
+        if (info.code === selectedProvince) return true;
+      }
+
+      return (
+        rawName.toLowerCase().includes(selectedProvince.toLowerCase()) ||
+        selectedProvince.toLowerCase().includes(rawName.toLowerCase())
+      );
+    },
+    [selectedProvince, getGeoProvinceName, mode],
+  );
+
+  // Kiểm tra tỉnh có nằm trong Vùng/Miền đang lọc không
+  const checkIsInRegion = useCallback(
+    (properties: MapGeographyProperties) => {
+      if (selectedMacroRegion === 'all' && selectedRegionId === 'all') return true;
+      const rawName = getGeoProvinceName(properties);
+      return isProvinceInRegion(rawName, selectedMacroRegion, selectedRegionId, mode);
+    },
+    [selectedMacroRegion, selectedRegionId, getGeoProvinceName, mode],
+  );
+
+  // Tên đảo Phú Quốc theo mode (63: Kiên Giang, 34: An Giang)
+  const phuQuocParent = mode === '34' ? 'An Giang' : 'Kiên Giang';
+
   return (
-    <div className="relative w-full h-[500px] mx-auto">
-      {/* Hiển thị tên tỉnh khi hover */}
+    <div className={className}>
+      {/* Tooltip hiển thị thông tin vùng miền khi hover */}
       {tooltip && (
-        <div className="absolute top-0 right-0 bg-white/90 backdrop-blur-md px-4 py-2 border border-emerald-500/50 text-emerald-700 font-bold rounded-xl shadow-lg z-20 animate-in fade-in zoom-in duration-200 pointer-events-none">
-          {tooltip}
+        <div className="absolute top-2 right-2 bg-white/95 backdrop-blur-md px-4 py-2.5 border border-emerald-500/50 rounded-xl shadow-xl z-20 animate-in fade-in zoom-in-95 duration-150 pointer-events-none max-w-xs">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+            <h4 className="font-bold text-stone-900 text-sm">{tooltip.name}</h4>
+          </div>
+          {tooltip.regionName && (
+            <p className="text-xs text-emerald-700 font-semibold mt-0.5">{tooltip.regionName}</p>
+          )}
+          {tooltip.mode === '34' &&
+            tooltip.constituentNames &&
+            tooltip.constituentNames.length > 1 && (
+              <p className="text-[11px] text-stone-500 mt-1 border-t border-stone-100 pt-1 leading-snug">
+                <span className="font-medium text-stone-700">Gồm: </span>
+                {tooltip.constituentNames.join(', ')}
+              </p>
+            )}
         </div>
       )}
 
       <ComposableMap
+        key={`vietnam-map-${mode}`}
         projection="geoMercator"
         projectionConfig={{
           scale: 3000,
@@ -79,26 +163,46 @@ const VietnamMap = memo(function VietnamMap({
           <Geographies geography={geoUrl}>
             {({ geographies }) =>
               geographies.map((geo) => {
-                const active = isSelected(geo);
+                const isSelected = checkIsSelected(geo.properties);
+                const isInActiveRegion = checkIsInRegion(geo.properties);
+                const rawName = getGeoProvinceName(geo.properties);
+                const info = findProvince(rawName, mode);
+
+                // Tính toán màu sắc hiển thị
+                let defaultFill = '#DCFCE7';
+                let defaultStroke = '#6EE7B7';
+
+                if (isSelected) {
+                  defaultFill = '#059669'; // Highlight xanh đậm khi chọn
+                  defaultStroke = '#ffffff';
+                } else if (!isInActiveRegion) {
+                  defaultFill = '#F1F5F9'; // Mờ khi không thuộc vùng lọc
+                  defaultStroke = '#E2E8F0';
+                } else if (info) {
+                  // Tô màu nhẹ theo vùng miền
+                  defaultFill = `${getRegionColor(info.regionId)}25`;
+                  defaultStroke = getRegionColor(info.regionId);
+                }
+
                 return (
                   <Geography
                     key={geo.rsmKey}
                     geography={geo}
-                    onClick={() => handleProvinceClick(geo)}
-                    onMouseEnter={() => handleMouseEnter(geo)}
+                    onClick={() => handleProvinceClick(geo.properties)}
+                    onMouseEnter={() => handleMouseEnter(geo.properties)}
                     onMouseLeave={handleMouseLeave}
                     style={{
                       default: {
-                        fill: active ? '#059669' : '#DCFCE7',
-                        stroke: active ? '#ffffff' : '#6EE7B7',
-                        strokeWidth: active ? 1 : 0.5,
+                        fill: defaultFill,
+                        stroke: defaultStroke,
+                        strokeWidth: isSelected ? 1.2 : 0.6,
                         outline: 'none',
-                        transition: 'all 250ms',
+                        transition: 'all 200ms ease',
                       },
                       hover: {
                         fill: '#10b981',
                         stroke: '#ffffff',
-                        strokeWidth: 1,
+                        strokeWidth: 1.2,
                         outline: 'none',
                         cursor: 'pointer',
                       },
@@ -129,12 +233,18 @@ const VietnamMap = memo(function VietnamMap({
               <Marker
                 key={`hs-${idx}`}
                 coordinates={coord as [number, number]}
-                onClick={() => handleProvinceClick({ properties: { name: 'Đà Nẵng' } })}
-                onMouseEnter={() => setTooltip('Quần đảo Hoàng Sa (Đà Nẵng)')}
+                onClick={() => handleProvinceClick({ name: 'Đà Nẵng' })}
+                onMouseEnter={() =>
+                  setTooltip({
+                    name: 'Quần đảo Hoàng Sa (Đà Nẵng)',
+                    regionName: 'Duyên hải Nam Trung Bộ',
+                    mode,
+                  })
+                }
                 onMouseLeave={handleMouseLeave}
               >
                 <circle
-                  r={isActive ? 1.2 : 0.8}
+                  r={isActive ? 1.4 : 0.9}
                   fill={isActive ? '#059669' : '#10b981'}
                   className="cursor-pointer hover:fill-emerald-700 transition-colors"
                 />
@@ -143,8 +253,14 @@ const VietnamMap = memo(function VietnamMap({
           })}
           <Marker
             coordinates={[112.0, 16.5]}
-            onClick={() => handleProvinceClick({ properties: { name: 'Đà Nẵng' } })}
-            onMouseEnter={() => setTooltip('Quần đảo Hoàng Sa (Đà Nẵng)')}
+            onClick={() => handleProvinceClick({ name: 'Đà Nẵng' })}
+            onMouseEnter={() =>
+              setTooltip({
+                name: 'Quần đảo Hoàng Sa (Đà Nẵng)',
+                regionName: 'Duyên hải Nam Trung Bộ',
+                mode,
+              })
+            }
             onMouseLeave={handleMouseLeave}
             className="pointer-events-none"
           >
@@ -192,12 +308,18 @@ const VietnamMap = memo(function VietnamMap({
               <Marker
                 key={`ts-${idx}`}
                 coordinates={coord as [number, number]}
-                onClick={() => handleProvinceClick({ properties: { name: 'Khánh Hòa' } })}
-                onMouseEnter={() => setTooltip('Quần đảo Trường Sa (Khánh Hòa)')}
+                onClick={() => handleProvinceClick({ name: 'Khánh Hòa' })}
+                onMouseEnter={() =>
+                  setTooltip({
+                    name: 'Quần đảo Trường Sa (Khánh Hòa)',
+                    regionName: 'Duyên hải Nam Trung Bộ',
+                    mode,
+                  })
+                }
                 onMouseLeave={handleMouseLeave}
               >
                 <circle
-                  r={isActive ? 1.2 : 0.8}
+                  r={isActive ? 1.4 : 0.9}
                   fill={isActive ? '#059669' : '#10b981'}
                   className="cursor-pointer hover:fill-emerald-700 transition-colors"
                 />
@@ -206,8 +328,14 @@ const VietnamMap = memo(function VietnamMap({
           })}
           <Marker
             coordinates={[114.0, 10.0]}
-            onClick={() => handleProvinceClick({ properties: { name: 'Khánh Hòa' } })}
-            onMouseEnter={() => setTooltip('Quần đảo Trường Sa (Khánh Hòa)')}
+            onClick={() => handleProvinceClick({ name: 'Khánh Hòa' })}
+            onMouseEnter={() =>
+              setTooltip({
+                name: 'Quần đảo Trường Sa (Khánh Hòa)',
+                regionName: 'Duyên hải Nam Trung Bộ',
+                mode,
+              })
+            }
             onMouseLeave={handleMouseLeave}
             className="pointer-events-none"
           >
@@ -227,16 +355,26 @@ const VietnamMap = memo(function VietnamMap({
             </text>
           </Marker>
 
-          {/* Đảo Phú Quốc (Kiên Giang) */}
+          {/* Đảo Phú Quốc */}
           <Marker
             coordinates={[103.95, 10.21]}
-            onClick={() => handleProvinceClick({ properties: { name: 'Kiên Giang' } })}
-            onMouseEnter={() => setTooltip('Đảo Phú Quốc (Kiên Giang)')}
+            onClick={() => handleProvinceClick({ name: phuQuocParent })}
+            onMouseEnter={() =>
+              setTooltip({
+                name: `Đảo Phú Quốc (${phuQuocParent})`,
+                regionName: 'Đồng bằng sông Cửu Long',
+                mode,
+              })
+            }
             onMouseLeave={handleMouseLeave}
           >
             <circle
-              r={selectedProvince?.toLowerCase().includes('kiên giang') ? 2 : 1.5}
-              fill={selectedProvince?.toLowerCase().includes('kiên giang') ? '#059669' : '#10b981'}
+              r={selectedProvince?.toLowerCase().includes(phuQuocParent.toLowerCase()) ? 2 : 1.5}
+              fill={
+                selectedProvince?.toLowerCase().includes(phuQuocParent.toLowerCase())
+                  ? '#059669'
+                  : '#10b981'
+              }
               className="cursor-pointer hover:fill-emerald-700 transition-colors"
             />
             <text

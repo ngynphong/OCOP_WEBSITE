@@ -8,6 +8,7 @@ import { ISourceFacility, ISourceFacilityReq } from '../../types/materialSourceT
 import { Button } from '@/components/ui/AppButton';
 import MapPickerWrapper from '../map/MapPickerWrapper';
 import { LocationSelects } from '../LocationSelects';
+import { findProvince } from '@/constants/regions-map';
 
 export interface CreateFacilityFormProps {
   onClose: () => void;
@@ -54,6 +55,7 @@ export function CreateFacilityForm({ onClose, initialData }: CreateFacilityFormP
   const watchLatitude = useWatch({ control: form.control, name: 'latitude' });
   const watchLongitude = useWatch({ control: form.control, name: 'longitude' });
   const watchBoundary = useWatch({ control: form.control, name: 'boundary' });
+  const watchProvinceCode = useWatch({ control: form.control, name: 'provinceCode' });
 
   return (
     <div className="space-y-6">
@@ -173,6 +175,9 @@ export function CreateFacilityForm({ onClose, initialData }: CreateFacilityFormP
                 latitude={watchLatitude}
                 longitude={watchLongitude}
                 boundary={watchBoundary}
+                initialProvinceName={
+                  watchProvinceCode ? findProvince(watchProvinceCode)?.name : undefined
+                }
                 onChangeLocation={(lat: number, lng: number) => {
                   form.setValue('latitude', lat);
                   form.setValue('longitude', lng);

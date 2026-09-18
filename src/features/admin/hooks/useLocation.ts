@@ -10,6 +10,13 @@ export const useLocation = () => {
     });
   };
 
+  const useProvinces34 = (region?: string) => {
+    return useQuery({
+      queryKey: ['location-provinces-34', region],
+      queryFn: () => locationApi.getProvinces34(region),
+    });
+  };
+
   const useDistricts = (provinceId?: number | string) => {
     return useQuery({
       queryKey: ['location-districts', provinceId],
@@ -40,6 +47,7 @@ export const useLocation = () => {
 
   return {
     useProvinces,
+    useProvinces34,
     useDistricts,
     useWards,
     useImportLocationsMutation,
