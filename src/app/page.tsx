@@ -26,6 +26,10 @@ export const metadata: Metadata = {
   },
 };
 import { HeroSection } from '@/features/home/components/HeroSection';
+// import { FeatureHighlights } from '@/features/home/components/FeatureHighlights';
+import { QuickLinksRow } from '@/features/home/components/QuickLinksRow';
+import { FlashSaleSection } from '@/features/home/components/FlashSaleSection';
+import { BestSellersSection } from '@/features/home/components/BestSellersSection';
 import { AmbientBackground } from '@/features/home/components/AmbientBackground';
 import { HomeDeferredSections } from '@/features/home/components/HomeDeferredSections';
 import { HomeFloatingWidgets } from '@/features/home/components/HomeFloatingWidgets';
@@ -60,6 +64,10 @@ export default async function Home() {
                   <HeroSection banners={banners} />
                 </div>
               )}
+              {/* <FeatureHighlights /> */}
+              <QuickLinksRow />
+              <FlashSaleSection />
+              <BestSellersSection />
               <HomeDeferredSections />
             </div>
           </main>

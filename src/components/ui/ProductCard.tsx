@@ -3,7 +3,7 @@
 import { memo, useMemo, useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Heart } from 'lucide-react';
+import { Heart, MapPin } from 'lucide-react';
 import { useAppSelector } from '@/store/hooks';
 import { useAddToWishlist, useRemoveFromWishlist } from '@/features/wishlist/hooks/useWishlist';
 import toast from 'react-hot-toast';
@@ -38,6 +38,7 @@ export const ProductCard = memo(function ProductCard({
   oldPrice,
   rating,
   image,
+  ocopStar,
   location,
   shopName,
   id,
@@ -112,6 +113,21 @@ export const ProductCard = memo(function ProductCard({
               compact ? 'top-2 left-2' : 'top-4 left-4',
             )}
           >
+            {ocopStar && ocopStar >= 3 && (
+              <div
+                className={cn(
+                  'flex items-center gap-0.5 rounded-md shadow-xs z-10 font-black tracking-wider uppercase border',
+                  compact ? 'px-1.5 py-0.5 text-[8px]' : 'px-2 py-0.5 text-[9.5px]',
+                  ocopStar === 5
+                    ? 'bg-amber-500 text-stone-950 border-amber-300'
+                    : ocopStar === 4
+                      ? 'bg-emerald-700 text-white border-emerald-600'
+                      : 'bg-emerald-800 text-white border-emerald-700',
+                )}
+              >
+                <span>OCOP {ocopStar}★</span>
+              </div>
+            )}
             {topRank && topRank <= 3 && (
               <div
                 className={cn(
@@ -223,23 +239,30 @@ export const ProductCard = memo(function ProductCard({
           </div>
 
           {!compact && (
-            <div className="flex items-center gap-1.5">
-              <span className="text-stone-600 font-black uppercase tracking-widest truncate text-[10px]">
+            <div className="flex items-center gap-1.5 text-[10px] text-stone-500 font-medium">
+              <span className="truncate max-w-[120px] font-semibold text-stone-600">
                 {shopName || 'Nhà Cung Cấp'}
               </span>
-              <div className="w-1 h-1 rounded-full bg-stone-300 shrink-0" />
-              <span className="text-stone-600 font-black uppercase tracking-widest truncate text-[10px]">
-                {location || 'Việt Nam'}
-              </span>
+              {location && (
+                <>
+                  <div className="w-1 h-1 rounded-full bg-stone-300 shrink-0" />
+                  <span className="inline-flex items-center gap-0.5 truncate text-stone-600 font-medium">
+                    <MapPin className="w-2.5 h-2.5 text-emerald-600 shrink-0" />
+                    {location}
+                  </span>
+                </>
+              )}
             </div>
           )}
 
-          <div className="w-full flex items-center justify-between mt-0.5">
-            <div className="flex items-baseline gap-1.5">
+          <div className="w-full flex items-center justify-between mt-1">
+            <div className="flex items-baseline gap-1.5 flex-wrap">
               <span
                 className={cn(
-                  'font-bold font-sans uppercase tracking-wider',
-                  compact ? 'text-xs sm:text-sm text-rose-600' : 'text-stone-900 text-sm',
+                  'font-black font-sans tracking-tight',
+                  compact
+                    ? 'text-xs sm:text-sm text-rose-600'
+                    : 'text-emerald-800 text-sm md:text-base',
                 )}
               >
                 {isMounted ? `${formattedPrice}₫` : '...'}
@@ -247,8 +270,8 @@ export const ProductCard = memo(function ProductCard({
               {oldPrice && oldPrice > price && (
                 <span
                   className={cn(
-                    'text-stone-400 font-medium font-sans uppercase tracking-wider line-through',
-                    compact ? 'text-[9px]' : 'text-[10px]',
+                    'text-stone-400 font-normal font-sans line-through',
+                    compact ? 'text-[9px]' : 'text-[11px]',
                   )}
                 >
                   {isMounted ? `${formattedOldPrice}₫` : ''}
@@ -256,8 +279,8 @@ export const ProductCard = memo(function ProductCard({
               )}
             </div>
 
-            {compact && soldCount !== undefined && soldCount > 0 && (
-              <span className="text-[10px] text-stone-500 font-medium">
+            {soldCount !== undefined && soldCount > 0 && (
+              <span className="text-[10px] text-stone-700 font-medium shrink-0">
                 Đã bán {soldCount >= 1000 ? `${(soldCount / 1000).toFixed(1)}k` : soldCount}
               </span>
             )}

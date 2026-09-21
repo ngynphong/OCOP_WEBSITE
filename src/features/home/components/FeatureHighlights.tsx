@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ShieldCheck, RefreshCw, Lock, Info } from 'lucide-react';
+import { Award, RefreshCw, Truck, ShieldCheck, Info } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/AppButton';
 import { cn } from '@/lib/utils';
@@ -20,49 +20,54 @@ export function FeatureHighlights() {
 
   const highlights: HighlightItem[] = [
     {
-      icon: <ShieldCheck className="w-6 h-6 text-green-900" />,
-      title: '100% Chính hãng',
-      desc: 'Kiểm định OCOP 3-5 sao',
+      icon: <Award className="w-5 h-5 text-emerald-700" />,
+      title: 'Chuẩn OCOP 3-5 Sao',
+      desc: 'Chủ thể & sản phẩm chọn lọc',
     },
     {
-      icon: <RefreshCw className="w-6 h-6 text-green-900" />,
+      icon: <RefreshCw className="w-5 h-5 text-emerald-700" />,
       title: '7 ngày đổi trả',
-      desc: 'Theo chính sách đổi trả',
+      desc: 'Khi sản phẩm có lỗi',
       clickable: true,
       onClick: () => setIsPolicyModalOpen(true),
-      info: 'Không áp dụng cho hàng tươi sống',
+      info: 'Không áp dụng cho hàng tươi sống ngắn ngày',
     },
     {
-      icon: <Lock className="w-6 h-6 text-green-900" />,
+      icon: <Truck className="w-5 h-5 text-emerald-700" />,
+      title: 'Giao hàng toàn quốc',
+      desc: 'Đồng kiểm tra khi nhận hàng',
+    },
+    {
+      icon: <ShieldCheck className="w-5 h-5 text-emerald-700" />,
       title: 'Thanh toán an toàn',
-      desc: 'Đa dạng phương thức thanh toán',
+      desc: 'Hỗ trợ COD & thanh toán online',
     },
   ];
 
   return (
-    <section className="w-full max-w-7xl mx-auto px-6 mt-4 mb-4">
-      <div className="w-full px-6 md:px-12 py-8 bg-orange-100/80 rounded-xl grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4 shadow-sm">
+    <section className="w-full max-w-7xl mx-auto px-4 md:px-6 my-3 md:my-4">
+      <div className="w-full px-4 md:px-8 py-3.5 md:py-4 bg-white/90 backdrop-blur-sm border border-stone-200/80 rounded-2xl grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 shadow-xs">
         {highlights.map((item, index) => (
           <div
             key={index}
             className={cn(
-              'flex justify-start items-center gap-4 transition-all duration-300',
-              item.clickable && 'cursor-pointer hover:bg-white/40 p-2 -m-2 rounded-xl group',
+              'flex items-center gap-3 transition-colors',
+              item.clickable &&
+                'cursor-pointer hover:bg-emerald-50/60 p-2 -m-2 rounded-xl group select-none',
             )}
             onClick={item.onClick}
           >
-            <div className="w-12 h-12 bg-green-900/10 rounded-full flex justify-center items-center shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0 border border-emerald-100/60">
               {item.icon}
             </div>
-            <div className="flex flex-col justify-start items-start relative">
+            <div className="flex flex-col min-w-0">
               <div className="flex items-center gap-1.5">
-                <h3 className="text-stone-900 text-base font-bold font-sans leading-6 mb-0.5">
+                <h3 className="text-stone-900 text-xs md:text-sm font-bold font-sans truncate">
                   {item.title}
                 </h3>
                 {item.info && (
                   <div className="group/tooltip relative inline-block">
-                    <Info className="w-3.5 h-3.5 text-stone-400 hover:text-green-700 cursor-help transition-colors" />
-                    {/* Tooltip */}
+                    <Info className="w-3.5 h-3.5 text-stone-400 hover:text-emerald-700 cursor-help transition-colors" />
                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-stone-800 text-white text-[11px] rounded-lg opacity-0 group-hover/tooltip:opacity-100 transition-all duration-200 whitespace-nowrap pointer-events-none z-50 shadow-xl scale-95 group-hover/tooltip:scale-100">
                       {item.info}
                       <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-stone-800" />
@@ -72,9 +77,9 @@ export function FeatureHighlights() {
               </div>
               <p
                 className={cn(
-                  'text-neutral-500 text-sm font-normal font-sans leading-5 transition-colors',
+                  'text-stone-500 text-[11px] md:text-xs font-normal truncate',
                   item.clickable &&
-                    'group-hover:text-green-800 underline decoration-dotted underline-offset-4',
+                    'group-hover:text-emerald-700 underline decoration-dotted underline-offset-2',
                 )}
               >
                 {item.desc}
@@ -87,37 +92,40 @@ export function FeatureHighlights() {
       <Modal
         isOpen={isPolicyModalOpen}
         onClose={() => setIsPolicyModalOpen(false)}
-        title="Chính sách đổi trả"
+        title="Chính sách đổi trả hàng"
       >
-        <div className="space-y-6 text-stone-600">
-          <div className="p-4 bg-orange-50 rounded-xl border border-orange-100">
-            <p className="text-sm text-orange-800 flex gap-2 font-medium">
-              <Info className="w-5 h-5 shrink-0" />
-              Lưu ý: Chính sách này không áp dụng đối với các mặt hàng tươi sống (thịt, cá, rau củ
-              quả tươi) và thực phẩm có hạn sử dụng dưới 7 ngày.
+        <div className="space-y-5 text-stone-600">
+          <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+            <p className="text-xs md:text-sm text-emerald-900 flex items-start gap-2 font-medium">
+              <Info className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
+              <span>
+                <strong>Lưu ý:</strong> Chính sách đổi trả 7 ngày áp dụng đối với hàng đóng gói, đồ
+                khô, đặc sản chế biến. Không áp dụng với nông sản tươi sống ngắn ngày (rau củ quả
+                tươi, thịt cá tươi).
+              </span>
             </p>
           </div>
 
-          <div className="space-y-3">
-            <p className="font-bold text-stone-900">1. Điều kiện đổi trả:</p>
-            <ul className="list-disc pl-5 space-y-2 text-sm leading-relaxed">
-              <li>Sản phẩm còn nguyên tem mác, bao bì, nhãn hiệu ban đầu.</li>
-              <li>Sản phẩm bị lỗi từ nhà sản xuất hoặc hư hỏng nặng trong quá trình vận chuyển.</li>
-              <li>Sản phẩm không đúng với mô tả hoặc giao sai loại khách hàng đã đặt.</li>
+          <div className="space-y-2">
+            <p className="font-bold text-stone-900 text-sm">1. Điều kiện đổi trả:</p>
+            <ul className="list-disc pl-5 space-y-1.5 text-xs md:text-sm leading-relaxed text-stone-600">
+              <li>Sản phẩm còn nguyên tem niêm phong, nhãn mác của nhà sản xuất.</li>
+              <li>Sản phẩm bị lỗi kỹ thuật, sai quy cách hoặc bể vỡ trong quá trình vận chuyển.</li>
+              <li>Giao không đúng loại sản phẩm khách hàng đã đặt.</li>
             </ul>
           </div>
 
-          <div className="space-y-3">
-            <p className="font-bold text-stone-900">2. Quy trình xử lý:</p>
-            <p className="text-sm leading-relaxed">
-              Quý khách vui lòng chụp ảnh/quay video sản phẩm lỗi và gửi về bộ phận chăm sóc khách
-              hàng trong vòng 24h kể từ khi nhận hàng để được hỗ trợ đổi trả nhanh nhất.
+          <div className="space-y-2">
+            <p className="font-bold text-stone-900 text-sm">2. Hướng dẫn hỗ trợ:</p>
+            <p className="text-xs md:text-sm leading-relaxed text-stone-600">
+              Quý khách vui lòng chụp ảnh hoặc quay video khi mở gói hàng và liên hệ bộ phận hỗ trợ
+              trong vòng 24h kể từ khi nhận hàng để được giải quyết nhanh nhất.
             </p>
           </div>
 
-          <div className="pt-6 border-t border-stone-100 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="text-xs text-stone-400">
-              Hotline hỗ trợ: <span className="font-bold text-green-700">096 524 8115</span>
+          <div className="pt-4 border-t border-stone-100 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <p className="text-xs text-stone-500">
+              Hotline hỗ trợ: <span className="font-bold text-emerald-700">096 524 8115</span>
             </p>
             <Button onClick={() => setIsPolicyModalOpen(false)} size="sm">
               Đã hiểu

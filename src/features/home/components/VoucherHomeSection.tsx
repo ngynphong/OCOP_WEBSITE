@@ -15,7 +15,7 @@ import { formatCurrencyVND } from '@/utils/format';
 import { Button } from '@/components/ui/AppButton';
 
 export const VoucherHomeSection = memo(function VoucherHomeSection() {
-  const { data: vouchersResp, isLoading } = usePublicFeaturedVouchers(4);
+  const { data: vouchersResp, isLoading } = usePublicFeaturedVouchers(6);
   const { saveVoucher } = useSaveVoucherMutations();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
 
@@ -39,12 +39,12 @@ export const VoucherHomeSection = memo(function VoucherHomeSection() {
 
   if (isLoading) {
     return (
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4 md:gap-6 overflow-x-auto pb-3 md:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x hide-scrollbar">
-          {[1, 2, 3, 4].map((i) => (
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5 sm:gap-3">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
             <div
               key={i}
-              className="h-32 w-[285px] xs:w-[310px] sm:w-[330px] md:w-auto shrink-0 snap-start bg-stone-100 animate-pulse rounded-xl sm:rounded-2xl border border-stone-200"
+              className="h-24 w-full bg-stone-100 animate-pulse rounded-xl border border-stone-200"
             />
           ))}
         </div>
@@ -55,68 +55,68 @@ export const VoucherHomeSection = memo(function VoucherHomeSection() {
   if (vouchers.length === 0) return null;
 
   return (
-    <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 md:py-12">
-      <div className="flex flex-col gap-5 sm:gap-8">
-        <div className="flex items-end justify-between gap-3">
-          <div className="space-y-1.5 sm:space-y-2">
-            <div className="flex items-center gap-1.5 sm:gap-2 text-red-600 font-black text-[10px] sm:text-xs uppercase tracking-[0.15em] sm:tracking-[0.2em]">
-              <span className="w-5 sm:w-8 h-[2px] bg-red-600" />
-              Ưu đãi giới hạn
+    <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+      <div className="flex flex-col gap-3.5 sm:gap-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center">
+              <Ticket className="w-4 h-4" />
             </div>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-stone-900 tracking-tight flex items-center gap-2 sm:gap-3">
+            <h2 className="text-lg sm:text-xl font-black text-stone-900 tracking-tight uppercase">
               VOUCHER OCOP
-              <Ticket className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-red-500 shrink-0" />
             </h2>
+            <span className="hidden sm:inline-block text-[11px] font-bold text-red-600 bg-red-50 border border-red-100 px-2 py-0.5 rounded-full uppercase tracking-wider">
+              Ưu đãi hôm nay
+            </span>
           </div>
-          <button className="min-h-[44px] flex items-center gap-1 text-green-900 hover:text-green-700 active:opacity-70 font-bold transition-all text-xs sm:text-sm group shrink-0 py-1">
+          <button className="flex items-center gap-1 text-emerald-800 hover:text-emerald-700 font-bold transition-colors text-xs sm:text-sm group">
             <span>Xem tất cả</span>
-            <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" />
+            <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
           </button>
         </div>
 
-        <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4 md:gap-6 overflow-x-auto pb-3 md:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory hide-scrollbar">
-          {vouchers.map((voucher) => (
+        {/* 6 Vouchers in 1 row on desktop */}
+        <div className="flex overflow-x-auto sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3 pb-2 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x hide-scrollbar">
+          {vouchers.slice(0, 6).map((voucher) => (
             <motion.div
               key={voucher.id}
-              whileHover={{ y: -6 }}
+              whileHover={{ y: -3 }}
               whileTap={{ scale: 0.98 }}
-              className="relative flex bg-white border border-stone-100 rounded-xl sm:rounded-2xl overflow-hidden shadow-xs hover:shadow-xl hover:shadow-stone-200/50 transition-all group min-h-[124px] sm:min-h-[130px] w-[285px] xs:w-[310px] sm:w-[330px] md:w-auto shrink-0 snap-start"
+              className="relative flex bg-white border border-stone-200/80 rounded-xl overflow-hidden shadow-2xs hover:shadow-md transition-all group min-h-[86px] sm:min-h-[90px] w-[185px] sm:w-auto shrink-0 snap-start"
             >
               {/* Left Cut-out part */}
-              <div className="w-24 sm:w-28 bg-linear-to-br from-red-500 to-rose-600 flex flex-col items-center justify-center border-r border-dashed border-white/30 relative shrink-0 p-2 text-center text-white">
-                <div className="absolute top-0 right-0 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-stone-50 rounded-full translate-x-1/2 -translate-y-1/2 shadow-inner" />
-                <div className="absolute bottom-0 right-0 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-stone-50 rounded-full translate-x-1/2 translate-y-1/2 shadow-inner" />
+              <div className="w-14 sm:w-16 bg-linear-to-br from-red-500 to-rose-600 flex flex-col items-center justify-center border-r border-dashed border-white/30 relative shrink-0 p-1.5 text-center text-white">
+                <div className="absolute top-0 right-0 w-2.5 h-2.5 bg-stone-100 rounded-full translate-x-1/2 -translate-y-1/2 shadow-inner" />
+                <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-stone-100 rounded-full translate-x-1/2 translate-y-1/2 shadow-inner" />
 
-                <span className="text-white font-black text-xl sm:text-2xl leading-none">
+                <span className="text-white font-black text-sm sm:text-base leading-none">
                   {voucher.type === 'PERCENT' ? (
                     `${voucher.discountValue}%`
                   ) : (
-                    <span className="text-base sm:text-lg">
+                    <span>
                       {voucher.discountValue >= 1000
                         ? `${voucher.discountValue / 1000}k`
                         : voucher.discountValue}
                     </span>
                   )}
                 </span>
-                <span className="text-[9px] sm:text-[10px] text-red-100 font-black uppercase tracking-widest mt-1">
-                  GIẢM GIÁ
+                <span className="text-[8px] text-red-100 font-black uppercase tracking-wider mt-1">
+                  GIẢM
                 </span>
               </div>
 
               {/* Right Content part */}
-              <div className="flex-1 p-3 sm:p-4 flex flex-col justify-between gap-2 overflow-hidden">
-                <div className="space-y-1">
-                  <h3 className="text-xs sm:text-sm font-black text-stone-900 line-clamp-1 group-hover:text-red-600 transition-colors uppercase tracking-tight">
+              <div className="flex-1 p-2 flex flex-col justify-between gap-1 overflow-hidden">
+                <div className="space-y-0.5">
+                  <h3 className="text-[11px] font-black text-stone-900 line-clamp-1 group-hover:text-red-600 transition-colors uppercase tracking-tight">
                     {voucher.name}
                   </h3>
-                  <div className="flex flex-col">
-                    <p className="text-[10px] sm:text-xs text-stone-500 font-bold truncate">
-                      Đơn tối thiểu: {formatCurrencyVND(voucher.minOrderValue)}
-                    </p>
-                    <p className="text-[9px] sm:text-[10px] text-stone-400 font-medium italic mt-0.5">
-                      HSD: {new Date(voucher.expiredAt).toLocaleDateString('vi-VN')}
-                    </p>
-                  </div>
+                  <p className="text-[9.5px] text-stone-500 font-medium truncate">
+                    Đơn từ: {formatCurrencyVND(voucher.minOrderValue)}
+                  </p>
+                  <p className="text-[8.5px] text-stone-400 font-normal italic truncate">
+                    HSD: {new Date(voucher.expiredAt).toLocaleDateString('vi-VN')}
+                  </p>
                 </div>
 
                 <Button
@@ -125,11 +125,13 @@ export const VoucherHomeSection = memo(function VoucherHomeSection() {
                   isLoading={saveVoucher.isPending && saveVoucher.variables === voucher.id}
                   variant={savedIds.has(voucher.id) ? 'outline' : 'danger'}
                   size="sm"
-                  className={`w-full rounded-xl py-2 min-h-[38px] sm:min-h-[40px] text-[11px] font-black uppercase tracking-widest transition-transform active:scale-[0.98] ${
-                    savedIds.has(voucher.id) ? 'bg-stone-100 border-stone-200 text-stone-400' : ''
+                  className={`w-full rounded-lg py-1 min-h-[26px] text-[10px] font-black uppercase tracking-wider transition-all ${
+                    savedIds.has(voucher.id)
+                      ? 'bg-stone-100 border-stone-200 text-stone-400'
+                      : 'bg-red-600 hover:bg-red-700 text-white shadow-2xs'
                   }`}
                 >
-                  {savedIds.has(voucher.id) ? 'Đã lưu' : 'Lưu ngay'}
+                  {savedIds.has(voucher.id) ? 'Đã lưu' : 'Lưu'}
                 </Button>
               </div>
             </motion.div>

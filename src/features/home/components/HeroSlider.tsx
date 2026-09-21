@@ -1,114 +1,235 @@
 'use client';
 
-import { memo, useEffect, useState } from 'react';
-import { getImageProps } from 'next/image';
+import { memo, useEffect, useState, useCallback } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowRight, Flame, Award } from 'lucide-react';
 import type { Banner } from '../api/homeApi';
 
 interface HeroSliderProps {
-  banners: Banner[];
+  mainBanners: Banner[];
+  subBanners?: Banner[];
 }
 
-const getBannerAlt = (banner: Banner, fallback: string) => banner.title?.trim() || fallback;
-
-export const HeroSlider = memo(function HeroSlider({ banners }: HeroSliderProps) {
+export const HeroSlider = memo(function HeroSlider({
+  mainBanners,
+  subBanners = [],
+}: HeroSliderProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAutoPlay, setIsAutoPlay] = useState(banners.length > 1);
+  const [isPaused, setIsPaused] = useState(false);
 
-  const currentBanner = banners[currentIndex] ?? banners[0];
-  const totalBanners = banners.length;
-  const mobileImageUrl = currentBanner.imageMobileUrl || currentBanner.imageUrl;
-  const altText = getBannerAlt(currentBanner, 'OCOP Banner');
-  const {
-    props: { srcSet: desktopSrcSet },
-  } = getImageProps({
-    src: currentBanner.imageUrl,
-    alt: altText,
-    width: 1920,
-    height: 900,
-    quality: 75,
-    sizes: '100vw',
-  });
-  const { props: mobileImageProps } = getImageProps({
-    src: mobileImageUrl,
-    alt: altText,
-    width: 828,
-    height: 900,
-    quality: 75,
-    sizes: '100vw',
-  });
+  const total = mainBanners.length;
+  const currentBanner = mainBanners[currentIndex] ?? mainBanners[0];
+
+  const nextSlide = useCallback(() => {
+    if (total <= 1) return;
+    setCurrentIndex((prev) => (prev + 1) % total);
+  }, [total]);
+
+  const prevSlide = useCallback(() => {
+    if (total <= 1) return;
+    setCurrentIndex((prev) => (prev - 1 + total) % total);
+  }, [total]);
 
   useEffect(() => {
-    if (totalBanners <= 1 || !isAutoPlay) return;
+    if (total <= 1 || isPaused) return;
 
-    const timer = window.setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % totalBanners);
-    }, 6000);
+    const interval = window.setInterval(() => {
+      nextSlide();
+    }, 5000);
 
-    return () => window.clearInterval(timer);
-  }, [isAutoPlay, totalBanners]);
+    return () => window.clearInterval(interval);
+  }, [total, isPaused, nextSlide]);
+
+  if (total === 0) return null;
 
   return (
-    <section className="relative w-full h-[58svh] min-h-[360px] max-h-[560px] md:h-[calc(100vh-72px)] md:min-h-[500px] lg:h-[calc(100vh-80px)] md:max-h-[900px] overflow-hidden bg-[#113B28]">
-      <div className="absolute inset-0 z-0">
-        <picture>
-          <source media="(min-width: 768px)" srcSet={desktopSrcSet} sizes="100vw" />
-          <img
-            {...mobileImageProps}
-            alt={altText}
-            fetchPriority="high"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-        </picture>
-        <div className="absolute inset-0 bg-gradient-to-br from-black/45 via-black/5 to-black/55" />
-      </div>
+    <section className="w-full max-w-7xl mx-auto px-4 md:px-6 pt-3 md:pt-4">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-stretch">
+        {/* Main Banner Slider (2/3 width on Desktop, Full on Mobile) */}
+        <div
+          className="lg:col-span-8 relative w-full h-[200px] sm:h-[260px] md:h-[320px] lg:h-[380px] rounded-2xl overflow-hidden shadow-sm group bg-emerald-950"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
+          <Link
+            href={currentBanner.link || '/san-pham'}
+            className="block relative w-full h-full cursor-pointer"
+            aria-label={currentBanner.title || 'Banner chính'}
+          >
+            <Image
+              src={currentBanner.imageUrl}
+              alt={currentBanner.title || 'OCOP Banner'}
+              fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 66vw"
+              className="object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+            />
+            {/* Subtle Gradient for Title Readability */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none" />
 
-      <div className="absolute inset-0 z-10 flex flex-col justify-between w-full h-full py-6 md:py-12 lg:py-16 px-5 md:px-12 lg:px-24">
-        <div className="flex justify-end items-start w-full gap-8 pointer-events-none">
-          <div className="flex flex-col items-start md:items-end md:text-right max-w-[18rem] md:max-w-sm mt-2 md:mt-8 bg-black/55 backdrop-blur-md border border-white/20 shadow-2xl shadow-black/30 p-4 md:p-6 rounded-xl md:rounded-2xl pointer-events-auto">
-            <p className="text-white text-sm md:text-base font-sans tracking-wide leading-relaxed mb-4 md:mb-6 drop-shadow-[0_2px_8px_rgba(0,0,0,0.75)]">
-              Kết nối nông dân và người tiêu dùng qua nền tảng thương mại điện tử chuyên biệt. Truy
-              xuất nguồn gốc dễ dàng qua mã QR.
-            </p>
-            <Link href="/san-pham">
-              <span className="group inline-flex items-center gap-2 text-white/80 hover:text-white uppercase tracking-[0.16em] md:tracking-[0.2em] text-[10px] md:text-xs transition-colors cursor-pointer py-2 md:py-0 md:pb-1 border-b border-white/30 hover:border-white">
-                Khám phá sản phẩm
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </span>
-            </Link>
-          </div>
-        </div>
+            {/* Banner Text Overlay */}
+            {(currentBanner.title || currentBanner.description) && (
+              <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-7 md:p-8 text-white z-10 pointer-events-none">
+                {currentBanner.title && (
+                  <h2 className="text-lg sm:text-2xl md:text-3xl font-black drop-shadow-md leading-tight line-clamp-1 mb-1.5">
+                    {currentBanner.title}
+                  </h2>
+                )}
+                {currentBanner.description && (
+                  <p className="text-xs sm:text-sm text-stone-200 line-clamp-2 max-w-xl drop-shadow-sm font-normal">
+                    {currentBanner.description}
+                  </p>
+                )}
+              </div>
+            )}
+          </Link>
 
-        <div className="flex-1" />
-
-        {totalBanners > 1 && (
-          <div className="flex flex-col md:flex-row justify-between items-end w-full gap-8">
-            <div className="flex items-center gap-5 md:gap-6 text-white/85 font-[family-name:var(--font-playfair)] tracking-widest">
-              <span className="text-sm md:text-base">
-                {String(currentIndex + 1).padStart(2, '0')}
-              </span>
+          {/* Navigation Arrows (Visible on Desktop hover) */}
+          {total > 1 && (
+            <>
               <button
                 type="button"
-                className="w-24 md:w-48 h-8 flex items-center relative cursor-pointer group"
-                onClick={() => {
-                  setIsAutoPlay(false);
-                  setCurrentIndex((prev) => (prev + 1) % totalBanners);
-                }}
-                aria-label="Chuyển banner tiếp theo"
+                onClick={prevSlide}
+                aria-label="Slide trước"
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/40 hover:bg-black/70 text-white backdrop-blur-sm flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 z-20 cursor-pointer shadow-md"
               >
-                <span className="w-full h-[1px] bg-white/30 overflow-hidden relative group-hover:h-[2px] transition-all">
-                  <span
-                    className="absolute top-0 left-0 h-full bg-white transition-all duration-300"
-                    style={{ width: `${((currentIndex + 1) / totalBanners) * 100}%` }}
-                  />
-                </span>
+                <ChevronLeft className="w-5 h-5" />
               </button>
-              <span className="text-sm md:text-base">{String(totalBanners).padStart(2, '0')}</span>
+              <button
+                type="button"
+                onClick={nextSlide}
+                aria-label="Slide tiếp theo"
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/40 hover:bg-black/70 text-white backdrop-blur-sm flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 z-20 cursor-pointer shadow-md"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </>
+          )}
+
+          {/* Pagination Indicators */}
+          {total > 1 && (
+            <div className="absolute bottom-3 right-4 z-20 flex items-center gap-1.5">
+              {mainBanners.map((_, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setCurrentIndex(idx)}
+                  aria-label={`Đi tới slide ${idx + 1}`}
+                  className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                    currentIndex === idx
+                      ? 'w-6 bg-white shadow-sm'
+                      : 'w-1.5 bg-white/50 hover:bg-white/80'
+                  }`}
+                />
+              ))}
             </div>
-          </div>
-        )}
+          )}
+        </div>
+
+        {/* Side Banners (1/3 width, 2 stacked cards on Desktop - Shopee / Lazada pattern) */}
+        <div className="hidden lg:flex lg:col-span-4 flex-col gap-3.5 h-[380px]">
+          {/* Top Side Card */}
+          {subBanners[0] ? (
+            <Link
+              href={subBanners[0].link || '/san-pham'}
+              className="relative flex-1 rounded-2xl overflow-hidden shadow-sm group bg-emerald-950 border border-emerald-800/30 cursor-pointer"
+            >
+              <Image
+                src={subBanners[0].imageUrl}
+                alt={subBanners[0].title || 'Ưu đãi OCOP'}
+                fill
+                sizes="33vw"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent p-5 flex flex-col justify-end">
+                <span className="text-[10px] font-black uppercase tracking-widest text-amber-300 mb-1">
+                  Đặc sắc
+                </span>
+                <h3 className="text-white font-bold text-base line-clamp-1 group-hover:text-emerald-300 transition-colors">
+                  {subBanners[0].title}
+                </h3>
+              </div>
+            </Link>
+          ) : (
+            <Link
+              href="/flash-sale"
+              className="relative flex-1 rounded-2xl overflow-hidden shadow-sm group bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-950 border border-emerald-700/50 p-6 flex flex-col justify-between cursor-pointer hover:shadow-md transition-all"
+            >
+              <div className="flex items-center justify-between">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-600/90 text-white text-[10px] font-black uppercase tracking-wider shadow-xs">
+                  <Flame className="w-3.5 h-3.5 fill-current animate-pulse" />
+                  Flash Sale
+                </span>
+                <span className="text-xs text-emerald-200 font-medium">Hàng ngày</span>
+              </div>
+              <div>
+                <h3 className="text-white text-lg font-black tracking-tight leading-snug group-hover:text-amber-200 transition-colors">
+                  Giá Hời Nông Sản
+                </h3>
+                <p className="text-xs text-emerald-100/80 mt-1 line-clamp-1">
+                  Ưu đãi chớp nhoáng theo khung giờ
+                </p>
+              </div>
+              <div className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-300 group-hover:translate-x-1 transition-transform">
+                <span>Săn deal ngay</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </div>
+            </Link>
+          )}
+
+          {/* Bottom Side Card */}
+          {subBanners[1] ? (
+            <Link
+              href={subBanners[1].link || '/san-pham'}
+              className="relative flex-1 rounded-2xl overflow-hidden shadow-sm group bg-emerald-950 border border-emerald-800/30 cursor-pointer"
+            >
+              <Image
+                src={subBanners[1].imageUrl}
+                alt={subBanners[1].title || 'Khám phá OCOP'}
+                fill
+                sizes="33vw"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent p-5 flex flex-col justify-end">
+                <span className="text-[10px] font-black uppercase tracking-widest text-emerald-300 mb-1">
+                  Tiêu biểu
+                </span>
+                <h3 className="text-white font-bold text-base line-clamp-1 group-hover:text-emerald-300 transition-colors">
+                  {subBanners[1].title}
+                </h3>
+              </div>
+            </Link>
+          ) : (
+            <Link
+              href="/san-pham?ocopStar=5"
+              className="relative flex-1 rounded-2xl overflow-hidden shadow-sm group bg-gradient-to-br from-stone-900 via-emerald-950 to-emerald-900 border border-emerald-800/40 p-6 flex flex-col justify-between cursor-pointer hover:shadow-md transition-all"
+            >
+              <div className="flex items-center justify-between">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-black uppercase tracking-wider">
+                  <Award className="w-3.5 h-3.5" />
+                  Chuẩn 5 Sao
+                </span>
+                <span className="text-xs text-stone-400 font-medium">Quốc gia</span>
+              </div>
+              <div>
+                <h3 className="text-white text-lg font-black tracking-tight leading-snug group-hover:text-emerald-300 transition-colors">
+                  Tinh Hoa OCOP 5★
+                </h3>
+                <p className="text-xs text-stone-300 mt-1 line-clamp-1">
+                  Đặc sản xuất khẩu từ các vùng miền
+                </p>
+              </div>
+              <div className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-300 group-hover:translate-x-1 transition-transform">
+                <span>Xem danh sách</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </div>
+            </Link>
+          )}
+        </div>
       </div>
     </section>
   );
 });
+
+HeroSlider.displayName = 'HeroSlider';
