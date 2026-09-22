@@ -69,9 +69,14 @@ export default function AppProvider({ children }: { children: React.ReactNode })
       const decoded = decodeJwt(token);
       if (decoded && decoded.roles && Array.isArray(decoded.roles)) {
         roles = decoded.roles;
-      } else if (decoded && decoded.scope) {
-        roles = typeof decoded.scope === 'string' ? decoded.scope.split(' ') : decoded.scope;
+      } else if (decoded && (decoded.scp || decoded.scope)) {
+        const scope = decoded.scp || decoded.scope;
+        roles = typeof scope === 'string' ? scope.split(' ') : scope;
       }
+
+      roles = roles
+        .filter((role): role is string => typeof role === 'string')
+        .map((role) => role.replace(/^ROLE_/, '').toUpperCase());
 
       // Fallback
       if (roles.length === 0) {

@@ -51,14 +51,27 @@ export interface IAdminDashboardKpi {
 }
 
 export interface IAdminDashboardKpiStats {
-  monthlyRevenue: IAdminDashboardKpi;
-  totalSellers: IAdminDashboardKpi;
-  totalBuyers: IAdminDashboardKpi;
+  revenue: IAdminDashboardKpi;
+  completedOrders: IAdminDashboardKpi;
+  newUsers: IAdminDashboardKpi;
+  newShops: IAdminDashboardKpi;
 }
 
 export interface IAdminDashboardOrderOverview {
-  processed: number;
   pending: number;
+  inProgress: number;
+  completed: number;
+  cancelled: number;
+}
+
+export interface IAdminDashboardActionRequired {
+  pendingShops: number;
+  pendingProducts: number;
+  pendingRefunds: number;
+  pendingPayouts: number;
+  openSupportTickets: number;
+  openComplaints: number;
+  lowStockItems: number;
 }
 
 export interface IAdminDashboardChartData {
@@ -82,14 +95,24 @@ export interface IAdminDashboardActivity {
   action: string;
   status: string;
   createdAt: string;
+  href: string;
 }
 
 export interface IAdminDashboard {
+  fromDate: string;
+  toDate: string;
+  generatedAt: string;
   kpiStats: IAdminDashboardKpiStats;
   orderOverview: IAdminDashboardOrderOverview;
+  actionRequired: IAdminDashboardActionRequired;
   revenueChart: IAdminDashboardChartData[];
   topCategories: IAdminDashboardTopCategory[];
   recentActivities: IAdminDashboardActivity[];
+}
+
+export interface IAdminDashboardParams {
+  from: string;
+  to: string;
 }
 
 export interface IDashboardApiResponse<T> {

@@ -54,7 +54,7 @@ export default async function Home() {
           <Header />
 
           <main className="relative z-10 flex-1 flex flex-col justify-start items-center w-full overflow-x-hidden bg-[#f6faf4] md:bg-transparent">
-            <div className="w-full pb-12 flex flex-col justify-start items-center">
+            <div className="w-full flex flex-col justify-start items-center">
               {activeEvent ? (
                 <div className="w-full">
                   <EventSectionsRenderer event={activeEvent} />

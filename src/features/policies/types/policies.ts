@@ -8,7 +8,7 @@ export interface IPolicy {
   active: boolean;
   required: boolean;
   targetRoles: string[];
-  userAccepted: boolean;
+  userAccepted: boolean | null;
   createdAt: string;
 }
 
@@ -34,6 +34,10 @@ export interface IUpdatePolicyRequest {
 
 export interface IPolicyConsentRequest {
   accepted: boolean;
+}
+
+export interface IPolicyBatchConsentRequest {
+  policyIds: number[];
 }
 
 export interface IPolicyApiResponse<T> {

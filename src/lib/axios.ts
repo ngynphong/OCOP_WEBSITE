@@ -1,6 +1,7 @@
 // import 'client-only';
 
 import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
+import Cookies from 'js-cookie';
 import toast from 'react-hot-toast';
 import { AppError } from '../utils/error';
 import { globalLoading } from '../utils/eventEmitter';
@@ -189,8 +190,32 @@ const onResponseError = async (error: AxiosError) => {
       }
 
       localStorage.setItem('access_token', newAccessToken);
+      Cookies.set('access_token', newAccessToken, {
+        expires: 7,
+        path: '/',
+        sameSite: 'lax',
+        secure: window.location.protocol === 'https:',
+      });
       if (newRefreshToken) {
         localStorage.setItem('refresh_token', newRefreshToken);
+        Cookies.set('refresh_token', newRefreshToken, {
+          expires: 7,
+          path: '/',
+          sameSite: 'lax',
+          secure: window.location.protocol === 'https:',
+        });
+      }
+
+      const refreshedRoles = refreshData?.data?.roles || refreshData?.roles;
+      if (Array.isArray(refreshedRoles)) {
+        const serializedRoles = JSON.stringify(refreshedRoles);
+        localStorage.setItem('user_roles', serializedRoles);
+        Cookies.set('user_roles', serializedRoles, {
+          expires: 7,
+          path: '/',
+          sameSite: 'lax',
+          secure: window.location.protocol === 'https:',
+        });
       }
 
       processQueue(null, newAccessToken);
@@ -204,6 +229,10 @@ const onResponseError = async (error: AxiosError) => {
 
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token');
+      localStorage.removeItem('user_roles');
+      Cookies.remove('access_token', { path: '/' });
+      Cookies.remove('refresh_token', { path: '/' });
+      Cookies.remove('user_roles', { path: '/' });
 
       toast.error('Phiên đăng nhập hết hạn. Bạn sẽ được chuyển hướng về trang chủ.');
       if (typeof window !== 'undefined') {

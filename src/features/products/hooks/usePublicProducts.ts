@@ -122,6 +122,14 @@ export const useFeaturedStoryQuery = () => {
   });
 };
 
+export const useProductStoriesQuery = (pageNo = 1, pageSize = 12, keyword?: string) => {
+  return useQuery({
+    queryKey: ['public-product-stories', pageNo, pageSize, keyword],
+    queryFn: () => publicProductApi.getStories(pageNo, pageSize, keyword),
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
 export const useTraceQrQuery = (qrCode: string | null | undefined) => {
   return useQuery({
     queryKey: ['trace-qr', qrCode],

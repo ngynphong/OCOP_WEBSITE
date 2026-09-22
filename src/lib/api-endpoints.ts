@@ -110,6 +110,7 @@ export const API_ENDPOINTS = {
     TAGS: '/admin/blog/tags',
     AUDIT_LOGS: '/admin/audit-logs',
     USERS: '/admin/users',
+    STAFF_PROFILE_OPTIONS: '/admin/users/staff-profile/options',
     SHOPS: '/admin/shops',
     SUBSCRIPTION_PLANS: '/admin/subscription-plans',
     CATEGORIES: '/admin/categories',

@@ -32,6 +32,7 @@ export interface StaffProfile {
   department: string;
   position: string;
   hiredAt: string;
+  managedByProfileId: number | null;
   managedByEmployeeId: string | null;
   managedByName: string | null;
   userId: string;
@@ -79,12 +80,27 @@ export interface RolePermissionsRequest {
 }
 
 export interface UpdateStaffProfileRequest {
-  employeeId: string;
   department: string;
   position: string;
-  managedById: number;
+  managedById: number | null;
   hiredAt: string;
 }
+
+export interface StaffManagerOption {
+  profileId: number;
+  employeeId: string | null;
+  fullName: string;
+  department: string | null;
+  position: string | null;
+}
+
+export interface StaffProfileOptions {
+  departments: string[];
+  positions: string[];
+  managers: StaffManagerOption[];
+}
+
+export type StaffProfileOptionsResponse = ResponseBase<StaffProfileOptions>;
 
 export interface GetUsersParams {
   pageNo?: number;

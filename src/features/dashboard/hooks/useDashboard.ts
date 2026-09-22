@@ -1,10 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { dashboardApi } from '../api/dashboardApi';
+import { IAdminDashboardParams } from '../types/dashboard';
 
-export const useAdminDashboard = () => {
+export const useAdminDashboard = (params: IAdminDashboardParams) => {
   return useQuery({
-    queryKey: ['adminDashboard'],
-    queryFn: dashboardApi.getAdminDashboard,
+    queryKey: ['adminDashboard', params],
+    queryFn: () => dashboardApi.getAdminDashboard(params),
+    placeholderData: (previousData) => previousData,
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 1,
   });

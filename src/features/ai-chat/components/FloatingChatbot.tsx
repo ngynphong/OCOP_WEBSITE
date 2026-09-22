@@ -469,8 +469,8 @@ export const FloatingChatbot = () => {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Nhắn tin cho OCOP Assistant..."
-              className="max-h-[120px] min-h-[44px] w-full resize-none rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm placeholder:text-gray-400 text-gray-800 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 disabled:opacity-50"
+              placeholder="Nhắn tin cho OCOP Support..."
+              className="max-h-[120px] min-h-[44px] w-full overflow-hidden resize-none rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm placeholder:text-gray-400 text-gray-800 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 disabled:opacity-50"
               rows={1}
               disabled={isLoading}
             />

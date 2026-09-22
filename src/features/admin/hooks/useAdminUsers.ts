@@ -30,6 +30,15 @@ export const useStaffMyProfileQuery = () => {
   });
 };
 
+export const useStaffProfileOptionsQuery = (excludeUserId: string | null | undefined) => {
+  return useQuery({
+    queryKey: ['admin-staff-profile-options', excludeUserId],
+    queryFn: () => adminApi.getStaffProfileOptions(excludeUserId!),
+    enabled: !!excludeUserId,
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
 export const useUserPermissionsQuery = (userId: string | null | undefined) => {
   return useQuery({
     queryKey: ['admin-user-permissions', userId],

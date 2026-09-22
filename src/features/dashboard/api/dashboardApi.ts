@@ -2,16 +2,17 @@ import { axiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
 import {
   IAdminDashboard,
+  IAdminDashboardParams,
   IDashboardApiResponse,
   ISellerDashboard,
   IUserDashboard,
 } from '../types/dashboard';
 
 export const dashboardApi = {
-  getAdminDashboard: async (): Promise<IAdminDashboard> => {
-    const response = (await axiosClient.get(
-      API_ENDPOINTS.ADMIN.DASHBOARD,
-    )) as IDashboardApiResponse<IAdminDashboard>;
+  getAdminDashboard: async (params: IAdminDashboardParams): Promise<IAdminDashboard> => {
+    const response = (await axiosClient.get(API_ENDPOINTS.ADMIN.DASHBOARD, {
+      params,
+    })) as IDashboardApiResponse<IAdminDashboard>;
     return response.data;
   },
 

@@ -25,6 +25,18 @@ const IconMap: Record<string, React.ReactNode> = {
   leaf: <Leaf size={32} />,
 };
 
+const parseImpactStats = (value: unknown): ImpactStat[] => {
+  if (Array.isArray(value)) return value as ImpactStat[];
+  if (typeof value !== 'string' || !value.trim()) return [];
+
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? (parsed as ImpactStat[]) : [];
+  } catch {
+    return [];
+  }
+};
+
 export default function ProductStoryPage() {
   const { slug } = useParams();
   const { data: productResp, isLoading } = usePublicProductDetailQuery(slug as string);
@@ -44,18 +56,11 @@ export default function ProductStoryPage() {
       </div>
     );
 
-  // Map impact stats from JSON
-  const impactItems = Array.isArray(product.impactStats)
-    ? product.impactStats.map((item: ImpactStat) => ({
-        icon: IconMap[item.iconType?.toLowerCase()] || <Sparkles size={32} />,
-        value: item.value,
-        label: item.label,
-      }))
-    : [
-        { icon: <Users size={32} />, value: '100+', label: 'Hộ nông dân' },
-        { icon: <ShieldCheck size={32} />, value: 'Hữu cơ', label: 'Tiêu chuẩn' },
-        { icon: <Award size={32} />, value: `${product.ocopStar}*`, label: 'Xếp hạng' },
-      ];
+  const impactItems = parseImpactStats(product.impactStats).map((item) => ({
+    icon: IconMap[item.iconType?.toLowerCase()] || <Sparkles size={32} />,
+    value: item.value,
+    label: item.label,
+  }));
 
   return (
     <div className="min-h-screen bg-white">
@@ -64,7 +69,7 @@ export default function ProductStoryPage() {
       <main>
         <StoryHero
           name={product.storyTitle || product.name}
-          province={product.provinceName || 'Việt Nam'}
+          province={product.provinceName || product.province?.name}
           imageUrl={product.storyImage || product.imageUrl || '/images/default-image.png'}
         />
 
@@ -74,33 +79,31 @@ export default function ProductStoryPage() {
           subImage={product.thumbnailUrl || product.images?.[0]?.url || '/images/default-image.png'}
         />
 
-        {product.shop.ownerName && (
+        {product.shop.ownerName && product.shop.ownerQuote && (
           <StoryArtisan
             name={product.shop.ownerName}
-            role={product.shop.ownerRole || 'Chủ cơ sở'}
-            quote={product.shop.ownerQuote || 'Chúng tôi gửi gắm cả tâm huyết vào từng sản phẩm.'}
+            role={product.shop.ownerRole}
+            quote={product.shop.ownerQuote}
             avatar={
               product.shop.ownerImageUrl || product.shop.logoUrl || '/images/default-image.png'
             }
           />
         )}
 
-        <StoryTimeline
-          steps={
-            product.journals?.length
-              ? product.journals.map((j: ProductJournal) => ({
-                  date: j.activityDate
-                    ? new Date(j.activityDate).toLocaleDateString('vi-VN')
-                    : 'Giai đoạn',
-                  title: j.title,
-                  description: j.description,
-                  image: j.images?.[0] || product.thumbnailUrl || '/images/default-image.png',
-                }))
-              : []
-          }
-        />
+        {product.journals?.length > 0 && (
+          <StoryTimeline
+            steps={product.journals.map((j: ProductJournal) => ({
+              date: j.activityDate
+                ? new Date(j.activityDate).toLocaleDateString('vi-VN')
+                : undefined,
+              title: j.title,
+              description: j.description,
+              image: j.images?.[0] || product.thumbnailUrl || '/images/default-image.png',
+            }))}
+          />
+        )}
 
-        <StoryImpact items={impactItems} />
+        {impactItems.length > 0 && <StoryImpact items={impactItems} />}
       </main>
 
       <Footer />

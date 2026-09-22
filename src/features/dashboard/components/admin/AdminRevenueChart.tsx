@@ -1,96 +1,122 @@
 import React from 'react';
 import {
-  AreaChart,
   Area,
+  CartesianGrid,
+  ComposedChart,
+  Legend,
+  Line,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
 } from 'recharts';
 import { format } from 'date-fns';
+import { vi } from 'date-fns/locale';
 import { IAdminDashboardChartData } from '@/features/dashboard/types/dashboard';
 
 interface AdminRevenueChartProps {
   revenueChart: IAdminDashboardChartData[];
 }
 
-const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+const formatCurrency = (amount: number) =>
+  new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND',
+    maximumFractionDigits: 0,
+  }).format(amount);
+
+const compactCurrency = (value: number) => {
+  if (value >= 1_000_000_000) return `${(value / 1_000_000_000).toFixed(1)} tỷ`;
+  if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(0)} tr`;
+  if (value >= 1_000) return `${(value / 1_000).toFixed(0)}k`;
+  return value.toString();
 };
 
-export const AdminRevenueChart = ({ revenueChart }: AdminRevenueChartProps) => {
-  return (
-    <div className="col-span-12 lg:col-span-8 bg-white p-8 rounded-xl shadow-sm border border-stone-100 overflow-hidden relative group">
-      <div className="flex justify-between items-center mb-8">
-        <h4 className="text-lg font-black text-stone-900 tracking-tight">
-          Xu hướng Doanh thu & Tăng trưởng
-        </h4>
-        <div className="flex gap-4">
-          <span className="flex items-center gap-2 text-[10px] font-black text-stone-400 uppercase tracking-widest">
-            <span className="w-2.5 h-2.5 rounded-sm bg-emerald-500" /> Doanh thu
-          </span>
-        </div>
-      </div>
+export const AdminRevenueChart = ({ revenueChart }: AdminRevenueChartProps) => (
+  <section className="rounded-2xl border border-stone-200/80 bg-white p-5 shadow-sm sm:p-6">
+    <div className="mb-6">
+      <h3 className="text-lg font-black tracking-tight text-stone-900">
+        Doanh thu và đơn hoàn tất
+      </h3>
+      <p className="mt-1 text-sm text-stone-500">Diễn biến theo từng ngày trong khoảng đã chọn.</p>
+    </div>
 
-      <div className="h-64 w-full">
+    {revenueChart.length === 0 ? (
+      <div className="flex h-72 items-center justify-center rounded-xl bg-stone-50 text-sm text-stone-400">
+        Chưa có dữ liệu giao dịch trong khoảng thời gian này
+      </div>
+    ) : (
+      <div className="h-80 w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={revenueChart}>
+          <ComposedChart data={revenueChart} margin={{ top: 8, right: 4, left: 0, bottom: 0 }}>
             <defs>
-              <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+              <linearGradient id="adminRevenueFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#059669" stopOpacity={0.26} />
+                <stop offset="95%" stopColor="#059669" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f5f5f4" />
+            <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="#e7e5e4" />
             <XAxis
               dataKey="date"
               axisLine={false}
               tickLine={false}
-              tick={{ fontSize: 10, fill: '#a8a29e' }}
-              tickFormatter={(val) => {
-                try {
-                  return format(new Date(val), 'dd/MM');
-                } catch {
-                  return val;
-                }
-              }}
+              minTickGap={24}
+              tick={{ fontSize: 11, fill: '#78716c' }}
+              tickFormatter={(value) => format(new Date(value), 'dd/MM')}
             />
             <YAxis
+              yAxisId="revenue"
               axisLine={false}
               tickLine={false}
-              tick={{ fontSize: 10, fill: '#a8a29e' }}
-              tickFormatter={(val) => {
-                if (val >= 1000000) return `${val / 1000000}M`;
-                return val;
-              }}
+              width={54}
+              tick={{ fontSize: 11, fill: '#78716c' }}
+              tickFormatter={compactCurrency}
+            />
+            <YAxis
+              yAxisId="orders"
+              orientation="right"
+              axisLine={false}
+              tickLine={false}
+              width={30}
+              allowDecimals={false}
+              tick={{ fontSize: 11, fill: '#78716c' }}
             />
             <Tooltip
-              formatter={(value) => [formatCurrency(Number(value as number) || 0), 'Doanh thu']}
-              labelFormatter={(label) => {
-                try {
-                  return format(new Date(label), 'dd/MM/yyyy');
-                } catch {
-                  return label;
-                }
-              }}
+              labelFormatter={(label) => format(new Date(label), 'dd MMMM yyyy', { locale: vi })}
+              formatter={(value, name) => [
+                name === 'Doanh thu'
+                  ? formatCurrency(Number(value) || 0)
+                  : `${Number(value).toLocaleString('vi-VN')} đơn`,
+                name,
+              ]}
               contentStyle={{
-                borderRadius: '12px',
-                border: 'none',
-                boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                borderRadius: '14px',
+                border: '1px solid #e7e5e4',
+                boxShadow: '0 10px 30px -15px rgb(28 25 23 / 0.35)',
               }}
             />
+            <Legend iconType="circle" wrapperStyle={{ fontSize: 12, paddingTop: 16 }} />
             <Area
+              yAxisId="revenue"
               type="monotone"
               dataKey="revenue"
-              stroke="#10b981"
-              strokeWidth={3}
-              fillOpacity={1}
-              fill="url(#colorRevenue)"
+              name="Doanh thu"
+              stroke="#059669"
+              strokeWidth={2.5}
+              fill="url(#adminRevenueFill)"
             />
-          </AreaChart>
+            <Line
+              yAxisId="orders"
+              type="monotone"
+              dataKey="orders"
+              name="Đơn hoàn tất"
+              stroke="#0284c7"
+              strokeWidth={2}
+              dot={false}
+            />
+          </ComposedChart>
         </ResponsiveContainer>
       </div>
-    </div>
-  );
-};
+    )}
+  </section>
+);

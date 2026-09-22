@@ -1,31 +1,59 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { SearchBox } from '@/features/products/components/SearchBox';
+import { Pagination } from '@/components/ui/Pagination';
 import {
-  usePublicProductsQuery,
   useFeaturedStoryQuery,
+  useProductStoriesQuery,
 } from '@/features/products/hooks/usePublicProducts';
 import Image from 'next/image';
 import Link from 'next/link';
 import { MapPin, Star, ArrowRight, Loader2, BookOpen, Sparkles } from 'lucide-react';
 
 export default function StoryLandingPage() {
-  const [selectedProvince] = useState<number | undefined>(undefined);
-  const { data: productsRes, isLoading } = usePublicProductsQuery({
-    pageSize: 12,
-    provinceId: selectedProvince,
-    // We want products that likely have stories
-    sort: 'viewCount,desc',
-  });
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const resultsSectionRef = useRef<HTMLElement>(null);
+  const {
+    data: storiesRes,
+    isLoading,
+    isFetching,
+    isError,
+    refetch,
+  } = useProductStoriesQuery(currentPage, 12, searchKeyword);
 
   const { data: featuredStoryRes } = useFeaturedStoryQuery();
   const featuredStory = featuredStoryRes?.data;
 
-  const products = productsRes?.data?.items || [];
+  const storyPage = storiesRes?.data;
+  const stories = storyPage?.items || [];
+
+  const scrollToResults = useCallback(() => {
+    requestAnimationFrame(() => {
+      resultsSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }, []);
+
+  const handleStorySearch = useCallback(
+    (keyword: string) => {
+      setCurrentPage(1);
+      setSearchKeyword(keyword);
+      scrollToResults();
+    },
+    [scrollToResults],
+  );
+
+  const handlePageChange = useCallback(
+    (page: number) => {
+      setCurrentPage(page);
+      scrollToResults();
+    },
+    [scrollToResults],
+  );
 
   return (
     <div className="min-h-screen bg-[#FCF8F2]">
@@ -59,7 +87,12 @@ export default function StoryLandingPage() {
               </p>
 
               <div className="w-full max-w-xl mx-auto">
-                <SearchBox variant="hero" />
+                <SearchBox
+                  variant="hero"
+                  searchScope="stories"
+                  onSearch={handleStorySearch}
+                  isSearching={isFetching}
+                />
                 <p className="mt-4 text-emerald-100/40 text-xs uppercase tracking-widest font-bold">
                   Khám phá câu chuyện qua tên sản phẩm hoặc địa danh
                 </p>
@@ -69,18 +102,26 @@ export default function StoryLandingPage() {
         </section>
 
         {/* Product Selection Grid */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8 mt-20 relative z-20">
+        <section
+          ref={resultsSectionRef}
+          className="max-w-7xl mx-auto px-6 lg:px-8 mt-20 relative z-20 scroll-mt-8"
+        >
           <div className="bg-white rounded-xl shadow-2xl p-8 md:p-12">
             <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-6">
               <div>
                 <h2 className="text-3xl font-black text-[#113B28] mb-2">
-                  Chọn câu chuyện bạn muốn nghe
+                  {searchKeyword
+                    ? `Kết quả cho “${searchKeyword}”`
+                    : 'Chọn câu chuyện bạn muốn nghe'}
                 </h2>
-                <p className="text-stone-400 font-medium">
-                  Danh sách các sản phẩm tiêu biểu có hành trình minh bạch
+                <p className="text-stone-400 font-medium" aria-live="polite">
+                  {isFetching
+                    ? 'Đang tìm các câu chuyện phù hợp...'
+                    : searchKeyword
+                      ? `Tìm thấy ${storyPage?.totalElement || 0} câu chuyện phù hợp`
+                      : 'Danh sách các sản phẩm tiêu biểu có hành trình minh bạch'}
                 </p>
               </div>
-              <div className="flex items-center gap-4">{/* Province Filter could go here */}</div>
             </div>
 
             {isLoading ? (
@@ -90,35 +131,46 @@ export default function StoryLandingPage() {
                   Đang tìm kiếm các câu chuyện...
                 </p>
               </div>
-            ) : (
+            ) : isError ? (
+              <div className="py-24 flex flex-col items-center justify-center gap-4 text-center">
+                <p className="text-stone-500">Không thể tải danh sách câu chuyện.</p>
+                <button
+                  type="button"
+                  onClick={() => refetch()}
+                  className="rounded-full bg-[#113B28] px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-emerald-800"
+                >
+                  Thử lại
+                </button>
+              </div>
+            ) : stories.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                {products.map((product, idx) => (
+                {stories.map((story, idx) => (
                   <motion.div
-                    key={product.id}
+                    key={story.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.05 }}
                   >
                     <Link
-                      href={`/cau-chuyen/${product.slug}`}
+                      href={`/cau-chuyen/${story.slug}`}
                       className="group block bg-stone-50 rounded-xl overflow-hidden hover:shadow-2xl transition-all duration-500 border border-stone-100"
                     >
                       <div className="relative aspect-square overflow-hidden">
                         <Image
-                          src={
-                            product.thumbnailUrl || product.imageUrl || '/images/default-image.png'
-                          }
-                          alt={product.name}
+                          src={story.imageUrl || '/images/default-image.png'}
+                          alt={story.title}
                           fill
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           className="object-cover group-hover:scale-110 transition-transform duration-700"
                         />
-                        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
-                          <Star className="w-3.5 h-3.5 text-[#D4AF37] fill-current" />
-                          <span className="text-xs font-black text-[#113B28]">
-                            {product.ocopStar} Sao
-                          </span>
-                        </div>
+                        {!!story.ocopStar && (
+                          <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
+                            <Star className="w-3.5 h-3.5 text-[#D4AF37] fill-current" />
+                            <span className="text-xs font-black text-[#113B28]">
+                              {story.ocopStar} Sao
+                            </span>
+                          </div>
+                        )}
                         <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
                           <span className="text-white font-bold flex items-center gap-2">
                             Đọc câu chuyện <ArrowRight size={16} />
@@ -127,23 +179,26 @@ export default function StoryLandingPage() {
                       </div>
 
                       <div className="p-6">
-                        <div className="flex items-center gap-2 text-[10px] font-bold text-emerald-600 uppercase tracking-widest mb-2">
-                          <MapPin size={12} />
-                          {product.provinceName}
-                        </div>
+                        {story.provinceName && (
+                          <div className="flex items-center gap-2 text-[10px] font-bold text-emerald-600 uppercase tracking-widest mb-2">
+                            <MapPin size={12} />
+                            {story.provinceName}
+                          </div>
+                        )}
                         <h3 className="text-lg font-black text-stone-800 mb-2 line-clamp-1 group-hover:text-emerald-700 transition-colors">
-                          {product.name}
+                          {story.title}
                         </h3>
-                        <p className="text-stone-400 text-xs line-clamp-2 leading-relaxed">
-                          {product.shortDesc ||
-                            'Khám phá hành trình tinh hoa của sản phẩm OCOP đặc thù này...'}
-                        </p>
+                        {story.summary && (
+                          <p className="text-stone-400 text-xs line-clamp-2 leading-relaxed">
+                            {story.summary}
+                          </p>
+                        )}
 
                         <div className="mt-6 pt-4 border-t border-stone-200 flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <BookOpen size={14} className="text-stone-400" />
                             <span className="text-xs font-bold text-stone-400 uppercase tracking-tighter">
-                              {product.journals?.length || 5} Chương
+                              {story.journalCount} Chương
                             </span>
                           </div>
                           <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-colors shadow-sm">
@@ -155,11 +210,21 @@ export default function StoryLandingPage() {
                   </motion.div>
                 ))}
               </div>
-            )}
-
-            {!isLoading && products.length === 0 && (
+            ) : (
               <div className="py-24 text-center">
                 <p className="text-stone-400">Không tìm thấy câu chuyện nào phù hợp.</p>
+              </div>
+            )}
+
+            {!isLoading && !isError && storyPage && storyPage.totalPage > 1 && (
+              <div className="mt-12 border-t border-stone-100 pt-8">
+                <Pagination
+                  currentPage={storyPage.pageNo}
+                  totalPages={storyPage.totalPage}
+                  pageSize={storyPage.pageSize}
+                  totalElements={storyPage.totalElement}
+                  onPageChange={handlePageChange}
+                />
               </div>
             )}
           </div>

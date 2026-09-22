@@ -74,6 +74,7 @@ export interface VerifyAccountResponse {
 export interface SimpleRegisterRequest {
   identity: string;
   password: string;
+  acceptedPolicyIds: number[];
 }
 
 export interface ResendOtpRequest {
@@ -154,6 +155,9 @@ export const simpleRegisterSchema = z
       ),
     password: z.string().min(6, 'Mật khẩu phải có ít nhất 6 ký tự'),
     confirmPassword: z.string().min(1, 'Vui lòng xác nhận mật khẩu'),
+    acceptedPolicies: z.boolean().refine((value) => value, {
+      message: 'Bạn cần đồng ý với các chính sách bắt buộc để tạo tài khoản',
+    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Mật khẩu không khớp',

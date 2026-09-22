@@ -13,7 +13,7 @@ export const StoryHero = ({
   imageUrl,
 }: {
   name: string;
-  province: string;
+  province?: string | null;
   imageUrl: string;
 }) => (
   <section className="relative min-h-[85vh] py-32 md:py-0 w-full overflow-hidden flex items-center justify-center">
@@ -39,10 +39,12 @@ export const StoryHero = ({
         <h1 className="text-white text-5xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tight italic">
           {name}
         </h1>
-        <div className="flex items-center justify-center gap-2 text-white/80 text-lg md:text-xl font-medium">
-          <MapPin className="w-5 h-5 text-emerald-400" />
-          <span>{province}</span>
-        </div>
+        {province && (
+          <div className="flex items-center justify-center gap-2 text-white/80 text-lg md:text-xl font-medium">
+            <MapPin className="w-5 h-5 text-emerald-400" />
+            <span>{province}</span>
+          </div>
+        )}
       </motion.div>
     </div>
 
@@ -107,7 +109,7 @@ export const StoryArtisan = ({
   avatar,
 }: {
   name: string;
-  role: string;
+  role?: string;
   quote: string;
   avatar: string;
 }) => (
@@ -137,7 +139,7 @@ export const StoryArtisan = ({
 
         <div>
           <h4 className="text-xl font-black text-[#D4AF37] uppercase tracking-widest">{name}</h4>
-          <p className="text-white/60 mt-2 font-medium tracking-wide">{role}</p>
+          {role && <p className="text-white/60 mt-2 font-medium tracking-wide">{role}</p>}
         </div>
       </motion.div>
     </div>
@@ -146,7 +148,7 @@ export const StoryArtisan = ({
 
 // --- StoryTimeline ---
 export interface StoryTimelineStep {
-  date: string;
+  date?: string;
   title: string;
   description: string;
   image: string;
@@ -190,9 +192,11 @@ export const StoryTimeline = ({ steps }: { steps: StoryTimelineStep[] }) => (
               </div>
 
               <div className="flex-1 w-full space-y-4 text-center md:text-left">
-                <span className="text-[#D4AF37] font-black text-xs uppercase tracking-widest">
-                  {step.date}
-                </span>
+                {step.date && (
+                  <span className="text-[#D4AF37] font-black text-xs uppercase tracking-widest">
+                    {step.date}
+                  </span>
+                )}
                 <h3 className="text-2xl font-black text-stone-900">{step.title}</h3>
                 <p className="text-stone-500 leading-relaxed">{step.description}</p>
               </div>

@@ -7,6 +7,7 @@ import {
   ICreatePolicyRequest,
   IUpdatePolicyRequest,
   IPolicyConsentRequest,
+  IPolicyBatchConsentRequest,
   IPolicyApiResponse,
 } from '../types/policies';
 
@@ -33,12 +34,26 @@ export const policiesApi = {
     return response.data;
   },
 
+  getRegistrationPolicies: async (): Promise<IPolicy[]> => {
+    const response = (await publicAxiosClient.get(`${API_ENDPOINTS.POLICIES}/registration`, {
+      headers: { 'X-Silent-Loading': 'true' },
+    })) as IPolicyApiResponse<IPolicy[]>;
+    return response.data;
+  },
+
   consentPolicy: async (id: number, data: IPolicyConsentRequest): Promise<string> => {
     const response = (await axiosClient.post(
       buildRoute(API_ENDPOINTS.POLICIES, id, 'consent'),
       data,
       { headers: { 'X-Silent-Loading': 'true' } },
     )) as IPolicyApiResponse<string>;
+    return response.data;
+  },
+
+  consentRequiredPolicies: async (data: IPolicyBatchConsentRequest): Promise<string> => {
+    const response = (await axiosClient.post(`${API_ENDPOINTS.POLICIES}/consents/batch`, data, {
+      headers: { 'X-Silent-Loading': 'true' },
+    })) as IPolicyApiResponse<string>;
     return response.data;
   },
 

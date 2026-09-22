@@ -205,6 +205,19 @@ export interface Product {
   qrCode: ProductQrCode | null;
 }
 
+export interface ProductStory {
+  id: number;
+  name: string;
+  slug: string;
+  title: string;
+  summary: string | null;
+  imageUrl: string | null;
+  ocopStar: number | null;
+  provinceName: string | null;
+  journalCount: number;
+  featured: boolean;
+}
+
 // ─── Request interfaces ───────────────────────────────────────────────────────
 
 export interface CreateProductRequest {
@@ -372,6 +385,7 @@ export interface PublicProductListParams {
 
 export type ProductDetailResponse = ResponseBase<Product>;
 export type ProductListResponse = ResponseBase<PaginatedResponse<Product>>;
+export type ProductStoryListResponse = ResponseBase<PaginatedResponse<ProductStory>>;
 export type VariantListResponse = ResponseBase<ProductVariant[]>;
 export type VariantDetailResponse = ResponseBase<ProductVariant>;
 export type ImageListResponse = ResponseBase<ProductImage[]>;

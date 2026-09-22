@@ -4,12 +4,14 @@ import {
   ICreatePolicyRequest,
   IUpdatePolicyRequest,
   IPolicyConsentRequest,
+  IPolicyBatchConsentRequest,
 } from '../types/policies';
 
 const POLICIES_KEYS = {
   all: ['policies'] as const,
   admin: () => [...POLICIES_KEYS.all, 'admin'] as const,
   pending: () => [...POLICIES_KEYS.all, 'pending'] as const,
+  registration: () => [...POLICIES_KEYS.all, 'registration'] as const,
   detail: (id: number) => [...POLICIES_KEYS.all, 'detail', id] as const,
   detailBySlug: (slug: string) => [...POLICIES_KEYS.all, 'detail-slug', slug] as const,
 };
@@ -46,6 +48,15 @@ export const usePendingPolicies = (enabled = true) => {
   });
 };
 
+export const useRegistrationPolicies = (enabled = true) => {
+  return useQuery({
+    queryKey: POLICIES_KEYS.registration(),
+    queryFn: policiesApi.getRegistrationPolicies,
+    enabled,
+    staleTime: 1000 * 60,
+  });
+};
+
 export const useConsentPolicy = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -53,6 +64,17 @@ export const useConsentPolicy = () => {
       policiesApi.consentPolicy(id, data),
     onSuccess: () => {
       // Invalidate pending policies so it refetches and removes the accepted one
+      queryClient.invalidateQueries({ queryKey: POLICIES_KEYS.pending() });
+    },
+  });
+};
+
+export const useConsentRequiredPolicies = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: IPolicyBatchConsentRequest) => policiesApi.consentRequiredPolicies(data),
+    onSuccess: () => {
+      queryClient.setQueryData(POLICIES_KEYS.pending(), []);
       queryClient.invalidateQueries({ queryKey: POLICIES_KEYS.pending() });
     },
   });

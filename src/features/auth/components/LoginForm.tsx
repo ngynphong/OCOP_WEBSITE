@@ -8,11 +8,12 @@ import { loginSchema, LoginFormData, simpleRegisterSchema, SimpleRegisterFormDat
 import { useLogin } from '../hooks/useLogin';
 import { useRegister } from '../hooks/useRegister';
 import { useVerify } from '../hooks/useVerify';
-import { useState, useMemo } from 'react';
+import { Fragment, useState, useMemo } from 'react';
 import { Eye, EyeOff, ArrowRight, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/AppButton';
 import toast from 'react-hot-toast';
 import { FcGoogle } from 'react-icons/fc';
+import { useRegistrationPolicies } from '@/features/policies/hooks/usePolicies';
 
 type FormPhase = 'IDENTIFY' | 'AUTHENTICATE' | '2FA';
 
@@ -25,6 +26,12 @@ export function LoginForm() {
   const [accountExists, setAccountExists] = useState<boolean | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const shouldLoadRegistrationPolicies = phase === 'AUTHENTICATE' && accountExists === false;
+  const {
+    data: registrationPolicies = [],
+    isLoading: isLoadingRegistrationPolicies,
+    isError: isRegistrationPoliciesError,
+  } = useRegistrationPolicies(shouldLoadRegistrationPolicies);
 
   const handleGoogleLogin = () => {
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
@@ -80,6 +87,7 @@ export function LoginForm() {
       identity: '',
       password: '',
       confirmPassword: '',
+      acceptedPolicies: false,
       remember: true,
       otp: '',
     },
@@ -114,6 +122,7 @@ export function LoginForm() {
       setAccountExists(null);
       setValue('password', '');
       setValue('confirmPassword', '');
+      setValue('acceptedPolicies', false);
     }
   };
 
@@ -147,6 +156,7 @@ export function LoginForm() {
       await simpleRegister({
         identity: data.identity,
         password: data.password,
+        acceptedPolicyIds: registrationPolicies.map((policy) => policy.id),
       });
     }
   };
@@ -258,42 +268,88 @@ export function LoginForm() {
 
             {/* Confirm Password Field (Only for Register) */}
             {!accountExists && (
-              <div className="flex flex-col gap-2 animate-in fade-in zoom-in-95 duration-300">
-                <label className="text-stone-400 text-xs font-bold ml-1 uppercase tracking-wider">
-                  Xác nhận mật khẩu
-                </label>
-                <div className="relative">
-                  <input
-                    {...register('confirmPassword')}
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    placeholder="••••••••••"
-                    className={`w-full bg-white border px-4 py-3 pr-12 rounded-xl text-stone-900 font-medium tracking-widest placeholder:text-stone-300 focus:outline-none focus:ring-2 transition-all duration-300 shadow-xs ${
-                      errors.confirmPassword
-                        ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20'
-                        : 'border-stone-200 focus:border-emerald-500 focus:ring-emerald-500/20'
-                    }`}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-stone-400 hover:text-emerald-600 transition-colors p-2 bg-transparent"
-                    aria-label={
-                      showConfirmPassword ? 'Ẩn xác nhận mật khẩu' : 'Hiện xác nhận mật khẩu'
-                    }
-                  >
-                    {showConfirmPassword ? (
-                      <EyeOff className="w-4 h-4" />
-                    ) : (
-                      <Eye className="w-4 h-4" />
-                    )}
-                  </button>
+              <>
+                <div className="flex flex-col gap-2 animate-in fade-in zoom-in-95 duration-300">
+                  <label className="text-stone-400 text-xs font-bold ml-1 uppercase tracking-wider">
+                    Xác nhận mật khẩu
+                  </label>
+                  <div className="relative">
+                    <input
+                      {...register('confirmPassword')}
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      placeholder="••••••••••"
+                      className={`w-full bg-white border px-4 py-3 pr-12 rounded-xl text-stone-900 font-medium tracking-widest placeholder:text-stone-300 focus:outline-none focus:ring-2 transition-all duration-300 shadow-xs ${
+                        errors.confirmPassword
+                          ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20'
+                          : 'border-stone-200 focus:border-emerald-500 focus:ring-emerald-500/20'
+                      }`}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-stone-400 hover:text-emerald-600 transition-colors p-2 bg-transparent"
+                      aria-label={
+                        showConfirmPassword ? 'Ẩn xác nhận mật khẩu' : 'Hiện xác nhận mật khẩu'
+                      }
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff className="w-4 h-4" />
+                      ) : (
+                        <Eye className="w-4 h-4" />
+                      )}
+                    </button>
+                  </div>
+                  {errors.confirmPassword && (
+                    <span className="text-red-500 text-[10px] font-bold mt-1 ml-1">
+                      {errors.confirmPassword.message}
+                    </span>
+                  )}
                 </div>
-                {errors.confirmPassword && (
-                  <span className="text-red-500 text-[10px] font-bold mt-1 ml-1">
-                    {errors.confirmPassword.message}
-                  </span>
-                )}
-              </div>
+
+                <div className="rounded-xl border border-emerald-100 bg-emerald-50/70 p-3.5">
+                  <label className="flex cursor-pointer items-start gap-3">
+                    <input
+                      {...register('acceptedPolicies')}
+                      type="checkbox"
+                      disabled={isLoadingRegistrationPolicies || isRegistrationPoliciesError}
+                      className="mt-0.5 h-4 w-4 shrink-0 rounded border-stone-300 accent-emerald-700"
+                    />
+                    <span className="text-xs leading-relaxed text-stone-600">
+                      Tôi đã đọc và đồng ý với{' '}
+                      {isLoadingRegistrationPolicies ? (
+                        <span className="font-semibold text-emerald-700">
+                          các chính sách bắt buộc
+                        </span>
+                      ) : (
+                        registrationPolicies.map((policy, index) => (
+                          <Fragment key={policy.id}>
+                            {index > 0 &&
+                              (index === registrationPolicies.length - 1 ? ' và ' : ', ')}
+                            <Link
+                              href={`/${policy.slug}`}
+                              target="_blank"
+                              className="font-bold text-emerald-700 underline decoration-emerald-300 underline-offset-2 hover:text-emerald-900"
+                            >
+                              {policy.title}
+                            </Link>
+                          </Fragment>
+                        ))
+                      )}
+                      .
+                    </span>
+                  </label>
+                  {isRegistrationPoliciesError && (
+                    <p className="mt-2 text-[10px] font-bold text-red-500">
+                      Không thể tải chính sách. Vui lòng tải lại trang trước khi đăng ký.
+                    </p>
+                  )}
+                  {errors.acceptedPolicies && (
+                    <p className="mt-2 text-[10px] font-bold text-red-500">
+                      {errors.acceptedPolicies.message}
+                    </p>
+                  )}
+                </div>
+              </>
             )}
 
             {/* Remember & Forgot Password */}
@@ -334,10 +390,11 @@ export function LoginForm() {
 
             <Button
               type="submit"
-              isLoading={isLoading}
+              isLoading={isLoading || (!accountExists && isLoadingRegistrationPolicies)}
+              disabled={!accountExists && isRegistrationPoliciesError}
               className="mt-2 shadow-xl shadow-green-900/10 active:scale-[0.98]"
             >
-              Đăng nhập ngay
+              {accountExists ? 'Đăng nhập ngay' : 'Tạo tài khoản'}
             </Button>
           </div>
         ) : phase === '2FA' ? (

@@ -19,9 +19,19 @@ interface SearchBoxProps {
   variant?: 'header' | 'hero';
   className?: string;
   onClose?: () => void;
+  searchScope?: 'products' | 'stories';
+  onSearch?: (keyword: string) => void;
+  isSearching?: boolean;
 }
 
-export const SearchBox: React.FC<SearchBoxProps> = ({ variant = 'header', className, onClose }) => {
+export const SearchBox: React.FC<SearchBoxProps> = ({
+  variant = 'header',
+  className,
+  onClose,
+  searchScope = 'products',
+  onSearch,
+  isSearching = false,
+}) => {
   const [query, setQuery] = useState('');
   const [isAiMode, setIsAiMode] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -29,16 +39,17 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ variant = 'header', classN
   const debouncedQuery = useDebounce(query, 800);
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
+  const isStorySearch = searchScope === 'stories';
 
   const { data: regularProductsRes, isFetching: isFetchingRegular } = usePublicProductsQuery(
     { keyword: debouncedQuery, pageSize: 6 },
-    { enabled: debouncedQuery.length >= 2 && !isAiMode },
+    { enabled: debouncedQuery.length >= 2 && !isAiMode && !isStorySearch },
   );
 
   const { data: aiProductsRes, isFetching: isFetchingAi } = useAiSearchQuery(
     debouncedQuery,
     6,
-    isAiMode,
+    isAiMode && !isStorySearch,
   );
 
   const isFetching = isAiMode ? isFetchingAi : isFetchingRegular;
@@ -57,14 +68,23 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ variant = 'header', classN
 
   const handleSearch = useCallback(
     (keyword: string) => {
-      if (!keyword.trim()) return;
+      const normalizedKeyword = keyword.trim();
+
+      if (isStorySearch) {
+        onSearch?.(normalizedKeyword);
+        setIsOpen(false);
+        if (onClose) onClose();
+        return;
+      }
+
+      if (!normalizedKeyword) return;
       router.push(
-        `/san-pham?keyword=${encodeURIComponent(keyword.trim())}${isAiMode ? '&aiSearch=true' : ''}`,
+        `/san-pham?keyword=${encodeURIComponent(normalizedKeyword)}${isAiMode ? '&aiSearch=true' : ''}`,
       );
       setIsOpen(false);
       if (onClose) onClose();
     },
-    [router, onClose, isAiMode],
+    [router, onClose, isAiMode, isStorySearch, onSearch],
   );
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -73,7 +93,9 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ variant = 'header', classN
     } else if (e.key === 'ArrowUp') {
       setSelectedIndex((prev) => (prev > 0 ? prev - 1 : -1));
     } else if (e.key === 'Enter') {
-      if (selectedIndex >= 0 && products[selectedIndex]) {
+      if (isStorySearch) {
+        handleSearch(query);
+      } else if (selectedIndex >= 0 && products[selectedIndex]) {
         router.push(`/san-pham/${products[selectedIndex].slug}`);
         setIsOpen(false);
         if (onClose) onClose();
@@ -112,13 +134,15 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ variant = 'header', classN
           onKeyDown={handleKeyDown}
           onFocus={() => setIsOpen(true)}
           placeholder={
-            variant === 'header'
-              ? isAiMode
-                ? 'Hỏi AI tìm sản phẩm...'
-                : 'Tìm kiếm sản phẩm...'
-              : isAiMode
-                ? 'Ví dụ: Tặng quà gì cho sếp nam ở Hà Nội?'
-                : 'Tìm mật ong, trà, gạo ST25, lụa Bảo Lộc...'
+            isStorySearch
+              ? 'Tìm câu chuyện theo sản phẩm hoặc địa phương...'
+              : variant === 'header'
+                ? isAiMode
+                  ? 'Hỏi AI tìm sản phẩm...'
+                  : 'Tìm kiếm sản phẩm...'
+                : isAiMode
+                  ? 'Ví dụ: Tặng quà gì cho sếp nam ở Hà Nội?'
+                  : 'Tìm mật ong, trà, gạo ST25, lụa Bảo Lộc...'
           }
           className={cn(
             'flex-1 bg-transparent border-none outline-none px-3 py-1 font-sans text-sm md:text-base',
@@ -127,7 +151,10 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ variant = 'header', classN
         />
         {query && (
           <button
-            onClick={() => setQuery('')}
+            onClick={() => {
+              setQuery('');
+              if (isStorySearch) onSearch?.('');
+            }}
             className="p-1 hover:bg-black/5 rounded-full text-stone-400"
           >
             <X size={16} />
@@ -136,16 +163,25 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ variant = 'header', classN
         {variant === 'hero' && (
           <Button
             onClick={() => handleSearch(query)}
+            disabled={isStorySearch && isSearching}
             className="hidden sm:block bg-emerald-700 text-white px-8 py-3 rounded-full text-sm md:text-base font-bold hover:bg-emerald-800 transition-all active:scale-95 shadow-md ml-2"
           >
-            Tìm kiếm
+            {isStorySearch && isSearching ? (
+              <span className="flex items-center gap-2">
+                <Loader2 size={18} className="animate-spin" /> Đang tìm...
+              </span>
+            ) : isStorySearch ? (
+              'Tìm câu chuyện'
+            ) : (
+              'Tìm kiếm'
+            )}
           </Button>
         )}
       </div>
 
       {/* Results Dropdown */}
       <AnimatePresence>
-        {isOpen && (debouncedQuery.length >= 2 || isFetching) && (
+        {!isStorySearch && isOpen && (debouncedQuery.length >= 2 || isFetching) && (
           <motion.div
             initial={{ opacity: 0, y: 10, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -183,13 +219,13 @@ export const SearchBox: React.FC<SearchBoxProps> = ({ variant = 'header', classN
                     )}
                   />
                   <p className="text-xs font-bold uppercase tracking-widest text-center">
-                    {isAiMode ? 'AI Đang suy nghĩ...' : 'Đang tìm kiếm...'}
+                    {isAiMode ? 'Đang suy nghĩ...' : 'Đang tìm kiếm...'}
                   </p>
                 </div>
               ) : products.length > 0 ? (
                 <div className="p-2">
                   <div className="px-3 py-2 text-[10px] font-black text-stone-400 uppercase tracking-widest border-b border-stone-50 mb-1">
-                    {isAiMode ? 'Gợi ý từ AI' : 'Sản phẩm gợi ý'}
+                    {isAiMode ? 'Gợi ý từ hệ thống' : 'Sản phẩm gợi ý'}
                   </div>
                   {products.map((product, index) => (
                     <button

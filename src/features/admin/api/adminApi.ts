@@ -37,6 +37,7 @@ import {
   CategoryCheckSlugResponse,
   AdminAuditLogResponse,
   GetAuditLogsParams,
+  StaffProfileOptionsResponse,
 } from '@/features/admin/types/adminTypes';
 import { CategorySchemaType, CategoryFormSchemaType } from '../types/categorySchema';
 
@@ -97,6 +98,12 @@ export const adminApi = {
     data: UpdateStaffProfileRequest,
   ): Promise<ResponseBase<StaffProfile>> => {
     return axiosClient.put(buildRoute(API_ENDPOINTS.ADMIN.USERS, userId, 'staff-profile'), data);
+  },
+
+  getStaffProfileOptions: (excludeUserId: string): Promise<StaffProfileOptionsResponse> => {
+    return axiosClient.get(API_ENDPOINTS.ADMIN.STAFF_PROFILE_OPTIONS, {
+      params: { excludeUserId },
+    });
   },
 
   getStaffMyProfile: (): Promise<ResponseBase<StaffProfile>> => {

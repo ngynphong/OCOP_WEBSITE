@@ -6,6 +6,7 @@ import {
   PublicProductListParams,
   ProductDetailResponse,
   ProductListResponse,
+  ProductStoryListResponse,
   QrCodeResponse,
   PublicCategoryListResponse,
   PublicCategoryDetailResponse,
@@ -44,6 +45,13 @@ export const publicProductApi = {
 
   getFeaturedStory: (): Promise<ProductDetailResponse> => {
     return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.PRODUCTS}/featured-story`, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
+  },
+
+  getStories: (pageNo = 1, pageSize = 12, keyword?: string): Promise<ProductStoryListResponse> => {
+    return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.PRODUCTS}/stories`, {
+      params: { pageNo, pageSize, keyword: keyword?.trim() || undefined },
       headers: { 'X-Silent-Loading': 'true' },
     });
   },
