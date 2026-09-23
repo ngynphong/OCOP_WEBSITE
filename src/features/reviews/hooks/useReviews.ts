@@ -3,18 +3,14 @@ import toast from 'react-hot-toast';
 import { reviewApi } from '../api/reviewApi';
 import { ReviewQueryParams, FlagReviewPayload } from '../types/reviewTypes';
 
-// ─── Query Hook ───────────────────────────────────────────────────────────────
-
 export const useProductReviewsQuery = (productSlug: string, params?: ReviewQueryParams) => {
   return useQuery({
     queryKey: ['product-reviews', productSlug, params],
     queryFn: () => reviewApi.getProductReviews(productSlug, params),
     enabled: !!productSlug,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
   });
 };
-
-// ─── Mutation Hooks ───────────────────────────────────────────────────────────
 
 export const useReviewMutations = (productSlug?: string) => {
   const queryClient = useQueryClient();
@@ -30,7 +26,7 @@ export const useReviewMutations = (productSlug?: string) => {
     onSuccess: () => {
       toast.success('Gửi đánh giá thành công!');
       invalidate();
-      queryClient.invalidateQueries({ queryKey: ['orders'] }); // Refresh order history status
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
     },
     onError: (error: { response?: { data?: { message?: string } } }) => {
       toast.error(error?.response?.data?.message || 'Có lỗi xảy ra khi gửi đánh giá');

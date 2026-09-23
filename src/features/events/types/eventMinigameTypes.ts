@@ -14,7 +14,7 @@ export interface MinigameReward {
   points?: number;
   iconName: 'ticket' | 'truck' | 'coins' | 'sparkles' | 'gift';
   themeColor: string;
-  weight: number; // Tỷ lệ rơi (trọng số xác suất trúng)
+  weight: number;
 }
 
 export interface MinigameHistoryEntry {
@@ -27,7 +27,7 @@ export interface MinigameHistoryEntry {
 
 export interface MinigameUserState {
   spinsLeft: number;
-  lastDailyClaim: string | null; // Format YYYY-MM-DD
+  lastDailyClaim: string | null;
   history: MinigameHistoryEntry[];
 }
 

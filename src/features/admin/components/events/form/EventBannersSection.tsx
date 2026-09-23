@@ -40,7 +40,6 @@ export function EventBannersSection({
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Banner Desktop */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <label className="text-xs font-bold text-gray-800 uppercase tracking-wider">
@@ -121,7 +120,6 @@ export function EventBannersSection({
           )}
         </div>
 
-        {/* Banner Mobile */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <label className="text-xs font-bold text-gray-800 uppercase tracking-wider">

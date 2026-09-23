@@ -17,7 +17,6 @@ export default function AdminEventAnalyticsPage({ params }: { params: Promise<{ 
       <AdminHeader isSidebarCollapsed={false} />
       <main className="flex-1 p-4 sm:p-6 lg:p-8">
         <div className="mx-auto max-w-[1400px] space-y-6">
-          {/* Back link and breadcrumb */}
           <div className="flex items-center justify-between">
             <Link
               href="/admin/events"
@@ -42,7 +41,6 @@ export default function AdminEventAnalyticsPage({ params }: { params: Promise<{ 
             </div>
           </div>
 
-          {/* Main Title Bar */}
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
               <BarChart3 className="w-5 h-5" />
@@ -57,7 +55,6 @@ export default function AdminEventAnalyticsPage({ params }: { params: Promise<{ 
             </div>
           </div>
 
-          {/* Analytics Content */}
           <div className="bg-transparent">
             <EventAnalyticsContent
               analytics={analytics}

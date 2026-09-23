@@ -3,8 +3,6 @@ import { ResponseBase } from '@/features/auth/types';
 
 export type { ResponseBase };
 
-// ─── Enums ───────────────────────────────────────────────────────────────────
-
 export type ShopStatus = 'PENDING' | 'ACTIVE' | 'LOCKED' | 'REJECTED';
 
 export type ShopDocumentType =
@@ -16,8 +14,6 @@ export type ShopDocumentType =
   | 'OTHER';
 
 export type SubscriptionStatus = 'ACTIVE' | 'EXPIRED' | 'CANCELLED';
-
-// ─── Core Entities ───────────────────────────────────────────────────────────
 
 export interface ShopInfo {
   id: number;
@@ -88,8 +84,6 @@ export interface SubscriptionPlan {
   sortOrder: string;
 }
 
-// ─── Paginated ────────────────────────────────────────────────────────────────
-
 export interface PaginatedShops {
   pageNo: number;
   pageSize: number;
@@ -99,8 +93,6 @@ export interface PaginatedShops {
   items: ShopInfo[];
 }
 
-// ─── Query Params ─────────────────────────────────────────────────────────────
-
 export interface GetShopsPublicParams {
   keyword?: string;
   status?: ShopStatus;
@@ -108,8 +100,6 @@ export interface GetShopsPublicParams {
   pageNo?: number;
   pageSize?: number;
 }
-
-// ─── Request Bodies ──────────────────────────────────────────────────────────
 
 export interface CreateShopRequest {
   name: string;
@@ -152,8 +142,6 @@ export interface CreateSubscriptionRequest {
   paymentRef: string;
 }
 
-// ─── Response Types ──────────────────────────────────────────────────────────
-
 export type ShopListResponse = ResponseBase<PaginatedShops>;
 export interface ShopDetailData {
   shopResponse: ShopInfo;
@@ -177,8 +165,6 @@ export interface BankAccount {
   accountName: string;
 }
 export type BankAccountResponse = ResponseBase<BankAccount>;
-
-// ─── Zod Schemas (Form Validation) ────────────────────────────────────────────
 
 export const createShopSchema = z.object({
   name: z.string().min(2, 'Tên shop phải có ít nhất 2 ký tự'),

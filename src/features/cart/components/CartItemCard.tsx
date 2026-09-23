@@ -9,8 +9,6 @@ import type { CartItem, CartIssueType } from '../types/cartTypes';
 import { useUpdateCartItem, useRemoveCartItem } from '../hooks/useCart';
 import { CiShop } from 'react-icons/ci';
 
-// -------------------- Badge Component (dumb) ---------------------
-
 interface StatusBadgeProps {
   type: CartIssueType;
 }
@@ -53,8 +51,6 @@ function StatusBadge({ type }: StatusBadgeProps) {
   );
 }
 
-// -------------------- OCOP Star Badge (dumb) ---------------------
-
 function OcopStarBadge({ star }: { star: number }) {
   if (!star || star < 1) return null;
   return (
@@ -64,8 +60,6 @@ function OcopStarBadge({ star }: { star: number }) {
     </span>
   );
 }
-
-// -------------------- Quantity Stepper (dumb) ---------------------
 
 interface QtyStepperProps {
   qty: number;
@@ -87,7 +81,6 @@ function QtyStepper({ qty, max, disabled, onDecrease, onIncrease }: QtyStepperPr
         disabled && 'opacity-50',
       )}
     >
-      {/* Nút Giảm */}
       <button
         onClick={onDecrease}
         disabled={isDecDisabled}
@@ -103,10 +96,8 @@ function QtyStepper({ qty, max, disabled, onDecrease, onIncrease }: QtyStepperPr
         <Minus className="w-3.5 h-3.5" />
       </button>
 
-      {/* Số lượng */}
       <span className="w-8 text-center text-sm font-bold text-stone-800 tabular-nums">{qty}</span>
 
-      {/* Nút Tăng */}
       <button
         onClick={onIncrease}
         disabled={isIncDisabled}
@@ -124,10 +115,6 @@ function QtyStepper({ qty, max, disabled, onDecrease, onIncrease }: QtyStepperPr
     </div>
   );
 }
-
-// ================================================================
-// CartItemCard — Main Component
-// ================================================================
 
 interface CartItemCardProps {
   item: CartItem;
@@ -190,7 +177,6 @@ export const CartItemCard = React.memo(function CartItemCard({
         isRemoving && 'opacity-30 scale-95',
       )}
     >
-      {/* Checkbox */}
       <input
         type="checkbox"
         checked={isSelected && !isDisabled}
@@ -200,7 +186,6 @@ export const CartItemCard = React.memo(function CartItemCard({
         aria-label={`Chọn ${item.productName}`}
       />
 
-      {/* Thumbnail */}
       <Link
         href={`/san-pham/${item.productSlug}`}
         className="shrink-0 w-18 h-18 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-stone-100 block relative"
@@ -215,17 +200,13 @@ export const CartItemCard = React.memo(function CartItemCard({
         />
       </Link>
 
-      {/* Info + Controls */}
       <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
-        {/* Product info */}
         <div className="flex-1 min-w-0 space-y-1">
-          {/* Badges row */}
           <div className="flex flex-wrap items-center gap-1.5">
             <OcopStarBadge star={item.ocopStar} />
             {issueType && <StatusBadge type={issueType} />}
           </div>
 
-          {/* Product name */}
           <Link
             href={`/san-pham/${item.productSlug}`}
             className="block text-sm font-bold text-stone-800 hover:text-green-700 transition-colors line-clamp-2 leading-snug"
@@ -233,10 +214,8 @@ export const CartItemCard = React.memo(function CartItemCard({
             {item.productName}
           </Link>
 
-          {/* Variant */}
           <p className="text-xs text-stone-500">{item.variantName}</p>
 
-          {/* Shop */}
           <Link
             href={`/cua-hang/${item.shopSlug}`}
             className="flex items-center gap-1 text-[10px] text-stone-400 hover:text-green-700 transition-colors font-medium"
@@ -244,7 +223,6 @@ export const CartItemCard = React.memo(function CartItemCard({
             <CiShop size={18} className="text-green-700" /> {item.shopName}
           </Link>
 
-          {/* Wholesale Info */}
           {item.isWholesale && (
             <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-amber-50 text-amber-700 rounded-lg border border-amber-100">
               <span className="text-[10px] font-black uppercase tracking-widest">Giá sỉ</span>
@@ -254,9 +232,7 @@ export const CartItemCard = React.memo(function CartItemCard({
           )}
         </div>
 
-        {/* Quantity + Price */}
         <div className="flex flex-wrap items-center justify-between sm:justify-end gap-x-2 gap-y-3 sm:gap-6 shrink-0 mt-2 sm:mt-0">
-          {/* Qty Stepper or Prominent Remove Button */}
           {isDisabled ? (
             <button
               onClick={handleRemove}
@@ -278,7 +254,6 @@ export const CartItemCard = React.memo(function CartItemCard({
           )}
 
           <div className="flex items-center gap-2 sm:gap-6 justify-end flex-1 sm:flex-none">
-            {/* Price block */}
             <div className="text-right">
               <div className="text-sm sm:text-base font-black text-green-700">
                 {item.subtotal.toLocaleString('vi-VN')}₫
@@ -300,7 +275,6 @@ export const CartItemCard = React.memo(function CartItemCard({
               )}
             </div>
 
-            {/* Standard Remove Icon for Active Items */}
             {!isDisabled && (
               <button
                 onClick={handleRemove}

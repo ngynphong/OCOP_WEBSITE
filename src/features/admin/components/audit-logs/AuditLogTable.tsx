@@ -51,7 +51,6 @@ export const AuditLogTable = () => {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-700">
-      {/* Header & Filter */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div className="space-y-1">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 border border-emerald-100 rounded-full text-emerald-600 text-[10px] font-black uppercase tracking-[0.2em] mb-2">
@@ -225,7 +224,6 @@ export const AuditLogTable = () => {
         </div>
       </div>
 
-      {/* Log Detail Modal */}
       {selectedLog && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-300">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[85vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-300">
@@ -248,7 +246,6 @@ export const AuditLogTable = () => {
 
             <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Before Value */}
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 px-4 py-2 bg-stone-100 rounded-xl w-fit">
                     <div className="w-2 h-2 rounded-full bg-stone-400" />
@@ -263,7 +260,6 @@ export const AuditLogTable = () => {
                   </div>
                 </div>
 
-                {/* After Value */}
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 rounded-xl w-fit">
                     <div className="w-2 h-2 rounded-full bg-emerald-500" />

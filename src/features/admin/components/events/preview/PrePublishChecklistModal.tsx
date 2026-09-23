@@ -60,7 +60,6 @@ export function PrePublishChecklistModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-slate-900 border border-slate-700/80 rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
-        {/* ── MODAL HEADER ──────────────────────────────────────────────── */}
         <div className="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-950/60">
           <div className="flex items-center gap-2.5">
             <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center">
@@ -84,9 +83,7 @@ export function PrePublishChecklistModal({
           </button>
         </div>
 
-        {/* ── MODAL BODY (SCROLLABLE) ────────────────────────────────────── */}
         <div className="p-6 overflow-y-auto space-y-6 text-xs text-slate-300">
-          {/* Event Quick Snapshot */}
           <div className="p-4 rounded-2xl bg-slate-800/60 border border-slate-700/60 space-y-2">
             <div className="flex items-center justify-between">
               <span className="font-extrabold text-sm text-white truncate max-w-md">
@@ -111,7 +108,6 @@ export function PrePublishChecklistModal({
             </div>
           </div>
 
-          {/* QA Health Summary */}
           <div
             className={`p-4 rounded-2xl border flex items-center justify-between ${
               qaStats.isReady
@@ -141,7 +137,6 @@ export function PrePublishChecklistModal({
             <div className="text-right font-mono font-bold text-lg">{qaStats.score}%</div>
           </div>
 
-          {/* Checklist Details */}
           <div>
             <h4 className="font-bold text-white text-xs uppercase tracking-wider mb-3">
               Chi Tiết Các Hạng Mục Kiểm Tra
@@ -192,7 +187,6 @@ export function PrePublishChecklistModal({
             </div>
           </div>
 
-          {/* Acknowledgement checkbox */}
           {qaStats.isReady && (
             <label className="flex items-start gap-3 p-3 rounded-xl bg-slate-800/30 border border-slate-700/40 cursor-pointer select-none">
               <input
@@ -209,7 +203,6 @@ export function PrePublishChecklistModal({
           )}
         </div>
 
-        {/* ── MODAL FOOTER ──────────────────────────────────────────────── */}
         <div className="p-4 border-t border-slate-800 bg-slate-950/60 flex items-center justify-end gap-3">
           <button
             type="button"

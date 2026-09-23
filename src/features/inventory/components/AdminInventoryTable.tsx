@@ -64,7 +64,6 @@ export const AdminInventoryTable = ({ items, isLoading, onAdjust }: AdminInvento
                 <td className="px-6 py-5">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-xl bg-stone-100 flex items-center justify-center shrink-0 border border-stone-100 overflow-hidden relative">
-                      {/* Giả sử có thumbnailUrl, nếu không dùng icon */}
                       <FiPackage className="text-stone-300 text-xl" />
                     </div>
                     <div>

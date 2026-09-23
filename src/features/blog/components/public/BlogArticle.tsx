@@ -17,7 +17,6 @@ const generateTOCAndProcessHTML = (html: string, fallbackAlt: string = 'H√¨nh ·∫
 
   let processedHtml = html.replace(/<h([2-3])[^>]*>(.*?)<\/h\1>/gi, (match, level, text) => {
     const cleanText = text.replace(/<[^>]+>/g, '').trim();
-    // basic slugify for vietnamese
     let id = cleanText
       .toLowerCase()
       .normalize('NFD')
@@ -26,7 +25,6 @@ const generateTOCAndProcessHTML = (html: string, fallbackAlt: string = 'H√¨nh ·∫
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
 
-    // Handle duplicate IDs
     if (seenIds.has(id)) {
       let suffix = 1;
       while (seenIds.has(`${id}-${suffix}`)) {
@@ -36,16 +34,12 @@ const generateTOCAndProcessHTML = (html: string, fallbackAlt: string = 'H√¨nh ·∫
     }
     seenIds.add(id);
 
-    // Only push if there's text
     if (cleanText) {
       toc.push({ id, text: cleanText, level: parseInt(level) });
     }
-
-    // add id attribute to the heading tag
     return `<h${level} id="${id}">${text}</h${level}>`;
   });
 
-  // Ensure all images have an alt attribute and lazy loading for performance
   processedHtml = processedHtml.replace(/<img([^>]*)>/gi, (match, attrs) => {
     let newAttrs = attrs;
     if (!/alt\s*=\s*(['"]).*?\1/i.test(newAttrs)) {
@@ -98,14 +92,12 @@ export const BlogArticle = ({ initialBlog }: BlogArticleProps = {}) => {
 
   const blog = blogRes.data;
 
-  // Assuming 250 words per minute reading speed
   const wordCount = blog.content.split(/\s+/).length;
   const readTime = Math.max(1, Math.ceil(wordCount / 250));
 
   return (
     <article className="bg-stone-50 min-h-screen pb-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-        {/* Breadcrumbs - Moved above the grid for better mobile flow */}
         <nav className="flex items-center text-sm text-stone-500 font-medium mb-8 overflow-x-auto whitespace-nowrap pb-2">
           <Link
             href="/"
@@ -122,14 +114,11 @@ export const BlogArticle = ({ initialBlog }: BlogArticleProps = {}) => {
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start relative">
-          {/* Left Column - Actions */}
           <div className="lg:col-span-1 hidden lg:block sticky top-38 z-10">
             <BlogLeftSidebar />
           </div>
 
-          {/* Center Column - Main Content */}
           <div className="lg:col-span-8 bg-white rounded-3xl p-6 md:p-10 shadow-sm border border-stone-100">
-            {/* Tags / Categories */}
             {blog.tags && blog.tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-6">
                 {blog.tags.map((tag) => (
@@ -144,7 +133,6 @@ export const BlogArticle = ({ initialBlog }: BlogArticleProps = {}) => {
               </div>
             )}
 
-            {/* Title */}
             <motion.h1
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -153,7 +141,6 @@ export const BlogArticle = ({ initialBlog }: BlogArticleProps = {}) => {
               {blog.title}
             </motion.h1>
 
-            {/* Unified Meta Info */}
             <div className="flex flex-wrap items-center gap-4 text-stone-500 text-sm font-medium mb-8 pb-6 border-b border-stone-100">
               <span className="flex items-center gap-2 text-slate-700">
                 <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-800 font-bold text-xs uppercase">
@@ -172,14 +159,12 @@ export const BlogArticle = ({ initialBlog }: BlogArticleProps = {}) => {
               <span className="flex items-center gap-1.5">{blog.viewCount || 0} l∆∞·ª£t xem</span>
             </div>
 
-            {/* Short Description */}
             {blog.shortDesc && (
               <p className="text-lg md:text-xl text-stone-600 font-medium leading-relaxed mb-10 border-l-4 border-emerald-500 pl-4 py-1">
                 {blog.shortDesc}
               </p>
             )}
 
-            {/* Hero Image */}
             {blog.thumbnailUrl && (
               <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden mb-12 shadow-sm border border-stone-100 group">
                 <Image
@@ -193,7 +178,6 @@ export const BlogArticle = ({ initialBlog }: BlogArticleProps = {}) => {
               </div>
             )}
 
-            {/* Article Body */}
             <div
               className="prose prose-emerald prose-lg max-w-none text-stone-700 leading-loose
               prose-headings:font-black prose-headings:text-slate-900 prose-headings:font-sans
@@ -205,7 +189,6 @@ export const BlogArticle = ({ initialBlog }: BlogArticleProps = {}) => {
               dangerouslySetInnerHTML={{ __html: processedHtml }}
             />
 
-            {/* Bottom Tags */}
             {blog.tags && blog.tags.length > 0 && (
               <div className="mt-12 pt-8 border-t border-stone-100">
                 <h3 className="text-sm font-bold text-slate-900 uppercase tracking-widest mb-4">
@@ -225,7 +208,6 @@ export const BlogArticle = ({ initialBlog }: BlogArticleProps = {}) => {
             )}
           </div>
 
-          {/* Right Column - Sidebar */}
           <div className="lg:col-span-3 sticky top-38 z-10">
             <BlogRightSidebar toc={toc} />
           </div>

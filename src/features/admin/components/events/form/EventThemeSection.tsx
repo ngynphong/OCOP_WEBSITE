@@ -49,7 +49,6 @@ export function EventThemeSection({
         </div>
       </div>
 
-      {/* Presets Grid */}
       <div className="space-y-3">
         <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
           Chọn Bộ Theme Lễ Hội Có Sẵn (Presets)
@@ -91,7 +90,6 @@ export function EventThemeSection({
                   </p>
                 </div>
 
-                {/* Color dots preview */}
                 <div className="flex items-center gap-1.5 mt-3 pt-2.5 border-t border-gray-100">
                   <span
                     className="w-4 h-4 rounded-full border border-black/10 shadow-2xs"
@@ -121,14 +119,12 @@ export function EventThemeSection({
         </div>
       </div>
 
-      {/* Custom Color Pickers */}
       <div className="p-5 bg-gray-50 rounded-2xl border border-gray-200/80 space-y-4">
         <h4 className="text-xs font-bold text-gray-800 uppercase tracking-wider">
           Tùy Chỉnh Mã Màu Nhận Diện
         </h4>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {/* Primary */}
           <div className="p-3.5 bg-white rounded-xl border border-gray-200 shadow-2xs space-y-2">
             <label className="text-xs font-semibold text-gray-700 block">
               Màu Chủ Đạo (Primary)
@@ -149,7 +145,6 @@ export function EventThemeSection({
             </div>
           </div>
 
-          {/* Secondary */}
           <div className="p-3.5 bg-white rounded-xl border border-gray-200 shadow-2xs space-y-2">
             <label className="text-xs font-semibold text-gray-700 block">
               Màu Phụ / Nhấn (Secondary)
@@ -170,7 +165,6 @@ export function EventThemeSection({
             </div>
           </div>
 
-          {/* Surface */}
           <div className="p-3.5 bg-white rounded-xl border border-gray-200 shadow-2xs space-y-2">
             <label className="text-xs font-semibold text-gray-700 block">
               Màu Nền Bề Mặt (Surface)
@@ -192,7 +186,6 @@ export function EventThemeSection({
           </div>
         </div>
 
-        {/* Live Preview Strip */}
         <div
           className="h-10 rounded-xl shadow-inner border border-black/10 flex items-center justify-between px-4 text-xs font-bold text-white"
           style={{

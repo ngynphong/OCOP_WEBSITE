@@ -2,15 +2,16 @@
 
 import React, { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
 import { FiArrowLeft, FiCheckCircle, FiXCircle, FiClock, FiFileText } from 'react-icons/fi';
-import { adminSupplyChainApi } from '@/features/admin/api/adminSupplyChainApi';
-import { ITestingStepReq, ISupplyChainStep } from '@/features/supply-chain/types/supplyChainTypes';
+import {
+  useAdminLotDetailQuery,
+  useVerifyLotMutation,
+} from '@/features/admin/hooks/useAdminSupplyChain';
 import { Button } from '@/components/ui/AppButton';
 import { Modal } from '@/components/ui/Modal';
 import { toast } from 'react-hot-toast';
 import { format } from 'date-fns';
-import { SupplyChainTimeline } from '@/features/supply-chain/components/SupplyChainTimeline';
+import { BatchEventTimeline } from '@/features/supply-chain/components/BatchEventTimeline';
 
 export default function AdminLotDetailPage() {
   const params = useParams();
@@ -21,31 +22,25 @@ export default function AdminLotDetailPage() {
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [comment, setComment] = useState('');
 
-  const {
-    data: lotRes,
-    isLoading,
-    refetch,
-  } = useQuery({
-    queryKey: ['admin_lot_detail', lotId],
-    queryFn: () => adminSupplyChainApi.getLotDetail(lotId),
-    enabled: !!lotId,
-  });
+  const { data: lotRes, isLoading } = useAdminLotDetailQuery(lotId);
+  const verifyLotMutation = useVerifyLotMutation();
 
   const lot = lotRes?.data;
 
   const handleVerify = async () => {
     try {
-      await adminSupplyChainApi.verifyLot(lotId, {
-        newStatus: 'VERIFIED',
-        newLevel: 'LEVEL_3',
-        comment,
+      await verifyLotMutation.mutateAsync({
+        id: lotId,
+        data: {
+          newStatus: 'VERIFIED',
+          newLevel: 'LEVEL_3',
+          comment,
+        },
       });
-      toast.success('Đã phê duyệt lô hàng thành công');
       setIsVerifyModalOpen(false);
-      refetch();
-    } catch (error) {
-      const err = error as { response?: { data?: { message?: string } } };
-      toast.error(err?.response?.data?.message || 'Có lỗi xảy ra khi phê duyệt');
+      setComment('');
+    } catch {
+      // error toast already handled in mutation
     }
   };
 
@@ -55,16 +50,17 @@ export default function AdminLotDetailPage() {
       return;
     }
     try {
-      await adminSupplyChainApi.verifyLot(lotId, {
-        newStatus: 'REJECTED',
-        comment,
+      await verifyLotMutation.mutateAsync({
+        id: lotId,
+        data: {
+          newStatus: 'REJECTED',
+          comment,
+        },
       });
-      toast.success('Đã từ chối lô hàng');
       setIsRejectModalOpen(false);
-      refetch();
-    } catch (error) {
-      const err = error as { response?: { data?: { message?: string } } };
-      toast.error(err?.response?.data?.message || 'Có lỗi xảy ra khi từ chối');
+      setComment('');
+    } catch {
+      // error toast already handled in mutation
     }
   };
 
@@ -160,67 +156,69 @@ export default function AdminLotDetailPage() {
             <h3 className="font-bold text-stone-900 text-lg mb-4 flex items-center gap-2">
               <FiFileText className="text-emerald-600" /> Tài liệu & Kiểm định
             </h3>
-            {lot.steps && lot.steps.filter((s) => s.stepType === 'TESTING').length > 0 ? (
-              <div className="space-y-4">
-                {lot.steps
-                  .filter((s) => s.stepType === 'TESTING')
-                  .map((step: ISupplyChainStep, index: number) => {
-                    const log = step.data as ITestingStepReq;
-                    let docs: string[] = [];
-                    if (log.documentUrls) {
-                      try {
-                        docs = JSON.parse(log.documentUrls);
-                      } catch {
-                        // ignore error
-                      }
-                    }
+            {(() => {
+              const allDocs = (lot.events || []).flatMap((e) =>
+                (e.evidenceDocuments || []).map((doc) => ({
+                  ...doc,
+                  stepTitle: e.stepTitle,
+                  stepType: e.stepType,
+                })),
+              );
 
-                    return (
-                      <div
-                        key={index}
-                        className="p-4 bg-stone-50 rounded-lg border border-stone-200"
-                      >
-                        <p className="font-medium text-stone-900">{log.testType}</p>
-                        <p className="text-sm text-stone-500">
-                          Đơn vị: {log.testingCenterName || log.inspectorName || '---'}
-                        </p>
-                        <p className="text-sm text-stone-500">Kết quả: {log.result}</p>
-                        {docs.length > 0 && (
-                          <div className="mt-2 space-y-1">
-                            {docs.map((url, i) => (
-                              <a
-                                key={i}
-                                href={url}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="text-emerald-600 text-sm hover:underline block"
-                              >
-                                <FiFileText className="inline mr-1" /> Xem chứng nhận {i + 1}
-                              </a>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-              </div>
-            ) : (
-              <p className="text-stone-500 italic">Lô hàng này chưa cập nhật tài liệu kiểm định.</p>
-            )}
+              if (allDocs.length === 0) {
+                return (
+                  <p className="text-stone-500 italic">
+                    Lô hàng này chưa cập nhật tài liệu hoặc bằng chứng kiểm định.
+                  </p>
+                );
+              }
+
+              return (
+                <div className="space-y-4">
+                  {allDocs.map((doc, index) => (
+                    <div
+                      key={doc.id || index}
+                      className="p-4 bg-stone-50 rounded-lg border border-stone-200"
+                    >
+                      <p className="font-medium text-stone-900">
+                        {doc.fileName || doc.documentType || 'Tài liệu minh chứng'}
+                      </p>
+                      <p className="text-sm text-stone-500">
+                        Công đoạn: {doc.stepTitle || doc.stepType || '---'}
+                      </p>
+                      {doc.issuedBy && (
+                        <p className="text-sm text-stone-500">Đơn vị phát hành: {doc.issuedBy}</p>
+                      )}
+                      {doc.fileUrl && (
+                        <div className="mt-2">
+                          <a
+                            href={doc.fileUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-emerald-600 text-sm hover:underline block"
+                          >
+                            <FiFileText className="inline mr-1" /> Xem tài liệu / chứng nhận
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
           </div>
         </div>
 
-        {/* Right Panel: Timeline */}
         <div className="md:col-span-1 space-y-6">
           <div className="bg-white rounded-xl shadow-sm border border-stone-100 p-6">
             <h3 className="font-bold text-stone-900 text-lg mb-6 flex items-center gap-2">
               <FiClock className="text-emerald-600" /> Hành trình Truy xuất
             </h3>
-            {lot.steps && lot.steps.length > 0 ? (
-              <SupplyChainTimeline steps={lot.steps} compact={true} />
+            {lot.events && lot.events.length > 0 ? (
+              <BatchEventTimeline events={lot.events} templateSteps={lot.templateSteps || []} />
             ) : (
               <div className="text-center py-8 bg-stone-50 rounded-lg border border-stone-200 border-dashed">
-                <p className="text-stone-500">Chưa có dữ liệu hành trình</p>
+                <p className="text-stone-500">Chưa có dữ liệu hành trình sự kiện</p>
               </div>
             )}
           </div>
@@ -255,6 +253,7 @@ export default function AdminLotDetailPage() {
             <Button
               variant="primary"
               onClick={handleVerify}
+              isLoading={verifyLotMutation.isPending}
               className="bg-emerald-600 hover:bg-emerald-700"
             >
               Xác nhận Phê duyệt
@@ -291,6 +290,7 @@ export default function AdminLotDetailPage() {
             <Button
               variant="primary"
               onClick={handleReject}
+              isLoading={verifyLotMutation.isPending}
               className="bg-red-600 hover:bg-red-700"
             >
               Xác nhận Từ chối

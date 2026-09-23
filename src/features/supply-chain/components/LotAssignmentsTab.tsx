@@ -141,7 +141,6 @@ export const LotAssignmentsTab: React.FC<LotAssignmentsTabProps> = ({ lot }) => 
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Top Header Card */}
       <div className="bg-white rounded-xl border border-stone-200 p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-lg font-bold text-stone-900 flex items-center gap-2">
@@ -163,7 +162,6 @@ export const LotAssignmentsTab: React.FC<LotAssignmentsTabProps> = ({ lot }) => 
         </Button>
       </div>
 
-      {/* KPI Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-stone-50 rounded-xl border border-stone-200/80 p-4">
           <p className="text-xs font-semibold text-stone-500 uppercase tracking-wider">
@@ -193,7 +191,6 @@ export const LotAssignmentsTab: React.FC<LotAssignmentsTabProps> = ({ lot }) => 
         </div>
       </div>
 
-      {/* Content Table / Empty State */}
       {isLoading ? (
         <div className="bg-white rounded-xl border border-stone-200 p-12 text-center">
           <div className="w-8 h-8 border-3 border-emerald-600/30 border-t-emerald-600 rounded-full animate-spin mx-auto mb-3" />
@@ -241,7 +238,6 @@ export const LotAssignmentsTab: React.FC<LotAssignmentsTabProps> = ({ lot }) => 
 
                   return (
                     <tr key={assignment.id} className="hover:bg-stone-50/50 transition-colors">
-                      {/* User Info */}
                       <td className="py-3.5 px-4">
                         <div className="flex items-center gap-3">
                           <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
@@ -267,7 +263,6 @@ export const LotAssignmentsTab: React.FC<LotAssignmentsTabProps> = ({ lot }) => 
                         </div>
                       </td>
 
-                      {/* Step Scope */}
                       <td className="py-3.5 px-4">
                         {assignment.templateStepId ? (
                           <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs bg-stone-100 font-medium text-stone-800 border border-stone-200/60">
@@ -282,25 +277,20 @@ export const LotAssignmentsTab: React.FC<LotAssignmentsTabProps> = ({ lot }) => 
                         )}
                       </td>
 
-                      {/* Role */}
                       <td className="py-3.5 px-4">{getRoleBadge(assignment.role)}</td>
 
-                      {/* Status */}
                       <td className="py-3.5 px-4">{getStatusBadge(assignment.status)}</td>
 
-                      {/* Time */}
                       <td className="py-3.5 px-4 text-xs text-stone-600 font-medium">
                         {formatDateTime(assignment.assignedAt)}
                       </td>
 
-                      {/* Notes */}
                       <td className="py-3.5 px-4 text-xs text-stone-500 max-w-xs truncate">
                         {assignment.notes || (
                           <span className="text-stone-300 italic">Không có</span>
                         )}
                       </td>
 
-                      {/* Action */}
                       <td className="py-3.5 px-4 text-right">
                         {assignment.status === 'ACTIVE' && (
                           <Button
@@ -328,7 +318,6 @@ export const LotAssignmentsTab: React.FC<LotAssignmentsTabProps> = ({ lot }) => 
         </div>
       )}
 
-      {/* Modal create assignment */}
       <CreateAssignmentModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}

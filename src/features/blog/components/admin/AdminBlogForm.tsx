@@ -51,7 +51,6 @@ export const AdminBlogForm = ({ initialData, isEdit }: AdminBlogFormProps) => {
   const thumbnailUrl = useWatch({ control, name: 'thumbnailUrl' });
   const selectedTagIds = useWatch({ control, name: 'tagIds' });
 
-  // Auto-generate slug
   useEffect(() => {
     if (!isEdit && title) {
       const generatedSlug = slugify(title);
@@ -124,7 +123,6 @@ export const AdminBlogForm = ({ initialData, isEdit }: AdminBlogFormProps) => {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col lg:flex-row gap-8">
-        {/* Main Content Area */}
         <div className="flex-1 space-y-6">
           <div className="bg-white p-8 rounded-xl shadow-sm border border-stone-100 space-y-6">
             <div className="space-y-2">
@@ -194,7 +192,6 @@ export const AdminBlogForm = ({ initialData, isEdit }: AdminBlogFormProps) => {
           </div>
         </div>
 
-        {/* Sidebar */}
         <div className="w-full lg:w-80 space-y-6">
           <div className="bg-white p-6 rounded-xl shadow-sm border border-stone-100 space-y-6">
             <h3 className="font-black text-stone-900 border-b border-stone-100 pb-3">Xuất bản</h3>

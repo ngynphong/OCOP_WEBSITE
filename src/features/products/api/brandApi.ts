@@ -14,8 +14,6 @@ import {
  * Follows the domain-driven design pattern for the Products feature.
  */
 export const brandApi = {
-  // ─── Public APIs ───────────────────────────────────────────────────────────
-
   /**
    * Get all active brands for the public storefront.
    */
@@ -29,8 +27,6 @@ export const brandApi = {
   getBrandBySlug: (slug: string): Promise<PublicBrandDetailResponse> => {
     return publicAxiosClient.get(buildRoute(API_ENDPOINTS.PUBLIC.BRANDS, slug));
   },
-
-  // ─── Admin APIs ────────────────────────────────────────────────────────────
 
   /**
    * Create a new brand (Admin only).

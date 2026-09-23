@@ -55,7 +55,6 @@ interface MenuGroup {
   items: MenuItem[];
 }
 
-// Hoisted ra ngoài component để tránh khởi tạo lại mỗi render
 const MENU_GROUPS: MenuGroup[] = [
   {
     id: 'commerce',
@@ -263,7 +262,7 @@ const MENU_GROUPS: MenuGroup[] = [
         icon: FiSettings,
         href: '/admin/ai-settings',
         id: 'ai-settings',
-        permissions: [PERMISSIONS.AUDIT_LOG_VIEW], // Hoặc PERMISSION_MANAGE tuỳ quyền AI
+        permissions: [PERMISSIONS.AUDIT_LOG_VIEW],
       },
       {
         label: 'Nhật ký hệ thống',
@@ -285,13 +284,6 @@ const MENU_GROUPS: MenuGroup[] = [
         id: 'roles-manage',
         permissions: [PERMISSIONS.PERMISSION_MANAGE],
       },
-      // {
-      //   label: 'Nhân viên',
-      //   icon: FiUserCheck,
-      //   href: '/admin/staff',
-      //   id: 'staff',
-      //   permissions: [PERMISSIONS.STAFF_VIEW, PERMISSIONS.STAFF_MANAGE],
-      // },
     ],
   },
 ];
@@ -312,10 +304,8 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
       const filteredItems = group.items.filter((item) => {
         if (isSuperAdmin) return true;
 
-        // Nếu item không khai báo permissions → hiển thị cho mọi admin user
         if (!item.permissions?.length) return true;
 
-        // OR logic: chỉ cần có 1 permission là đủ
         return item.permissions.some((p) => permissions.includes(p));
       });
 
@@ -323,7 +313,6 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
     }).filter((group) => group.items.length > 0);
   }, [permissions, isSuperAdmin]);
 
-  // Tự động mở group chứa path đang active
   useEffect(() => {
     const activeGroup = filteredMenuGroups.find((group) =>
       group.items.some((item) => pathname === item.href),
@@ -354,7 +343,6 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
         isCollapsed ? 'w-20 px-2' : 'w-64 px-4',
       )}
     >
-      {/* Toggle Button */}
       <button
         onClick={onToggle}
         className="absolute -right-3 top-10 w-6 h-6 bg-emerald-600 rounded-full flex items-center justify-center border border-emerald-400/30 text-white hover:bg-emerald-500 transition-colors shadow-lg z-50 cursor-pointer"
@@ -364,9 +352,7 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
 
       <SidebarLogo isCollapsed={isCollapsed} />
 
-      {/* Navigation */}
       <nav className="flex-1 overflow-y-auto px-1 space-y-1 custom-scrollbar pr-1">
-        {/* Tổng quan — luôn hiển thị, analytics.view = xem dashboard chính */}
         <Link
           href="/admin"
           className={cn(
@@ -386,7 +372,6 @@ const AdminSidebar = ({ isCollapsed, onToggle }: AdminSidebarProps) => {
           {!isCollapsed && <span className="text-[13px] truncate font-medium">Tổng quan</span>}
         </Link>
 
-        {/* Groups */}
         {filteredMenuGroups.map((group) => {
           const isGroupOpen = openGroups.includes(group.id);
           const hasActiveChild = group.items.some((item) => pathname === item.href);

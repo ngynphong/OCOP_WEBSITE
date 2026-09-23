@@ -46,7 +46,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       if (!isAuthenticated) {
         router.push('/dang-nhap?redirect=/dashboard');
       } else if (!profile && !isErrorProfile) {
-        // Only redirect if there's no profile and NO error (e.g. somehow missing)
         router.push('/dang-nhap?redirect=/dashboard');
       }
     }
@@ -56,7 +55,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     return null;
   }
 
-  // Redirect to login if not authenticated
   if (isInitialized && !isLoadingProfile && !isAuthenticated) {
     return null;
   }
@@ -105,7 +103,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="h-screen flex flex-col bg-stone-50 overflow-hidden">
-      {/* Header & Breadcrumb - Fixed Height */}
       <div className="bg-white border-b border-stone-200 shrink-0">
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -150,12 +147,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <span className="text-sm font-medium hidden sm:inline-block">Hướng dẫn</span>
             </button>
 
-            {/* Notification Bell */}
             {isMounted && (
               <NotificationBell className="text-stone-500 hover:text-stone-900 hover:bg-stone-100 border border-stone-100 shadow-xs" />
             )}
 
-            {/* Logout Button */}
             <button
               onClick={() => setIsLogoutModalOpen(true)}
               disabled={isLoggingOut}
@@ -165,7 +160,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <FiLogOut size={20} />
             </button>
 
-            {/* Dashboard Mode Switch */}
             {isMounted && isSeller && (
               <div className="flex items-center gap-2 sm:gap-3 bg-stone-50 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full border border-stone-200 shadow-xs ml-auto sm:ml-0">
                 <span
@@ -221,16 +215,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
       </div>
 
-      {/* Main Layout Area - Flexible and Scrollable */}
       <div className="flex-1 overflow-hidden">
         <div className="h-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-full">
-            {/* Sidebar - Independent Scroll */}
             <aside className="hidden lg:block lg:col-span-1 h-full overflow-y-auto pr-1 custom-scrollbar">
               <DashboardSidebar />
             </aside>
 
-            {/* Main Content Area - Independent Scroll */}
             <main className="lg:col-span-3 h-full flex flex-col overflow-hidden">
               <div className="bg-white rounded-xl border border-stone-200 shadow-sm flex flex-col h-full overflow-hidden">
                 <div className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 custom-scrollbar">
@@ -242,7 +233,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
       </div>
 
-      {/* Mobile Sidebar Drawer */}
       <div
         className={cn(
           'fixed inset-0 z-[200] lg:hidden transition-opacity duration-300',

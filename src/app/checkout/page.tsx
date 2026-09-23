@@ -56,7 +56,6 @@ function CheckoutContent() {
 
   const searchParams = useSearchParams();
 
-  // Protect route & check selection
   React.useEffect(() => {
     if (isInitialized && !isSuccess) {
       if (!isAuthenticated) {
@@ -71,7 +70,6 @@ function CheckoutContent() {
     }
   }, [isInitialized, isAuthenticated, selectedItemIds, router, isSuccess]);
 
-  // Capture affiliate code from URL
   React.useEffect(() => {
     const ref = searchParams.get('ref') || searchParams.get('affiliateCode');
     if (ref) {
@@ -89,13 +87,11 @@ function CheckoutContent() {
 
   const cartData = cartResponse?.data;
 
-  // Filter items based on Redux selection
   const checkoutItems = useMemo(() => {
     const allItems = cartData?.items || [];
     return allItems.filter((item) => selectedItemIds.includes(item.id));
   }, [cartData?.items, selectedItemIds]);
 
-  // Recalculate subtotal for selected items only
   const subtotal = useMemo(() => {
     return checkoutItems.reduce((acc, item) => acc + item.currentPrice * item.qty, 0);
   }, [checkoutItems]);
@@ -188,10 +184,8 @@ function CheckoutContent() {
 
       queryClient.invalidateQueries({ queryKey: ['cart'] });
 
-      // Mark as success to prevent redirect to cart by useEffect
       setIsSuccess(true);
 
-      // Clear Redux selection after success
       dispatch(clearSelection());
 
       const { paymentUrl } = res.data;
@@ -256,7 +250,6 @@ function CheckoutContent() {
     return <LoadingOverlay />;
   }
 
-  // Double check auth & selection to prevent flash of content
   if (!isAuthenticated || (selectedItemIds.length === 0 && !isSuccess)) {
     return null;
   }
@@ -267,7 +260,6 @@ function CheckoutContent() {
 
       <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-12">
         <div className="flex flex-col gap-8">
-          {/* Breadcrumb / Back Navigation */}
           <div className="flex items-center gap-4">
             <Link
               href="/gio-hang"
@@ -285,9 +277,7 @@ function CheckoutContent() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Column - Forms & Info */}
             <div className="lg:col-span-2 space-y-6">
-              {/* Delivery Section */}
               <section className="bg-white rounded-xl p-8 border border-stone-100 shadow-xl shadow-stone-200/50">
                 <AddressSelector selectedId={effectiveAddress?.id} onSelect={handleSelectAddress} />
 
@@ -327,7 +317,6 @@ function CheckoutContent() {
                 </div>
               </section>
 
-              {/* Order Items Review */}
               <section className="bg-white rounded-xl p-8 border border-stone-100 shadow-xl shadow-stone-200/50">
                 <h3 className="text-sm font-bold text-stone-800 flex items-center gap-2 mb-6">
                   <ShoppingBag className="w-4 h-4 text-green-600" />
@@ -392,7 +381,6 @@ function CheckoutContent() {
               </section>
             </div>
 
-            {/* Right Column - Summary Sidebar */}
             <div className="lg:col-span-1">
               <CheckoutSummary
                 subtotal={subtotal}

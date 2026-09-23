@@ -18,7 +18,6 @@ export const GrowthScoreCard: React.FC<Props> = ({
     return <div className="h-64 rounded-2xl bg-gray-100 animate-pulse" />;
   }
 
-  // Determine progress color
   const getColorClass = () => {
     if (score >= 80) return 'text-emerald-600 stroke-emerald-500';
     if (score >= 60) return 'text-blue-600 stroke-blue-500';
@@ -68,7 +67,6 @@ export const GrowthScoreCard: React.FC<Props> = ({
         </span>
       </div>
 
-      {/* Circular Score and Tier Message */}
       <div className="my-4 flex flex-col sm:flex-row items-center gap-5">
         <div className="relative flex items-center justify-center shrink-0">
           <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 36 36">
@@ -101,7 +99,6 @@ export const GrowthScoreCard: React.FC<Props> = ({
         </div>
       </div>
 
-      {/* 4 Pillars - Full width across card to prevent any text truncation */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 my-2">
         {pillars.map((p, idx) => (
           <div

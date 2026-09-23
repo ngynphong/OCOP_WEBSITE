@@ -59,7 +59,6 @@ export function CartPageClient() {
   const cartData = cartResponse?.data;
   const items = useMemo(() => cartData?.items ?? [], [cartData?.items]);
 
-  // Đồng bộ selection với các items thực tế trong giỏ hàng (phòng trường hợp bị xóa bên khác)
   useEffect(() => {
     if (items.length > 0) {
       const actualIds = items.map((i) => i.id);
@@ -164,14 +163,10 @@ export function CartPageClient() {
     );
   }
 
-  // ---- Main render ----
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-28">
       <div className="flex flex-col lg:grid lg:grid-cols-12 gap-8">
-        {/* ======== LEFT COLUMN ======== */}
         <div className="lg:col-span-8 space-y-6">
-          {/* Page title + back */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <h1 className="text-2xl font-black text-stone-800 tracking-tight">Giỏ hàng</h1>
@@ -188,7 +183,6 @@ export function CartPageClient() {
             </Link>
           </div>
 
-          {/* Price changed banner */}
           {priceChangedIssues.length > 0 && (
             <PriceChangedBanner
               issues={priceChangedIssues}
@@ -197,9 +191,7 @@ export function CartPageClient() {
             />
           )}
 
-          {/* Bulk action bar */}
           <div className="flex items-center justify-between bg-white rounded-xl px-4 py-3 border border-stone-100">
-            {/* Select all */}
             <button
               onClick={handleToggleAll}
               className="flex items-center gap-2 text-sm font-semibold text-stone-700 hover:text-green-700 transition-colors"
@@ -232,11 +224,9 @@ export function CartPageClient() {
             </div>
           </div>
 
-          {/* Items grouped by shop */}
           <div className="space-y-6">
             {shopGroups.map((group) => (
               <div key={group.shopId} className="space-y-3">
-                {/* Shop header */}
                 <div className="flex items-center justify-between px-1">
                   <Link
                     href={`/cua-hang/${group.shopSlug}`}
@@ -252,7 +242,6 @@ export function CartPageClient() {
                   </span>
                 </div>
 
-                {/* Items */}
                 <div className="space-y-2.5">
                   {group.items.map((item) => (
                     <CartItemCard
@@ -268,7 +257,6 @@ export function CartPageClient() {
             ))}
           </div>
 
-          {/* Mobile: back link */}
           <Link
             href="/san-pham"
             className="sm:hidden inline-flex items-center gap-1.5 text-sm font-semibold text-green-700"
@@ -278,7 +266,6 @@ export function CartPageClient() {
           </Link>
         </div>
 
-        {/* ======== RIGHT COLUMN: Summary ======== */}
         <aside className="lg:col-span-4">
           <CartSummary selectedItems={selectedItems} hasIssues={hasIssues} />
         </aside>

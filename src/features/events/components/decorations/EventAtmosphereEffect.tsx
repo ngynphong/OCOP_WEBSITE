@@ -9,7 +9,6 @@ interface EventAtmosphereEffectProps {
   contained?: boolean;
 }
 
-// Danh sách các hạt với tọa độ, độ trễ và thời gian ngẫu nhiên được tính sẵn
 const PARTICLES = [
   { id: 1, left: '3%', delay: '0s', duration: '7.5s', size: 22, sway: '30px' },
   { id: 2, left: '11%', delay: '2.1s', duration: '9.2s', size: 18, sway: '-25px' },
@@ -34,11 +33,9 @@ export function EventAtmosphereEffect({
     return null;
   }
 
-  // Render SVG đồ họa tương ứng với từng loại hiệu ứng
   const renderParticle = (index: number) => {
     switch (type) {
       case 'apricot_petals':
-        // Hoa mai vàng 5 cánh với nhị đỏ
         return (
           <svg viewBox="0 0 40 40" className="w-full h-full drop-shadow-xs">
             <g transform="translate(20, 20)">
@@ -62,7 +59,6 @@ export function EventAtmosphereEffect({
         );
 
       case 'peach_petals':
-        // Cánh hoa đào hồng phai duyên dáng
         return (
           <svg viewBox="0 0 30 30" className="w-full h-full drop-shadow-xs">
             <path
@@ -76,7 +72,6 @@ export function EventAtmosphereEffect({
         );
 
       case 'golden_leaves':
-        // Lá lúa vàng óng ả mùa gặt
         return (
           <svg viewBox="0 0 32 32" className="w-full h-full drop-shadow-xs">
             <path
@@ -90,7 +85,6 @@ export function EventAtmosphereEffect({
         );
 
       case 'starlight':
-        // Ánh sao lung linh đêm hội trăng rằm
         return (
           <svg viewBox="0 0 24 24" className="w-full h-full">
             <polygon
@@ -102,7 +96,6 @@ export function EventAtmosphereEffect({
         );
 
       case 'confetti':
-        // Pháo giấy kim tuyến đa sắc (đỏ, vàng, tím, xanh)
         const colors = ['#EF4444', '#F59E0B', '#8B5CF6', '#10B981', '#EC4899'];
         const color = colors[index % colors.length];
         return (
@@ -113,7 +106,6 @@ export function EventAtmosphereEffect({
         );
 
       case 'snowflakes':
-        // Bông tuyết mùa đông
         return (
           <svg viewBox="0 0 24 24" className="w-full h-full text-white/80" fill="currentColor">
             <path
@@ -132,7 +124,6 @@ export function EventAtmosphereEffect({
 
   return (
     <>
-      {/* Định nghĩa CSS Keyframe animations siêu mượt, nhẹ nhàng */}
       <style
         dangerouslySetInnerHTML={{
           __html: `
@@ -170,7 +161,6 @@ export function EventAtmosphereEffect({
               height: `${particle.size}px`,
               animation: `eventAtmosphereFall ${particle.duration} linear infinite`,
               animationDelay: particle.delay,
-              // Truyền khoảng cách lượn sóng ngang qua biến CSS
               ['--particle-sway' as string]: particle.sway,
             }}
           >

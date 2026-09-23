@@ -23,7 +23,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Star, ExternalLink } from 'lucide-react';
 
-// Fix missing Leaflet marker icons
 delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
@@ -31,7 +30,6 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-// Custom Icon tâm Xã / Phường
 const communeCenterIcon = L.divIcon({
   className: 'custom-commune-marker',
   html: `
@@ -49,7 +47,6 @@ const communeCenterIcon = L.divIcon({
   iconAnchor: [17, 17],
 });
 
-// Custom Icon cho Điểm sản xuất / Cơ sở OCOP
 const ocopProductIcon = L.divIcon({
   className: 'custom-ocop-marker',
   html: `
@@ -99,7 +96,6 @@ export default function CommuneMapDetail({
   products = [],
   isResolvingCoords = false,
 }: CommuneMapDetailProps) {
-  // Trích xuất các sản phẩm có tọa độ thực từ nhật ký canh tác (nếu có)
   const productPoints = React.useMemo(() => {
     const points: Array<{
       product: Product;
@@ -109,7 +105,6 @@ export default function CommuneMapDetail({
     }> = [];
 
     products.forEach((p, idx) => {
-      // 1. Kiểm tra toạ độ nhật ký canh tác
       const validJournal = p.journals?.find((j) => j.latitude && j.longitude);
       if (validJournal && validJournal.latitude && validJournal.longitude) {
         points.push({
@@ -119,9 +114,8 @@ export default function CommuneMapDetail({
           label: validJournal.location || p.name,
         });
       } else if (center && wardName && idx < 5) {
-        // Dự phòng: Phân bố nhẹ quanh tâm xã để biểu diễn trực quan các vùng trồng OCOP
         const angle = (idx * 2 * Math.PI) / 5;
-        const radius = 0.008 + (idx % 2) * 0.004; // ~800m - 1.2km
+        const radius = 0.008 + (idx % 2) * 0.004;
         points.push({
           product: p,
           lat: center[0] + radius * Math.cos(angle),
@@ -136,7 +130,6 @@ export default function CommuneMapDetail({
 
   return (
     <div className="relative w-full h-[540px] rounded-2xl overflow-hidden shadow-inner border border-emerald-200/80">
-      {/* Badge Thông tin Vị trí Xã/Huyện ghim nổi trên bản đồ */}
       <div className="absolute top-3 left-3 z-[1000] bg-white/95 backdrop-blur-md px-3.5 py-2.5 rounded-xl shadow-lg border border-stone-200/80 max-w-[280px]">
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
@@ -204,7 +197,6 @@ export default function CommuneMapDetail({
           </LayersControl.BaseLayer>
         </LayersControl>
 
-        {/* Bán kính ước tính khu vực xã */}
         {wardName && (
           <Circle
             center={center}
@@ -219,7 +211,6 @@ export default function CommuneMapDetail({
           />
         )}
 
-        {/* Marker Tâm Xã / Phường */}
         <Marker position={center} icon={communeCenterIcon}>
           <Tooltip direction="top" offset={[0, -10]} opacity={0.95} permanent>
             <span className="text-xs font-bold text-emerald-800">
@@ -241,7 +232,6 @@ export default function CommuneMapDetail({
           </Popup>
         </Marker>
 
-        {/* Markers Điểm sản xuất / Sản phẩm OCOP thuộc xã */}
         {productPoints.map((pt, i) => (
           <Marker key={i} position={[pt.lat, pt.lng]} icon={ocopProductIcon}>
             <Popup>
@@ -285,7 +275,6 @@ export default function CommuneMapDetail({
         ))}
       </MapContainer>
 
-      {/* Chú thích góc phải */}
       <div className="absolute bottom-3 right-3 z-[1000] bg-white/95 backdrop-blur-md p-2 rounded-xl shadow-md text-[10px] text-stone-600 border border-stone-200 flex flex-col gap-1">
         <div className="flex items-center gap-1.5">
           <span className="w-3 h-3 rounded-full bg-emerald-600 shrink-0 inline-block" />

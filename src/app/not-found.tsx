@@ -8,14 +8,12 @@ export default function NotFound() {
   return (
     <main className="min-h-[80vh] flex items-center justify-center bg-[#fafaf2] px-4 py-16 sm:px-6 lg:px-8">
       <div className="max-w-md w-full text-center space-y-10 animate-in fade-in slide-up duration-700">
-        {/* Large 404 Visual */}
         <div className="relative">
           <h1 className="text-[12rem] font-black text-green-600/10 leading-none select-none">
             404
           </h1>
         </div>
 
-        {/* Text Content */}
         <div className="space-y-4">
           <h2 className="text-3xl font-bold text-stone-900 tracking-tight sm:text-4xl">
             Không tìm thấy trang
@@ -26,7 +24,6 @@ export default function NotFound() {
           </p>
         </div>
 
-        {/* Navigation Actions */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
           <Link href="/">
             <Button
@@ -50,7 +47,6 @@ export default function NotFound() {
           </Link>
         </div>
 
-        {/* Quick Help */}
         <button
           onClick={() => window.history.back()}
           className="inline-flex items-center text-sm font-medium text-green-700 hover:text-green-800 transition-colors group"

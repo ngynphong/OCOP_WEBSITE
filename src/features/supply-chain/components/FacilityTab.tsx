@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FiEdit2, FiTrash2, FiMapPin } from 'react-icons/fi';
 import { MapPin } from 'lucide-react';
 import { format } from 'date-fns';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { useFacilityList, useDeleteFacility } from '../hooks/useFacility';
 import { ISourceFacility } from '../types/materialSourceTypes';
@@ -75,7 +75,6 @@ export default function FacilityTab({ isCreating, setIsCreating }: FacilityTabPr
   return (
     <div className="space-y-4 animate-in fade-in duration-300">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Left Column: Grid or compact sidebar list */}
         <div
           className={`${
             isRightPanelOpen
@@ -227,7 +226,6 @@ export default function FacilityTab({ isCreating, setIsCreating }: FacilityTabPr
           )}
         </div>
 
-        {/* Right Column: Detail or Create/Edit panel */}
         {isRightPanelOpen && (
           <div className="lg:col-span-8 bg-white border border-stone-200 rounded-xl shadow-sm p-6">
             {isCreating || editingFacility ? (

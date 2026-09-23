@@ -48,7 +48,6 @@ export function ConfirmModal({
 
   if (!isOpen || !mounted) return null;
 
-  // Type configuration mapping
   const config = {
     danger: {
       icon: <AlertCircle className="w-6 h-6 text-red-600" />,
@@ -76,16 +75,13 @@ export function ConfirmModal({
 
   const modalContent = (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center overflow-x-hidden overflow-y-auto px-4 outline-none focus:outline-none">
-      {/* Backdrop */}
       <div
         className="fixed inset-0 bg-stone-900/40 backdrop-blur-md transition-opacity duration-300"
         onClick={onCancel}
         aria-hidden="true"
       />
 
-      {/* Modal Dialog */}
       <div className="relative z-[10000] w-full max-w-md bg-white rounded-xl shadow-2xl transform transition-all animate-in fade-in zoom-in-90 duration-300">
-        {/* Close button top right */}
         <button
           onClick={onCancel}
           className="absolute top-4 right-4 text-stone-400 hover:text-stone-600 transition-colors"
@@ -96,14 +92,12 @@ export function ConfirmModal({
 
         <div className="p-6 sm:p-8">
           <div className="flex flex-col items-center sm:items-start sm:flex-row gap-4">
-            {/* Context Icon */}
             <div
               className={`shrink-0 flex items-center justify-center w-12 h-12 rounded-full ${currentConfig.bgIcon}`}
             >
               {currentConfig.icon}
             </div>
 
-            {/* Content text */}
             <div className="flex flex-col text-center sm:text-left mt-2 sm:mt-0 w-full">
               <h3 className="text-lg font-bold text-stone-900 mb-2">{title}</h3>
               <p className="text-sm text-stone-600 leading-relaxed">{message}</p>
@@ -111,7 +105,6 @@ export function ConfirmModal({
             </div>
           </div>
 
-          {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row-reverse gap-3 mt-8">
             <button
               suppressHydrationWarning

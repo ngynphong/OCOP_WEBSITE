@@ -60,7 +60,6 @@ export default function StoryLandingPage() {
       <Header />
 
       <main className="pb-24">
-        {/* Hero Section */}
         <section className="relative min-h-[60vh] py-32 md:py-0 flex items-center justify-center bg-[#113B28] z-30">
           <div className="absolute inset-0 opacity-40">
             <Image
@@ -101,7 +100,6 @@ export default function StoryLandingPage() {
           </div>
         </section>
 
-        {/* Product Selection Grid */}
         <section
           ref={resultsSectionRef}
           className="max-w-7xl mx-auto px-6 lg:px-8 mt-20 relative z-20 scroll-mt-8"
@@ -230,7 +228,6 @@ export default function StoryLandingPage() {
           </div>
         </section>
 
-        {/* Featured Story of the Month */}
         {featuredStory && (
           <section className="max-w-7xl mx-auto px-6 lg:px-8 mt-24">
             <motion.div

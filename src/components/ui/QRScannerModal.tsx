@@ -44,11 +44,9 @@ const QRScannerModal = ({ isOpen, onClose }: QRScannerModalProps) => {
           qrbox: { width: 250, height: 250 },
         },
         (decodedText) => {
-          // Success callback
           stopScanner();
           onClose();
 
-          // Xử lý mã QR: Nếu là URL truy xuất nguồn gốc thì lấy code, nếu không thì dùng nguyên text
           let code = decodedText;
           if (decodedText.includes('/trace/')) {
             const parts = decodedText.split('/trace/');
@@ -62,9 +60,7 @@ const QRScannerModal = ({ isOpen, onClose }: QRScannerModalProps) => {
 
           router.push(`/trace/${code}`);
         },
-        () => {
-          // Frame error - skip to keep scanning
-        },
+        () => {},
       );
     } catch (err) {
       console.error('Failed to start scanner', err);
@@ -75,7 +71,6 @@ const QRScannerModal = ({ isOpen, onClose }: QRScannerModalProps) => {
 
   useEffect(() => {
     if (isOpen) {
-      // Small delay to ensure the container is rendered and avoid synchronous setState in effect
       const timer = setTimeout(() => {
         qrCodeRef.current = new Html5Qrcode(scannerId);
         startScanner();
@@ -120,12 +115,10 @@ const QRScannerModal = ({ isOpen, onClose }: QRScannerModalProps) => {
             </div>
           )}
 
-          {/* Scanning Overlay UI */}
           {isScanning && (
             <div className="absolute inset-0 pointer-events-none">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[250px] h-[250px] border-2 border-emerald-400 rounded-lg shadow-[0_0_0_1000px_rgba(0,0,0,0.5)]">
                 <div className="absolute inset-0 border-2 border-emerald-400 animate-pulse rounded-lg"></div>
-                {/* Corner markers */}
                 <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-emerald-500 -mt-1 -ml-1"></div>
                 <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-emerald-500 -mt-1 -mr-1"></div>
                 <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-emerald-500 -mb-1 -ml-1"></div>

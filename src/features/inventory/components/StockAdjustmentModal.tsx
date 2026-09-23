@@ -40,7 +40,6 @@ export const StockAdjustmentModal = ({
 
   const delta = useWatch({ control, name: 'delta' });
 
-  // Reset form when modal opens with new item
   React.useEffect(() => {
     if (isOpen) {
       reset({ delta: 0, note: '' });

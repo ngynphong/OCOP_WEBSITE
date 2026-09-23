@@ -25,8 +25,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(false);
 
-  // Quick-check tại store (chỉ có roles từ token) để redirect sớm
-  // trước khi profile load xong, tránh flash nội dung.
   const hasAdminRoleInStore = storeRoles.some((role) => !CUSTOMER_ONLY_ROLES.includes(role));
 
   useEffect(() => {
@@ -38,13 +36,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         return;
       }
 
-      // Khi store chưa có role hợp lệ → redirect ngay
       if (!hasAdminRoleInStore) {
         router.push('/');
         return;
       }
 
-      // Sau khi profile load xong, kiểm tra lần cuối bằng usePermission
       if (!isLoadingProfile && profile && !isAdminUser) {
         router.push('/');
       }
@@ -63,7 +59,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return <div className="h-screen w-full bg-[#F5F3EF]" />;
   }
 
-  // Khi ở trang preview sự kiện: hiển thị chế độ toàn màn hình Studio (ẩn Sidebar và Header Admin)
   const isPreviewMode = Boolean(pathname?.endsWith('/preview'));
   if (isPreviewMode) {
     return <div className="min-h-screen w-full bg-slate-950 overflow-hidden">{children}</div>;

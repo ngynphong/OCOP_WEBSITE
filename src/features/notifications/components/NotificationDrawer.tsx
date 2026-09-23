@@ -99,7 +99,6 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({ isOpen, 
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -108,7 +107,6 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({ isOpen, 
             className="fixed inset-0 bg-stone-900/40 backdrop-blur-sm z-[1000]"
           />
 
-          {/* Drawer */}
           <motion.div
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
@@ -116,7 +114,6 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({ isOpen, 
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
             className="fixed top-0 right-0 h-full w-full max-w-[400px] bg-white shadow-2xl z-[1001] flex flex-col"
           >
-            {/* Header */}
             <div className="p-6 border-b border-stone-100 flex items-center justify-between bg-white sticky top-0 z-10">
               <div>
                 <h2 className="text-xl font-black text-stone-900 tracking-tight">Thông báo</h2>
@@ -132,7 +129,6 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({ isOpen, 
               </button>
             </div>
 
-            {/* Actions Bar */}
             {notifications && notifications.length > 0 && (
               <div className="px-6 py-3 bg-stone-50/50 border-b border-stone-100 flex items-center justify-between">
                 <button
@@ -153,7 +149,6 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({ isOpen, 
               </div>
             )}
 
-            {/* Notifications List */}
             <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide">
               {isLoading ? (
                 Array.from({ length: 6 }).map((_, i) => <NotificationSkeleton key={i} />)
@@ -172,7 +167,6 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({ isOpen, 
                     />
                   ))}
 
-                  {/* Load more sentinel */}
                   <div ref={loadMoreRef} className="p-4 flex justify-center">
                     {isFetchingNextPage ? (
                       <NotificationSkeleton />
@@ -200,7 +194,6 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({ isOpen, 
             </div>
           </motion.div>
 
-          {/* Dialog */}
           <NotificationDetailDialog
             isOpen={isDetailOpen}
             onClose={() => {

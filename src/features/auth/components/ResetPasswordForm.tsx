@@ -57,7 +57,6 @@ export function ResetPasswordForm() {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-        {/* New Password */}
         <div className="relative group">
           <label className="text-[10px] uppercase tracking-wider font-bold text-stone-400 mb-1.5 ml-1 block group-focus-within:text-green-600 transition-colors">
             Mật khẩu mới
@@ -89,7 +88,6 @@ export function ResetPasswordForm() {
           )}
         </div>
 
-        {/* Confirm Password */}
         <div className="relative group">
           <label className="text-[10px] uppercase tracking-wider font-bold text-stone-400 mb-1.5 ml-1 block group-focus-within:text-green-600 transition-colors">
             Xác nhận mật khẩu mới

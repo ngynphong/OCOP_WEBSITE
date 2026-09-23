@@ -14,18 +14,14 @@ import { InventoryItem } from '@/features/inventory/types/inventoryTypes';
 import { Pagination } from '@/components/ui/Pagination';
 
 const AdminInventoryPage = () => {
-  // State quản lý lọc & phân trang
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
-  // const [keyword, setKeyword] = useState('');
   const [tempKeyword, setTempKeyword] = useState('');
   const [shopId, setShopId] = useState<string | number>('');
 
-  // State quản lý Modal điều chỉnh
   const [isAdjustmentModalOpen, setIsAdjustmentModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
 
-  // Fetch dữ liệu
   const {
     data: inventoryData,
     isLoading: isLoadingInventory,
@@ -33,21 +29,17 @@ const AdminInventoryPage = () => {
   } = useAdminInventory({
     pageNo: page,
     pageSize: pageSize,
-    // keyword,
     shopId: shopId || undefined,
   });
 
   const { data: lowStockData } = useAdminLowStockAlerts();
   const adjustStockMutation = useAdjustStock();
 
-  // Xử lý tìm kiếm
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // setKeyword(tempKeyword);
-    setPage(1); // Reset về trang đầu
+    setPage(1);
   };
 
-  // Xử lý điều chỉnh kho
   const handleOpenAdjustment = (item: InventoryItem) => {
     setSelectedItem(item);
     setIsAdjustmentModalOpen(true);
@@ -64,21 +56,18 @@ const AdminInventoryPage = () => {
       setIsAdjustmentModalOpen(false);
       setSelectedItem(null);
     } catch (error) {
-      // Lỗi được xử lý bởi axios interceptor và toast trong hook
       console.error(error);
     }
   };
 
-  // Thống kê nhanh
   const stats = {
     total: inventoryData?.data?.totalElement || 0,
     lowStock: lowStockData?.data?.length || 0,
-    outOfStock: inventoryData?.data?.items?.filter((i) => i.outOfStock).length || 0, // Tạm thời client-side filter
+    outOfStock: inventoryData?.data?.items?.filter((i) => i.outOfStock).length || 0,
   };
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
-      {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
           <h1 className="text-3xl font-black text-stone-900 tracking-tight">Quản lý kho hàng</h1>
@@ -98,7 +87,6 @@ const AdminInventoryPage = () => {
         </button>
       </div>
 
-      {/* Stats Section */}
       <AdminInventoryStats
         totalItems={stats.total}
         lowStockCount={stats.lowStock}
@@ -106,7 +94,6 @@ const AdminInventoryPage = () => {
         isLoading={isLoadingInventory}
       />
 
-      {/* Filters Section */}
       <div className="bg-white p-5 rounded-xl border border-stone-100 shadow-xl shadow-stone-200/40 flex flex-col md:flex-row gap-4 items-center">
         <form onSubmit={handleSearch} className="relative flex-1 group w-full">
           <FiSearch
@@ -138,7 +125,6 @@ const AdminInventoryPage = () => {
               className="w-full pl-12 pr-10 py-3.5 rounded-xl bg-stone-50 border border-stone-100 appearance-none outline-none focus:border-emerald-500 focus:bg-white transition-all text-sm font-bold text-stone-700 cursor-pointer"
             >
               <option value="">Tất cả cửa hàng</option>
-              {/* Ở đây có thể fetch danh sách shop để render option nếu cần */}
               <option value="1">Shop Mật Ong Rừng (Demo)</option>
             </select>
             <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
@@ -160,7 +146,6 @@ const AdminInventoryPage = () => {
         </div>
       </div>
 
-      {/* Main Table Content */}
       <div className="space-y-6">
         <AdminInventoryTable
           items={inventoryData?.data?.items || []}
@@ -168,7 +153,6 @@ const AdminInventoryPage = () => {
           onAdjust={handleOpenAdjustment}
         />
 
-        {/* Pagination */}
         {inventoryData?.data && inventoryData.data.totalPage > 1 && (
           <div className="flex justify-center pt-4">
             <Pagination
@@ -180,7 +164,6 @@ const AdminInventoryPage = () => {
         )}
       </div>
 
-      {/* Modals */}
       <StockAdjustmentModal
         isOpen={isAdjustmentModalOpen}
         onClose={() => setIsAdjustmentModalOpen(false)}

@@ -113,7 +113,6 @@ export default function LegalDocumentsPage() {
 
   return (
     <div className="space-y-8">
-      {/* Header Info */}
       <div className="flex items-start gap-4 p-5 bg-blue-50 border border-blue-100 rounded-xl">
         <FiAlertCircle size={20} className="text-blue-500 mt-0.5 shrink-0" />
         <div className="space-y-1">
@@ -126,7 +125,6 @@ export default function LegalDocumentsPage() {
         </div>
       </div>
 
-      {/* Documents Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {DOC_TYPES.map((type, index) => {
           const config = DOCUMENT_CONFIG[type];
@@ -145,7 +143,6 @@ export default function LegalDocumentsPage() {
                   : 'bg-white border-stone-100 hover:border-green-200 hover:shadow-lg hover:shadow-green-500/5',
               )}
             >
-              {/* Header */}
               <div className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="w-12 h-12 bg-stone-50 rounded-xl flex items-center justify-center text-stone-400 group-hover:bg-green-100 group-hover:text-green-600 transition-colors">
@@ -162,11 +159,9 @@ export default function LegalDocumentsPage() {
                 </div>
               </div>
 
-              {/* Content / Preview */}
               <div className="px-6 pb-6">
                 {doc ? (
                   <div className="space-y-4">
-                    {/* Preview Area */}
                     <div className="relative aspect-video rounded-xl bg-stone-50 border border-dashed border-stone-200 overflow-hidden group/preview">
                       {doc.fileUrl.match(/\.(jpg|jpeg|png|webp)$/i) ? (
                         <Image src={doc.fileUrl} alt={config.label} fill className="object-cover" />
@@ -199,13 +194,11 @@ export default function LegalDocumentsPage() {
                       </div>
                     </div>
 
-                    {/* Meta */}
                     <div className="flex items-center justify-between text-[10px] text-stone-400 font-bold uppercase tracking-wider">
                       <span>Tải lên lúc</span>
                       <span>{new Date(doc.createdAt).toLocaleDateString('vi-VN')}</span>
                     </div>
 
-                    {/* Rejection Note */}
                     {!doc.isVerified && doc.note && (
                       <div className="p-3 bg-red-50 rounded-xl border border-red-100 flex items-start gap-2">
                         <FiXCircle size={14} className="text-red-500 mt-0.5 shrink-0" />

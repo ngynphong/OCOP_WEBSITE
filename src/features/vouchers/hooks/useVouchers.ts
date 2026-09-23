@@ -8,7 +8,6 @@ export const VOUCHER_KEYS = {
   adminVouchers: (page: number, size: number) => ['vouchers', 'admin', page, size] as const,
 };
 
-// --- Seller Hooks ---
 export const useSellerVouchers = (page = 1, size = 10, enabled = true) => {
   return useQuery({
     queryKey: VOUCHER_KEYS.sellerVouchers(page, size),
@@ -56,7 +55,6 @@ export const useSellerVoucherMutations = () => {
   return { createVoucher, updateVoucher, deleteVoucher, toggleVoucher };
 };
 
-// --- Admin Hooks ---
 export const useAdminVouchers = (page = 1, size = 10, enabled = true) => {
   return useQuery({
     queryKey: VOUCHER_KEYS.adminVouchers(page, size),
@@ -79,7 +77,6 @@ export const useAdminVoucherMutations = () => {
   return { createVoucher };
 };
 
-// --- Public Hooks ---
 export const useVoucherDetail = (id: number) => {
   return useQuery({
     queryKey: ['vouchers', 'detail', id],
@@ -114,7 +111,6 @@ export const useValidateVoucher = (isLoggedIn = false) => {
   });
 };
 
-// --- User Hooks ---
 export const useSavedVouchers = (page = 1, size = 20, enabled = true) => {
   return useQuery({
     queryKey: ['vouchers', 'saved', page, size],
@@ -143,7 +139,6 @@ export const useSaveVoucherMutations = () => {
         if (typeof old === 'object' && old !== null && 'data' in old) {
           return { ...old, data: true };
         }
-        // fallback in case it directly returns boolean or API response format
         return { data: true };
       });
       return { previousValue };

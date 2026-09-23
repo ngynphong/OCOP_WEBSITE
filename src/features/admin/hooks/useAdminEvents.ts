@@ -12,8 +12,6 @@ export interface AdminEventsQueryParams {
   size?: number;
 }
 
-// ─── Standalone Query Hook ──────────────────────────────────────────────────
-
 export function useAdminEventsQuery(params: AdminEventsQueryParams = {}) {
   const { status, page = 0, size = 50 } = params;
 
@@ -30,8 +28,6 @@ export function useAdminEventsQuery(params: AdminEventsQueryParams = {}) {
     staleTime: 30 * 1000,
   });
 }
-
-// ─── Mutation Hooks ─────────────────────────────────────────────────────────
 
 export function useAdminEventMutations() {
   const queryClient = useQueryClient();
@@ -96,8 +92,6 @@ export function useAdminEventMutations() {
   };
 }
 
-// ─── Presentation Management Hook ───────────────────────────────────────────
-
 export function useAdminEventsManagement() {
   const [statusFilter, setStatusFilter] = useState<CampaignEventStatus | 'ALL'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
@@ -113,7 +107,6 @@ export function useAdminEventsManagement() {
   const { data: rawEvents = [], isLoading, isError, refetch } = useAdminEventsQuery(queryParams);
   const mutations = useAdminEventMutations();
 
-  // Confirm Modal State
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
     title: string;
@@ -131,7 +124,6 @@ export function useAdminEventsManagement() {
 
   const [isActionLoading, setIsActionLoading] = useState(false);
 
-  // Filtered Events
   const events = useMemo<EventResponse[]>(() => {
     if (!searchQuery.trim()) return rawEvents;
     const q = searchQuery.toLowerCase().trim();
@@ -211,7 +203,6 @@ export function useAdminEventsManagement() {
     setConfirmModal((prev) => ({ ...prev, isOpen: false }));
   };
 
-  // Emergency Kill (Panic Switch) State
   const [killModal, setKillModal] = useState<{
     isOpen: boolean;
     eventId: number | null;

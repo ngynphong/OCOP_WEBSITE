@@ -16,9 +16,8 @@ export default function UpcomingTasksWidget() {
     const fetchTasks = async () => {
       try {
         const response = await supplyChainApi.getUpcomingTasks();
-        // Cần đảm bảo response có data
         if (response && response.data) {
-          setTasks(response.data.slice(0, 5)); // Just show top 5 upcoming
+          setTasks(response.data.slice(0, 5));
         } else {
           setTasks([]);
         }

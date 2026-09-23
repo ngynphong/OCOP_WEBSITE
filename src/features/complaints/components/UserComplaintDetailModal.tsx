@@ -76,7 +76,6 @@ export const UserComplaintDetailModal = ({
       maxWidth="max-w-2xl"
     >
       <div className="space-y-6">
-        {/* Status Header */}
         <div
           className={cn(
             'p-4 rounded-xl border flex items-center justify-between',
@@ -106,7 +105,6 @@ export const UserComplaintDetailModal = ({
           </div>
         </div>
 
-        {/* Info Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="bg-stone-50 p-4 rounded-xl border border-stone-100 space-y-3">
             <div className="flex items-center gap-2 text-stone-500">
@@ -146,7 +144,6 @@ export const UserComplaintDetailModal = ({
           </div>
         </div>
 
-        {/* Content Section */}
         <div className="space-y-3">
           <div className="flex items-center gap-2 ml-1">
             <FileText size={16} className="text-stone-400" />
@@ -162,7 +159,6 @@ export const UserComplaintDetailModal = ({
           </div>
         </div>
 
-        {/* Resolution Note Section */}
         <div className="space-y-3">
           <div className="flex items-center gap-2 ml-1">
             <ShieldCheck size={16} className="text-emerald-600" />

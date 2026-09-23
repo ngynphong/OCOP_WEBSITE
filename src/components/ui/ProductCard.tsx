@@ -51,7 +51,6 @@ export const ProductCard = memo(function ProductCard({
 }: ProductCardProps) {
   const [isMounted, setIsMounted] = useState(false);
 
-  // Hydration
   useEffect(() => {
     const handle = requestAnimationFrame(() => {
       setIsMounted(true);
@@ -59,7 +58,6 @@ export const ProductCard = memo(function ProductCard({
     return () => cancelAnimationFrame(handle);
   }, []);
 
-  // Tính toán % giảm giá và format tiền tệ
   const discountPercent = useMemo(() => {
     if (oldPrice && price < oldPrice) {
       return Math.round(((oldPrice - price) / oldPrice) * 100);
@@ -88,7 +86,6 @@ export const ProductCard = memo(function ProductCard({
           compact ? 'gap-1.5' : 'gap-4',
         )}
       >
-        {/* Product Image Wrapper */}
         <div
           className={cn(
             'w-full relative bg-stone-100 rounded-xl overflow-hidden shadow-sm group-hover:shadow-lg group-hover:-translate-y-0.5 transition-all duration-300 border border-stone-100',
@@ -106,7 +103,6 @@ export const ProductCard = memo(function ProductCard({
             )}
           />
 
-          {/* Status badges */}
           <div
             className={cn(
               'absolute flex flex-col gap-1',
@@ -198,7 +194,6 @@ export const ProductCard = memo(function ProductCard({
             )}
           </div>
 
-          {/* Overlay Actions: wishlist only (Isolated in sub-component) */}
           <div
             className={cn(
               'absolute z-20 flex flex-col gap-1',
@@ -209,7 +204,6 @@ export const ProductCard = memo(function ProductCard({
           </div>
         </div>
 
-        {/* Content Below Image */}
         <div
           className={cn(
             'w-full flex flex-col px-0.5 text-left',
@@ -349,7 +343,6 @@ const WishlistButton = memo(
 
 WishlistButton.displayName = 'WishlistButton';
 
-// Hoisted SVG to avoid re-creation
 function StarIcon() {
   return (
     <svg

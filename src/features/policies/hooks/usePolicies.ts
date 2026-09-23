@@ -16,16 +16,12 @@ const POLICIES_KEYS = {
   detailBySlug: (slug: string) => [...POLICIES_KEYS.all, 'detail-slug', slug] as const,
 };
 
-// ========================
-// PUBLIC / USER HOOKS
-// ========================
-
 export const usePolicyDetail = (id: number, enabled = true) => {
   return useQuery({
     queryKey: POLICIES_KEYS.detail(id),
     queryFn: () => policiesApi.getPolicy(id),
     enabled: !!id && enabled,
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 5,
   });
 };
 
@@ -34,8 +30,8 @@ export const usePolicyDetailBySlug = (slug: string, enabled = true) => {
     queryKey: POLICIES_KEYS.detailBySlug(slug),
     queryFn: () => policiesApi.getPolicyBySlug(slug),
     enabled: !!slug && enabled,
-    staleTime: 1000 * 60 * 5, // 5 minutes
-    retry: 1, // Don't retry too much if 404
+    staleTime: 1000 * 60 * 5,
+    retry: 1,
   });
 };
 
@@ -44,7 +40,7 @@ export const usePendingPolicies = (enabled = true) => {
     queryKey: POLICIES_KEYS.pending(),
     queryFn: policiesApi.getPendingPolicies,
     enabled,
-    staleTime: 1000 * 60 * 5, // 5 mins
+    staleTime: 1000 * 60 * 5,
   });
 };
 
@@ -63,7 +59,6 @@ export const useConsentPolicy = () => {
     mutationFn: ({ id, data }: { id: number; data: IPolicyConsentRequest }) =>
       policiesApi.consentPolicy(id, data),
     onSuccess: () => {
-      // Invalidate pending policies so it refetches and removes the accepted one
       queryClient.invalidateQueries({ queryKey: POLICIES_KEYS.pending() });
     },
   });
@@ -80,15 +75,11 @@ export const useConsentRequiredPolicies = () => {
   });
 };
 
-// ========================
-// ADMIN HOOKS
-// ========================
-
 export const useAdminPolicies = () => {
   return useQuery({
     queryKey: POLICIES_KEYS.admin(),
     queryFn: policiesApi.getAdminPolicies,
-    staleTime: 1000 * 60 * 2, // 2 mins
+    staleTime: 1000 * 60 * 2,
   });
 };
 
@@ -132,7 +123,6 @@ export const useActivatePolicy = () => {
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: POLICIES_KEYS.admin() });
       queryClient.invalidateQueries({ queryKey: POLICIES_KEYS.detail(id) });
-      // If we activate a policy, it might affect pending policies for the current user
       queryClient.invalidateQueries({ queryKey: POLICIES_KEYS.pending() });
     },
   });

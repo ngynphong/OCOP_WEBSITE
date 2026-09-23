@@ -42,7 +42,6 @@ export const ProcessWithdrawalModal: React.FC<ProcessWithdrawalModalProps> = ({
     name: 'status',
   });
 
-  // Determine next status based on current status
   const getNextStatus = (
     currentStatus: WithdrawalStatus,
   ): ProcessWithdrawalPayload['status'] | null => {

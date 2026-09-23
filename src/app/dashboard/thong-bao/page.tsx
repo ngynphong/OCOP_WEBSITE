@@ -123,7 +123,6 @@ export default function NotificationsPage() {
               </motion.div>
             ))}
 
-            {/* Infinite loading trigger */}
             {hasNextPage && (
               <div ref={ref} className="p-6 flex justify-center">
                 {isFetchingNextPage ? (

@@ -16,7 +16,6 @@ const serverAxios = axios.create({
   },
 });
 
-// =================== REQUEST INTERCEPTOR ===================
 serverAxios.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
     const cookieStore = await cookies();
@@ -31,7 +30,6 @@ serverAxios.interceptors.request.use(
   (error: AxiosError) => Promise.reject(error),
 );
 
-// =================== RESPONSE INTERCEPTOR ===================
 serverAxios.interceptors.response.use(
   (response: AxiosResponse) => {
     return response.data;

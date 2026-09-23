@@ -156,7 +156,6 @@ export async function middleware(request: NextRequest) {
   }
 
   const roles = verification.roles;
-  console.log(`[MW-AUTH-CHECK] Path: ${pathname} | Roles: ${roles.join(', ')}`);
 
   if (!roles.some((role) => ADMIN_ROLES.has(role))) {
     console.warn(`[MW-AUTH-BLOCK] Unauthorized access attempt to admin route: ${pathname}`);

@@ -8,7 +8,7 @@ import { loginSchema, LoginFormData, simpleRegisterSchema, SimpleRegisterFormDat
 import { useLogin } from '../hooks/useLogin';
 import { useRegister } from '../hooks/useRegister';
 import { useVerify } from '../hooks/useVerify';
-import { Fragment, useState, useMemo } from 'react';
+import { Fragment, useState } from 'react';
 import { Eye, EyeOff, ArrowRight, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/AppButton';
 import toast from 'react-hot-toast';
@@ -16,6 +16,8 @@ import { FcGoogle } from 'react-icons/fc';
 import { useRegistrationPolicies } from '@/features/policies/hooks/usePolicies';
 
 type FormPhase = 'IDENTIFY' | 'AUTHENTICATE' | '2FA';
+
+type FormValues = SimpleRegisterFormData & LoginFormData & { otp?: string };
 
 export function LoginForm() {
   const { login, isLoggingIn } = useLogin();
@@ -68,21 +70,21 @@ export function LoginForm() {
     window.location.href = googleOAuthUrl;
   };
 
-  const currentSchema = useMemo(() => {
-    if (phase === 'IDENTIFY') return loginSchema.pick({ identity: true });
-    return accountExists ? loginSchema : simpleRegisterSchema;
-  }, [phase, accountExists]);
+  const currentSchema =
+    phase === 'IDENTIFY'
+      ? loginSchema.pick({ identity: true })
+      : accountExists
+        ? loginSchema
+        : simpleRegisterSchema;
 
   const {
     register,
     handleSubmit,
-    trigger,
     setValue,
+    setFocus,
     formState: { errors },
-  } = useForm<SimpleRegisterFormData & LoginFormData & { otp?: string }>({
-    resolver: zodResolver(currentSchema) as unknown as Resolver<
-      SimpleRegisterFormData & LoginFormData & { otp?: string }
-    >,
+  } = useForm<FormValues>({
+    resolver: zodResolver(currentSchema) as unknown as Resolver<FormValues>,
     defaultValues: {
       identity: '',
       password: '',
@@ -93,55 +95,52 @@ export function LoginForm() {
     },
   });
 
-  const handleNextPhase = async () => {
-    const isValid = await trigger('identity');
-    if (!isValid) return;
-
-    const identityValue = (document.getElementsByName('identity')[0] as HTMLInputElement)?.value;
-    if (!identityValue) return;
-
-    try {
-      const res = await verifyAccount(identityValue);
-      const exists = res.data.exists === 'true';
-      setAccountExists(exists);
-      setPhase('AUTHENTICATE');
-      if (!exists) {
-        toast.success('Tài khoản mới! Hãy thiết lập mật khẩu để đăng ký.');
-      }
-    } catch (error) {
-      console.error('Lỗi kiểm tra tài khoản:', error);
-    }
-  };
-
   const handleBack = () => {
     if (phase === '2FA') {
       setPhase('AUTHENTICATE');
       setValue('otp', '');
+      setTimeout(() => setFocus('password'), 50);
     } else {
       setPhase('IDENTIFY');
       setAccountExists(null);
       setValue('password', '');
       setValue('confirmPassword', '');
       setValue('acceptedPolicies', false);
+      setTimeout(() => setFocus('identity'), 50);
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: FormValues) => {
+    if (phase === 'IDENTIFY') {
+      if (isVerifyingAccount) return;
+      try {
+        const res = await verifyAccount(data.identity);
+        const exists = res.data.exists === 'true';
+        setAccountExists(exists);
+        setPhase('AUTHENTICATE');
+        if (!exists) {
+          toast.success('Tài khoản mới! Hãy thiết lập mật khẩu để đăng ký.');
+        }
+        setTimeout(() => setFocus('password'), 50);
+      } catch (error) {
+        console.error('Lỗi kiểm tra tài khoản:', error);
+      }
+      return;
+    }
+
     if (phase === '2FA') {
       await verify2fa({
         target: data.identity,
-        code: data.otp,
+        code: data.otp || '',
         deviceType: 'WEB',
       });
       return;
     }
 
     if (accountExists) {
-      // Luồng Đăng nhập
       const res = await login({
         identity: data.identity,
-        password: data.password,
+        password: data.password || '',
         deviceType: 'WEB',
       });
 
@@ -150,12 +149,12 @@ export function LoginForm() {
         toast('Tài khoản của bạn được bảo vệ bởi Xác thực 2 bước. Vui lòng nhập mã OTP.', {
           icon: '🛡️',
         });
+        setTimeout(() => setFocus('otp'), 50);
       }
     } else {
-      // Luồng Đăng ký nhanh
       await simpleRegister({
         identity: data.identity,
-        password: data.password,
+        password: data.password || '',
         acceptedPolicyIds: registrationPolicies.map((policy) => policy.id),
       });
     }
@@ -185,7 +184,6 @@ export function LoginForm() {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-        {/* Identity Field */}
         <div className={`flex flex-col gap-2 relative ${phase === '2FA' ? 'hidden' : ''}`}>
           <label className="text-stone-400 text-xs font-bold ml-1 uppercase tracking-wider">
             Tài khoản
@@ -193,14 +191,15 @@ export function LoginForm() {
           <div className="relative group">
             <input
               {...register('identity')}
-              disabled={phase === 'AUTHENTICATE'}
+              readOnly={phase === 'AUTHENTICATE'}
+              tabIndex={phase === 'AUTHENTICATE' ? -1 : 0}
               type="text"
               placeholder="Email hoặc số điện thoại"
               className={`w-full bg-white border px-4 py-3 pr-16 rounded-xl text-stone-900 font-medium placeholder:text-stone-300 focus:outline-none focus:ring-2 transition-all duration-300 shadow-xs ${
                 errors.identity
                   ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20'
                   : 'border-stone-200 focus:border-emerald-500 focus:ring-emerald-500/20'
-              } ${phase === 'AUTHENTICATE' ? 'opacity-80 cursor-not-allowed bg-stone-50 text-stone-500' : ''}`}
+              } ${phase === 'AUTHENTICATE' ? 'opacity-80 cursor-not-allowed bg-stone-50 text-stone-500 select-none' : ''}`}
             />
             {phase === 'AUTHENTICATE' && (
               <button
@@ -221,8 +220,7 @@ export function LoginForm() {
 
         {phase === 'IDENTIFY' ? (
           <Button
-            type="button"
-            onClick={handleNextPhase}
+            type="submit"
             isLoading={isVerifyingAccount}
             className="mt-2 group overflow-hidden"
           >
@@ -233,7 +231,6 @@ export function LoginForm() {
           </Button>
         ) : phase === 'AUTHENTICATE' ? (
           <div className="flex flex-col gap-5 animate-in fade-in slide-in-from-bottom-4 duration-300">
-            {/* Password Field */}
             <div className="flex flex-col gap-2">
               <label className="text-stone-400 text-xs font-bold ml-1 uppercase tracking-wider">
                 Mật khẩu
@@ -266,7 +263,6 @@ export function LoginForm() {
               )}
             </div>
 
-            {/* Confirm Password Field (Only for Register) */}
             {!accountExists && (
               <>
                 <div className="flex flex-col gap-2 animate-in fade-in zoom-in-95 duration-300">
@@ -352,7 +348,6 @@ export function LoginForm() {
               </>
             )}
 
-            {/* Remember & Forgot Password */}
             {accountExists && (
               <div className="flex items-center justify-between mt-1">
                 <label className="flex items-center gap-2 cursor-pointer group py-2">
@@ -433,7 +428,6 @@ export function LoginForm() {
         ) : null}
       </form>
 
-      {/* Divider */}
       <div className="relative my-4 flex items-center justify-center">
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-stone-100"></div>
@@ -443,7 +437,6 @@ export function LoginForm() {
         </span>
       </div>
 
-      {/* Google Login Button */}
       <button
         type="button"
         onClick={handleGoogleLogin}
@@ -453,7 +446,6 @@ export function LoginForm() {
         <span>Tiếp tục với Google</span>
       </button>
 
-      {/* Embedded Image Inside Card */}
       <div className="mt-8 relative w-full h-16 sm:h-20 rounded-xl overflow-hidden group cursor-pointer border border-stone-50 shadow-inner">
         <Image
           src="/images/login-form.jpg"

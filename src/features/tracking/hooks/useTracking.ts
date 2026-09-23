@@ -23,14 +23,12 @@ const getSessionId = (): string => {
 export const useTracking = () => {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
 
-  // Lấy profile để lấy userId (UUID)
   const { data: profileResp } = useQuery({
     queryKey: ['profile'],
     queryFn: () => authApi.getProfile(),
     enabled: isAuthenticated,
   });
 
-  // Lấy các chính sách đang chờ duyệt
   const { data: pendingPolicies = [] } = usePendingPolicies(isAuthenticated);
 
   const trackEvent = useCallback(
@@ -38,7 +36,6 @@ export const useTracking = () => {
       eventType: 'VIEW_PRODUCT' | 'SEARCH' | 'WISHLIST' | 'ADD_TO_CART' | 'PURCHASE',
       targetId: string,
     ) => {
-      // Nếu có chính sách bắt buộc chưa chấp nhận thì không thu thập hành vi (Bảo vệ dữ liệu)
       if (pendingPolicies && pendingPolicies.length > 0) {
         return;
       }

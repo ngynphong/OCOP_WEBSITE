@@ -34,7 +34,6 @@ export function CreateMaterialLotForm({ onClose }: CreateMaterialLotFormProps) {
 
   return (
     <div className="space-y-6">
-      {/* Title & Close */}
       <div className="flex items-center justify-between pb-4 border-b border-stone-100">
         <h2 className="text-lg font-bold text-stone-900 flex items-center gap-2">
           <FiBox className="text-emerald-600" />
@@ -57,7 +56,6 @@ export function CreateMaterialLotForm({ onClose }: CreateMaterialLotFormProps) {
           </div>
         )}
 
-        {/* Thông tin cơ bản */}
         <div className="space-y-3">
           <h3 className="text-xs font-bold text-stone-400 uppercase tracking-wider pb-1 border-b border-stone-100 flex items-center gap-1.5">
             <FiBox className="text-emerald-600" /> Thông tin cơ bản
@@ -122,7 +120,6 @@ export function CreateMaterialLotForm({ onClose }: CreateMaterialLotFormProps) {
           </div>
         </div>
 
-        {/* Nguồn gốc nguyên liệu */}
         <div className="space-y-3">
           <h3 className="text-xs font-bold text-stone-400 uppercase tracking-wider pb-1 border-b border-stone-100 flex items-center gap-1.5">
             <FiMapPin className="text-emerald-600" /> Nguồn gốc nguyên liệu
@@ -272,7 +269,6 @@ export function CreateMaterialLotForm({ onClose }: CreateMaterialLotFormProps) {
           </div>
         </div>
 
-        {/* Thời Gian */}
         <div className="space-y-3">
           <h3 className="text-xs font-bold text-stone-400 uppercase tracking-wider pb-1 border-b border-stone-100 flex items-center gap-1.5">
             <FiCalendar className="text-emerald-600" /> Thời gian

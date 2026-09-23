@@ -65,7 +65,6 @@ const getEventIcon = (stepType: string) => {
 };
 
 const getEventColor = (_stepType: string) => {
-  // Chuẩn hóa màu sắc thống nhất thương hiệu OCOP Emerald & Stone
   return 'bg-emerald-50 text-emerald-800 ring-4 ring-emerald-50/70 border border-emerald-200/80';
 };
 
@@ -192,7 +191,6 @@ export const BatchEventTimeline = ({ events, templateSteps }: BatchEventTimeline
         {events.map((event, eventIdx) => {
           const sourceBadge = getSourceTypeBadge(event.sourceType);
 
-          // Xử lý eventData
           let parsedData: Record<string, unknown> | null = null;
           let isPlainText = false;
 
@@ -213,7 +211,6 @@ export const BatchEventTimeline = ({ events, templateSteps }: BatchEventTimeline
             }
           }
 
-          // Kiểm tra xem parsedData có key nào hiển thị không
           const validDataEntries = parsedData
             ? Object.entries(parsedData).filter(
                 ([key, value]) =>
@@ -238,7 +235,6 @@ export const BatchEventTimeline = ({ events, templateSteps }: BatchEventTimeline
                 ) : null}
 
                 <div className="relative flex items-start space-x-3">
-                  {/* Icon loại công đoạn */}
                   <div className="relative">
                     <span
                       className={`h-10 w-10 rounded-full flex items-center justify-center ring-4 shadow-xs ${getEventColor(
@@ -250,12 +246,10 @@ export const BatchEventTimeline = ({ events, templateSteps }: BatchEventTimeline
                   </div>
 
                   <div className="min-w-0 flex-1 py-0.5">
-                    {/* Header sự kiện */}
                     <div className="flex flex-col gap-1.5">
                       <div className="flex items-center gap-2 flex-wrap">
                         <h4 className="font-bold text-stone-900 text-sm">{event.stepTitle}</h4>
 
-                        {/* Nguồn ghi nhận */}
                         <span
                           className={cn(
                             'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border',
@@ -266,14 +260,12 @@ export const BatchEventTimeline = ({ events, templateSteps }: BatchEventTimeline
                           <span>{sourceBadge.label}</span>
                         </span>
 
-                        {/* Chứng thực Blockchain SHA-256 */}
                         {event.dataHash && (
                           <div className="group relative inline-flex items-center">
                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 cursor-help">
                               <ShieldCheck className="w-3 h-3 text-emerald-600" />
                               Khối SHA-256
                             </span>
-                            {/* Tooltip Blockchain */}
                             <div className="absolute bottom-full left-0 mb-2 hidden group-hover:block w-72 p-3 bg-stone-900 text-white text-xs rounded-xl shadow-2xl z-30 border border-stone-700">
                               <p className="font-bold mb-1 text-emerald-400 flex items-center gap-1">
                                 <ShieldCheck className="w-3.5 h-3.5" /> Toàn vẹn Blockchain
@@ -294,7 +286,6 @@ export const BatchEventTimeline = ({ events, templateSteps }: BatchEventTimeline
                           </div>
                         )}
 
-                        {/* Cờ khối khởi tạo nếu có */}
                         {event.previousHash === 'GENESIS' && (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-stone-100 text-stone-700 border border-stone-200">
                             <LinkIcon className="w-2.5 h-2.5 text-stone-500" />
@@ -303,7 +294,6 @@ export const BatchEventTimeline = ({ events, templateSteps }: BatchEventTimeline
                         )}
                       </div>
 
-                      {/* Thời gian & Người ghi nhận */}
                       <div className="text-xs text-stone-500 flex items-center gap-3 flex-wrap">
                         <span className="flex items-center gap-1 font-medium text-stone-700">
                           <Clock className="w-3.5 h-3.5 text-stone-400" />
@@ -320,7 +310,6 @@ export const BatchEventTimeline = ({ events, templateSteps }: BatchEventTimeline
                       </div>
                     </div>
 
-                    {/* Khối Thông số đo lường sinh thái & kỹ thuật (eventData) */}
                     {validDataEntries.length > 0 && (
                       <div className="mt-2.5 grid grid-cols-2 sm:grid-cols-3 gap-2 bg-stone-50/70 p-2.5 rounded-xl border border-stone-200/70">
                         {validDataEntries.map(([key, value], entryIdx) => {
@@ -351,7 +340,6 @@ export const BatchEventTimeline = ({ events, templateSteps }: BatchEventTimeline
                       </div>
                     )}
 
-                    {/* Trường hợp eventData là chuỗi text tự do */}
                     {isPlainText &&
                       event.eventData &&
                       typeof event.eventData === 'string' &&
@@ -362,7 +350,6 @@ export const BatchEventTimeline = ({ events, templateSteps }: BatchEventTimeline
                         </div>
                       )}
 
-                    {/* Cảnh báo AI hoặc kết quả phân tích AI */}
                     {event.isFlaggedByAi && (
                       <div className="mt-2.5 p-2.5 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
                         <AlertTriangle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
@@ -379,7 +366,6 @@ export const BatchEventTimeline = ({ events, templateSteps }: BatchEventTimeline
                       </div>
                     )}
 
-                    {/* Danh sách Bằng chứng thực địa / Ảnh chụp */}
                     {event.evidenceDocuments && event.evidenceDocuments.length > 0 && (
                       <div className="mt-3 flex flex-col gap-2">
                         <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider">
@@ -453,7 +439,6 @@ export const BatchEventTimeline = ({ events, templateSteps }: BatchEventTimeline
                                     </span>
                                   )}
 
-                                  {/* Thông tin thiết bị chụp */}
                                   {doc.deviceInfo && (
                                     <span className="text-[10px] text-stone-500 flex items-center gap-1">
                                       <Smartphone className="w-3 h-3 text-stone-400" />
@@ -461,7 +446,6 @@ export const BatchEventTimeline = ({ events, templateSteps }: BatchEventTimeline
                                     </span>
                                   )}
 
-                                  {/* Tọa độ GPS & Link bản đồ */}
                                   {doc.latitude && doc.longitude && (
                                     <a
                                       href={`https://www.google.com/maps?q=${doc.latitude},${doc.longitude}`}
@@ -475,7 +459,6 @@ export const BatchEventTimeline = ({ events, templateSteps }: BatchEventTimeline
                                     </a>
                                   )}
 
-                                  {/* Trạng thái xác minh tài liệu */}
                                   {doc.verificationStatus && (
                                     <span
                                       className={cn(

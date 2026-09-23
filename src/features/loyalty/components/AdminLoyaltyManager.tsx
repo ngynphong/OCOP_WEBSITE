@@ -54,7 +54,6 @@ const AdminLoyaltyManager = ({ userId }: AdminLoyaltyManagerProps) => {
 
   return (
     <div className="space-y-6">
-      {/* Current Account Summary */}
       <div className="bg-linear-to-br from-emerald-800 to-green-900 rounded-xl p-8 text-white shadow-2xl shadow-emerald-900/20 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-center gap-6">
           <div className="w-20 h-20 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/10 shadow-inner">
@@ -90,7 +89,6 @@ const AdminLoyaltyManager = ({ userId }: AdminLoyaltyManagerProps) => {
         </div>
       </div>
 
-      {/* Adjustment Form */}
       <div className="bg-white rounded-xl border border-stone-100 shadow-xl shadow-stone-200/50 p-8">
         <div className="flex items-center gap-3 mb-8">
           <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-500">
@@ -170,7 +168,6 @@ const AdminLoyaltyManager = ({ userId }: AdminLoyaltyManagerProps) => {
         </div>
       </div>
 
-      {/* Info Notice */}
       <div className="p-6 rounded-xl bg-amber-50 border border-amber-100 flex gap-4">
         <div className="w-10 h-10 shrink-0 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-600 font-bold">
           !

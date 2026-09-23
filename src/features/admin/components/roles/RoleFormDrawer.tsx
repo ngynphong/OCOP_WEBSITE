@@ -41,8 +41,6 @@ const RoleFormDrawer = ({ isOpen, onClose, role }: RoleFormDrawerProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [prevRoleId, setPrevRoleId] = useState<string | undefined | null>(undefined);
 
-  // Sync selected permissions when role changes (Reset state when drawer opens with different role)
-  // This avoids setState in useEffect and cascading renders
   if (role?.name !== prevRoleId) {
     setPrevRoleId(role?.name || null);
     setSelectedPermissions(role?.permissions.map((p) => p.name) || []);
@@ -80,7 +78,6 @@ const RoleFormDrawer = ({ isOpen, onClose, role }: RoleFormDrawerProps) => {
   const onSubmit = async (data: RoleFormData) => {
     try {
       if (role) {
-        // Edit mode - manage permissions differences
         const currentPerms = role.permissions.map((p) => p.name);
         const toAdd = selectedPermissions.filter((p) => !currentPerms.includes(p));
         const toRemove = currentPerms.filter((p) => !selectedPermissions.includes(p));
@@ -92,7 +89,6 @@ const RoleFormDrawer = ({ isOpen, onClose, role }: RoleFormDrawerProps) => {
           await removeRolePermissions({ roleName: role.name, data: { permissionNames: toRemove } });
         }
       } else {
-        // Create mode
         await createRole({
           ...data,
           permissions: selectedPermissions,
@@ -100,7 +96,6 @@ const RoleFormDrawer = ({ isOpen, onClose, role }: RoleFormDrawerProps) => {
       }
       onClose();
     } catch (error) {
-      // Errors handled by axios interceptor
       console.error('Error:', error);
     }
   };
@@ -134,7 +129,6 @@ const RoleFormDrawer = ({ isOpen, onClose, role }: RoleFormDrawerProps) => {
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
             className="fixed right-0 top-0 w-full max-w-2xl bg-white h-full shadow-2xl z-60 flex flex-col"
           >
-            {/* Header */}
             <div className="p-6 border-b border-stone-100 flex justify-between items-center bg-stone-50/50">
               <div>
                 <h3 className="text-xl font-black text-emerald-900 leading-tight">
@@ -157,7 +151,6 @@ const RoleFormDrawer = ({ isOpen, onClose, role }: RoleFormDrawerProps) => {
               className="flex-1 overflow-hidden flex flex-col"
             >
               <div className="flex-1 overflow-y-auto p-8 custom-scrollbar space-y-8">
-                {/* Basic Info */}
                 <section className="space-y-4">
                   <h4 className="text-[10px] font-black text-stone-400 uppercase tracking-widest flex items-center gap-2">
                     <FiInfo className="text-emerald-500" /> Thông tin vai trò
@@ -215,7 +208,6 @@ const RoleFormDrawer = ({ isOpen, onClose, role }: RoleFormDrawerProps) => {
                   </div>
                 </section>
 
-                {/* Permissions Management */}
                 <section className="space-y-4">
                   <div className="flex justify-between items-end">
                     <h4 className="text-[10px] font-black text-stone-400 uppercase tracking-widest flex items-center gap-2">
@@ -293,7 +285,6 @@ const RoleFormDrawer = ({ isOpen, onClose, role }: RoleFormDrawerProps) => {
                 </section>
               </div>
 
-              {/* Action Footer */}
               <div className="p-6 border-t border-stone-100 bg-stone-50/50 sticky bottom-0">
                 <button
                   type="submit"

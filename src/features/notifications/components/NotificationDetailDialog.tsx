@@ -207,7 +207,6 @@ const formatValue = (key: string, value: string | number | boolean | null | unde
     return severityMap[value] || value;
   }
 
-  // Format status strings
   if (key.toLowerCase().includes('status') && typeof value === 'string') {
     const statusMap: Record<string, string> = {
       PENDING_PAYMENT: 'Chờ thanh toán',
@@ -292,7 +291,6 @@ export const NotificationDetailDialog = ({
           </div>
         ) : (
           <div className="flex flex-col">
-            {/* Header / Icon */}
             <div className="flex flex-col items-center mb-6">
               <div
                 className={`p-4 rounded-full mb-4 shadow-md ${renderIcon(notification.entityType, notification.eventType).bg}`}
@@ -307,7 +305,6 @@ export const NotificationDetailDialog = ({
               </p>
             </div>
 
-            {/* Message Box */}
             {notification.payload?.message && (
               <div className="bg-emerald-50 p-4 rounded-xl border border-emerald-100 mb-6">
                 <p className="text-emerald-900 font-medium leading-relaxed text-center">
@@ -316,7 +313,6 @@ export const NotificationDetailDialog = ({
               </div>
             )}
 
-            {/* Additional Info */}
             {notification.payload &&
               Object.keys(notification.payload).filter((k) => k !== 'message').length > 0 && (
                 <div className="bg-stone-50 rounded-xl p-6 border border-stone-200 overflow-hidden">
@@ -329,7 +325,6 @@ export const NotificationDetailDialog = ({
                       .map(([key, value]) => {
                         let displayContent: React.ReactNode = formatValue(key, value);
 
-                        // Handle raw JSON arrays gracefully by rendering UI elements
                         if (
                           typeof value === 'string' &&
                           (value.startsWith('[') || value.startsWith('{'))
@@ -342,7 +337,6 @@ export const NotificationDetailDialog = ({
                               parsed[0].name &&
                               parsed[0].minPrice !== undefined
                             ) {
-                              // Render Product List
                               displayContent = (
                                 <div className="grid grid-cols-1 gap-3 mt-3 w-full">
                                   {parsed.map((prod: IRecommendedProduct) => (
@@ -410,19 +404,15 @@ export const NotificationDetailDialog = ({
                                 </div>
                               );
                             } else {
-                              // Generic JSON formatting if not products
                               displayContent = (
                                 <pre className="bg-white p-3 rounded-lg border border-stone-200 text-xs text-stone-600 overflow-x-auto mt-2 max-h-60 shadow-inner">
                                   {JSON.stringify(parsed, null, 2)}
                                 </pre>
                               );
                             }
-                          } catch (_e) {
-                            // Keep as string if parsing fails
-                          }
+                          } catch (_e) {}
                         }
 
-                        // Check if displayContent is a complex React Node (like the product grid)
                         const isComplexBlock =
                           React.isValidElement(displayContent) &&
                           (displayContent.type === 'div' || displayContent.type === 'pre');
@@ -453,7 +443,6 @@ export const NotificationDetailDialog = ({
                 </div>
               )}
 
-            {/* Action button */}
             <div className="mt-8 flex justify-center">
               <button
                 onClick={onClose}

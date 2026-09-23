@@ -20,7 +20,6 @@ export function FlashSaleSection() {
     setIsQuickBuyModalOpen(true);
   };
 
-  // Lấy Flash Sale đầu tiên đang diễn ra (nếu có)
   const activeFlashSale = data?.data && data.data.length > 0 ? data.data[0] : null;
   const items = activeFlashSale?.items || [];
   const targetDate = activeFlashSale ? new Date(activeFlashSale.endTime) : null;
@@ -38,7 +37,6 @@ export function FlashSaleSection() {
   return (
     <section className="w-full max-w-7xl mx-auto my-8 px-6">
       <div className="relative w-full overflow-hidden rounded-xl border border-red-200/50 shadow-2xl shadow-red-900/10">
-        {/* Premium Banner Background Overlay */}
         <div className="absolute inset-0 z-0">
           <Image
             src={activeFlashSale?.bannerUrl || '/images/flash-sale-banner-v2.png'}

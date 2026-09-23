@@ -20,7 +20,6 @@ const ProfilePage = () => {
 
   return (
     <div className="space-y-10">
-      {/* Avatar Section */}
       <div className="flex flex-col items-center p-6 bg-stone-50 rounded-xl border border-stone-100">
         <AvatarUpload
           currentAvatar={profile?.avatarUrl}
@@ -37,7 +36,6 @@ const ProfilePage = () => {
         </div>
       </div>
 
-      {/* Profile Form */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

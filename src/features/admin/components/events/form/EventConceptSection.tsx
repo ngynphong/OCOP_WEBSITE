@@ -46,7 +46,6 @@ export function EventConceptSection({
         </div>
       </div>
 
-      {/* Concept Packs Grid */}
       <div className="space-y-3">
         <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
           Chọn Gói Concept Mỹ Thuật
@@ -107,14 +106,12 @@ export function EventConceptSection({
         </div>
       </div>
 
-      {/* Atmosphere & Corner Stickers Controls */}
       <div className="p-5 bg-gray-50 rounded-2xl border border-gray-200/80 space-y-4">
         <h4 className="text-xs font-bold text-gray-800 uppercase tracking-wider">
           Tùy Biến Hiệu Ứng Động
         </h4>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Atmosphere Toggle */}
           <div className="p-4 bg-white rounded-xl border border-gray-200 space-y-3 shadow-2xs">
             <label className="flex items-center justify-between cursor-pointer select-none">
               <span className="text-xs font-bold text-gray-800">Hiệu Ứng Động</span>
@@ -139,7 +136,6 @@ export function EventConceptSection({
             </select>
           </div>
 
-          {/* Corner Stickers Toggle */}
           <div className="p-4 bg-white rounded-xl border border-gray-200 space-y-3 shadow-2xs">
             <label className="flex items-center justify-between cursor-pointer select-none">
               <span className="text-xs font-bold text-gray-800">

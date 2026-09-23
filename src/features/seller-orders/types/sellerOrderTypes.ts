@@ -5,13 +5,10 @@ import {
   IOrderListRes,
 } from '@/features/orders/types/orderTypes';
 
-// Re-use types from user domain as baseline but add seller specific ones if backend diverges.
-// Currently based on API docs, Seller order models mirror User orders structure closely with matching properties.
 export type ISellerOrderItem = IOrderItemList;
 export type ISellerOrderListRes = IOrderListRes;
 export type ISellerOrderDetailsRes = IOrderDetailsRes;
 
-// Request Payloads
 export interface IConfirmOrderReq {
   note?: string;
   trackingNumber?: string | null;
@@ -58,14 +55,12 @@ export interface IRejectOrderReq {
   reason: string;
 }
 
-// Queries
 export interface ISellerOrderListReq extends IOrderListReq {
   keyword?: string;
   startDate?: string;
   endDate?: string;
 }
 
-// Statistics Types
 export interface IRevenueReq {
   period?: 'day' | 'week' | 'month' | 'year';
   startDate?: string;
@@ -91,7 +86,6 @@ export interface IRevenueRes {
   chart: IRevenueTimeline[];
 }
 
-// Payouts & Refunds
 export interface IRefundItem {
   refundId: number;
   status: string;

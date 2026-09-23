@@ -19,7 +19,6 @@ export default function UserSupportTicketsPage() {
 
   return (
     <div className="space-y-8 pb-20">
-      {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-1">
           <h1 className="text-3xl font-black text-stone-900 tracking-tight">Hỗ trợ khách hàng</h1>
@@ -35,7 +34,6 @@ export default function UserSupportTicketsPage() {
         </Button>
       </div>
 
-      {/* Hero Info Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-linear-to-br from-green-700 to-green-800 p-6 rounded-xl text-white shadow-2xl shadow-emerald-950/20 relative overflow-hidden group">
           <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
@@ -92,7 +90,6 @@ export default function UserSupportTicketsPage() {
         </div>
       </div>
 
-      {/* Main Table Section */}
       <div className="space-y-4">
         <div className="flex items-center justify-between px-2">
           <div className="flex items-center gap-2">

@@ -1,7 +1,7 @@
 export interface IRecentOrder {
   orderId: string;
-  shopName?: string; // Cho User
-  customerName?: string; // Cho Seller
+  shopName?: string;
+  customerName?: string;
   totalAmount: number;
   status: string;
   createdAt: string;

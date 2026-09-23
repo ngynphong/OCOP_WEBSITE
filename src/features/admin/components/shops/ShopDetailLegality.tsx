@@ -39,7 +39,6 @@ const ShopDetailLegality: React.FC<ShopDetailLegalityProps> = React.memo(
   ({ shop, activeDoc, setActiveDoc, onVerifyDoc, onRejectDoc, isVerifying, isRejecting }) => {
     return (
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 h-full">
-        {/* Document Sidebar (inside Tab) */}
         <div className="md:col-span-12 lg:col-span-4 space-y-3 max-h-[600px] overflow-y-auto no-scrollbar">
           {shop.documents?.length ? (
             shop.documents.map((doc) => (
@@ -86,7 +85,6 @@ const ShopDetailLegality: React.FC<ShopDetailLegalityProps> = React.memo(
           )}
         </div>
 
-        {/* Previewer */}
         <div className="md:col-span-12 lg:col-span-8">
           {activeDoc ? (
             <div className="bg-stone-50 rounded-xl border border-stone-100 p-6 flex flex-col h-full min-h-[500px]">

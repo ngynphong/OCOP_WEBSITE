@@ -1,14 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FiMapPin, FiX, FiAlertCircle } from 'react-icons/fi';
 import { useForm, useWatch } from 'react-hook-form';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'react-toastify';
-import { materialSourceApi } from '../../api/materialSourceApi';
 import { ISourceFacility, ISourceFacilityReq } from '../../types/materialSourceTypes';
 import { Button } from '@/components/ui/AppButton';
 import MapPickerWrapper from '../map/MapPickerWrapper';
 import { LocationSelects } from '../LocationSelects';
 import { findProvince } from '@/constants/regions-map';
+import { useSaveFacility } from '../../hooks/useFacility';
 
 export interface CreateFacilityFormProps {
   onClose: () => void;
@@ -16,29 +14,17 @@ export interface CreateFacilityFormProps {
 }
 
 export function CreateFacilityForm({ onClose, initialData }: CreateFacilityFormProps) {
-  const queryClient = useQueryClient();
   const form = useForm<ISourceFacilityReq>({
     defaultValues: initialData || {},
   });
-  const [errorMsg, setErrorMsg] = useState('');
   const isEditing = !!initialData;
 
-  const mutation = useMutation({
-    mutationFn: (data: ISourceFacilityReq) =>
-      isEditing
-        ? materialSourceApi.updateFacility(initialData.id, data)
-        : materialSourceApi.createFacility(data),
+  const { mutation, errorMsg, setErrorMsg } = useSaveFacility({
+    facilityId: initialData?.id,
+    isEditing,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['facilities'] });
       form.reset();
       onClose();
-      toast.success(
-        isEditing ? 'Cập nhật cơ sở/vùng trồng thành công' : 'Thêm cơ sở/vùng trồng mới thành công',
-      );
-    },
-    onError: (err: unknown) => {
-      const apiError = err as { response?: { data?: { message?: string } } };
-      setErrorMsg(apiError?.response?.data?.message || 'Có lỗi xảy ra');
     },
   });
 
@@ -59,7 +45,6 @@ export function CreateFacilityForm({ onClose, initialData }: CreateFacilityFormP
 
   return (
     <div className="space-y-6">
-      {/* Title & Close */}
       <div className="flex items-center justify-between pb-4 border-b border-stone-100">
         <h2 className="text-lg font-bold text-stone-900 flex items-center gap-2">
           <FiMapPin className="text-emerald-600" />
@@ -190,7 +175,6 @@ export function CreateFacilityForm({ onClose, initialData }: CreateFacilityFormP
                 }}
               />
             </div>
-            {/* Hidden fields just to store data for react-hook-form */}
             <input type="hidden" {...register('latitude', { valueAsNumber: true })} />
             <input type="hidden" {...register('longitude', { valueAsNumber: true })} />
             <input type="hidden" {...register('boundary')} />

@@ -150,7 +150,6 @@ export function ProductDetailClient({ initialProduct }: { initialProduct?: Produ
     <div className="min-h-screen bg-white selection:bg-green-100 selection:text-green-900">
       <Header />
 
-      {/* Sticky Bottom Bar for Mobile */}
       <StickyBottomCTA
         variantId={product.variants.find((v) => v.isDefault)?.id || product.variants[0]?.id || 0}
         inStock={product.inStock}
@@ -168,7 +167,6 @@ export function ProductDetailClient({ initialProduct }: { initialProduct?: Produ
           <Breadcrumb items={breadcrumbItems} />
         </div>
 
-        {/* Hero Section: Above the Fold */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-12 items-start">
           <div className="lg:col-span-7">
             <ProductGallery images={product.images} name={product.name} />
@@ -178,12 +176,10 @@ export function ProductDetailClient({ initialProduct }: { initialProduct?: Produ
           </div>
         </div>
 
-        {/* Specifications & Standards Section */}
         <div id="specs">
           <ProductSpecs product={product} />
         </div>
 
-        {/* Storytelling Section: Magazine Layout */}
         <div id="story">
           <ProductStory
             name={product.name}
@@ -200,12 +196,10 @@ export function ProductDetailClient({ initialProduct }: { initialProduct?: Produ
           />
         </div>
 
-        {/* Reviews Section */}
         <div id="reviews" className="mt-16 pt-16 border-t border-stone-100">
           <ReviewList productSlug={slug} />
         </div>
 
-        {/* Related Products Section */}
         {relatedProducts.length > 0 && (
           <div className="mt-12">
             <section className="flex flex-col gap-6">
@@ -249,9 +243,7 @@ export function ProductDetailClient({ initialProduct }: { initialProduct?: Produ
           </div>
         )}
 
-        {/* Cross-selling Sections */}
         <div className="mt-12 flex flex-col gap-12 pb-12">
-          {/* AI Recommendations */}
           {aiRecommendations && aiRecommendations.length > 0 && (
             <section className="flex flex-col gap-6">
               <div className="flex items-end justify-between border-b border-amber-200/50 pb-5">
@@ -291,7 +283,6 @@ export function ProductDetailClient({ initialProduct }: { initialProduct?: Produ
             </section>
           )}
 
-          {/* Same Shop Products */}
           {sameShopResp?.data?.items && sameShopResp.data.items.length > 1 && (
             <section className="flex flex-col gap-6">
               <div className="flex items-end justify-between border-b border-stone-100 pb-5">
@@ -338,7 +329,6 @@ export function ProductDetailClient({ initialProduct }: { initialProduct?: Produ
             </section>
           )}
 
-          {/* Same Province Products */}
           {sameProvinceResp?.data?.items && sameProvinceResp.data.items.length > 1 && (
             <section className="flex flex-col gap-6">
               <div className="flex items-end justify-between border-b border-stone-100 pb-5">

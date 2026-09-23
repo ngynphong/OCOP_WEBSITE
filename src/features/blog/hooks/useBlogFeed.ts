@@ -41,12 +41,10 @@ export function useBlogFeed(pageSize = 10): UseBlogFeedReturn {
     return data?.pages.flatMap((page) => page.data.content) || [];
   }, [data]);
 
-  // The first blog is the hero featured post
   const featuredBlog = useMemo(() => {
     return blogs.length > 0 ? blogs[0] : null;
   }, [blogs]);
 
-  // The rest of the blogs are shown in the 3-column grid
   const regularBlogs = useMemo(() => {
     return blogs.length > 1 ? blogs.slice(1) : [];
   }, [blogs]);

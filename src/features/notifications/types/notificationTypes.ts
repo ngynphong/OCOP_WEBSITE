@@ -50,6 +50,5 @@ export interface NotificationResponse {
   totalElement: number;
 }
 
-// Zod schemas for validation if needed
 export const notificationIdSchema = z.string();
 export const deleteBatchSchema = z.array(z.string());

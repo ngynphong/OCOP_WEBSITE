@@ -14,7 +14,6 @@ interface ProductSidebarProps {
   setSearchQuery: (val: string) => void;
   selectedRatings: number[];
   setSelectedRatings: (val: number[]) => void;
-  // Dual-mode Tỉnh thành (63 vs 34)
   provinceMode?: ProvinceMode;
   setProvinceMode?: (mode: ProvinceMode) => void;
   selectedProvinceId: number | null;
@@ -131,7 +130,6 @@ export function ProductSidebar({
 
   return (
     <aside className="w-full lg:w-72 px-2 shrink-0 space-y-10 lg:sticky lg:top-28 lg:self-start lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-      {/* Search Bar */}
       <section>
         <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-[0.2em] mb-4">
           Tìm kiếm
@@ -149,7 +147,6 @@ export function ProductSidebar({
         </div>
       </section>
 
-      {/* Categories */}
       {!hideCategoryFilter && (
         <section>
           <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-[0.2em] mb-6">
@@ -184,7 +181,6 @@ export function ProductSidebar({
                   })}
               </div>
 
-              {/* Sub-categories tree if parent selected */}
               {categories
                 .filter((cat) => selectedCategoryIds.includes(cat.id) && cat.children?.length > 0)
                 .map((parent) => (
@@ -221,7 +217,6 @@ export function ProductSidebar({
         </section>
       )}
 
-      {/* Brands */}
       <section>
         <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-[0.2em] mb-6">
           Thương hiệu
@@ -251,7 +246,6 @@ export function ProductSidebar({
         )}
       </section>
 
-      {/* OCOP Rating */}
       <section>
         <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-[0.2em] mb-6">
           Xếp hạng OCOP
@@ -278,7 +272,6 @@ export function ProductSidebar({
         </div>
       </section>
 
-      {/* Provinces (Dual-mode 63 vs 34 Tỉnh Thành) */}
       <section>
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-[0.2em]">
@@ -298,7 +291,6 @@ export function ProductSidebar({
           )}
         </div>
 
-        {/* Mode switcher 63 vs 34 */}
         <div className="flex p-1 bg-stone-100 rounded-xl border border-stone-200 mb-3 text-xs">
           <button
             type="button"
@@ -327,7 +319,6 @@ export function ProductSidebar({
           </button>
         </div>
 
-        {/* Search input for provinces */}
         <div className="relative mb-3">
           <input
             type="text"
@@ -422,7 +413,6 @@ export function ProductSidebar({
         )}
       </section>
 
-      {/* Price Range */}
       <section>
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-[0.2em]">Mức giá</h3>

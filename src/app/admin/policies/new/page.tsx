@@ -75,7 +75,6 @@ function PolicyEditorInner() {
     },
   });
 
-  // Watch fields for live preview
   const watchedValues = useWatch({ control });
   const previewTitle = watchedValues.title || 'Chưa có tiêu đề';
   const previewContent =
@@ -139,7 +138,6 @@ function PolicyEditorInner() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center gap-4">
         <button
           onClick={() => router.push('/admin/policies')}
@@ -159,9 +157,7 @@ function PolicyEditorInner() {
         </div>
       </div>
 
-      {/* Grid split 2 sides */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left Side: Form */}
         <div className="lg:col-span-7 xl:col-span-6 bg-white p-6 rounded-2xl border border-stone-100 shadow-sm space-y-6">
           <h3 className="text-md text-emerald-600 font-black text-stone-850 flex items-center gap-2 border-b border-stone-100 pb-3">
             <FiFileText className="text-emerald-600" /> Thông tin Chính sách
@@ -169,7 +165,6 @@ function PolicyEditorInner() {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {/* Type Select */}
               <div className="space-y-1.5 md:col-span-2">
                 <label className="text-xs font-bold text-stone-500 uppercase tracking-wider">
                   Loại Chính sách
@@ -199,7 +194,6 @@ function PolicyEditorInner() {
                 )}
               </div>
 
-              {/* Title input */}
               <div className="space-y-1.5 md:col-span-2">
                 <label className="text-xs font-bold text-stone-500 uppercase tracking-wider">
                   Tiêu đề hiển thị
@@ -214,7 +208,6 @@ function PolicyEditorInner() {
                 )}
               </div>
 
-              {/* Version input */}
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-stone-500 uppercase tracking-wider">
                   Phiên bản
@@ -231,7 +224,6 @@ function PolicyEditorInner() {
                 )}
               </div>
 
-              {/* Date Input */}
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-stone-500 uppercase tracking-wider">
                   Ngày hiệu lực
@@ -248,7 +240,6 @@ function PolicyEditorInner() {
                 )}
               </div>
 
-              {/* Consent checkbox */}
               <div className="flex items-center md:col-span-2">
                 <label className="flex items-center gap-2 cursor-pointer py-2">
                   <input
@@ -262,7 +253,6 @@ function PolicyEditorInner() {
                 </label>
               </div>
 
-              {/* Target Roles checkboxes */}
               <div className="space-y-1.5 md:col-span-2">
                 <label className="text-xs font-bold text-stone-500 uppercase tracking-wider">
                   Đối tượng áp dụng (Target Roles)
@@ -304,7 +294,6 @@ function PolicyEditorInner() {
                 />
               </div>
 
-              {/* TipTap Rich Editor */}
               <div className="space-y-2 md:col-span-2">
                 <label className="text-xs font-bold text-stone-500 uppercase tracking-wider">
                   Nội dung chính sách
@@ -328,7 +317,6 @@ function PolicyEditorInner() {
               </div>
             </div>
 
-            {/* Action Buttons */}
             <div className="pt-4 border-t border-stone-100 flex justify-end gap-3">
               <Button
                 type="button"
@@ -345,14 +333,12 @@ function PolicyEditorInner() {
           </form>
         </div>
 
-        {/* Right Side: Live Preview */}
         <div className="lg:col-span-5 xl:col-span-6 space-y-4 lg:sticky lg:top-[90px]">
           <h3 className="text-md text-blue-600 font-black text-stone-850 flex items-center gap-2 border-b border-stone-100 pb-3">
             <FiFileText className="text-blue-600" /> Xem trước trực tiếp (Live Preview)
           </h3>
 
           <div className="bg-stone-50 border border-stone-200 rounded-2xl p-6 md:p-8 min-h-[500px] max-h-[calc(100vh-220px)] overflow-y-auto custom-scrollbar flex flex-col shadow-inner">
-            {/* Header info in preview */}
             <div className="border-b border-stone-200 pb-5 mb-6">
               <h1 className="text-2xl md:text-3xl font-black text-stone-900 leading-tight">
                 {previewTitle}
@@ -387,7 +373,6 @@ function PolicyEditorInner() {
               </div>
             </div>
 
-            {/* Rich text HTML body in preview */}
             <div
               className="prose prose-stone prose-emerald max-w-none flex-1"
               dangerouslySetInnerHTML={{ __html: previewContent }}

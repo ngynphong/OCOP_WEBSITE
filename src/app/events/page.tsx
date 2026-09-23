@@ -10,6 +10,5 @@ export default async function EventsIndexPage() {
     redirect(`/events/${activeEvent.slug}`);
   }
 
-  // Nếu không có sự kiện đang diễn ra, quay về trang chủ
   redirect('/');
 }

@@ -50,7 +50,6 @@ export function VoucherSelectionModal({
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] md:w-full max-w-lg bg-white rounded-xl shadow-2xl z-[9999] overflow-hidden border border-stone-100"
           >
-            {/* Header */}
             <div className="p-6 border-b border-stone-100 flex items-center justify-between bg-linear-to-r from-stone-50 to-white">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
@@ -73,7 +72,6 @@ export function VoucherSelectionModal({
               </button>
             </div>
 
-            {/* Content */}
             <div className="max-h-[60vh] overflow-y-auto p-6 custom-scrollbar">
               {isLoading ? (
                 <div className="py-20 flex flex-col items-center justify-center gap-4">
@@ -116,7 +114,6 @@ export function VoucherSelectionModal({
                             : 'border-stone-100 hover:border-stone-200 hover:shadow-md',
                         )}
                       >
-                        {/* Left part */}
                         <div
                           className={cn(
                             'w-24 shrink-0 flex flex-col items-center justify-center text-white relative border-r border-dashed border-white/30',
@@ -131,12 +128,10 @@ export function VoucherSelectionModal({
                           <span className="text-[8px] font-black uppercase tracking-tighter opacity-80">
                             GIẢM GIÁ
                           </span>
-                          {/* Circles */}
                           <div className="absolute -top-1.5 -right-1.5 w-3 h-3 bg-white rounded-full" />
                           <div className="absolute -bottom-1.5 -right-1.5 w-3 h-3 bg-white rounded-full" />
                         </div>
 
-                        {/* Right part */}
                         <div className="flex-1 p-4 flex flex-col justify-between">
                           <div className="space-y-1">
                             <div className="flex items-center justify-between">
@@ -182,7 +177,6 @@ export function VoucherSelectionModal({
               )}
             </div>
 
-            {/* Footer */}
             <div className="p-6 bg-stone-50 border-t border-stone-100">
               <p className="text-[10px] text-stone-400 font-bold uppercase tracking-widest text-center">
                 Hệ thống sẽ tự động áp dụng mã có giá trị cao nhất

@@ -48,8 +48,7 @@ export function Footer() {
           </div>
           <div className="flex flex-col justify-start items-start gap-1.5 min-h-[144px]">
             {isLoading
-              ? // Loading state
-                [...Array(4)].map((_, i) => (
+              ? [...Array(4)].map((_, i) => (
                   <div key={i} className="w-32 h-6 bg-emerald-900/60 animate-pulse rounded" />
                 ))
               : categories.length > 0
@@ -62,8 +61,7 @@ export function Footer() {
                       {category.name}
                     </Link>
                   ))
-                : // Fallback if no categories
-                  ['Thực phẩm sạch', 'Gia vị', 'Đồ thủ công', 'Trà thảo mộc'].map((item) => (
+                : ['Thực phẩm sạch', 'Gia vị', 'Đồ thủ công', 'Trà thảo mộc'].map((item) => (
                     <Link
                       key={item}
                       href="#"

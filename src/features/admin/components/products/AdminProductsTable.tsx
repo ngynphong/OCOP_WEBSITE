@@ -21,8 +21,6 @@ import { AdminProductDetailModal } from '@/features/admin/components/products/Ad
 import { AdminProductCategoryModal } from '@/features/admin/components/products/AdminProductCategoryModal';
 import { AdminProductTableRow } from './AdminProductTableRow';
 
-// ─── Status configuration ─────────────────────────────────────────────────────
-
 const STATUS_LABELS: Record<ProductStatus, string> = {
   DRAFT: 'Nháp',
   PENDING_REVIEW: 'Chờ duyệt',
@@ -38,8 +36,6 @@ const STATUS_COLORS: Record<ProductStatus, string> = {
   REJECTED: 'bg-red-50 text-red-500 border border-red-200',
   DISCONTINUED: 'bg-stone-100 text-stone-400',
 };
-
-// ─── Component ────────────────────────────────────────────────────────────────
 
 export const AdminProductsTable = () => {
   const [params, setParams] = useState<AdminProductListParams>({ pageNo: 1, pageSize: 20 });
@@ -82,7 +78,6 @@ export const AdminProductsTable = () => {
     product: null,
   });
 
-  // Category Editing State
   const [categoryModal, setCategoryModal] = useState<{ open: boolean; product: Product | null }>({
     open: false,
     product: null,
@@ -98,7 +93,6 @@ export const AdminProductsTable = () => {
     impactStats: '',
   });
 
-  // Sync detailed data to form when fetched
   React.useEffect(() => {
     if (productDetail?.data && storyModal.open) {
       const product = productDetail.data;
@@ -155,7 +149,6 @@ export const AdminProductsTable = () => {
     [hideProduct],
   );
 
-  // Story Management
   const handleOpenStory = useCallback((product: Product) => {
     setStoryModal({ open: true, product });
     setStoryFormData({
@@ -203,7 +196,6 @@ export const AdminProductsTable = () => {
 
   return (
     <div className="space-y-4 animate-in fade-in duration-500">
-      {/* Category tabs — chỉ hiện Flash Sale nếu có permission */}
       <div className="flex items-center gap-4 border-b border-stone-100 pb-1">
         <button
           onClick={() => setActiveTab('PRODUCTS')}
@@ -236,7 +228,6 @@ export const AdminProductsTable = () => {
         <FlashSaleManagementTab role="ADMIN" />
       ) : (
         <>
-          {/* Filter bar and Actions */}
           <div className="flex flex-wrap gap-3 items-center justify-between">
             <div className="flex flex-wrap gap-3 items-center">
               {(['PENDING_REVIEW', 'APPROVED', 'REJECTED', 'DRAFT'] as ProductStatus[]).map((s) => (
@@ -332,7 +323,6 @@ export const AdminProductsTable = () => {
         </div>
       )}
 
-      {/* Reject modal */}
       <AdminProductRejectModal
         isOpen={rejectModal.open}
         rejectNote={rejectNote}
@@ -342,7 +332,6 @@ export const AdminProductsTable = () => {
         isRejecting={isRejecting}
       />
 
-      {/* Product Story Modal */}
       <AdminProductStoryModal
         isOpen={storyModal.open}
         product={storyModal.product}
@@ -354,7 +343,6 @@ export const AdminProductsTable = () => {
         onSave={handleSaveStory}
       />
 
-      {/* Product Category Modal */}
       <AdminProductCategoryModal
         isOpen={categoryModal.open}
         product={categoryModal.product}
@@ -363,7 +351,6 @@ export const AdminProductsTable = () => {
         onSave={handleSaveCategory}
       />
 
-      {/* Product Detail Modal */}
       <AdminProductDetailModal
         isOpen={detailModal.open}
         productId={detailModal.productId}

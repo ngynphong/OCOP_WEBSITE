@@ -25,7 +25,7 @@ export const useSellerOrdersQuery = (params: ISellerOrderListReq) => {
   return useQuery({
     queryKey: sellerOrderKeys.list(params),
     queryFn: () => sellerOrderApi.getOrders(params),
-    staleTime: 1000 * 60, // 1 min
+    staleTime: 1000 * 60,
   });
 };
 
@@ -39,7 +39,7 @@ export const useInfiniteSellerOrders = (
       isB2B
         ? sellerOrderApi.getB2BOrders({
             status: params.status,
-            pageNo: (pageParam as number) - 1, // B2B has 0-indexed pageNo
+            pageNo: (pageParam as number) - 1,
             pageSize: params.pageSize || 10,
           })
         : sellerOrderApi.getOrders(
@@ -54,7 +54,6 @@ export const useInfiniteSellerOrders = (
         pageData.totalPage !== undefined
           ? (pageData.totalPage as number)
           : (pageData.totalPages as number);
-      // For B2B 0-indexed pages, lastPage.data.pageNo + 1 < totalPage
       if (pageData.pageNo !== undefined) {
         return page + 1 < totalPages ? page + 2 : undefined;
       }
@@ -76,7 +75,6 @@ export const useSellerOrderDetailsQuery = (orderCode: string, isB2B = false) => 
   });
 };
 
-// Mutations
 export const useConfirmOrderMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -186,7 +184,6 @@ export const useUpdateB2BShippingInfoMutation = () => {
   });
 };
 
-// Khối thống kê và tài chính
 export const useSellerRevenueQuery = (
   params: IRevenueReq,
   isB2B = false,

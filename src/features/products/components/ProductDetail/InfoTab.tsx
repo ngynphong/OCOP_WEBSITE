@@ -423,7 +423,6 @@ export function InfoTab({ productId }: InfoTabProps) {
         </div>
       </div>
 
-      {/* Hồ sơ tiêu chuẩn & Quy cách OCOP */}
       <div className="p-4 bg-stone-50/70 rounded-2xl border border-stone-200/80 space-y-4">
         <h4 className="text-xs font-bold text-stone-700 uppercase tracking-wider">
           Hồ sơ tiêu chuẩn & Quy cách OCOP

@@ -6,7 +6,7 @@ import { materialSourceApi } from '../api/materialSourceApi';
 import { ISourceCycleLog, ISourceCycleLogReq } from '../types/materialSourceTypes';
 import { format } from 'date-fns';
 import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 
 interface Props {
   isOpen: boolean;
@@ -164,7 +164,6 @@ export default function SourceCycleLogModal({ isOpen, onClose, cycleId }: Props)
               key={log.id}
               className="relative bg-white border border-stone-200 rounded-xl p-4 shadow-sm group hover:border-emerald-300 transition-colors"
             >
-              {/* Timeline dot */}
               <div className="absolute w-3 h-3 bg-emerald-500 rounded-full -left-[31px] top-6 border-2 border-white shadow-sm"></div>
 
               <div className="flex justify-between items-start">

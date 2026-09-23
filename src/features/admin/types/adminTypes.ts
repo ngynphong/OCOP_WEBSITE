@@ -112,7 +112,6 @@ export interface GetUsersParams {
 
 export type ShopDetailTabType = 'overview' | 'legality' | 'subscription' | 'history';
 
-// Shop Management Types
 export type ShopStatus = 'PENDING' | 'ACTIVE' | 'LOCKED' | 'REJECTED';
 export type ShopDocumentType = 'BUSINESS_LICENSE';
 
@@ -208,8 +207,6 @@ export type AdminOverridePlanResponse = ResponseBase<{
   active: boolean;
 }>;
 
-// ─── Subscription Plan Management Types ───────────────────────────────────────
-
 export interface SubscriptionPlan {
   id: string;
   name: string;
@@ -261,7 +258,6 @@ export type UpdateSubscriptionPlanRequest = CreateSubscriptionPlanRequest;
 
 export type AdminSubscriptionPlanListResponse = ResponseBase<SubscriptionPlan[]>;
 export type AdminSubscriptionPlanDetailResponse = ResponseBase<SubscriptionPlan>;
-// ─── Category Management Types ──────────────────────────────────────────────
 
 export interface Category {
   id: number;
@@ -292,8 +288,6 @@ export type CategoryUpdateRequest = CategoryCreateRequest;
 export type AdminCategoryListResponse = ResponseBase<Category[]>;
 export type AdminCategoryDetailResponse = ResponseBase<Category>;
 export type CategoryCheckSlugResponse = ResponseBase<boolean>;
-
-// ─── Admin Order Management Types ──────────────────────────────────────────
 
 export interface IAdminOrderParams {
   status?: string;
@@ -422,8 +416,6 @@ export type AdminPayoutResponse = ResponseBase<IAdminPayoutRes>;
 export type AdminPayoutListResponse = ResponseBase<IAdminPayoutListRes>;
 export type AdminPayoutGenerateResponse = ResponseBase<string>;
 export type AdminRefundActionResponse = ResponseBase<IAdminRefundListItem>;
-
-// ─── Audit Log Management Types ─────────────────────────────────────────────
 
 export interface AuditLog {
   id: number;

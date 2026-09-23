@@ -7,12 +7,11 @@ interface ShopPageProps {
   params: Promise<{ slug: string }>;
 }
 
-// Generate metadata for SEO by fetching shop basic info
 export async function generateMetadata({ params }: ShopPageProps): Promise<Metadata> {
   const { slug } = await params;
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/shops/${slug}`, {
-      next: { revalidate: 60 * 5 }, // 5 minutes cache
+      next: { revalidate: 60 * 5 },
     });
 
     if (res.ok) {
@@ -35,9 +34,7 @@ export async function generateMetadata({ params }: ShopPageProps): Promise<Metad
         },
       };
     }
-  } catch {
-    // Return fallback metadata on failure
-  }
+  } catch {}
 
   return {
     title: 'Cửa hàng | OCOP',
@@ -64,7 +61,7 @@ export default async function ShopProfilePage({ params }: ShopPageProps) {
   const jsonLd = shopData
     ? {
         '@context': 'https://schema.org',
-        '@type': 'LocalBusiness', // Or 'Store' / 'Organization'
+        '@type': 'LocalBusiness',
         name: shopData.name,
         image: shopData.logoUrl ? [shopData.logoUrl] : [],
         description: shopData.description || `Cửa hàng ${shopData.name} trên OCOP.`,

@@ -37,7 +37,6 @@ export function StickyBottomCTA({
         </div>
 
         <div className="flex-1 flex gap-2">
-          {/* Thêm vào giỏ */}
           <Button
             variant="outline"
             className="flex-1 px-4 h-14 rounded-xl border-stone-200 relative active:scale-95 transition-transform"
@@ -57,7 +56,6 @@ export function StickyBottomCTA({
             )}
           </Button>
 
-          {/* Mua ngay */}
           <Button
             variant="primary"
             className="flex-2 h-14 rounded-xl active:scale-95 transition-transform shadow-lg shadow-emerald-700/20"
@@ -79,7 +77,6 @@ export function StickyBottomCTA({
         </div>
       </div>
 
-      {/* Safe Area Padding for iOS */}
       <div className="h-[env(safe-area-inset-bottom)]" />
     </div>
   );

@@ -24,12 +24,16 @@ export interface QuickLink {
 
 export const homeApi = {
   getBanners: () =>
-    publicAxiosClient.get<ResponseBase<Banner[]>>(
-      API_ENDPOINTS.PUBLIC.BANNERS,
-    ) as unknown as Promise<ResponseBase<Banner[]>>,
+    publicAxiosClient.get<ResponseBase<Banner[]>>(API_ENDPOINTS.PUBLIC.BANNERS, {
+      headers: {
+        'X-Silent-Loading': 'true',
+      },
+    }) as unknown as Promise<ResponseBase<Banner[]>>,
 
   getQuickLinks: () =>
-    publicAxiosClient.get<ResponseBase<QuickLink[]>>(
-      API_ENDPOINTS.PUBLIC.QUICK_LINKS,
-    ) as unknown as Promise<ResponseBase<QuickLink[]>>,
+    publicAxiosClient.get<ResponseBase<QuickLink[]>>(API_ENDPOINTS.PUBLIC.QUICK_LINKS, {
+      headers: {
+        'X-Silent-Loading': 'true',
+      },
+    }) as unknown as Promise<ResponseBase<QuickLink[]>>,
 };

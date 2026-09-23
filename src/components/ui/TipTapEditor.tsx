@@ -91,7 +91,6 @@ const MenuBar = ({
         console.error('Lỗi khi tải ảnh:', error);
       }
     }
-    // Reset input
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -224,7 +223,6 @@ export function TipTapEditor({ value, onChange, onUploadImage }: TipTapEditorPro
     },
   });
 
-  // Sync value when initialData loads asynchronously
   useEffect(() => {
     if (editor && value !== editor.getHTML()) {
       editor.commands.setContent(value);

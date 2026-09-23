@@ -39,14 +39,14 @@ function getConceptTabIcon(conceptId: string) {
 }
 
 const SLICE_COLORS = [
-  '#DC2626', // Đỏ son
-  '#F59E0B', // Vàng hổ phách
-  '#059669', // Xanh ngọc OCOP
-  '#7C3AED', // Tím hoa cà
-  '#EA580C', // Cam đất
-  '#0284C7', // Xanh chàm
-  '#DB2777', // Hồng sen
-  '#D97706', // Vàng lúa chín
+  '#DC2626',
+  '#F59E0B',
+  '#059669',
+  '#7C3AED',
+  '#EA580C',
+  '#0284C7',
+  '#DB2777',
+  '#D97706',
 ];
 
 export function EventMinigameSection({
@@ -77,11 +77,8 @@ export function EventMinigameSection({
 
   return (
     <section id="activities" className={`w-full scroll-mt-24 ${className}`}>
-      {/* ── Outer Card: Warm Festival Surface ───────────────────────────── */}
       <div className="rounded-2xl sm:rounded-3xl border border-amber-200/90 dark:border-amber-900/40 bg-gradient-to-b from-amber-50/80 via-white to-red-50/50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 shadow-xl shadow-amber-900/5 overflow-hidden transition-all">
-        {/* ── 1. HEADER & TAB SWITCHER BAR ───────────────────────────────── */}
         <div className="p-4 sm:p-6 md:p-8 border-b border-amber-100 dark:border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 sm:gap-5">
-          {/* Header text */}
           <div className="space-y-1 max-w-xl">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[11px] sm:text-xs font-bold text-amber-800 dark:text-amber-300 bg-amber-100/80 dark:bg-amber-950/60 border border-amber-300/60">
               <Sparkles className="w-3.5 h-3.5 text-amber-600 shrink-0" />
@@ -99,7 +96,6 @@ export function EventMinigameSection({
             </p>
           </div>
 
-          {/* Tab switchers */}
           <div className="w-full md:w-auto flex justify-center md:justify-end">
             <div className="grid grid-cols-2 sm:flex items-center p-1 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-inner w-full sm:w-auto">
               <button
@@ -133,7 +129,6 @@ export function EventMinigameSection({
           </div>
         </div>
 
-        {/* ── 2. USER STATS & CHECK-IN SUB-BAR ────────────────────────────── */}
         <div className="px-4 sm:px-8 py-2.5 sm:py-3 bg-amber-500/10 dark:bg-slate-800/60 border-b border-amber-100 dark:border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 text-xs">
           <div className="flex items-center justify-between sm:justify-start gap-2">
             <div className="flex items-center gap-2">
@@ -170,9 +165,7 @@ export function EventMinigameSection({
           </div>
         </div>
 
-        {/* ── 3. IN-PLACE PLAYGROUND (SÂN CHƠI TRỰC TIẾP TRÊN TRANG) ───────── */}
         <div className="p-3.5 sm:p-6 md:p-8 lg:p-10">
-          {/* TAB 1: BỐC QUÀ THEO CONCEPT TRỰC TIẾP TRÊN TRANG */}
           {isEnvelopeTab && (
             <div className="space-y-4 sm:space-y-6">
               <div className="text-center max-w-md mx-auto">
@@ -181,7 +174,6 @@ export function EventMinigameSection({
                 </p>
               </div>
 
-              {/* Grid 6 Món Theo Concept: 2 cols on mobile, 3 cols on sm, 6 cols on md and above */}
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5 sm:gap-3.5 md:gap-3 lg:gap-4">
                 {minigame.pickItems.map((item) => {
                   const isSelected = minigame.selectedEnvelopeIndex === item.id;
@@ -201,7 +193,6 @@ export function EventMinigameSection({
                 })}
               </div>
 
-              {/* Nút bốc ngẫu nhiên & Tóm tắt quà */}
               <div className="pt-2 sm:pt-3 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 text-xs text-slate-600 dark:text-slate-400">
                 <div className="flex items-center gap-2">
                   <Trophy className="w-4 h-4 text-amber-500 shrink-0" />
@@ -225,24 +216,19 @@ export function EventMinigameSection({
             </div>
           )}
 
-          {/* TAB 2: VÒNG QUAY OCOP TRỰC TIẾP TRÊN TRANG (Side-by-side on iPad md: & Desktop, stacked gracefully on mobile) */}
           {!isEnvelopeTab && (
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-center">
-              {/* Cột Trái: Đĩa quay SVG */}
               <div className="md:col-span-6 lg:col-span-5 flex flex-col items-center justify-center">
                 <div className="relative w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 flex items-center justify-center">
-                  {/* Vành ngoài ánh vàng viền kim tuyến */}
                   <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-amber-400 via-yellow-200 to-amber-500 p-2 sm:p-2.5 shadow-xl sm:shadow-2xl shadow-amber-900/20">
                     <div className="w-full h-full rounded-full border-4 border-dashed border-amber-100/70 bg-slate-900" />
                   </div>
 
-                  {/* Kim chỉ 12h màu vàng óng */}
                   <div className="absolute -top-2.5 sm:-top-3 left-1/2 -translate-x-1/2 z-30 drop-shadow-md">
                     <div className="w-0 h-0 border-l-[10px] sm:border-l-[12px] border-l-transparent border-r-[10px] sm:border-r-[12px] border-r-transparent border-t-[20px] sm:border-t-[24px] border-t-amber-400" />
                     <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-red-600 border border-amber-200 mx-auto -mt-5 sm:-mt-6 shadow-xs" />
                   </div>
 
-                  {/* Đĩa quay SVG vật lý */}
                   <div
                     className="relative w-56 h-56 sm:w-64 sm:h-64 md:w-72 md:h-72 rounded-full overflow-hidden shadow-inner"
                     style={{
@@ -279,7 +265,6 @@ export function EventMinigameSection({
                       })}
                     </svg>
 
-                    {/* Nhãn phần thưởng trên từng lát cắt */}
                     {wheelRewards.map((reward, i) => {
                       const rotation = i * sliceAngle + sliceAngle / 2;
 
@@ -301,7 +286,6 @@ export function EventMinigameSection({
                     })}
                   </div>
 
-                  {/* Nút QUAY ở tâm đĩa */}
                   <button
                     type="button"
                     disabled={minigame.isSpinning || minigame.spinsLeft <= 0}
@@ -350,7 +334,6 @@ export function EventMinigameSection({
                 </div>
               </div>
 
-              {/* Cột Phải: Bảng 8 Giải Thưởng */}
               <div className="md:col-span-6 lg:col-span-7 space-y-2.5 sm:space-y-3">
                 <div className="flex items-center gap-2">
                   <Trophy className="w-4 h-4 text-amber-500" />
@@ -389,7 +372,6 @@ export function EventMinigameSection({
           )}
         </div>
 
-        {/* ── 5. WON REWARDS HISTORY STRIP (Nếu user đã trúng giải) ───────── */}
         {minigame.history.length > 0 && (
           <div className="p-3.5 sm:p-6 md:p-7 border-t border-amber-100 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 space-y-2.5 sm:space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2">
@@ -466,7 +448,6 @@ export function EventMinigameSection({
         )}
       </div>
 
-      {/* ── 6. REWARD CELEBRATION MODAL ───────────────────────────────────── */}
       {minigame.isRewardModalOpen && (
         <MinigameRewardModal
           isOpen={minigame.isRewardModalOpen}

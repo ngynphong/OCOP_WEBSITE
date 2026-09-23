@@ -55,7 +55,6 @@ export default function UserAffiliatePage() {
 
   return (
     <div className="space-y-8 p-6 animate-in fade-in duration-500">
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-stone-900 tracking-tight">
@@ -84,10 +83,8 @@ export default function UserAffiliatePage() {
         </div>
       </div>
 
-      {/* Overview Stats */}
       <UserAffiliateOverview account={account} />
 
-      {/* Main Tabs */}
       <div className="space-y-6">
         <div className="flex items-center gap-2 p-1.5 bg-stone-100 w-full md:w-fit rounded-xl overflow-x-auto no-scrollbar">
           <button
@@ -141,7 +138,6 @@ export default function UserAffiliatePage() {
         )}
       </div>
 
-      {/* Request Modal */}
       <WithdrawalRequestModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

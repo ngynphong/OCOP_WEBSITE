@@ -27,7 +27,7 @@ export const uiSlice = createSlice({
       if (action.payload.message) {
         state.loadingMessage = action.payload.message;
       } else if (!action.payload.isLoading) {
-        state.loadingMessage = 'Đang xử lý...'; // Reset message when stopped
+        state.loadingMessage = 'Đang xử lý...';
       }
     },
   },

@@ -30,7 +30,6 @@ export const ChatWindow = ({
 
   const messages = historyResp?.data?.items || [];
 
-  // Sort messages oldest to newest for the UI
   const sortedMessages = [...messages].sort(
     (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
   );
@@ -76,7 +75,6 @@ export const ChatWindow = ({
         !room ? 'hidden md:flex' : 'flex',
       )}
     >
-      {/* Header */}
       <div className="px-4 md:px-6 py-3 md:py-4 border-b border-stone-100 flex items-center justify-between shadow-sm relative z-10 shrink-0 bg-white">
         <div className="flex items-center gap-2 md:gap-4 min-w-0">
           {onBack && (
@@ -117,7 +115,6 @@ export const ChatWindow = ({
         </div>
       </div>
 
-      {/* Messages Area */}
       <div
         ref={scrollRef}
         className="flex-1 overflow-y-auto p-6 space-y-2 bg-[#F8F9FA] scroll-smooth"
@@ -149,7 +146,6 @@ export const ChatWindow = ({
         )}
       </div>
 
-      {/* Input Area */}
       <ChatInput onSendMessage={sendMessage} onSendFile={handleSendFile} isLoading={isUploading} />
     </div>
   );

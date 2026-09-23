@@ -34,7 +34,6 @@ const CategorySection = memo(({ category, index }: { category: PublicCategory; i
       transition={{ duration: 0.4, delay: index * 0.08 }}
       className="w-full flex flex-col gap-4 sm:gap-5"
     >
-      {/* --- Section Header --- */}
       <div className="w-full flex justify-between items-center gap-3">
         <h2 className="text-stone-900 text-xl sm:text-2xl font-black font-sans tracking-tight uppercase">
           {category.name}
@@ -48,7 +47,6 @@ const CategorySection = memo(({ category, index }: { category: PublicCategory; i
         </Link>
       </div>
 
-      {/* --- Up to 6 products per row --- */}
       <div className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-3.5">
         {products.slice(0, 6).map((product) => (
           <ProductCard
@@ -78,7 +76,6 @@ CategorySection.displayName = 'CategorySection';
 export function CategoryShowcase() {
   const { data: categoriesData, isLoading } = usePublicCategoriesQuery();
 
-  // Get top 3 categories for the showcase (top level categories only)
   const categories = categoriesData?.data.filter((c) => !c.parentId).slice(0, 3) || [];
 
   if (isLoading) {

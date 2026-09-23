@@ -27,7 +27,6 @@ const formatVND = (value: number) => {
 };
 
 const AdminAnalytics = () => {
-  // Default to last 30 days
   const [fromDate, setFromDate] = useState(() => {
     const d = new Date();
     d.setDate(d.getDate() - 30);
@@ -37,7 +36,6 @@ const AdminAnalytics = () => {
 
   const { data, isPending, isError } = usePlatformAnalytics(fromDate, toDate);
 
-  // Aggregates
   const totalRevenue = data?.reduce((acc, curr) => acc + curr.totalRevenue, 0) || 0;
   const totalRefunds = data?.reduce((acc, curr) => acc + curr.totalRefunded, 0) || 0;
   const newUsers = data?.reduce((acc, curr) => acc + curr.newUsers, 0) || 0;
@@ -45,7 +43,6 @@ const AdminAnalytics = () => {
 
   return (
     <div className="space-y-8">
-      {/* Page Header */}
       <div className="flex flex-col md:flex-row justify-between md:items-end gap-4">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
           <h2 className="text-3xl font-black text-emerald-900 tracking-tight leading-none mb-3">
@@ -56,7 +53,6 @@ const AdminAnalytics = () => {
           </p>
         </motion.div>
 
-        {/* Date Filters */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -100,7 +96,6 @@ const AdminAnalytics = () => {
         </div>
       ) : (
         <>
-          {/* KPI Summary */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="bg-white p-5 rounded-2xl shadow-sm border border-stone-100">
               <p className="text-sm text-stone-500 font-medium">Tổng Doanh thu</p>
@@ -125,7 +120,6 @@ const AdminAnalytics = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Revenue Chart */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-stone-100">
               <h3 className="text-lg font-bold text-emerald-900 mb-6">Biểu đồ Doanh thu</h3>
               <div className="h-80">
@@ -187,7 +181,6 @@ const AdminAnalytics = () => {
               </div>
             </div>
 
-            {/* Orders Chart */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-stone-100">
               <h3 className="text-lg font-bold text-emerald-900 mb-6">Trạng thái Đơn hàng</h3>
               <div className="h-80">

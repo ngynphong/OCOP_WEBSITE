@@ -10,6 +10,8 @@
     "start": "next start",
     "lint": "eslint",
     "prepare": "husky",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui"
   },
@@ -53,7 +55,6 @@
     "react-qr-code": "^2.0.18",
     "react-redux": "^9.2.0",
     "react-simple-maps": "^3.0.0",
-    "react-toastify": "^11.1.0",
     "recharts": "^3.8.1",
     "tailwind-merge": "^3.5.0",
     "topojson-client": "^3.1.0",
@@ -77,6 +78,8 @@
     "lint-staged": "^16.4.0",
     "prettier": "^3.8.1",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.1"
   }
 }

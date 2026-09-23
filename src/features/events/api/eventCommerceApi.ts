@@ -16,7 +16,6 @@ import type {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-// ── Server-side fetcher for Next.js Landing Page ─────────────────────────────
 export async function getEventCommerceOverviewServer(
   slug: string,
 ): Promise<EventCommerceOverview | null> {
@@ -37,9 +36,7 @@ export async function getEventCommerceOverviewServer(
   }
 }
 
-// ── Client-side API ──────────────────────────────────────────────────────────
 export const eventCommerceApi = {
-  // Public
   getOverview: async (slug: string): Promise<EventCommerceOverview> => {
     const res = (await publicAxiosClient.get<ResponseBase<EventCommerceOverview>>(
       `/events/${slug}/commerce`,
@@ -80,7 +77,6 @@ export const eventCommerceApi = {
     return res.data;
   },
 
-  // Admin Collections
   getAdminCollections: async (eventId: number): Promise<EventCollection[]> => {
     const res = (await axiosClient.get<ResponseBase<EventCollection[]>>(
       `/admin/events/${eventId}/collections`,
@@ -163,7 +159,6 @@ export const eventCommerceApi = {
     return res.data;
   },
 
-  // Admin Flash Sales
   getAdminFlashSaleSlots: async (eventId: number): Promise<EventFlashSale[]> => {
     const res = (await axiosClient.get<ResponseBase<EventFlashSale[]>>(
       `/admin/events/${eventId}/flash-sale-slots`,
@@ -249,7 +244,6 @@ export const eventCommerceApi = {
     await axiosClient.delete(`/admin/events/${eventId}/flash-sales/${flashSaleId}`);
   },
 
-  // Admin Vouchers
   getAdminVouchers: async (eventId: number): Promise<EventVoucher[]> => {
     const res = (await axiosClient.get<ResponseBase<EventVoucher[]>>(
       `/admin/events/${eventId}/vouchers`,

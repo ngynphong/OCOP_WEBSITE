@@ -13,7 +13,6 @@ interface ShopDetailSidebarProps {
 const ShopDetailSidebar: React.FC<ShopDetailSidebarProps> = React.memo(({ shop }) => {
   return (
     <div className="col-span-12 lg:col-span-4 space-y-6">
-      {/* Shop Card */}
       <div className="bg-white rounded-xl p-8 shadow-sm border border-stone-100 relative overflow-hidden group">
         <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500"></div>
 
@@ -62,7 +61,6 @@ const ShopDetailSidebar: React.FC<ShopDetailSidebarProps> = React.memo(({ shop }
         </div>
       </div>
 
-      {/* Info Sections */}
       <div className="bg-white rounded-xl p-8 shadow-sm border border-stone-100 space-y-6">
         <h4 className="text-[10px] font-black text-stone-400 uppercase tracking-widest flex items-center gap-2">
           <FiUser className="text-emerald-500" /> Chủ sở hữu

@@ -3,8 +3,6 @@ import { ISupplyChainLot } from '@/features/supply-chain/types/supplyChainTypes'
 
 export type { ResponseBase, PaginatedResponse };
 
-// ─── Enums ────────────────────────────────────────────────────────────────────
-
 export type ProductStatus = 'DRAFT' | 'PENDING_REVIEW' | 'APPROVED' | 'REJECTED' | 'DISCONTINUED';
 
 export type JournalStepType =
@@ -19,8 +17,6 @@ export type JournalStepType =
   | 'OTHER';
 
 export type BlockchainStatus = 'NOT_SUBMITTED' | 'PENDING' | 'CONFIRMED' | 'FAILED';
-
-// ─── Nested response interfaces ───────────────────────────────────────────────
 
 export interface ProductShop {
   id: number;
@@ -142,8 +138,6 @@ export interface ProductAttributeValue {
   variantId: number | null;
 }
 
-// ─── Main Product interface ───────────────────────────────────────────────────
-
 export interface ImpactStat {
   iconType: string;
   icon?: string;
@@ -185,7 +179,6 @@ export interface Product {
   totalAvailableStock?: number;
   createdAt: string;
   updatedAt: string;
-  // Flat API response properties for product lists
   shopName?: string;
   shopSlug?: string;
   categoryName?: string;
@@ -197,7 +190,7 @@ export interface Product {
   brand: ProductBrand | null;
   province: ProductProvince | null;
   variants: ProductVariant[];
-  images?: ProductImage[]; // Added back based on API response
+  images?: ProductImage[];
   thumbnailUrl?: string;
   imageUrl?: string;
   url?: string;
@@ -217,8 +210,6 @@ export interface ProductStory {
   journalCount: number;
   featured: boolean;
 }
-
-// ─── Request interfaces ───────────────────────────────────────────────────────
 
 export interface CreateProductRequest {
   name: string;
@@ -381,8 +372,6 @@ export interface PublicProductListParams {
   brandIds?: number[];
 }
 
-// ─── Response type aliases ────────────────────────────────────────────────────
-
 export type ProductDetailResponse = ResponseBase<Product>;
 export type ProductListResponse = ResponseBase<PaginatedResponse<Product>>;
 export type ProductStoryListResponse = ResponseBase<PaginatedResponse<ProductStory>>;
@@ -406,8 +395,6 @@ export interface AttributeTemplate {
 
 export type AttributeTemplateListResponse = ResponseBase<AttributeTemplate[]>;
 
-// ─── Public Category ─────────────────────────────────────────────────────────
-
 export interface PublicCategory {
   id: number;
   name: string;
@@ -424,8 +411,6 @@ export interface PublicCategory {
 
 export type PublicCategoryListResponse = ResponseBase<PublicCategory[]>;
 export type PublicCategoryDetailResponse = ResponseBase<PublicCategory>;
-
-// ─── Public Brand ────────────────────────────────────────────────────────────
 
 export interface PublicBrand {
   id: number;
@@ -450,8 +435,6 @@ export type UpdateBrandRequest = Partial<CreateBrandRequest>;
 
 export type PublicBrandListResponse = ResponseBase<PublicBrand[]>;
 export type PublicBrandDetailResponse = ResponseBase<PublicBrand>;
-
-// ─── Trace Detail ────────────────────────────────────────────────────────────
 
 export interface TraceProductInfo {
   id: number;
@@ -493,8 +476,6 @@ export interface TraceDetail {
 }
 
 export type TraceDetailResponse = ResponseBase<TraceDetail>;
-
-// ─── Admin-specific response ──────────────────────────────────────────────────
 
 export interface AdminApproveResponse {
   productId: number;

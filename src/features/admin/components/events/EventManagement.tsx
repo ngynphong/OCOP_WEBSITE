@@ -118,7 +118,6 @@ export function EventManagement() {
 
   return (
     <div className="space-y-6">
-      {/* Top Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <div>
           <div className="flex items-center gap-2">
@@ -139,9 +138,7 @@ export function EventManagement() {
         </Link>
       </div>
 
-      {/* Filter and Search Bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-        {/* Search */}
         <div className="relative w-full sm:w-80">
           <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
@@ -153,7 +150,6 @@ export function EventManagement() {
           />
         </div>
 
-        {/* Filter by status */}
         <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
           {(['ALL', 'LIVE', 'SCHEDULED', 'DRAFT', 'PAUSED', 'ENDED'] as const).map((st) => (
             <button
@@ -188,7 +184,6 @@ export function EventManagement() {
         </div>
       </div>
 
-      {/* Events Table */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
@@ -244,7 +239,6 @@ export function EventManagement() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="inline-flex items-center gap-1.5">
-                        {/* Preview button */}
                         <Link
                           href={`/admin/events/${evt.id}/preview`}
                           className="p-1.5 text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors cursor-pointer"
@@ -253,7 +247,6 @@ export function EventManagement() {
                           <Eye className="w-4 h-4" />
                         </Link>
 
-                        {/* Publish / Pause button */}
                         {evt.status === 'LIVE' ? (
                           <button
                             onClick={() => handlePause(evt.id, evt.name)}
@@ -272,7 +265,6 @@ export function EventManagement() {
                           </button>
                         ) : null}
 
-                        {/* Commerce & Collections Management */}
                         <Link
                           href={`/admin/events/${evt.id}/commerce`}
                           className="p-1.5 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors cursor-pointer"
@@ -281,7 +273,6 @@ export function EventManagement() {
                           <ShoppingBag className="w-4 h-4" />
                         </Link>
 
-                        {/* Clone button */}
                         <button
                           onClick={() => handleClone(evt.id)}
                           className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
@@ -290,7 +281,6 @@ export function EventManagement() {
                           <Copy className="w-4 h-4" />
                         </button>
 
-                        {/* Edit button */}
                         <Link
                           href={`/admin/events/${evt.id}/edit`}
                           className="p-1.5 text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors cursor-pointer"
@@ -299,7 +289,6 @@ export function EventManagement() {
                           <Edit2 className="w-4 h-4" />
                         </Link>
 
-                        {/* Analytics button */}
                         <button
                           onClick={() =>
                             setAnalyticsModal({
@@ -314,7 +303,6 @@ export function EventManagement() {
                           <BarChart3 className="w-4 h-4" />
                         </button>
 
-                        {/* Emergency Kill (Panic Switch) - only for LIVE events */}
                         {evt.status === 'LIVE' && (
                           <button
                             onClick={() => handleOpenKillModal(evt.id, evt.name)}
@@ -325,7 +313,6 @@ export function EventManagement() {
                           </button>
                         )}
 
-                        {/* Delete button (only when DRAFT) */}
                         {evt.status === 'DRAFT' && (
                           <button
                             onClick={() => handleDelete(evt.id, evt.name)}
@@ -345,7 +332,6 @@ export function EventManagement() {
         </div>
       </div>
 
-      {/* Confirm Action Modal */}
       <ConfirmModal
         isOpen={confirmModal.isOpen}
         title={confirmModal.title}
@@ -358,7 +344,6 @@ export function EventManagement() {
         onCancel={closeConfirmModal}
       />
 
-      {/* Emergency Kill (Panic Switch) Modal */}
       <ConfirmModal
         isOpen={killModal.isOpen}
         title="KÍCH HOẠT DỪNG KHẨN CẤP (PANIC SWITCH)"
@@ -384,7 +369,6 @@ export function EventManagement() {
         </div>
       </ConfirmModal>
 
-      {/* Analytics Modal */}
       <EventAnalyticsModal
         isOpen={analyticsModal.isOpen}
         eventId={analyticsModal.eventId}

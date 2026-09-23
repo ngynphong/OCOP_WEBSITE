@@ -50,15 +50,12 @@ export const CreateAssignmentModal: React.FC<CreateAssignmentModalProps> = ({
       setNotes('');
       setTemplateStepId('ALL');
       onClose();
-    } catch {
-      // Error handled by react-query hook toast
-    }
+    } catch {}
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/60 backdrop-blur-sm p-4 overflow-y-auto">
       <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-stone-100 animate-in fade-in zoom-in-95 duration-200">
-        {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-emerald-700 to-emerald-800 text-white">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
@@ -80,7 +77,6 @@ export const CreateAssignmentModal: React.FC<CreateAssignmentModalProps> = ({
           </button>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-4">
           <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3 flex gap-3 text-xs text-emerald-800">
             <FiInfo className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
@@ -91,7 +87,6 @@ export const CreateAssignmentModal: React.FC<CreateAssignmentModalProps> = ({
             </span>
           </div>
 
-          {/* User identifier */}
           <div>
             <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1.5">
               Email hoặc Mã ID xã viên / nông dân <span className="text-rose-500">*</span>
@@ -112,7 +107,6 @@ export const CreateAssignmentModal: React.FC<CreateAssignmentModalProps> = ({
             )}
           </div>
 
-          {/* Step selection */}
           <div>
             <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1.5">
               Phạm vi công đoạn phụ trách
@@ -135,7 +129,6 @@ export const CreateAssignmentModal: React.FC<CreateAssignmentModalProps> = ({
             </p>
           </div>
 
-          {/* Role selection */}
           <div>
             <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1.5">
               Vai trò nhiệm vụ
@@ -177,7 +170,6 @@ export const CreateAssignmentModal: React.FC<CreateAssignmentModalProps> = ({
             </div>
           </div>
 
-          {/* Notes */}
           <div>
             <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1.5">
               Ghi chú / Hướng dẫn công việc
@@ -191,7 +183,6 @@ export const CreateAssignmentModal: React.FC<CreateAssignmentModalProps> = ({
             />
           </div>
 
-          {/* Actions */}
           <div className="flex items-center justify-end gap-2.5 pt-2 border-t border-stone-100 mt-2">
             <Button
               type="button"

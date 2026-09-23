@@ -128,7 +128,6 @@ export const StandardProcessWorkflow = ({
 
   const sortedSteps = [...templateSteps].sort((a, b) => a.stepOrder - b.stepOrder);
 
-  // Tính số bước đã hoàn thành dựa vào events khớp templateStepId
   const completedStepCount = sortedSteps.filter((step) =>
     events.some((e) => e.templateStepId === step.id),
   ).length;
@@ -145,7 +144,6 @@ export const StandardProcessWorkflow = ({
 
   return (
     <div className="bg-white rounded-2xl shadow-xs border border-stone-200 overflow-hidden">
-      {/* Header quy trình chuẩn */}
       <div className="p-4 border-b border-stone-100 bg-stone-50/40">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div className="flex items-center gap-2.5">
@@ -169,7 +167,6 @@ export const StandardProcessWorkflow = ({
           </span>
         </div>
 
-        {/* Thanh tiến độ hoàn thành các công đoạn */}
         <div className="mt-3.5 flex flex-col gap-1.5">
           <div className="flex justify-between items-center text-[11px] font-semibold text-stone-500">
             <span>Tiến độ thực hiện quy chuẩn</span>
@@ -184,7 +181,6 @@ export const StandardProcessWorkflow = ({
         </div>
       </div>
 
-      {/* Danh sách các công đoạn chuẩn */}
       <div className="p-4 flex flex-col gap-3">
         {sortedSteps.map((step, idx) => {
           const stepConfig = getStepTypeConfig(step.stepType);
@@ -192,15 +188,12 @@ export const StandardProcessWorkflow = ({
           const isCompleted = matchingEvents.length > 0;
           const isExpanded = !!expandedStepIds[step.id];
 
-          // Phân tích quy định bằng chứng & chỉ tiêu đo đạc từ backend
           const evidenceRule = parseEvidenceRule(step.evidenceRule);
           const dynamicFields = parseDynamicFields(step.dynamicFieldsSchema);
 
-          // Lấy ngày thực hiện mới nhất của công đoạn này
           const latestEvent = isCompleted ? matchingEvents[matchingEvents.length - 1] : null;
           const latestDate = latestEvent?.eventAt || latestEvent?.recordedAt;
 
-          // Đếm số ảnh / tài liệu đính kèm
           const evidenceCount = matchingEvents.reduce(
             (sum, ev) => sum + (ev.evidenceDocuments?.length || 0),
             0,
@@ -216,14 +209,12 @@ export const StandardProcessWorkflow = ({
                   : 'bg-stone-50/40 border-stone-200/80 hover:border-stone-300',
               )}
             >
-              {/* Thanh tiêu đề của từng bước */}
               <button
                 type="button"
                 onClick={() => toggleStep(step.id)}
                 className="w-full p-3 flex items-start justify-between gap-3 text-left cursor-pointer hover:bg-black/2 transition-colors"
               >
                 <div className="flex items-start gap-3 min-w-0">
-                  {/* Số thứ tự hoặc Icon check */}
                   <div
                     className={cn(
                       'w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-xs font-bold mt-0.5 border shadow-2xs',
@@ -235,7 +226,6 @@ export const StandardProcessWorkflow = ({
                     {isCompleted ? <CheckCircle2 className="w-4 h-4" /> : idx + 1}
                   </div>
 
-                  {/* Thông tin chính */}
                   <div className="flex flex-col gap-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span
@@ -248,7 +238,6 @@ export const StandardProcessWorkflow = ({
                         <span>{stepConfig.label}</span>
                       </span>
 
-                      {/* Trạng thái hoàn thành */}
                       {isCompleted ? (
                         <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1">
                           <CheckCircle2 className="w-3 h-3 text-emerald-600" />
@@ -264,7 +253,6 @@ export const StandardProcessWorkflow = ({
 
                     <h4 className="text-sm font-bold text-stone-900 leading-snug">{step.title}</h4>
 
-                    {/* Metadata nếu đã có sự kiện thực tế */}
                     <div className="flex items-center gap-3 text-[11px] text-stone-500 flex-wrap">
                       {latestDate && (
                         <span className="flex items-center gap-1">
@@ -282,7 +270,6 @@ export const StandardProcessWorkflow = ({
                   </div>
                 </div>
 
-                {/* Nút mở rộng xem chi tiết mô tả */}
                 <div className="shrink-0 text-stone-400 p-1">
                   {isExpanded ? (
                     <ChevronUp className="w-4 h-4" />
@@ -292,10 +279,8 @@ export const StandardProcessWorkflow = ({
                 </div>
               </button>
 
-              {/* Nội dung chi tiết mở rộng: Hướng dẫn kỹ thuật chuẩn & Quy định bằng chứng */}
               {isExpanded && (
                 <div className="px-3 pb-3 pt-1 border-t border-stone-100/80 flex flex-col gap-2.5">
-                  {/* Hộp 1: Hướng dẫn kỹ thuật chuẩn */}
                   <div className="bg-white p-3 rounded-xl border border-stone-200/80 flex flex-col gap-2">
                     <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider">
                       Tiêu chuẩn & Hướng dẫn kỹ thuật:
@@ -313,7 +298,6 @@ export const StandardProcessWorkflow = ({
                     )}
                   </div>
 
-                  {/* Hộp 2: Quy định bằng chứng minh bạch (nếu có) */}
                   {evidenceRule && (
                     <div className="bg-stone-50 p-2.5 rounded-xl border border-stone-200/60 flex items-center gap-2 flex-wrap">
                       <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider">
@@ -340,7 +324,6 @@ export const StandardProcessWorkflow = ({
                     </div>
                   )}
 
-                  {/* Hộp 3: Chỉ tiêu kỹ thuật chuẩn cần đo đạc (dynamicFieldsSchema) */}
                   {dynamicFields.length > 0 && (
                     <div className="bg-stone-50 p-2.5 rounded-xl border border-stone-200/60 flex flex-col gap-1.5">
                       <span className="text-[10px] font-black uppercase text-stone-400 tracking-wider flex items-center gap-1">
@@ -365,7 +348,6 @@ export const StandardProcessWorkflow = ({
                     </div>
                   )}
 
-                  {/* Hộp 4: Đối chiếu nhật ký thực tế đã ghi nhận (nếu có) */}
                   {matchingEvents.length > 0 && (
                     <div className="bg-emerald-50/50 p-2.5 rounded-xl border border-emerald-200 flex flex-col gap-1.5">
                       <span className="text-[10px] font-black uppercase text-emerald-800 tracking-wider flex items-center gap-1">

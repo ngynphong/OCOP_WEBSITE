@@ -249,14 +249,6 @@ const MENU_GROUPS: MenuGroup[] = [
         permission: 'seller.shop.manage',
       },
       {
-        id: 'supply-chain',
-        label: 'Truy xuất nguồn gốc',
-        icon: FiTrendingUp,
-        href: '/dashboard/truy-xuat',
-        roles: ['SELLER'],
-        permission: 'seller.shop.manage',
-      },
-      {
         id: 'material-lots',
         label: 'Nguồn nguyên liệu',
         icon: FiPackage,
@@ -266,7 +258,7 @@ const MENU_GROUPS: MenuGroup[] = [
       },
       {
         id: 'production-batches',
-        label: 'Lô sản xuất',
+        label: 'Lô sản xuất & Truy xuất',
         icon: FaWarehouse,
         href: '/dashboard/lo-san-xuat',
         roles: ['SELLER'],
@@ -328,7 +320,6 @@ const DashboardSidebar = ({ onMobileClose }: { onMobileClose?: () => void }) => 
   const { count: unreadNotificationCount } = useUnreadCountScope();
   const unreadChatCount = useUnreadChatCount(dashboardMode);
 
-  // Persistence and hydration fix
   useEffect(() => {
     const savedMode = localStorage.getItem('dashboard_mode');
     if (savedMode === 'USER' || savedMode === 'SELLER') {
@@ -353,7 +344,6 @@ const DashboardSidebar = ({ onMobileClose }: { onMobileClose?: () => void }) => 
     return COMMON_ITEMS.filter((item) => item.roles.includes(dashboardMode));
   }, [dashboardMode]);
 
-  // Sync open groups with pathname
   useEffect(() => {
     const activeGroup = filteredGroups.find((group) =>
       group.items.some(
@@ -378,7 +368,6 @@ const DashboardSidebar = ({ onMobileClose }: { onMobileClose?: () => void }) => 
 
   return (
     <div className="flex flex-col gap-6">
-      {/* User Info Card */}
       <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-xl shadow-stone-200/50 flex flex-col items-center">
         <div className="relative w-20 h-20 rounded-full bg-linear-to-br from-green-500 to-emerald-600 border-4 border-white shadow-lg overflow-hidden flex items-center justify-center text-white text-2xl font-bold">
           {profile?.avatarUrl ? (
@@ -398,9 +387,7 @@ const DashboardSidebar = ({ onMobileClose }: { onMobileClose?: () => void }) => 
         </div>
       </div>
 
-      {/* Navigation Menu */}
       <nav className="bg-white rounded-xl p-3 border border-stone-100 shadow-xl shadow-stone-200/50 flex flex-col gap-1">
-        {/* Common Items */}
         {filteredCommon.map((item) => {
           const isActive =
             pathname === item.href ||
@@ -448,7 +435,6 @@ const DashboardSidebar = ({ onMobileClose }: { onMobileClose?: () => void }) => 
 
         <div className="my-2 border-t border-stone-50" />
 
-        {/* Grouped Items */}
         {filteredGroups.map((group) => {
           const isOpen = openGroups.includes(group.id);
           const hasActiveChild = group.items.some(

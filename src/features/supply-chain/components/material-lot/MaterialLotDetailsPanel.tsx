@@ -38,7 +38,6 @@ export function MaterialLotDetailsPanel({ lot, onClose }: MaterialLotDetailsPane
 
   return (
     <div className="space-y-6">
-      {/* Title & Close */}
       <div className="flex items-center justify-between pb-4 border-b border-stone-100">
         <div className="flex items-center gap-2">
           <button
@@ -61,7 +60,6 @@ export function MaterialLotDetailsPanel({ lot, onClose }: MaterialLotDetailsPane
         </button>
       </div>
 
-      {/* Thông tin chung */}
       <div className="bg-stone-50 rounded-xl p-4 border border-stone-100 flex flex-col gap-4">
         <div className="grid grid-cols-2 gap-4 text-xs">
           <div>
@@ -102,7 +100,6 @@ export function MaterialLotDetailsPanel({ lot, onClose }: MaterialLotDetailsPane
         </div>
       </div>
 
-      {/* Lịch sử sử dụng / Sản phẩm tạo thành */}
       <div>
         <h4 className="text-sm font-bold text-stone-800 uppercase tracking-wider mb-3 flex items-center gap-1.5">
           <FiBox className="text-emerald-600" /> Sản phẩm đã tạo thành

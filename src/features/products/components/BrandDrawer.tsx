@@ -69,7 +69,6 @@ export function BrandDrawer({ isOpen, onClose, brand }: BrandDrawerProps) {
     }
   }, [brand, reset, isOpen]);
 
-  // Auto-generate slug from name if not editing
   useEffect(() => {
     if (!brand && name) {
       const slug = slugify(name);
@@ -86,7 +85,6 @@ export function BrandDrawer({ isOpen, onClose, brand }: BrandDrawerProps) {
       }
       onClose();
     } catch {
-      // Error handled by mutation hook
       console.error('Error creating or updating brand');
     }
   };
@@ -128,7 +126,6 @@ export function BrandDrawer({ isOpen, onClose, brand }: BrandDrawerProps) {
               </div>
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-                {/* Brand Name */}
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 text-[10px] font-black text-stone-400 uppercase tracking-widest px-1">
                     <FiTag /> Tên thương hiệu
@@ -147,7 +144,6 @@ export function BrandDrawer({ isOpen, onClose, brand }: BrandDrawerProps) {
                   )}
                 </div>
 
-                {/* Slug */}
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 text-[10px] font-black text-stone-400 uppercase tracking-widest px-1">
                     <FiLink /> Đường dẫn (Slug)
@@ -166,7 +162,6 @@ export function BrandDrawer({ isOpen, onClose, brand }: BrandDrawerProps) {
                   )}
                 </div>
 
-                {/* Logo URL */}
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 text-[10px] font-black text-stone-400 uppercase tracking-widest px-1">
                     <FiImage /> URL Logo
@@ -187,7 +182,6 @@ export function BrandDrawer({ isOpen, onClose, brand }: BrandDrawerProps) {
                   )}
                 </div>
 
-                {/* Website */}
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 text-[10px] font-black text-stone-400 uppercase tracking-widest px-1">
                     <FiGlobe /> Website
@@ -208,7 +202,6 @@ export function BrandDrawer({ isOpen, onClose, brand }: BrandDrawerProps) {
                   )}
                 </div>
 
-                {/* Description */}
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 text-[10px] font-black text-stone-400 uppercase tracking-widest px-1">
                     <FiInfo /> Mô tả ngắn
@@ -221,7 +214,6 @@ export function BrandDrawer({ isOpen, onClose, brand }: BrandDrawerProps) {
                   />
                 </div>
 
-                {/* Status Toggle */}
                 <div className="bg-white p-6 rounded-xl border border-stone-100 flex items-center justify-between shadow-sm">
                   <div>
                     <p className="text-sm font-black text-stone-900">Trạng thái hoạt động</p>
@@ -235,7 +227,6 @@ export function BrandDrawer({ isOpen, onClose, brand }: BrandDrawerProps) {
                   </label>
                 </div>
 
-                {/* Submit Button */}
                 <div className="pt-6">
                   <Button
                     type="submit"

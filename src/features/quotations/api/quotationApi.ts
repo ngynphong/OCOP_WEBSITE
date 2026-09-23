@@ -11,7 +11,6 @@ import {
 } from '../types/quotationTypes';
 
 export const quotationApi = {
-  // Buyer APIs
   createQuotation: (data: CreateQuotationRequest): Promise<QuotationDetailResponse> => {
     return axiosClient.post(API_ENDPOINTS.QUOTATIONS, data);
   },
@@ -24,7 +23,6 @@ export const quotationApi = {
     return axiosClient.post(buildRoute(API_ENDPOINTS.QUOTATIONS, quotationId, 'accept'));
   },
 
-  // Seller APIs
   getSellerQuotations: (params?: QuotationListParams): Promise<QuotationListResponse> => {
     return axiosClient.get(API_ENDPOINTS.SELLER.QUOTATIONS, { params });
   },

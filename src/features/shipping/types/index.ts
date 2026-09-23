@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-// Zod schemas for validation
 export const ShippingProviderSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -37,7 +36,6 @@ export const EstimateFeeRequestSchema = z.object({
   width: z.number().optional().default(0),
 });
 
-// Types inferred from Zod schemas
 export type IShippingProvider = z.infer<typeof ShippingProviderSchema>;
 export type ICreateShippingProvider = z.infer<typeof CreateShippingProviderSchema>;
 export type IUpdateShippingProvider = z.infer<typeof UpdateShippingProviderSchema>;

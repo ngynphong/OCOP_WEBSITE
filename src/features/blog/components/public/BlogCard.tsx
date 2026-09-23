@@ -48,7 +48,6 @@ export const BlogCard = React.memo(
     const displayReadingTime = readingTime || defaultReadingTime(blog);
     const primaryTag = blog.tags?.[0]?.name || 'Tinh hoa OCOP';
 
-    // FEATURED POST: 6:6 or 7:5 ratio split as defined in frame.md
     if (variant === 'featured') {
       return (
         <motion.article
@@ -62,7 +61,6 @@ export const BlogCard = React.memo(
             className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center cursor-pointer"
             aria-label={`Đọc bài viết nổi bật: ${blog.title}`}
           >
-            {/* Hero Thumbnail (Tỷ lệ 16:9 - 7 cols) */}
             <div className="lg:col-span-7">
               <div className="relative aspect-video w-full rounded-xl overflow-hidden bg-stone-100">
                 {blog.thumbnailUrl ? (
@@ -82,7 +80,6 @@ export const BlogCard = React.memo(
               </div>
             </div>
 
-            {/* Content side (5 cols) */}
             <div className="lg:col-span-5 flex flex-col justify-center">
               <div className="mb-3">
                 <span className="inline-flex items-center text-xs font-semibold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-100/60">
@@ -98,7 +95,6 @@ export const BlogCard = React.memo(
                 {blog.shortDesc}
               </p>
 
-              {/* Meta: 5 phút đọc · 18/09/2026 */}
               <div className="flex items-center gap-2 text-xs font-medium text-stone-500 mt-6">
                 <Clock className="w-3.5 h-3.5 text-stone-400" aria-hidden="true" />
                 <span>{displayReadingTime}</span>
@@ -116,7 +112,6 @@ export const BlogCard = React.memo(
       );
     }
 
-    // DANH SÁCH BÀI VIẾT (Grid Card)
     return (
       <motion.article
         initial={{ opacity: 0, y: 16 }}
@@ -130,7 +125,6 @@ export const BlogCard = React.memo(
           className="flex flex-col h-full w-full"
           aria-label={`Đọc bài viết: ${blog.title}`}
         >
-          {/* Ảnh tỷ lệ 16:9 */}
           <div className="relative aspect-video w-full rounded-lg overflow-hidden bg-stone-100 mb-4">
             {blog.thumbnailUrl ? (
               <Image
@@ -148,22 +142,15 @@ export const BlogCard = React.memo(
           </div>
 
           <div className="flex flex-col flex-grow">
-            {/* Tag nhỏ (12px) */}
             <span className="text-xs font-semibold text-emerald-700 uppercase tracking-wider mb-2">
               {primaryTag}
             </span>
-
-            {/* H3: Tiêu đề bài (2 dòng) */}
             <h3 className="text-lg font-bold text-stone-900 group-hover:text-emerald-700 transition-colors duration-200 line-clamp-2 leading-snug mb-2">
               {blog.title}
             </h3>
-
-            {/* Excerpt: Mô tả ngắn gọn (2 dòng) */}
             <p className="text-sm text-stone-600 leading-relaxed line-clamp-2 mb-4 flex-grow">
               {blog.shortDesc}
             </p>
-
-            {/* Ngày · Thời gian đọc (12px) */}
             <div className="pt-3 mt-auto border-t border-stone-100 flex items-center justify-between text-xs text-stone-400 font-medium">
               <time dateTime={blog.createdAt}>{formatDate(blog.createdAt)}</time>
               <span>·</span>

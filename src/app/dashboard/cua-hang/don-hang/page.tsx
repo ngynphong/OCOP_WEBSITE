@@ -154,7 +154,6 @@ function OrdersManagementContent() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        {/* Switcher Mua lẻ / Mua sỉ B2B */}
         <div className="flex bg-stone-100/80 p-1.5 rounded-xl w-fit border border-stone-200/50">
           <button
             onClick={() => setIsB2B(false)}
@@ -182,7 +181,6 @@ function OrdersManagementContent() {
       <RevenueSummary isB2B={isB2B} />
 
       <div className="bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden">
-        {/* Main Tabs */}
         <div className="border-b border-stone-100 bg-stone-50 flex px-2 pt-2">
           <button
             onClick={() => setActiveMainTab('orders')}
@@ -207,7 +205,6 @@ function OrdersManagementContent() {
         <div className="p-6">
           {activeMainTab === 'orders' && (
             <>
-              {/* Filter Trạng thái của Orders */}
               <div className="mb-6 border-b border-stone-100">
                 <ul className="flex flex-nowrap overflow-x-auto gap-6 -mb-px px-2 no-scrollbar">
                   {STATUS_TABS.map((tab) => (
@@ -243,7 +240,6 @@ function OrdersManagementContent() {
                     <SellerOrderCard key={`${order.id}-${idx}`} order={order} />
                   ))}
 
-                  {/* Load more trigger - Switched to Button for stability */}
                   <div className="py-12 flex flex-col items-center gap-4">
                     {hasNextPage ? (
                       <Button

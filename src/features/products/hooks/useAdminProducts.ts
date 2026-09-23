@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
+import { queryKeys } from '@/lib/queryKeys';
 import { adminProductApi } from '@/features/products/api/adminProductApi';
 import {
   AdminProductListParams,
@@ -8,33 +9,32 @@ import {
 
 type ApiError = { response?: { data?: { message?: string } } };
 
-// ─── Standalone Query Hooks ───────────────────────────────────────────────────
-
 export const useAdminProductsQuery = (params?: AdminProductListParams) => {
   return useQuery({
-    queryKey: ['admin-products', params],
+    queryKey: queryKeys.adminProducts.list(params),
     queryFn: () => adminProductApi.getProducts(params),
     staleTime: 30 * 1000,
   });
 };
 
-export const useAdminProductDetailQuery = (id: number | null | undefined) => {
+export const useAdminProductDetailQuery = (
+  id: number | null | undefined,
+  enabled: boolean = true,
+) => {
   return useQuery({
-    queryKey: ['admin-product', id],
+    queryKey: queryKeys.adminProducts.detail(id),
     queryFn: () => adminProductApi.getProduct(id!),
-    enabled: !!id,
+    enabled: !!id && enabled,
     staleTime: 30 * 1000,
   });
 };
-
-// ─── Mutation Hook ────────────────────────────────────────────────────────────
 
 export const useAdminProductMutations = () => {
   const queryClient = useQueryClient();
 
   const invalidate = (id?: number) => {
-    queryClient.invalidateQueries({ queryKey: ['admin-products'] });
-    if (id) queryClient.invalidateQueries({ queryKey: ['admin-product', id] });
+    queryClient.invalidateQueries({ queryKey: queryKeys.adminProducts.all });
+    if (id) queryClient.invalidateQueries({ queryKey: queryKeys.adminProducts.detail(id) });
   };
 
   const approveProductMutation = useMutation({

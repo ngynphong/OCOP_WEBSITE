@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/AppButton';
 import { formatVNDInput, parseVNDInput } from '@/utils/format';
 
-// Reject Modal
 interface RejectOrderModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -52,7 +51,6 @@ export const RejectOrderModal: React.FC<RejectOrderModalProps> = ({
   );
 };
 
-// Confirm Order Modal (merged with Shipping Info)
 interface ConfirmOrderModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -75,16 +73,14 @@ export const ConfirmOrderModal: React.FC<ConfirmOrderModalProps> = ({
   defaultShippingFee = 0,
 }) => {
   const [note, setNote] = useState('Đã chuẩn bị hàng');
-  const [providerId, setProviderId] = useState(0); // 0 = Shop tự giao
+  const [providerId, setProviderId] = useState(0);
   const [trackingNumber, setTrackingNumber] = useState('');
   const [shippingFee, setShippingFee] = useState<number | ''>(defaultShippingFee || '');
   const [estimatedDelivery, setEstimatedDelivery] = useState('');
 
-  // Update effect to populate default shipping fee or pre-computations
   React.useEffect(() => {
     if (isOpen) {
       setShippingFee(defaultShippingFee || '');
-      // Mặc định ngày giao là hôm nay + 3 ngày
       const defaultDate = new Date();
       defaultDate.setDate(defaultDate.getDate() + 3);
       setEstimatedDelivery(defaultDate.toISOString().split('T')[0]);
@@ -192,7 +188,6 @@ export const ConfirmOrderModal: React.FC<ConfirmOrderModalProps> = ({
   );
 };
 
-// Update Tracking Modal
 interface UpdateTrackingModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -277,7 +272,6 @@ export const UpdateTrackingModal: React.FC<UpdateTrackingModalProps> = ({
   );
 };
 
-// Create Tracking Number Modal (When missing)
 interface CreateTrackingModalProps {
   isOpen: boolean;
   onClose: () => void;

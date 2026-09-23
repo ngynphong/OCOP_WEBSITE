@@ -28,7 +28,6 @@ function NguonNguyenLieuContent() {
   );
   const [prevTabParam, setPrevTabParam] = useState(tabParam);
 
-  // Điều chỉnh state theo URL ngay trong render (tránh cascading render của useEffect)
   if (tabParam !== prevTabParam) {
     setPrevTabParam(tabParam);
     setSelectedTab(null);
@@ -64,7 +63,6 @@ function NguonNguyenLieuContent() {
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden">
-        {/* Tabs */}
         <div className="flex border-b border-stone-100">
           <button
             className={`flex items-center px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
@@ -98,7 +96,6 @@ function NguonNguyenLieuContent() {
           </button>
         </div>
 
-        {/* Tab Content */}
         <div className="p-6">
           {activeTab === 'SUPPLIER' && <SupplierTab />}
           {activeTab === 'FACILITY' && (
@@ -116,7 +113,6 @@ function NguonNguyenLieuContent() {
         </div>
       </div>
 
-      {/* Modals */}
       {activeTab === 'SUPPLIER' && (
         <CreateSupplierModal isOpen={isModalOpen} onClose={() => setIsModalOpenOverride(false)} />
       )}

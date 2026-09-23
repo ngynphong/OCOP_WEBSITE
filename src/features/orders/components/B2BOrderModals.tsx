@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/AppButton';
 import { formatCurrencyVND } from '@/utils/format';
 
-// ----------------------
-// B2BCancelModal Props & Component
-// ----------------------
 interface B2BCancelModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -51,9 +48,6 @@ export function B2BCancelModal({ isOpen, onClose, onConfirm, isLoading }: B2BCan
   );
 }
 
-// ----------------------
-// B2BRefundModal Props & Component
-// ----------------------
 interface B2BRefundModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -189,9 +183,6 @@ export function B2BRefundModal({
   );
 }
 
-// ----------------------
-// B2BReviewModal Props & Component
-// ----------------------
 interface B2BReviewModalProps {
   isOpen: boolean;
   onClose: () => void;

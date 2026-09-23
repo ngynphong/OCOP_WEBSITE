@@ -54,7 +54,6 @@ export default function AdminAffiliatePage() {
 
   return (
     <div className="space-y-8 animate-in slide-in-from-bottom-5 duration-700">
-      {/* Admin Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <h1 className="text-4xl font-black text-emerald-950 tracking-tight">
@@ -83,7 +82,6 @@ export default function AdminAffiliatePage() {
         </div>
       </div>
 
-      {/* Main Table Content */}
       <div className="space-y-6">
         <AdminWithdrawalManager
           withdrawals={withdrawals}
@@ -112,7 +110,6 @@ export default function AdminAffiliatePage() {
         )}
       </div>
 
-      {/* Footer Stats / Info */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white backdrop-blur-md p-6 rounded-xl border border-stone-100 shadow-sm">
           <p className="text-xs font-bold text-stone-400 uppercase tracking-widest mb-1">
@@ -134,7 +131,6 @@ export default function AdminAffiliatePage() {
         </div>
       </div>
 
-      {/* Process Modal */}
       <ProcessWithdrawalModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

@@ -26,7 +26,6 @@ export default function AdminVouchersPage() {
 
   return (
     <div className="p-8 space-y-8">
-      {/* Admin Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-green-700 text-white p-8 rounded-xl shadow-2xl">
         <div className="flex items-center gap-6">
           <div className="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center text-white">
@@ -51,7 +50,6 @@ export default function AdminVouchersPage() {
         </div>
       </div>
 
-      {/* Stats Quick View */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-xl border border-stone-100 shadow-sm">
           <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-1">
@@ -77,7 +75,6 @@ export default function AdminVouchersPage() {
 
       <div className="h-px bg-stone-100" />
 
-      {/* Main List */}
       <div>
         <div className="flex items-center gap-3 mb-6">
           <Ticket className="text-stone-400" size={20} />
@@ -86,7 +83,7 @@ export default function AdminVouchersPage() {
 
         <VoucherList
           vouchers={voucherData?.content || []}
-          onEdit={() => {}} // Admin có thể chỉ xem hoặc edit sau
+          onEdit={() => {}}
           isLoading={isLoading}
         />
 
@@ -101,7 +98,6 @@ export default function AdminVouchersPage() {
         )}
       </div>
 
-      {/* Form Drawer */}
       <VoucherFormDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}

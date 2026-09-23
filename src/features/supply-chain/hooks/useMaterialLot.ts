@@ -39,7 +39,6 @@ export function useCreateMaterialLot({
 
   const sourceType = useWatch({ control: form.control, name: 'sourceType' });
 
-  // Fetch Suppliers for EXTERNAL
   const { data: suppliersData } = useQuery({
     queryKey: ['suppliers_all'],
     queryFn: () => materialSourceApi.getSuppliers(0, 100),
@@ -47,7 +46,6 @@ export function useCreateMaterialLot({
   });
   const suppliers = suppliersData?.data?.content || [];
 
-  // Fetch Facilities & Cycles for INTERNAL
   const { data: facilitiesData } = useQuery({
     queryKey: ['facilities_all'],
     queryFn: () => materialSourceApi.getFacilities(0, 100),

@@ -5,7 +5,6 @@ import React from 'react';
 import { Sparkles, Flag, Snowflake, Moon } from 'lucide-react';
 import type { ConceptPackId } from '../../types/eventTypes';
 
-// Deterministic static coordinates to prevent SSR/Client floating-point hydration mismatches
 const MOONCAKE_PETALS_R36 = [
   { deg: 0, cx: 36, cy: 0 },
   { deg: 30, cx: 31.18, cy: 18 },
@@ -89,7 +88,6 @@ export function EventCornerDecorations({
       aria-hidden="true"
       suppressHydrationWarning
     >
-      {/* 1. Họa tiết góc trên bên trái (Top Left Corner) */}
       <div className={leftClasses}>
         {customStickerLeftUrl ? (
           <img
@@ -98,9 +96,7 @@ export function EventCornerDecorations({
             className="w-full h-full object-contain filter drop-shadow-md"
           />
         ) : conceptId === 'TET_NGUYEN_DAN' ? (
-          // Cành hoa mai vàng nghệ thuật rủ từ góc trên bên trái
           <svg viewBox="0 0 200 200" className="w-full h-full filter drop-shadow-md">
-            {/* Cành cây gỗ uốn lượn */}
             <path
               d="M0 0 Q60 30 110 55 T180 80 M70 38 Q95 70 125 95 M120 60 Q145 35 170 25"
               fill="none"
@@ -108,7 +104,6 @@ export function EventCornerDecorations({
               strokeWidth="4"
               strokeLinecap="round"
             />
-            {/* Hoa mai 1 */}
             <g transform="translate(65, 35)">
               {[0, 72, 144, 216, 288].map((a) => (
                 <ellipse
@@ -125,7 +120,6 @@ export function EventCornerDecorations({
               ))}
               <circle cx="0" cy="0" r="3" fill="#DC2626" />
             </g>
-            {/* Hoa mai 2 */}
             <g transform="translate(125, 60) scale(1.15)">
               {[0, 72, 144, 216, 288].map((a) => (
                 <ellipse
@@ -142,7 +136,6 @@ export function EventCornerDecorations({
               ))}
               <circle cx="0" cy="0" r="3.5" fill="#DC2626" />
             </g>
-            {/* Hoa mai 3 */}
             <g transform="translate(170, 85) scale(0.85)">
               {[0, 72, 144, 216, 288].map((a) => (
                 <ellipse
@@ -159,12 +152,10 @@ export function EventCornerDecorations({
               ))}
               <circle cx="0" cy="0" r="3" fill="#DC2626" />
             </g>
-            {/* Nụ hoa & búp non */}
             <circle cx="95" cy="45" r="4" fill="#84CC16" />
             <circle cx="115" cy="90" r="3.5" fill="#84CC16" />
           </svg>
         ) : conceptId === 'TRUNG_THU' ? (
-          // Lồng đèn ông sao góc trái
           <svg viewBox="0 0 160 160" className="w-full h-full filter drop-shadow-md">
             <line x1="40" y1="0" x2="40" y2="45" stroke="#DC2626" strokeWidth="2" />
             <polygon
@@ -176,7 +167,6 @@ export function EventCornerDecorations({
             <circle cx="40" cy="50" r="7" fill="#FDE047" />
           </svg>
         ) : conceptId === 'DAI_LE' ? (
-          // Lá cờ đỏ sao vàng Việt Nam uốn lượn góc trái
           <svg viewBox="0 0 160 160" className="w-full h-full filter drop-shadow-md">
             <line
               x1="25"
@@ -188,14 +178,12 @@ export function EventCornerDecorations({
               strokeLinecap="round"
             />
             <circle cx="25" cy="10" r="5" fill="#F59E0B" />
-            {/* Thân cờ uốn lượn */}
             <path
               d="M27 20 Q65 10 95 28 T150 20 L150 85 Q115 95 90 75 T27 88 Z"
               fill="#DA251D"
               stroke="#B91C1C"
               strokeWidth="1"
             />
-            {/* Ngôi sao vàng 5 cánh ở trung tâm cờ */}
             <polygon
               points="85,38 89,50 102,50 91,58 95,70 85,62 75,70 79,58 68,50 81,50"
               fill="#FFFF00"
@@ -204,25 +192,17 @@ export function EventCornerDecorations({
             />
           </svg>
         ) : conceptId === 'GIANG_SINH' ? (
-          // Chú người tuyết ngộ nghĩnh góc trái
           <svg viewBox="0 0 140 160" className="w-full h-full filter drop-shadow-md">
-            {/* Thân người tuyết dưới */}
             <circle cx="70" cy="115" r="38" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="2" />
-            {/* Cúc áo than */}
             <circle cx="70" cy="105" r="3.5" fill="#1E293B" />
             <circle cx="70" cy="122" r="3.5" fill="#1E293B" />
-            {/* Đầu người tuyết */}
             <circle cx="70" cy="62" r="26" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="2" />
-            {/* Mắt */}
             <circle cx="61" cy="56" r="3" fill="#1E293B" />
             <circle cx="79" cy="56" r="3" fill="#1E293B" />
-            {/* Mũi cà rốt cam */}
             <polygon points="70,60 88,65 70,67" fill="#F97316" />
-            {/* Nụ cười than */}
             <circle cx="63" cy="74" r="1.5" fill="#1E293B" />
             <circle cx="70" cy="76" r="1.5" fill="#1E293B" />
             <circle cx="77" cy="74" r="1.5" fill="#1E293B" />
-            {/* Khăn quàng cổ đỏ */}
             <path d="M48 80 Q70 90 92 80 L88 88 Q70 98 52 88 Z" fill="#DC2626" />
             <rect
               x="74"
@@ -233,12 +213,10 @@ export function EventCornerDecorations({
               fill="#DC2626"
               transform="rotate(10 74 85)"
             />
-            {/* Nón len đỏ chóp bông */}
             <path d="M46 45 Q70 30 94 45 L90 28 Q70 20 50 28 Z" fill="#DC2626" />
             <circle cx="70" cy="18" r="6" fill="#FFFFFF" />
           </svg>
         ) : conceptId === 'MUA_VANG' ? (
-          // Bông lúa vàng óng ả
           <svg viewBox="0 0 160 160" className="w-full h-full filter drop-shadow-md">
             <path d="M0 0 Q40 60 90 120" fill="none" stroke="#D97706" strokeWidth="3" />
             {[30, 50, 70, 90, 110].map((y, i) => (
@@ -249,7 +227,6 @@ export function EventCornerDecorations({
             ))}
           </svg>
         ) : conceptId === 'MEGA_SALE' ? (
-          // Tia chớp Neon 3D
           <svg viewBox="0 0 120 120" className="w-full h-full filter drop-shadow-md">
             <polygon
               points="40,10 15,65 42,65 25,110 75,50 48,50"
@@ -261,7 +238,6 @@ export function EventCornerDecorations({
         ) : null}
       </div>
 
-      {/* 2. Họa tiết góc trên bên phải (Top Right Corner) */}
       <div className={rightClasses}>
         {customStickerRightUrl ? (
           <img
@@ -270,7 +246,6 @@ export function EventCornerDecorations({
             className="w-full h-full object-contain filter drop-shadow-md"
           />
         ) : conceptId === 'TET_NGUYEN_DAN' ? (
-          // Cặp lồng đèn đỏ may mắn đung đưa góc phải
           <svg viewBox="0 0 160 180" className="w-full h-full filter drop-shadow-md">
             <line x1="60" y1="0" x2="60" y2="40" stroke="#DC2626" strokeWidth="2" />
             <g transform="translate(60, 70)">
@@ -314,12 +289,9 @@ export function EventCornerDecorations({
             </g>
           </svg>
         ) : conceptId === 'TRUNG_THU' ? (
-          // Bánh Trung Thu nướng vàng ươm góc phải
           <svg viewBox="0 0 160 160" className="w-full h-full filter drop-shadow-md">
             <g transform="translate(100, 50)">
-              {/* Thân bánh tròn hoa cúc */}
               <circle cx="0" cy="0" r="38" fill="#D97706" stroke="#B45309" strokeWidth="2" />
-              {/* Các cánh hoa bánh nướng xung quanh */}
               {MOONCAKE_PETALS_R36.map((petal) => (
                 <circle
                   key={petal.deg}
@@ -331,13 +303,11 @@ export function EventCornerDecorations({
                   strokeWidth="1"
                 />
               ))}
-              {/* Mặt trên bánh vàng ươm */}
               <circle cx="0" cy="0" r="30" fill="#FBBF24" stroke="#B45309" strokeWidth="1.5" />
               <circle cx="0" cy="0" r="22" fill="#F59E0B" opacity="0.6" />
             </g>
           </svg>
         ) : conceptId === 'DAI_LE' ? (
-          // Trống đồng Đông Sơn & Họa tiết chim Lạc góc phải
           <svg viewBox="0 0 160 160" className="w-full h-full filter drop-shadow-md">
             <g transform="translate(100, 50)">
               <circle cx="0" cy="0" r="42" fill="#FEF3C7" stroke="#D97706" strokeWidth="2" />
@@ -351,7 +321,6 @@ export function EventCornerDecorations({
                 strokeDasharray="3 3"
               />
               <circle cx="0" cy="0" r="26" fill="none" stroke="#D97706" strokeWidth="1" />
-              {/* Mặt trời 12 tia sáng ở tâm */}
               {DONG_SON_RAYS_R20.map((ray) => (
                 <line
                   key={ray.deg}
@@ -385,7 +354,6 @@ export function EventHeroFestiveSticker({ conceptId }: { conceptId?: ConceptPack
     return null;
   }
 
-  // 1. Concept TẾT
   if (conceptId === 'TET_NGUYEN_DAN') {
     return (
       <div className="hidden lg:flex items-center gap-2.5 p-3 bg-white/95 backdrop-blur-md rounded-2xl border border-amber-200 shadow-xl pointer-events-auto">
@@ -470,12 +438,10 @@ export function EventHeroFestiveSticker({ conceptId }: { conceptId?: ConceptPack
     );
   }
 
-  // 2. Concept ĐẠI LỄ 2/9, 30/4 (Lá cờ Việt Nam)
   if (conceptId === 'DAI_LE') {
     return (
       <div className="hidden lg:flex items-center gap-2.5 p-3 bg-white/95 backdrop-blur-md rounded-2xl border border-red-200 shadow-xl pointer-events-auto">
         <svg viewBox="0 0 110 80" className="w-16 h-13 flex-shrink-0 drop-shadow-md">
-          {/* Cột cờ */}
           <line
             x1="15"
             y1="5"
@@ -486,7 +452,6 @@ export function EventHeroFestiveSticker({ conceptId }: { conceptId?: ConceptPack
             strokeLinecap="round"
           />
           <circle cx="15" cy="5" r="3.5" fill="#F59E0B" />
-          {/* Lá cờ đỏ sao vàng */}
           <path
             d="M17 10 Q45 4 68 15 T105 10 L105 52 Q75 58 55 45 T17 55 Z"
             fill="#DA251D"
@@ -512,23 +477,18 @@ export function EventHeroFestiveSticker({ conceptId }: { conceptId?: ConceptPack
     );
   }
 
-  // 3. Concept GIÁNG SINH & NĂM MỚI (Người tuyết)
   if (conceptId === 'GIANG_SINH') {
     return (
       <div className="hidden lg:flex items-center gap-2.5 p-3 bg-white/95 backdrop-blur-md rounded-2xl border border-blue-200 shadow-xl pointer-events-auto">
         <svg viewBox="0 0 90 90" className="w-14 h-14 flex-shrink-0 drop-shadow-md">
-          {/* Thân người tuyết */}
           <circle cx="45" cy="62" r="24" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1.5" />
           <circle cx="45" cy="56" r="2.5" fill="#1E293B" />
           <circle cx="45" cy="67" r="2.5" fill="#1E293B" />
-          {/* Đầu */}
           <circle cx="45" cy="30" r="17" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1.5" />
           <circle cx="39" cy="26" r="2" fill="#1E293B" />
           <circle cx="51" cy="26" r="2" fill="#1E293B" />
           <polygon points="45,29 57,32 45,34" fill="#F97316" />
-          {/* Khăn quàng đỏ */}
           <path d="M31 42 Q45 49 59 42 L56 47 Q45 53 34 47 Z" fill="#DC2626" />
-          {/* Nón len đỏ */}
           <path d="M30 20 Q45 10 60 20 L58 8 Q45 3 32 8 Z" fill="#DC2626" />
           <circle cx="45" cy="3" r="4.5" fill="#FFFFFF" />
         </svg>
@@ -544,12 +504,10 @@ export function EventHeroFestiveSticker({ conceptId }: { conceptId?: ConceptPack
     );
   }
 
-  // 4. Concept TRUNG THU (Bánh Trung Thu)
   if (conceptId === 'TRUNG_THU') {
     return (
       <div className="hidden lg:flex items-center gap-2.5 p-3 bg-white/95 backdrop-blur-md rounded-2xl border border-amber-200 shadow-xl pointer-events-auto">
         <svg viewBox="0 0 100 80" className="w-16 h-13 flex-shrink-0 drop-shadow-md">
-          {/* Bánh Trung Thu nướng */}
           <g transform="translate(42, 40)">
             <circle cx="0" cy="0" r="30" fill="#D97706" stroke="#B45309" strokeWidth="2" />
             {MOONCAKE_PETALS_R28.map((petal) => (
@@ -566,7 +524,6 @@ export function EventHeroFestiveSticker({ conceptId }: { conceptId?: ConceptPack
             <circle cx="0" cy="0" r="23" fill="#FBBF24" stroke="#B45309" strokeWidth="1.2" />
             <circle cx="0" cy="0" r="16" fill="#F59E0B" opacity="0.6" />
           </g>
-          {/* Lồng đèn ông sao mini */}
           <g transform="translate(80, 24) scale(0.65)">
             <polygon
               points="15,0 19,12 32,12 22,20 26,32 15,24 4,32 8,20 -2,12 11,12"

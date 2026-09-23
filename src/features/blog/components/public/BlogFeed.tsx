@@ -5,7 +5,6 @@ import { Loader2, Newspaper, Sparkles } from 'lucide-react';
 import { useBlogFeed } from '../../hooks/useBlogFeed';
 import { BlogCard } from './BlogCard';
 
-// Skeleton matching the 16:9 ratio and layout structure
 const BlogFeaturedSkeleton = () => (
   <div className="bg-white rounded-2xl border border-stone-200/80 p-5 lg:p-8 animate-pulse">
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
@@ -88,35 +87,24 @@ export const BlogFeed = () => {
 
   return (
     <div className="min-h-screen bg-[#FAFAF8] pb-24">
-      {/* ─────────────────────────────────────────────────────────────
-          1. HEADER & INTRO SECTION (as specified in frame.md)
-          - Category Tag
-          - H1: Góc nhìn chuyên sâu & Tinh hoa bản sắc
-          - Đoạn giới thiệu ngắn 1-2 dòng, font 18px, màu xám trung tính
-          - Filter bar: [ Tất cả ] [ Tag 1 ] [ Tag 2 ] ...
-      ───────────────────────────────────────────────────────────── */}
       <section className="pt-12 sm:pt-16 pb-10 border-b border-stone-200/60 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            {/* Category Tag */}
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/60 text-emerald-800 text-xs font-semibold uppercase tracking-wider mb-4">
               <Sparkles className="w-3.5 h-3.5 text-emerald-600" aria-hidden="true" />
               <span>Chuyên mục OCOP & Tinh hoa bản sắc</span>
             </div>
 
-            {/* H1: Góc nhìn chuyên sâu & Tinh hoa bản sắc */}
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-stone-900 tracking-tight leading-[1.15] mb-4">
               Góc nhìn chuyên sâu & Tinh hoa bản sắc
             </h1>
 
-            {/* Đoạn giới thiệu ngắn 1-2 dòng, font 18px (text-lg), màu xám trung tính (text-muted) */}
             <p className="text-lg text-stone-600 leading-relaxed max-w-2xl">
               Hành trình gìn giữ giá trị văn hóa bản địa, nâng tầm thương hiệu nông sản và đổi mới
               sản phẩm OCOP bền vững.
             </p>
           </div>
 
-          {/* Filter bar: [ Tất cả ] [ Kỹ thuật / Tag... ] */}
           <div className="mt-8 sm:mt-10 flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
             <button
               onClick={() => handleSelectTag(null)}
@@ -149,7 +137,6 @@ export const BlogFeed = () => {
         </div>
       </section>
 
-      {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-12">
         {blogs.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-2xl border border-stone-200/80 my-8">
@@ -167,9 +154,6 @@ export const BlogFeed = () => {
           </div>
         ) : (
           <div className="space-y-12 sm:space-y-16">
-            {/* ─────────────────────────────────────────────────────────
-                2. FEATURED POST (Tỷ lệ chia 7:5 hoặc 6:6, ảnh 16:9)
-            ───────────────────────────────────────────────────────── */}
             {featuredBlog && (
               <section aria-label="Bài viết nổi bật">
                 <BlogCard
@@ -181,10 +165,6 @@ export const BlogFeed = () => {
               </section>
             )}
 
-            {/* ─────────────────────────────────────────────────────────
-                3. DANH SÁCH BÀI VIẾT (Grid 3 cột chuẩn tối giản)
-                Mỗi Card: Ảnh 16:9, Tag nhỏ, H3 2 dòng, Excerpt 2 dòng, Ngày · Thời gian đọc
-            ───────────────────────────────────────────────────────── */}
             {regularBlogs.length > 0 && (
               <section aria-label="Danh sách bài viết" className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
@@ -202,10 +182,6 @@ export const BlogFeed = () => {
               </section>
             )}
 
-            {/* ─────────────────────────────────────────────────────────
-                4. NÚT "XEM THÊM BÀI VIẾT" (Ghost Button)
-                Chuẩn wireframe frame.md
-            ───────────────────────────────────────────────────────── */}
             <div className="pt-8 pb-4 text-center">
               {hasNextPage ? (
                 <button

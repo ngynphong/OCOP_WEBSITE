@@ -12,7 +12,6 @@ import { useRolesQuery } from '@/features/admin/hooks/useAdminRoles';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 
-// Modular Components
 import UserDetailHeader from '@/features/admin/components/users/UserDetailHeader';
 import UserDetailSidebar from '@/features/admin/components/users/UserDetailSidebar';
 import UserRoleManagement from '@/features/admin/components/users/UserRoleManagement';
@@ -44,11 +43,9 @@ const UserDetailPage = () => {
   const allPermissions = useMemo(() => allPermsRes?.data || [], [allPermsRes]);
   const allSystemRoles = useMemo(() => rolesRes?.data || [], [rolesRes]);
 
-  // Modal States
   const [showLockModal, setShowLockModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  // Derived Data
   const availableRoles = useMemo(
     () => allSystemRoles.filter((r) => !user?.roles.includes(r.name)),
     [allSystemRoles, user?.roles],
@@ -116,7 +113,6 @@ const UserDetailPage = () => {
         </div>
       </div>
 
-      {/* Confirmation Modals */}
       <ConfirmModal
         isOpen={showLockModal}
         title={user.status === 'LOCKED' ? 'Mở khóa tài khoản?' : 'Tạm khóa tài khoản?'}

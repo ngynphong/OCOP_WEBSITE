@@ -49,7 +49,6 @@ export function RFQModal({ isOpen, onClose, product, selectedVariant }: RFQModal
       </div>
 
       <form onSubmit={handleSubmit} className="p-6 space-y-5 bg-white">
-        {/* Product Summary */}
         <div className="flex items-center gap-4 p-3 bg-stone-50 rounded-xl border border-stone-100">
           <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-white shrink-0">
             <Image

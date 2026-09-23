@@ -43,16 +43,13 @@ export function EventAnalyticsModal({
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center overflow-x-hidden overflow-y-auto p-4 sm:p-6 outline-none">
-      {/* Backdrop */}
       <div
         className="fixed inset-0 bg-stone-900/40 backdrop-blur-sm transition-opacity"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* Modal Card */}
       <div className="relative z-[10000] w-full max-w-4xl bg-white rounded-2xl shadow-2xl border border-stone-200 overflow-hidden flex flex-col max-h-[90vh]">
-        {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-stone-100 bg-stone-50/50">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
@@ -85,7 +82,6 @@ export function EventAnalyticsModal({
           </div>
         </div>
 
-        {/* Scrollable Body */}
         <div className="p-6 overflow-y-auto">
           <EventAnalyticsContent
             analytics={analytics}

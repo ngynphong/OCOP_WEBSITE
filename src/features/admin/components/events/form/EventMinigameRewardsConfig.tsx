@@ -76,7 +76,6 @@ export function EventMinigameRewardsConfig({
         </div>
       </div>
 
-      {/* Danh sách phần thưởng – full editable */}
       <div className="space-y-3">
         {activeRewards.map((item, idx) => {
           const isHighValue = item.value >= 50000;
@@ -94,7 +93,6 @@ export function EventMinigameRewardsConfig({
                     : 'border-gray-200 shadow-2xs'
               }`}
             >
-              {/* Header strip */}
               <div
                 className={`px-3.5 py-2 flex items-center justify-between ${
                   isHighValue ? 'bg-amber-50' : isWish ? 'bg-gray-50' : 'bg-white'
@@ -113,7 +111,6 @@ export function EventMinigameRewardsConfig({
                     {item.name || `Phần thưởng ${idx + 1}`}
                   </span>
                 </div>
-                {/* Tỷ lệ inline nổi bật */}
                 <div className="flex items-center gap-1.5 shrink-0">
                   <span className="text-[11px] font-bold text-gray-500">Tỷ lệ:</span>
                   <div className="relative w-20">
@@ -133,9 +130,7 @@ export function EventMinigameRewardsConfig({
                 </div>
               </div>
 
-              {/* Editable body */}
               <div className="px-3.5 py-3 bg-white border-t border-gray-100 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {/* Tên phần thưởng */}
                 <div>
                   <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">
                     Tên phần thưởng
@@ -149,7 +144,6 @@ export function EventMinigameRewardsConfig({
                   />
                 </div>
 
-                {/* Loại phần thưởng */}
                 <div>
                   <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">
                     Loại phần thưởng
@@ -168,7 +162,6 @@ export function EventMinigameRewardsConfig({
                   </select>
                 </div>
 
-                {/* Giá trị */}
                 <div>
                   <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">
                     Giá trị (VNĐ / Điểm)
@@ -184,7 +177,6 @@ export function EventMinigameRewardsConfig({
                   />
                 </div>
 
-                {/* Mã voucher – chỉ show khi VOUCHER hoặc FREESHIP */}
                 {isVoucher && (
                   <div>
                     <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">
@@ -202,7 +194,6 @@ export function EventMinigameRewardsConfig({
                   </div>
                 )}
 
-                {/* Đơn hàng tối thiểu – chỉ khi VOUCHER hoặc FREESHIP */}
                 {isVoucher && (
                   <div>
                     <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">
@@ -222,7 +213,6 @@ export function EventMinigameRewardsConfig({
                   </div>
                 )}
 
-                {/* Mô tả */}
                 <div className={isVoucher ? '' : 'sm:col-span-2 lg:col-span-3'}>
                   <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">
                     Mô tả hiển thị cho khách

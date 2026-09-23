@@ -9,7 +9,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Missing lat or lon' }, { status: 400 });
   }
 
-  // 1. Thử Photon Reverse Geocoding
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 4000);
@@ -57,7 +56,6 @@ export async function GET(request: NextRequest) {
     console.warn('[Geocoding Reverse] Photon reverse failed, trying fallback...', err);
   }
 
-  // 2. Dự phòng: Nominatim Reverse
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 4000);

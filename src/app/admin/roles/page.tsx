@@ -46,7 +46,6 @@ const RoleListPage = () => {
 
   return (
     <div className="space-y-8 pb-20">
-      {/* Header */}
       <div className="flex justify-between items-end">
         <div className="space-y-2">
           <Link
@@ -67,7 +66,6 @@ const RoleListPage = () => {
         </Button>
       </div>
 
-      {/* Role Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {isLoading ? (
           Array.from({ length: 3 }).map((_, i) => (
@@ -144,7 +142,6 @@ const RoleListPage = () => {
         )}
       </div>
 
-      {/* Info Card */}
       <div className="bg-emerald-900 rounded-xl p-8 text-white relative overflow-hidden">
         <div className="relative z-10 max-w-2xl">
           <h4 className="text-lg font-black mb-2 flex items-center gap-2">

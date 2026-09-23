@@ -25,7 +25,6 @@ export const complaintApi = {
     return axiosClient.get(buildRoute(API_ENDPOINTS.USERS.COMPLAINTS, id));
   },
 
-  // Admin APIs
   getAllComplaints: (params: {
     pageNo?: number;
     pageSize?: number;

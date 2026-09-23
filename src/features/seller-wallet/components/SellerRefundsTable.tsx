@@ -123,7 +123,6 @@ export const SellerRefundsTable: React.FC<Props> = ({
         </div>
       )}
 
-      {/* Pagination Footer */}
       {onPageChange && (totalElements !== undefined ? totalElements > 0 : refunds.length > 0) && (
         <div className="px-6 py-4 border-t border-gray-100 bg-gray-50/40">
           <Pagination

@@ -18,7 +18,6 @@ export function useChat(roomId?: number) {
   const { client, isConnected, addConnectListener } = useWebSocket();
   const queryClient = useQueryClient();
 
-  // 1. Subscribe to real-time messages
   useEffect(() => {
     if (!client) return;
 
@@ -27,7 +26,6 @@ export function useChat(roomId?: number) {
         try {
           const msg: ChatMessage = JSON.parse(message.body);
 
-          // Update the specific room's message history in React Query cache
           queryClient.setQueryData<ApiResponse<PaginatedResponse<ChatMessage>>>(
             CHAT_QUERY_KEYS.messages(msg.roomId),
             (oldData) => {
@@ -42,7 +40,6 @@ export function useChat(roomId?: number) {
             },
           );
 
-          // Also invalidate room lists to update previews/unread counts
           queryClient.invalidateQueries({ queryKey: CHAT_QUERY_KEYS.rooms() });
           queryClient.invalidateQueries({ queryKey: CHAT_QUERY_KEYS.sellerRooms() });
         } catch (err) {
@@ -71,7 +68,6 @@ export function useChat(roomId?: number) {
     return () => cleanup?.();
   }, [client, queryClient, addConnectListener]);
 
-  // 2. Send plain text message
   const sendMessage = useCallback(
     (content: string) => {
       if (!client?.connected || !roomId) return;
@@ -89,7 +85,6 @@ export function useChat(roomId?: number) {
     [client, roomId],
   );
 
-  // 3. Send attachment metadata (after REST upload)
   const sendAttachment = useCallback(
     (data: {
       attachmentUrl: string;

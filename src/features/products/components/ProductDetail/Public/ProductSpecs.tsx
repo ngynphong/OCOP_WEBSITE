@@ -96,10 +96,8 @@ export function ProductSpecs({ product }: ProductSpecsProps) {
           </div>
         </div>
 
-        {/* Specifications Table Grid */}
         <div className="bg-white rounded-2xl border border-stone-200/80 overflow-hidden shadow-xs">
           <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-stone-100">
-            {/* Column 1 */}
             <div className="divide-y divide-stone-100">
               {specs.slice(0, 5).map((item, idx) => {
                 const IconComponent = item.icon;
@@ -131,7 +129,6 @@ export function ProductSpecs({ product }: ProductSpecsProps) {
               })}
             </div>
 
-            {/* Column 2 */}
             <div className="divide-y divide-stone-100">
               {specs.slice(5).map((item, idx) => {
                 const IconComponent = item.icon;

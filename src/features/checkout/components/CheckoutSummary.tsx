@@ -57,12 +57,10 @@ export const CheckoutSummary = memo(function CheckoutSummary({
     <div className="bg-white rounded-xl p-8 border border-stone-100 shadow-xl shadow-stone-200/50 sticky top-28">
       <h2 className="text-xl font-black text-stone-900 mb-6 tracking-tight">Tóm tắt thanh toán</h2>
 
-      {/* Voucher Input */}
       <div className="mb-6">
         <VoucherCheckoutInput appliedVoucher={appliedVoucher} onApply={onApplyVoucher} />
       </div>
 
-      {/* Affiliate Code Input */}
       <div className="mb-8 border-b border-stone-100 pb-8">
         <div className="space-y-1.5">
           <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest ml-1">

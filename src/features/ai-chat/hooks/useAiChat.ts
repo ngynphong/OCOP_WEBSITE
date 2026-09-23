@@ -20,7 +20,6 @@ export function useAiChat() {
   ]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Load chat history from sessionStorage on mount
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedHistory = sessionStorage.getItem('ocop_chat_history');
@@ -34,7 +33,6 @@ export function useAiChat() {
     }
   }, []);
 
-  // Save chat history to sessionStorage whenever it changes
   useEffect(() => {
     if (typeof window !== 'undefined' && messages.length > 1) {
       sessionStorage.setItem('ocop_chat_history', JSON.stringify(messages));
@@ -44,7 +42,6 @@ export function useAiChat() {
   const sendMessage = useCallback(async (text: string) => {
     if (!text.trim()) return;
 
-    // Create user message and assistant placeholder
     const userMsgId = Date.now().toString();
     const assistantMsgId = (Date.now() + 1).toString();
 
@@ -89,7 +86,7 @@ export function useAiChat() {
     messages,
     isLoading,
     sendMessage,
-    stopStreaming: () => {}, // Không còn stream nên hàm stopStreaming không còn tác dụng
+    stopStreaming: () => {},
     setMessages,
   };
 }

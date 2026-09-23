@@ -55,7 +55,6 @@ export const SearchBox: React.FC<SearchBoxProps> = ({
   const isFetching = isAiMode ? isFetchingAi : isFetchingRegular;
   const products = isAiMode ? aiProductsRes || [] : regularProductsRes?.data?.items || [];
 
-  // Handle click outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
@@ -179,7 +178,6 @@ export const SearchBox: React.FC<SearchBoxProps> = ({
         )}
       </div>
 
-      {/* Results Dropdown */}
       <AnimatePresence>
         {!isStorySearch && isOpen && (debouncedQuery.length >= 2 || isFetching) && (
           <motion.div
@@ -192,7 +190,6 @@ export const SearchBox: React.FC<SearchBoxProps> = ({
             )}
           >
             <div className="max-h-[450px] overflow-y-auto custom-scrollbar">
-              {/* AI Toggle Header */}
               <div className="px-4 py-3 border-b border-stone-100 flex items-center justify-between bg-stone-50/50">
                 <div className="flex items-center gap-2">
                   <Sparkles

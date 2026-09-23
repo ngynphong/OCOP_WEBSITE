@@ -59,14 +59,12 @@ export const FloatingChatbot = () => {
     localStorage.setItem('ai-chat-tooltip-dismissed', 'true');
   };
 
-  // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
 
-  // Lắng nghe sự kiện từ SearchBox
   useEffect(() => {
     const handleOpenAiChat = (e: Event) => {
       const customEvent = e as CustomEvent<{ message: string }>;
@@ -94,7 +92,6 @@ export const FloatingChatbot = () => {
     };
   }, [sendMessage, isLoading, isAuthenticated, router, setMessages]);
 
-  // Auto-resize textarea when input changes
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
@@ -135,7 +132,6 @@ export const FloatingChatbot = () => {
 
   return (
     <div className="fixed bottom-10 right-6 z-[9999] flex flex-col items-end">
-      {/* Chat Window */}
       <div
         className={`overflow-hidden rounded-2xl bg-white shadow-2xl transition-all duration-300 ease-in-out border border-gray-100 flex flex-col absolute bottom-0 right-0 ${
           isOpen
@@ -143,7 +139,6 @@ export const FloatingChatbot = () => {
             : 'h-0 w-[360px] max-w-[calc(100vw-3rem)] opacity-0 translate-y-10 pointer-events-none'
         }`}
       >
-        {/* Header */}
         <div className="shrink-0 flex items-center justify-between bg-emerald-700 px-4 py-3 text-white">
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white backdrop-blur-sm">
@@ -168,7 +163,6 @@ export const FloatingChatbot = () => {
           </button>
         </div>
 
-        {/* Messages Area */}
         <div className="flex-1 min-h-0 overflow-y-auto p-4 bg-emerald-50/30">
           {messages.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center space-y-3 text-center text-gray-500">
@@ -461,7 +455,6 @@ export const FloatingChatbot = () => {
           )}
         </div>
 
-        {/* Input Area */}
         <div className="shrink-0 border-t border-gray-100 bg-white p-3">
           <form onSubmit={handleSubmit} className="relative flex items-end gap-2">
             <textarea
@@ -499,7 +492,6 @@ export const FloatingChatbot = () => {
         </div>
       </div>
 
-      {/* Floating Button */}
       <button
         onClick={() => {
           setIsOpen(!isOpen);
@@ -515,11 +507,9 @@ export const FloatingChatbot = () => {
           height={80}
           className="absolute w-[120%] h-[120%] max-w-none object-contain"
         />
-        {/* Pulse effect */}
         <span className="absolute -z-10 h-full w-full animate-ping rounded-full bg-emerald-500 opacity-40"></span>
       </button>
 
-      {/* Tooltip Message */}
       {!isOpen && showTooltip && (
         <div className="absolute right-[70px] bottom-1 w-max max-w-[250px] animate-in fade-in slide-in-from-right-4 duration-500">
           <div className="relative flex items-start gap-2 rounded-2xl bg-white px-4 py-3 text-sm text-emerald-800 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.15)] border border-emerald-100">
@@ -539,7 +529,6 @@ export const FloatingChatbot = () => {
             >
               <X size={14} />
             </button>
-            {/* Right arrow pointing to button */}
             <div className="absolute right-[-6px] top-1/2 -translate-y-1/2 border-y-[6px] border-y-transparent border-l-[6px] border-l-white" />
             <div className="absolute right-[-7px] top-1/2 -translate-y-1/2 border-y-[7px] border-y-transparent border-l-[7px] border-l-emerald-100 -z-10" />
           </div>

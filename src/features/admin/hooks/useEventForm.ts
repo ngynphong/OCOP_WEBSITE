@@ -40,7 +40,6 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
   const [uploadingDesktop, setUploadingDesktop] = useState(false);
   const [uploadingMobile, setUploadingMobile] = useState(false);
 
-  // 1. Basic Info
   const [name, setName] = useState(initialData?.name || '');
   const [code, setCode] = useState(initialData?.code || '');
   const [slug, setSlug] = useState(initialData?.slug || '');
@@ -56,11 +55,9 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
   );
   const [isHomeFeatured, setIsHomeFeatured] = useState(initialData?.isHomeFeatured ?? true);
 
-  // 2. Banners
   const [bannerDesktopUrl, setBannerDesktopUrl] = useState(initialData?.bannerDesktopUrl || '');
   const [bannerMobileUrl, setBannerMobileUrl] = useState(initialData?.bannerMobileUrl || '');
 
-  // 3. Seller Registration
   const [sellerPortalVisible, setSellerPortalVisible] = useState(
     initialData?.sellerPortalVisible ?? false,
   );
@@ -79,7 +76,6 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
     initialData?.maxProductsPerShop ?? 20,
   );
 
-  // 4. Colors
   const getInitialColors = () => {
     if (initialData?.theme?.colorsJson) {
       try {
@@ -89,9 +85,7 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
           secondary: parsed.secondary || '#F59E0B',
           surface: parsed.surface || '#FEF2F2',
         };
-      } catch {
-        // ignore
-      }
+      } catch {}
     }
     return {
       primary: '#DC2626',
@@ -105,7 +99,6 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
   const [secondaryColor, setSecondaryColor] = useState(initialColors.secondary);
   const [surfaceColor, setSurfaceColor] = useState(initialColors.surface);
   const [selectedPresetId, setSelectedPresetId] = useState<string | null>(() => {
-    // 1. So khớp trực tiếp theo theme.code
     if (initialData?.theme?.code) {
       const rawCode = initialData.theme.code.trim();
       const directCode = rawCode.replace(/^THEME_/i, '').toLowerCase();
@@ -118,7 +111,6 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
       if (match) return match.id;
     }
 
-    // 2. So khớp thông qua conceptId trong decorationsJson (VD: conceptId = 'TRUNG_THU' -> preset = 'trung_thu')
     if (initialData?.theme?.decorationsJson) {
       try {
         const decs = JSON.parse(initialData.theme.decorationsJson);
@@ -129,12 +121,9 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
             if (match) return match.id;
           }
         }
-      } catch {
-        // ignore json parse error
-      }
+      } catch {}
     }
 
-    // 3. So khớp theo cặp mã màu primary & secondary
     const found = THEME_PRESETS.find(
       (p) =>
         p.primary.toLowerCase() === initialColors.primary.toLowerCase() &&
@@ -142,7 +131,6 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
     );
     if (found) return found.id;
 
-    // 4. Nếu là chỉnh sửa sự kiện đã có mà không khớp preset có sẵn nào -> null (Tùy chỉnh), không ép về tet_xuan
     return isEdit ? null : 'tet_xuan';
   });
 
@@ -153,7 +141,6 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
     setSelectedPresetId(preset.id);
   }, []);
 
-  // 5. Decorations
   const getInitialDecorations = (): EventThemeDecorations => {
     if (initialData?.theme?.decorationsJson) {
       try {
@@ -166,9 +153,7 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
           customStickerLeftUrl: parsed.customStickerLeftUrl || '',
           customStickerRightUrl: parsed.customStickerRightUrl || '',
         };
-      } catch {
-        // ignore
-      }
+      } catch {}
     }
     return {
       conceptId: 'TET_NGUYEN_DAN',
@@ -196,7 +181,6 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
     initialDeco.customStickerRightUrl || '',
   );
 
-  // SVG Gallery picker state
   const [showSvgGallery, setShowSvgGallery] = useState(false);
   const [svgGalleryTarget, setSvgGalleryTarget] = useState<'left' | 'right'>('left');
 
@@ -238,7 +222,6 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
     [handleSelectPreset],
   );
 
-  // 6. Minigame Configuration
   const [minigameActive, setMinigameActive] = useState(
     initialData?.minigameConfig?.isActive ?? true,
   );
@@ -259,14 +242,11 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
   );
   const minigameTotalClaimed = initialData?.minigameConfig?.totalClaimedValue ?? 0;
 
-  // Rewards Configuration
   const getInitialWheelRewards = (): MinigameReward[] => {
     if (initialData?.minigameConfig?.rewardsJson) {
       try {
         const parsed: MinigameReward[] = JSON.parse(initialData.minigameConfig.rewardsJson);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Merge toàn bộ fields từ DB (name, description, value, voucherCode, weight, ...)
-          // Dùng LUCKY_WHEEL_REWARDS làm fallback cấu trúc cho các id mới
           const mergedMap = new Map<string, MinigameReward>(
             LUCKY_WHEEL_REWARDS.map((r) => [r.id, r]),
           );
@@ -276,15 +256,12 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
               mergedMap.set(p.id, { ...base, ...p });
             }
           });
-          // Giữ đúng thứ tự ban đầu theo parsed
           const result: MinigameReward[] = parsed
             .filter((p) => p.id)
             .map((p) => mergedMap.get(p.id)!);
           return result.length > 0 ? result : LUCKY_WHEEL_REWARDS;
         }
-      } catch {
-        // ignore
-      }
+      } catch {}
     }
     return LUCKY_WHEEL_REWARDS;
   };
@@ -308,9 +285,7 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
             .map((p) => mergedMap.get(p.id)!);
           return result.length > 0 ? result : LUCKY_ENVELOPE_REWARDS;
         }
-      } catch {
-        // ignore
-      }
+      } catch {}
     }
     return LUCKY_ENVELOPE_REWARDS;
   };
@@ -370,7 +345,6 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
     }
   }, [minigameType]);
 
-  // Mystery Pick Concept Configuration (Bánh trung thu, Bao lì xì, Nông sản, Hộp quà...)
   const [mysteryPickConcept, setMysteryPickConcept] = useState<MysteryPickConceptId>(
     initialData?.minigameConfig?.mysteryPickConcept ?? 'AUTO',
   );
@@ -388,9 +362,7 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
         if (Array.isArray(parsed) && parsed.length === 6) {
           return parsed;
         }
-      } catch {
-        // ignore
-      }
+      } catch {}
     }
     const resolved = resolveMysteryPickConcept({
       minigameConcept: initialData?.minigameConfig?.mysteryPickConcept,
@@ -404,7 +376,6 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
 
   const [customPickItems, setCustomPickItems] = useState<MysteryPickItem[]>(getInitialPickItems);
 
-  // Suy luận Concept thực tế đang áp dụng (kể cả khi chọn 'AUTO')
   const effectiveMysteryPickConcept = useMemo(() => {
     return resolveMysteryPickConcept({
       minigameConcept: mysteryPickConcept,
@@ -461,7 +432,6 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
     toast.success(`Đã khôi phục 6 món mặc định theo chủ đề "${resolved.tabLabel}"!`);
   }, [mysteryPickConcept, conceptId, selectedPresetId, type, slug]);
 
-  // Auto generate code and slug when name changes for new events
   const handleNameChange = useCallback(
     (val: string) => {
       setName(val);
@@ -474,7 +444,6 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
     [initialData],
   );
 
-  // Upload handlers
   const handleUpload = useCallback(
     async (file: File, target: 'desktop' | 'mobile') => {
       try {
@@ -497,7 +466,6 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
     [initialData?.id],
   );
 
-  // Submit Handler
   const handleSubmit = useCallback(
     async (e?: React.FormEvent) => {
       if (e) e.preventDefault();
@@ -620,7 +588,6 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
           router.push('/admin/events');
         }
       } catch {
-        // API error toast is already handled by axios interceptor
       } finally {
         setSubmitting(false);
       }
@@ -675,7 +642,6 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
     submitting,
     uploadingDesktop,
     uploadingMobile,
-    // Fields
     name,
     setName,
     handleNameChange,
@@ -693,13 +659,11 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
     setEndAt,
     isHomeFeatured,
     setIsHomeFeatured,
-    // Banners
     bannerDesktopUrl,
     setBannerDesktopUrl,
     bannerMobileUrl,
     setBannerMobileUrl,
     handleUpload,
-    // Seller Portal
     sellerPortalVisible,
     setSellerPortalVisible,
     registrationStartAt,
@@ -712,7 +676,6 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
     setMinDiscountPercent,
     maxProductsPerShop,
     setMaxProductsPerShop,
-    // Theme Colors
     primaryColor,
     setPrimaryColor,
     secondaryColor,
@@ -721,7 +684,6 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
     setSurfaceColor,
     selectedPresetId,
     handleSelectPreset,
-    // Decorations
     conceptId,
     enableAtmosphere,
     setEnableAtmosphere,
@@ -734,13 +696,11 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
     customStickerRightUrl,
     setCustomStickerRightUrl,
     handleSelectConcept,
-    // SVG Gallery
     showSvgGallery,
     setShowSvgGallery,
     svgGalleryTarget,
     handleOpenSvgGallery,
     handleSelectSvg,
-    // Minigame
     minigameActive,
     setMinigameActive,
     minigameType,
@@ -754,7 +714,6 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
     minigameBudgetLimit,
     setMinigameBudgetLimit,
     minigameTotalClaimed,
-    // Rewards Configuration
     wheelRewards,
     envelopeRewards,
     activeRewards,
@@ -762,7 +721,6 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
     handleRewardFieldChange,
     handleRewardWeightChange,
     handleResetDefaultRewards,
-    // Mystery Pick Concept
     mysteryPickConcept,
     setMysteryPickConcept,
     customPickTitle,
@@ -775,7 +733,6 @@ export function useEventForm({ initialData, onSuccess }: UseEventFormOptions = {
     handleSelectMysteryConcept,
     handlePickItemChange,
     handleResetPickItemsToConcept,
-    // Submit
     handleSubmit,
   };
 }

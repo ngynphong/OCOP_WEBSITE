@@ -17,7 +17,6 @@ export default function AdminEventPreviewPage({ params }: { params: Promise<{ id
 
   const preview = useAdminEventPreview(eventId);
 
-  // ── 1. LOADING STATE ────────────────────────────────────────────────────────
   if (preview.loading) {
     return (
       <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center p-6 select-none">
@@ -36,7 +35,6 @@ export default function AdminEventPreviewPage({ params }: { params: Promise<{ id
     );
   }
 
-  // ── 2. ERROR / NOT FOUND STATE ──────────────────────────────────────────────
   if (preview.error || !preview.event) {
     return (
       <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center p-6 text-center select-none">
@@ -73,7 +71,6 @@ export default function AdminEventPreviewPage({ params }: { params: Promise<{ id
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 overflow-hidden select-none">
-      {/* ── TOP ACTION & STUDIO TOOLBAR ───────────────────────────────────── */}
       <PreviewTopBar
         event={event}
         device={preview.device}
@@ -94,9 +91,7 @@ export default function AdminEventPreviewPage({ params }: { params: Promise<{ id
         onRefresh={preview.handleRefresh}
       />
 
-      {/* ── MAIN WORKSPACE (CANVAS + SIDEBAR) ─────────────────────────────── */}
       <div className="flex-1 flex overflow-hidden relative">
-        {/* Canvas Area with Studio Grid Background */}
         <main className="flex-1 overflow-y-auto bg-slate-950 relative flex flex-col items-center bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:24px_24px]">
           <DeviceFrame
             device={preview.device}
@@ -120,7 +115,6 @@ export default function AdminEventPreviewPage({ params }: { params: Promise<{ id
           </DeviceFrame>
         </main>
 
-        {/* Simulator & QA Right Sidebar */}
         <PreviewSimulatorSidebar
           isOpen={preview.isSidebarOpen}
           activeTab={preview.activeSidebarTab}
@@ -150,7 +144,6 @@ export default function AdminEventPreviewPage({ params }: { params: Promise<{ id
         />
       </div>
 
-      {/* ── CONFIRM PUBLISH MODAL ────────────────────────────────────────── */}
       <ConfirmModal
         isOpen={preview.isPublishModalOpen}
         title="Xác nhận xuất bản sự kiện"
@@ -163,7 +156,6 @@ export default function AdminEventPreviewPage({ params }: { params: Promise<{ id
         onCancel={() => preview.setIsPublishModalOpen(false)}
       >
         <div className="space-y-3 pt-2">
-          {/* Quick event stats card */}
           <div className="p-3 bg-stone-50 rounded-xl border border-stone-200 text-xs text-stone-600 space-y-1.5">
             <div className="flex justify-between font-medium">
               <span>Thời gian:</span>

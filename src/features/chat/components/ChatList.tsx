@@ -30,7 +30,6 @@ export const ChatList = ({
         activeRoomId ? 'hidden md:flex' : 'flex',
       )}
     >
-      {/* Title & Search */}
       <div className="p-6 pb-4">
         <h2 className="text-2xl font-black text-stone-900 mb-4 tracking-tight">Hội thoại</h2>
         <div className="relative">
@@ -43,7 +42,6 @@ export const ChatList = ({
         </div>
       </div>
 
-      {/* Room List */}
       <div className="flex-1 overflow-y-auto">
         {isLoading && (
           <div className="flex items-center justify-center py-10 text-emerald-600">

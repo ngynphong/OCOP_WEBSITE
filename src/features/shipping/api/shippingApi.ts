@@ -18,7 +18,6 @@ export interface ApiResponse<T> {
 }
 
 export const shippingApi = {
-  // Admin APIs
   getAdminProviders: (): Promise<ApiResponse<IAdminShippingProvider[]>> =>
     axiosClient.get(API_ENDPOINTS.ADMIN.SHIPPING_PROVIDERS),
 
@@ -36,7 +35,6 @@ export const shippingApi = {
   toggleProvider: (id: string): Promise<ApiResponse<IAdminShippingProvider>> =>
     axiosClient.patch(buildRoute(API_ENDPOINTS.ADMIN.SHIPPING_PROVIDERS, id, 'toggle')),
 
-  // User APIs
   getProviders: (): Promise<ApiResponse<IShippingProvider[]>> =>
     axiosClient.get(API_ENDPOINTS.SHIPPING.PROVIDERS),
 

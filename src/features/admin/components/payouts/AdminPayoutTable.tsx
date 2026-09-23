@@ -52,7 +52,6 @@ export const AdminPayoutTable: React.FC<AdminPayoutTableProps> = ({
   const [genStartDate, setGenStartDate] = useState('');
   const [genEndDate, setGenEndDate] = useState('');
 
-  // Fetch shops for the dropdown
   const { data: shopsData, isLoading: isLoadingShops } = useShopsQuery({
     pageSize: 100,
     status: 'ACTIVE',
@@ -137,7 +136,6 @@ export const AdminPayoutTable: React.FC<AdminPayoutTableProps> = ({
 
   return (
     <div className="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
-      {/* Header Actions */}
       <div className="p-4 border-b border-stone-200 flex justify-between items-center bg-stone-50/50">
         <h3 className="font-bold text-stone-800">Danh sách đối soát</h3>
         <Button onClick={() => setShowGenerateModal(true)} className="flex items-center gap-2">
@@ -266,7 +264,6 @@ export const AdminPayoutTable: React.FC<AdminPayoutTableProps> = ({
         </table>
       </div>
 
-      {/* Pagination */}
       <div className="px-6 py-4 border-t border-stone-200">
         <Pagination
           currentPage={params.pageNo || 1}
@@ -278,7 +275,6 @@ export const AdminPayoutTable: React.FC<AdminPayoutTableProps> = ({
         />
       </div>
 
-      {/* Process Payout Modal */}
       {selectedPayout && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-white rounded-xl max-w-md w-full p-6 shadow-2xl">
@@ -403,7 +399,6 @@ export const AdminPayoutTable: React.FC<AdminPayoutTableProps> = ({
         </div>
       )}
 
-      {/* Generate Payout Modal */}
       {showGenerateModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-white rounded-xl max-w-md w-full p-6 shadow-2xl">

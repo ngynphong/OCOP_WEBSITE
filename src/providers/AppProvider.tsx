@@ -34,7 +34,6 @@ function decodeJwt(token: string) {
   }
 }
 
-// Lazy load non-critical components
 const Toaster = dynamic(() => import('react-hot-toast').then((mod) => mod.Toaster), {
   ssr: false,
 });
@@ -58,14 +57,12 @@ export default function AppProvider({ children }: { children: React.ReactNode })
   const mounted = useSyncExternalStore(emptySubscribe, getSnapshot, getServerSnapshot);
 
   useEffect(() => {
-    // 1. Initialize Auth from LocalStorage
     const token = localStorage.getItem('access_token');
     const rolesStr = localStorage.getItem('user_roles');
 
     if (token) {
       let roles: string[] = [];
 
-      // Ưu tiên đọc roles từ JWT Payload để chống giả mạo localStorage
       const decoded = decodeJwt(token);
       if (decoded && decoded.roles && Array.isArray(decoded.roles)) {
         roles = decoded.roles;
@@ -78,7 +75,6 @@ export default function AppProvider({ children }: { children: React.ReactNode })
         .filter((role): role is string => typeof role === 'string')
         .map((role) => role.replace(/^ROLE_/, '').toUpperCase());
 
-      // Fallback
       if (roles.length === 0) {
         try {
           roles = rolesStr ? JSON.parse(rolesStr) : [];
@@ -98,7 +94,6 @@ export default function AppProvider({ children }: { children: React.ReactNode })
     }
   }, [store]);
 
-  // 2. Setup React Query Client an toàn cho SSR
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -127,7 +122,6 @@ export default function AppProvider({ children }: { children: React.ReactNode })
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <WebSocketProvider>{children}</WebSocketProvider>
-        {/* Cấu hình mặc định cho Toast toàn hệ thống */}
         {mounted &&
           createPortal(
             <Toaster
@@ -151,7 +145,6 @@ export default function AppProvider({ children }: { children: React.ReactNode })
         <LoadingOverlay />
         <GlobalAuthHandler />
         <GlobalPolicyConsentModal />
-        {/* Bật Devtools ở góc dưới bên phải màn hình (chỉ hiện trong môi trường dev) */}
         <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
       </QueryClientProvider>
     </Provider>

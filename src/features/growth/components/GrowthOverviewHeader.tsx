@@ -22,7 +22,6 @@ export const GrowthOverviewHeader: React.FC<Props> = ({
 
   return (
     <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-800 via-teal-800 to-green-900 p-6 sm:p-8 text-white shadow-xl">
-      {/* Decorative background element */}
       <div className="absolute -right-10 -bottom-10 h-64 w-64 rounded-full bg-white/5 blur-2xl pointer-events-none" />
       <div className="absolute right-1/4 -top-12 h-48 w-48 rounded-full bg-emerald-400/10 blur-xl pointer-events-none" />
 

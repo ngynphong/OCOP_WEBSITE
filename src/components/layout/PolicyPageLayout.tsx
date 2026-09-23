@@ -47,7 +47,6 @@ export function PolicyPageLayout({ children, title, lastUpdated }: PolicyPageLay
       <Header />
 
       <main className="relative z-10 flex-1 w-full flex flex-col items-center pb-20">
-        {/* Hero Section */}
         <div className="w-full bg-emerald-900/10 py-12 px-6 flex justify-center">
           <div className="w-full max-w-7xl">
             <Breadcrumb
@@ -73,9 +72,7 @@ export function PolicyPageLayout({ children, title, lastUpdated }: PolicyPageLay
           </div>
         </div>
 
-        {/* Content Section */}
         <div className="w-full max-w-7xl px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 mt-12">
-          {/* Sidebar */}
           <aside className="lg:col-span-4 space-y-6">
             <div className="sticky top-24 space-y-6">
               <div className="bg-white/70 backdrop-blur-md border border-emerald-100 rounded-xl p-8 shadow-sm">
@@ -128,7 +125,6 @@ export function PolicyPageLayout({ children, title, lastUpdated }: PolicyPageLay
                 </div>
               </div>
 
-              {/* Help Card */}
               <div className="bg-emerald-900 rounded-xl p-8 text-white relative overflow-hidden group">
                 <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-emerald-800 rounded-full blur-3xl opacity-50 group-hover:scale-110 transition-transform duration-500" />
                 <h3 className="text-xl font-bold mb-3 relative z-10">Bạn cần hỗ trợ thêm?</h3>
@@ -146,7 +142,6 @@ export function PolicyPageLayout({ children, title, lastUpdated }: PolicyPageLay
             </div>
           </aside>
 
-          {/* Main Content */}
           <div className="lg:col-span-8">
             <motion.div
               initial={{ opacity: 0, x: 20 }}

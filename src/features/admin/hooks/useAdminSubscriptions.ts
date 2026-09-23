@@ -9,8 +9,6 @@ import {
 
 const SUBSCRIPTION_PLANS_QUERY_KEY = ['admin-subscription-plans'] as const;
 
-// ─── Standalone Query Hook ─────────────────────────────────────────────────────
-
 export const useSubscriptionPlansQuery = () => {
   return useQuery({
     queryKey: SUBSCRIPTION_PLANS_QUERY_KEY,
@@ -27,8 +25,6 @@ export const useSubscriptionPlanQuery = (planId: string | null | undefined) => {
     staleTime: 60 * 1000,
   });
 };
-
-// ─── Mutation Hook ─────────────────────────────────────────────────────────────
 
 export const useAdminSubscriptionMutations = () => {
   const queryClient = useQueryClient();

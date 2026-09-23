@@ -20,11 +20,10 @@ class LoadingEmitter {
     if (this.timeoutId) clearTimeout(this.timeoutId);
 
     if (this.activeRequests === 0) {
-      // Use a small timeout to batch requests and prevent flickering
       this.timeoutId = setTimeout(() => {
         if (this.activeRequests === 0) {
           this.notify(false);
-          this.currentMessage = 'Đang xử lý...'; // Reset to default
+          this.currentMessage = 'Đang xử lý...';
         }
       }, 50);
     } else {

@@ -1,7 +1,5 @@
 import { ResponseBase } from '@/features/auth/types';
 
-// ─── Banner Types ────────────────────────────────────────────────────────────
-
 export type BannerType = 'MAIN' | 'SUB';
 
 export interface AdminBanner {
@@ -36,8 +34,6 @@ export type UpdateBannerRequest = Partial<CreateBannerRequest>;
 
 export type AdminBannerListResponse = ResponseBase<AdminBanner[]>;
 export type AdminBannerDetailResponse = ResponseBase<AdminBanner>;
-
-// ─── Quick Link Types ────────────────────────────────────────────────────────
 
 export interface AdminQuickLink {
   id: number;

@@ -11,7 +11,6 @@ import {
 } from '../types';
 
 export const voucherApi = {
-  // 1. Public API (Không cần auth)
   getVoucherDetail: (id: number) =>
     publicAxiosClient.get<Voucher>(buildRoute(API_ENDPOINTS.PUBLIC.VOUCHERS, id), {
       headers: { 'X-Silent-Loading': 'true' },
@@ -36,7 +35,6 @@ export const voucherApi = {
       },
     }),
 
-  // 2. User API (Ví voucher - Cần auth)
   getSavedVouchers: (params: { pageNo?: number; pageSize?: number }) =>
     axiosClient.get<SavedVoucherListResponse>(`${API_ENDPOINTS.USERS.VOUCHERS}/saved`, {
       params,
@@ -64,7 +62,6 @@ export const voucherApi = {
       headers: { 'X-Silent-Loading': 'true' },
     }),
 
-  // 3. Seller API
   getSellerVouchers: (params: { pageNo?: number; pageSize?: number }) =>
     axiosClient.get<VoucherListResponse>(`${API_ENDPOINTS.SELLER.VOUCHERS}`, {
       params,
@@ -87,7 +84,6 @@ export const voucherApi = {
       headers: { 'X-Silent-Loading': 'true' },
     }),
 
-  // 4. Admin API
   getAdminVouchers: (params: { pageNo?: number; pageSize?: number }) =>
     axiosClient.get<VoucherListResponse>(`${API_ENDPOINTS.ADMIN.VOUCHERS}`, {
       params,

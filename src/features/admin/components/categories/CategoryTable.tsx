@@ -32,18 +32,15 @@ const CategoryTable = ({ onEdit, onAdd }: CategoryTableProps) => {
     },
   );
 
-  // Transform data into tree structure
   const categoryTree = useMemo(() => {
     const map = new Map<number, Category & { subCategories: Category[] }>();
     const roots: (Category & { subCategories: Category[] })[] = [];
     const sourceCategories = categoriesResponse?.data || [];
 
-    // Initialize map
     sourceCategories.forEach((cat) => {
       map.set(cat.id, { ...cat, subCategories: [] });
     });
 
-    // Build tree
     map.forEach((cat) => {
       if (cat.parentId && cat.parentId !== 0) {
         const parent = map.get(cat.parentId);
@@ -87,7 +84,6 @@ const CategoryTable = ({ onEdit, onAdd }: CategoryTableProps) => {
     const isExpanded = expandedIds.has(cat.id);
     const hasChildren = cat.subCategories && cat.subCategories.length > 0;
 
-    // Simple filter
     if (searchTerm && !cat.name.toLowerCase().includes(searchTerm.toLowerCase()) && !hasChildren) {
       return null;
     }

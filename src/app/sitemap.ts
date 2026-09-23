@@ -43,7 +43,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const routes: MetadataRoute.Sitemap = [];
 
-  // 1. Tất cả các trang tĩnh public chuẩn xác
   routes.push(
     {
       url: `${baseUrl}/`,
@@ -123,7 +122,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     return routes;
   }
 
-  // 2. Fetch tất cả dữ liệu động song song (Promise.allSettled)
   const [productsRes, blogsRes, shopsRes, categoriesRes] = await Promise.allSettled([
     fetch(`${apiUrl}/products?pageSize=1000&pageNo=1`, { next: { revalidate: 3600 } }),
     fetch(`${apiUrl}/blog?pageSize=1000&pageNo=1`, { next: { revalidate: 3600 } }),
@@ -131,7 +129,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     fetch(`${apiUrl}/categories`, { next: { revalidate: 3600 } }),
   ]);
 
-  // Xử lý Products & Cau Chuyen
   if (productsRes.status === 'fulfilled' && productsRes.value.ok) {
     try {
       const data = await productsRes.value.json();
@@ -163,7 +160,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  // Xử lý Blogs
   if (blogsRes.status === 'fulfilled' && blogsRes.value.ok) {
     try {
       const data = await blogsRes.value.json();
@@ -186,7 +182,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  // Xử lý Shops
   if (shopsRes.status === 'fulfilled' && shopsRes.value.ok) {
     try {
       const data = await shopsRes.value.json();
@@ -206,7 +201,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  // Xử lý Categories
   if (categoriesRes.status === 'fulfilled' && categoriesRes.value.ok) {
     try {
       const data = await categoriesRes.value.json();

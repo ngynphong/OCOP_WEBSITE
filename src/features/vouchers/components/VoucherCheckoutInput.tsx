@@ -131,7 +131,6 @@ export const VoucherCheckoutInput = ({
               {isPending && <Loader2 size={16} className="animate-spin text-green-600 shrink-0" />}
             </div>
 
-            {/* Error Message */}
             {error && (
               <div className="flex items-center gap-1.5 px-3 mt-1.5 animate-in fade-in slide-in-from-top-1">
                 <AlertCircle size={12} className="text-red-500" />

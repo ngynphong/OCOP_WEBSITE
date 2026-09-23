@@ -25,7 +25,6 @@ export const AdminProductCategoryModal = ({
   const [prevIsOpen, setPrevIsOpen] = useState(false);
   const { data, isPending } = useAdminCategoriesQuery();
 
-  // Reset local selection when product changes or modal opens
   if (product !== prevProduct || (isOpen && !prevIsOpen)) {
     if (product !== prevProduct) setPrevProduct(product);
     if (isOpen !== prevIsOpen) setPrevIsOpen(isOpen);
@@ -36,7 +35,6 @@ export const AdminProductCategoryModal = ({
 
   const categories: Category[] = data?.data || [];
 
-  // Recursive search to find category ID matching product's current category name
   const findCategoryIdByName = (cats: Category[], name?: string): number | null => {
     if (!name) return null;
     for (const c of cats) {
@@ -49,10 +47,8 @@ export const AdminProductCategoryModal = ({
     return null;
   };
 
-  // Find the category that matches the product's current category name
   const matchedCategoryId = product ? findCategoryIdByName(categories, product.categoryName) : null;
 
-  // Use the user's selection if they clicked one, otherwise fallback to the product's original category
   const currentCategoryId = selectedCategoryId !== null ? selectedCategoryId : matchedCategoryId;
 
   if (!isOpen || !product) return null;
@@ -74,7 +70,6 @@ export const AdminProductCategoryModal = ({
           exit={{ opacity: 0, scale: 0.95, y: 10 }}
           className="relative bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden flex flex-col max-h-[85vh]"
         >
-          {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-stone-100">
             <h3 className="text-lg font-black text-stone-800">Đổi danh mục sản phẩm</h3>
             <button
@@ -85,7 +80,6 @@ export const AdminProductCategoryModal = ({
             </button>
           </div>
 
-          {/* Body */}
           <div className="p-4 overflow-y-auto min-h-0 flex-1 space-y-4">
             <div>
               <p className="text-sm font-semibold text-stone-600">Sản phẩm:</p>
@@ -106,7 +100,6 @@ export const AdminProductCategoryModal = ({
                     .filter((cat: Category) => !cat.parentId)
                     .map((cat: Category) => (
                       <div key={cat.id} className="space-y-1.5">
-                        {/* Parent Category */}
                         <button
                           onClick={() => setSelectedCategoryId(cat.id)}
                           className={`w-full flex items-center justify-between p-3 rounded-xl border text-left transition-all cursor-pointer ${
@@ -121,7 +114,6 @@ export const AdminProductCategoryModal = ({
                           )}
                         </button>
 
-                        {/* Child Categories */}
                         {cat.children && cat.children.length > 0 && (
                           <div className="pl-4 space-y-1.5 border-l-2 border-emerald-200 ml-3 my-1">
                             {cat.children.map((sub: Category) => (
@@ -152,7 +144,6 @@ export const AdminProductCategoryModal = ({
             </div>
           </div>
 
-          {/* Footer */}
           <div className="p-4 border-t border-stone-100 bg-stone-50/50 flex justify-end gap-2 shrink-0">
             <button
               onClick={onClose}

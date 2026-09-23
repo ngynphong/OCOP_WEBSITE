@@ -32,7 +32,6 @@ export const ProductStory = memo(function ProductStory({
   return (
     <section className="py-8 border-t border-stone-100 overflow-hidden">
       <div className="flex flex-col gap-8">
-        {/* Intro Header */}
         <div className="max-w-4xl mx-auto text-center px-6">
           <p className="text-emerald-700 font-bold uppercase tracking-[0.4em] text-[10px] mb-2">
             Câu chuyện sản phẩm
@@ -55,7 +54,6 @@ export const ProductStory = memo(function ProductStory({
           </div>
         ) : (
           <div className="flex flex-col gap-10">
-            {/* Section 1: Lead Paragraph with primary image if available */}
             <div
               className={`grid grid-cols-1 ${
                 validImages.length > 0 ? 'lg:grid-cols-2 gap-8 lg:gap-12' : 'max-w-3xl mx-auto'
@@ -82,7 +80,6 @@ export const ProductStory = memo(function ProductStory({
               </div>
             </div>
 
-            {/* Section 2: Remaining paragraphs (if any) */}
             {paragraphs.length > 1 && (
               <div
                 className={`grid grid-cols-1 ${

@@ -49,7 +49,6 @@ export function ShopProductSidebar({
   shopSlug,
   className,
 }: ShopProductSidebarProps) {
-  // Chỉ tải các danh mục mà shop này có sản phẩm
   const { data: shopCategoriesData, isPending: isLoadingShopCategories } =
     usePublicShopCategoriesQuery(shopSlug || '');
   const { data: publicCategoriesData, isPending: isLoadingPublicCategories } =
@@ -78,7 +77,6 @@ export function ShopProductSidebar({
         className,
       )}
     >
-      {/* Sidebar Header */}
       <div className="flex items-center justify-between pb-4 border-b border-stone-100">
         <h3 className="text-xs font-bold text-stone-800 uppercase tracking-widest">
           Bộ lọc tìm kiếm
@@ -94,7 +92,6 @@ export function ShopProductSidebar({
         )}
       </div>
 
-      {/* 1. In-shop Search */}
       <section className="space-y-2.5">
         <label className="text-[11px] font-bold text-stone-500 uppercase tracking-wider block">
           Tìm kiếm trong shop
@@ -122,7 +119,6 @@ export function ShopProductSidebar({
         </div>
       </section>
 
-      {/* 2. Categories Filter (Shop specific) */}
       <section className="space-y-3 pt-4 border-t border-stone-100">
         <div className="flex items-center justify-between">
           <label className="text-[11px] font-bold text-stone-500 uppercase tracking-wider block">
@@ -179,7 +175,6 @@ export function ShopProductSidebar({
                 })}
             </div>
 
-            {/* Sub-categories expansion if parent category selected */}
             {categories
               .filter((cat) => selectedCategoryIds.includes(cat.id) && cat.children?.length > 0)
               .map((parent) => (
@@ -217,7 +212,6 @@ export function ShopProductSidebar({
         )}
       </section>
 
-      {/* 3. Price Filter */}
       <section className="space-y-3 pt-4 border-t border-stone-100">
         <div className="flex items-center justify-between">
           <label className="text-[11px] font-bold text-stone-500 uppercase tracking-wider block">
@@ -232,7 +226,6 @@ export function ShopProductSidebar({
           </span>
         </div>
 
-        {/* Quick price presets */}
         <div className="flex flex-col gap-1">
           {PRICE_PRESETS.map((preset) => {
             const isPresetActive = minPrice === preset.min && maxPrice === preset.max;
@@ -253,7 +246,6 @@ export function ShopProductSidebar({
           })}
         </div>
 
-        {/* Custom Price Inputs */}
         <div className="pt-2 space-y-2">
           <div className="grid grid-cols-2 gap-2">
             <div>
@@ -294,7 +286,6 @@ export function ShopProductSidebar({
             </div>
           </div>
 
-          {/* Slider */}
           <div className="pt-1">
             <input
               type="range"
@@ -313,7 +304,6 @@ export function ShopProductSidebar({
         </div>
       </section>
 
-      {/* 4. OCOP Rating Filter */}
       <section className="space-y-3 pt-4 border-t border-stone-100">
         <label className="text-[11px] font-bold text-stone-500 uppercase tracking-wider block">
           Phân hạng sao OCOP
@@ -343,7 +333,6 @@ export function ShopProductSidebar({
         </div>
       </section>
 
-      {/* Reset button at bottom if active */}
       {hasActiveFilters && (
         <div className="pt-2">
           <button

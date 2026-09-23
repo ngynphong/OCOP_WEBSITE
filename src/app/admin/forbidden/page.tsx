@@ -14,7 +14,6 @@ export default function ForbiddenPage() {
         transition={{ duration: 0.4, ease: 'easeOut' }}
         className="bg-white rounded-xl shadow-xl shadow-black/5 border border-gray-100 max-w-lg w-full p-10 text-center"
       >
-        {/* Icon */}
         <motion.div
           initial={{ scale: 0.8 }}
           animate={{ scale: 1 }}
@@ -24,22 +23,17 @@ export default function ForbiddenPage() {
           <FiShield className="w-12 h-12 text-red-400" />
         </motion.div>
 
-        {/* Status code */}
         <p className="text-sm font-semibold text-red-400 tracking-widest uppercase mb-2">Lỗi 403</p>
 
-        {/* Title */}
         <h1 className="text-3xl font-bold text-gray-800 mb-3">Truy cập bị từ chối</h1>
 
-        {/* Description */}
         <p className="text-gray-500 text-[15px] leading-relaxed mb-8">
           Bạn không có quyền truy cập vào trang này. Vui lòng liên hệ quản trị viên nếu bạn cho rằng
           đây là nhầm lẫn.
         </p>
 
-        {/* Divider */}
         <div className="h-px bg-gray-100 mb-8" />
 
-        {/* Actions */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link
             href="/admin"

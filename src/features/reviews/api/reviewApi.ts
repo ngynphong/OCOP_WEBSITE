@@ -16,8 +16,6 @@ import {
 import { ResponseBase } from '@/features/auth/types/index';
 
 export const reviewApi = {
-  // ─── Consumer API ──────────────────────────────────────────────────────────
-
   /** Lấy danh sách đánh giá của sản phẩm (Public) */
   getProductReviews: (
     productSlug: string,
@@ -52,8 +50,6 @@ export const reviewApi = {
     });
   },
 
-  // ─── Seller API ────────────────────────────────────────────────────────────
-
   /** Seller xem danh sách đánh giá của shop */
   getSellerReviews: (params?: SellerReviewQueryParams): Promise<ReviewListResponse> => {
     return axiosClient.get(API_ENDPOINTS.SELLER.REVIEWS, { params });
@@ -65,8 +61,6 @@ export const reviewApi = {
       headers: { 'X-Silent-Loading': 'true' },
     });
   },
-
-  // ─── Admin API ─────────────────────────────────────────────────────────────
 
   /** Admin danh sách đánh giá đang chờ duyệt */
   getPendingReviews: (params?: AdminReviewQueryParams): Promise<ReviewListResponse> => {

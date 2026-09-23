@@ -105,7 +105,6 @@ function QuotationCard({ quotation }: { quotation: Quotation }) {
     >
       <div className="p-5 sm:p-6">
         <div className="flex flex-col lg:flex-row gap-6">
-          {/* Shop & Status - Mobile */}
           <div className="flex items-center justify-between lg:hidden border-b border-stone-50 pb-4 mb-2">
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest">
@@ -123,7 +122,6 @@ function QuotationCard({ quotation }: { quotation: Quotation }) {
             </span>
           </div>
 
-          {/* Left Column: Product Info */}
           <div className="flex gap-4 lg:w-1/3">
             <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden bg-stone-50 shrink-0 border border-stone-100 shadow-inner">
               <div className="absolute inset-0 flex items-center justify-center text-stone-300">
@@ -143,7 +141,6 @@ function QuotationCard({ quotation }: { quotation: Quotation }) {
             </div>
           </div>
 
-          {/* Middle Column: Specs & Pricing */}
           <div className="flex-1">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 py-4 lg:py-0 border-y lg:border-none border-stone-50">
               <div className="min-w-fit">
@@ -195,7 +192,6 @@ function QuotationCard({ quotation }: { quotation: Quotation }) {
               )}
             </div>
 
-            {/* Reply / Note Area */}
             {(quotation.replyMessage || quotation.note) && (
               <div className="mt-4 space-y-3">
                 {quotation.note && (
@@ -225,7 +221,6 @@ function QuotationCard({ quotation }: { quotation: Quotation }) {
             )}
           </div>
 
-          {/* Right Column: Actions & Time */}
           <div className="lg:w-1/6 flex flex-col justify-between items-end border-t lg:border-none border-stone-50 pt-4 lg:pt-0">
             <div className="hidden lg:block text-right mb-4">
               <span

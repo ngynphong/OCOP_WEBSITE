@@ -1,9 +1,3 @@
-// ============================================================
-// CART TYPES — Aligned with FE_ORDER_GUIDE.md API Response Spec
-// ============================================================
-
-// -------------------- Enums ---------------------
-
 export type CartIssueType =
   | 'PRICE_CHANGED'
   | 'OUT_OF_STOCK'
@@ -12,8 +6,6 @@ export type CartIssueType =
   | 'SHOP_LOCKED';
 
 export type PaymentMethod = 'COD' | 'MOMO' | 'VNPAY' | 'ZALOPAY';
-
-// -------------------- Cart Item ---------------------
 
 export interface CartItem {
   id: number;
@@ -45,8 +37,6 @@ export interface CartItem {
   wholesaleMinQty?: number;
 }
 
-// -------------------- Cart Response ---------------------
-
 export interface CartData {
   id: number;
   totalItems: number;
@@ -61,8 +51,6 @@ export interface CartResponse {
   data: CartData;
 }
 
-// -------------------- Cart Count ---------------------
-
 export interface CartCountData {
   count: number;
 }
@@ -71,8 +59,6 @@ export interface CartCountResponse {
   code: number;
   data: CartCountData;
 }
-
-// -------------------- Validate ---------------------
 
 export interface CartValidateIssue {
   itemId: number;
@@ -96,8 +82,6 @@ export interface CartValidateResponse {
   data: CartValidateData;
 }
 
-// -------------------- Requests ---------------------
-
 export interface AddToCartRequest {
   variantId: number;
   qty: number;
@@ -117,14 +101,10 @@ export interface MergeCartRequest {
   sessionId: string;
 }
 
-// -------------------- Sync Prices ---------------------
-
 export interface SyncPricesResponse {
   code: number;
   data: CartData;
 }
-
-// -------------------- Grouped by Shop (FE-only) ---------------------
 
 /** Items nhóm theo shop để hiển thị trên Cart Page */
 export interface CartShopGroup {

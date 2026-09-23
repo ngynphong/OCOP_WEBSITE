@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FiMapPin, FiPlus, FiActivity, FiX, FiArrowLeft, FiAlertCircle } from 'react-icons/fi';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import { Button } from '@/components/ui/AppButton';
 import { useCycleList, useCreateCycle } from '../../hooks/useFacility';
 import { ISourceFacility } from '../../types/materialSourceTypes';
@@ -59,7 +59,6 @@ export function FacilityDetailPanel({ facility, onClose }: FacilityDetailPanelPr
 
   return (
     <div className="space-y-6">
-      {/* Back button & Title */}
       <div className="flex items-center justify-between pb-4 border-b border-stone-100">
         <div className="flex items-center gap-3">
           <button
@@ -87,7 +86,6 @@ export function FacilityDetailPanel({ facility, onClose }: FacilityDetailPanelPr
         </button>
       </div>
 
-      {/* Facility metadata */}
       <div className="bg-stone-50 p-4 rounded-xl border border-stone-200 text-sm text-stone-700 grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <p className="text-xs font-semibold text-stone-400 uppercase tracking-wider">
@@ -111,7 +109,6 @@ export function FacilityDetailPanel({ facility, onClose }: FacilityDetailPanelPr
         )}
       </div>
 
-      {/* Cycle Section */}
       <div className="space-y-4">
         <div className="flex justify-between items-center">
           <h3 className="font-bold text-stone-900 text-lg flex items-center gap-2">
@@ -128,7 +125,6 @@ export function FacilityDetailPanel({ facility, onClose }: FacilityDetailPanelPr
           )}
         </div>
 
-        {/* Inline Form to Create Source Cycle */}
         {isAddingCycle && (
           <form
             onSubmit={onCycleSubmit}
@@ -304,7 +300,6 @@ export function FacilityDetailPanel({ facility, onClose }: FacilityDetailPanelPr
           </form>
         )}
 
-        {/* Cycles List */}
         <div className="space-y-1">
           {isLoadingCycles ? (
             <div className="text-center py-6 text-sm text-stone-500">

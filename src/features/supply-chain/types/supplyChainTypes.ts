@@ -54,14 +54,6 @@ export interface ICreateLotAssignmentReq {
   notes?: string;
 }
 
-export type TStepType =
-  | 'PRODUCTION'
-  | 'PROCESSING'
-  | 'STORAGE'
-  | 'TRANSPORT'
-  | 'DISTRIBUTION'
-  | 'TESTING';
-
 export type TVerificationLevel = 'LEVEL_1' | 'LEVEL_2' | 'LEVEL_3';
 export type TVerificationStatus =
   | 'DRAFT'
@@ -70,20 +62,6 @@ export type TVerificationStatus =
   | 'VERIFIED'
   | 'REJECTED'
   | 'REQUEST_CHANGES';
-
-export type TStorageType = 'AMBIENT' | 'REFRIGERATED' | 'FROZEN' | 'CONTROLLED_ATMOSPHERE';
-
-export interface ISupplyChainStep {
-  stepType: TStepType;
-  recordedAt: string;
-  data:
-    | IProductionStepReq
-    | IProcessingStepReq
-    | IStorageStepReq
-    | ITransportStepReq
-    | IDistributionStepReq
-    | ITestingStepReq;
-}
 
 export interface IEventInfo {
   id: number;
@@ -221,7 +199,6 @@ export interface ISupplyChainLot {
   packagingYieldRate?: number;
   packagingRatioNotes?: string;
   recallInfo?: IRecallInfo;
-  steps?: ISupplyChainStep[];
   events?: IEventInfo[];
   eventCount?: number;
   materialsUsed?: IMaterialUsageInfo[];
@@ -316,62 +293,6 @@ export interface IPublicLotListReq extends ILotListReq {
   productId?: number;
 }
 
-export interface IProductionStepReq {
-  farmName: string;
-  farmLocation: string;
-  productionMethod: string;
-  plantingDate?: string;
-  harvestDate?: string;
-  responsiblePerson: string;
-  notes?: string;
-  imageUrls: string; // Serialized JSON string for now
-}
-
-export interface IProcessingStepReq {
-  facilityName: string;
-  facilityAddress: string;
-  processType: string;
-  processDate: string;
-  outputQuantity: number;
-  unit: string;
-  qualityCheckResult: string;
-  qualityDocumentUrl?: string;
-  notes?: string;
-  imageUrls: string;
-}
-
-export interface IStorageStepReq {
-  warehouseName: string;
-  warehouseAddress: string;
-  storageType: TStorageType;
-  storageTemperature?: number;
-  storageHumidity?: number;
-  storedDate: string;
-  expectedReleaseDate?: string;
-  notes?: string;
-}
-
-export interface ITransportStepReq {
-  carrierName: string;
-  vehicleInfo: string;
-  originAddress: string;
-  destinationAddress: string;
-  departedAt: string;
-  arrivedAt?: string;
-  trackingNumber: string;
-  notes?: string;
-}
-
-export interface IDistributionStepReq {
-  distributorName: string;
-  distributorAddress: string;
-  distributionDate: string;
-  distributedQuantity: number;
-  unit: string;
-  salesChannel: string;
-  notes?: string;
-}
-
 export interface IEvidenceDocument {
   id: number;
   documentType: string;
@@ -388,21 +309,4 @@ export interface IEvidenceDocument {
   deviceInfo?: string;
   latitude?: number;
   longitude?: number;
-}
-
-export interface ITestingStepReq {
-  id?: number; // Included for response
-  testType: string;
-  result: string;
-  certificateNumber?: string;
-  issuedDate?: string;
-  expiryDate?: string;
-  testingCenterId?: number;
-  testingCenterName?: string;
-  standardsMet?: string;
-  inspectorName?: string;
-  verificationStatus?: TVerificationStatus;
-  verifiedAt?: string;
-  notes?: string;
-  documentUrls?: string;
 }

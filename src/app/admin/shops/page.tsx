@@ -33,7 +33,6 @@ const ShopManagementPage = () => {
   const { approveShop, rejectShop, lockShop, unlockShop } = useAdminShopMutations();
   const { data, isLoading } = useShopsQuery(params);
 
-  // Action Modal State
   const [actionTarget, setActionTarget] = useState<{
     shop: ShopListItem;
     type: 'APPROVE' | 'REJECT' | 'LOCK' | 'UNLOCK';
@@ -69,14 +68,12 @@ const ShopManagementPage = () => {
       }
       setActionTarget(null);
     } catch (error) {
-      // Error handled by hook toasts
       console.error('Action failed:', error);
     }
   };
 
   return (
     <div className="space-y-10">
-      {/* Header Section */}
       <div className="flex justify-between items-end">
         <div>
           <h2 className="text-4xl font-extrabold text-[#00490E] tracking-tight mb-2">
@@ -94,7 +91,6 @@ const ShopManagementPage = () => {
         </div>
       </div>
 
-      {/* Metrics Row */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="bg-white p-6 rounded-xl shadow-sm border border-stone-100 flex flex-col justify-between hover:shadow-md transition-all">
           <FiShoppingBag className="text-[#00490E] text-2xl mb-4" />
@@ -132,7 +128,6 @@ const ShopManagementPage = () => {
         </div>
       </div>
 
-      {/* Filters & Table Section */}
       <div className="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden">
         <div className="p-6 border-b border-stone-50 flex flex-wrap justify-between items-center gap-4">
           <h3 className="text-lg font-black text-[#00490E] uppercase tracking-wider">Hàng đợi</h3>
@@ -282,7 +277,6 @@ const ShopManagementPage = () => {
           </table>
         </div>
 
-        {/* Action Confirm Modal */}
         <ConfirmModal
           isOpen={!!actionTarget}
           title={
@@ -303,7 +297,6 @@ const ShopManagementPage = () => {
           onCancel={() => setActionTarget(null)}
         />
 
-        {/* Pagination Section */}
         <div className="px-8 py-5 border-t border-stone-50 bg-stone-50/30 flex items-center justify-between">
           <Pagination
             currentPage={params.pageNo || 1}

@@ -87,7 +87,6 @@ export function VoucherFormDrawer({
   }, [initialData, reset, isOpen]);
 
   const handleFormSubmit = (data: VoucherFormValues) => {
-    // Format dates to LocalDateTime format expected by backend (YYYY-MM-DDTHH:mm:ss)
     const formattedData = {
       ...data,
       startAt: `${data.startAt}T00:00:00`,
@@ -100,13 +99,11 @@ export function VoucherFormDrawer({
 
   const drawerContent = (
     <div className="fixed inset-0 z-[9999] flex justify-end overflow-hidden">
-      {/* Backdrop */}
       <div
         className="fixed inset-0 bg-stone-900/60 backdrop-blur-sm transition-opacity animate-in fade-in duration-500 cursor-pointer"
         onClick={onClose}
       />
 
-      {/* Drawer Panel */}
       <div className="relative w-full max-w-md bg-white shadow-2xl z-10 flex flex-col animate-in slide-in-from-right duration-300 h-full border-l border-stone-100">
         <div className="p-6 border-b border-stone-100 flex items-center justify-between bg-white">
           <div>
@@ -165,7 +162,6 @@ export function VoucherFormDrawer({
 
           <div className="h-px bg-stone-100" />
 
-          {/* Config */}
           <div className="space-y-4">
             <h3 className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">
               Cấu hình giảm giá
@@ -247,7 +243,6 @@ export function VoucherFormDrawer({
 
           <div className="h-px bg-stone-100" />
 
-          {/* Limits */}
           <div className="space-y-4">
             <h3 className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">
               Giới hạn & Thời hạn

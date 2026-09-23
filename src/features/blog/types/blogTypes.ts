@@ -3,8 +3,6 @@ import { ResponseBase } from '@/features/admin/types/adminTypes';
 
 export type BlogStatus = 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
 
-// ─── Interfaces ──────────────────────────────────────────────────────────────
-
 export interface BlogTag {
   id: number;
   name: string;
@@ -52,8 +50,6 @@ export interface BlogListParams {
   tagId?: number;
 }
 
-// ─── Responses ───────────────────────────────────────────────────────────────
-
 export interface BlogPaginatedResponse<T> {
   content: T[];
   totalElements: number;
@@ -66,8 +62,6 @@ export type BlogDetailResponse = ResponseBase<Blog>;
 export type BlogListResponse = ResponseBase<BlogPaginatedResponse<Blog>>;
 export type BlogTagListResponse = ResponseBase<BlogTag[]>;
 export type BlogTagDetailResponse = ResponseBase<BlogTag>;
-
-// ─── Validation Schemas ──────────────────────────────────────────────────────
 
 export const tagSchema = z.object({
   name: z.string().min(2, 'Tên thẻ phải có ít nhất 2 ký tự'),

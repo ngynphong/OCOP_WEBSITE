@@ -5,13 +5,11 @@ import toast from 'react-hot-toast';
 
 type ApiError = { response?: { data?: { message?: string } } };
 
-// ─── Standalone Query Hooks ──────
-
 export const useAdminCategoriesQuery = () => {
   return useQuery({
     queryKey: ['admin-categories'],
     queryFn: () => adminApi.getCategories(),
-    staleTime: 5 * 60 * 1000, // Categories change less frequently, cache for 5m
+    staleTime: 5 * 60 * 1000,
   });
 };
 
@@ -22,8 +20,6 @@ export const useAdminCategoryDetailQuery = (id: number | null | undefined) => {
     enabled: !!id,
   });
 };
-
-// ─── Mutation Hook ─────────────────────────────────────────────────────────────
 
 export const useAdminCategoryMutations = () => {
   const queryClient = useQueryClient();

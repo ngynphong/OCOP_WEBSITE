@@ -12,7 +12,6 @@ import {
 } from '../types/policies';
 
 export const policiesApi = {
-  // Public/User APIs
   getPolicy: async (id: number): Promise<IPolicy> => {
     const response = (await axiosClient.get(buildRoute(API_ENDPOINTS.POLICIES, id), {
       headers: { 'X-Silent-Loading': 'true' },
@@ -57,7 +56,6 @@ export const policiesApi = {
     return response.data;
   },
 
-  // Admin APIs
   getAdminPolicies: async (): Promise<IPolicy[]> => {
     const response = (await axiosClient.get(API_ENDPOINTS.ADMIN.POLICIES, {
       headers: { 'X-Silent-Loading': 'true' },

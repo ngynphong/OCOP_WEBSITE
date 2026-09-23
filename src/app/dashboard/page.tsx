@@ -65,7 +65,6 @@ const DashboardPage = () => {
   } = useUserDashboard(isMounted && !isSellerMode);
 
   React.useEffect(() => {
-    // Only dispatch global loading on first mount, react-query will handle subsequent loads silently
     if (!isMounted) {
       dispatch(setLoading({ isLoading: true, message: 'Đang khởi tạo Dashboard...' }));
       const timer = setTimeout(() => {
@@ -173,7 +172,6 @@ const DashboardPage = () => {
 
   return (
     <div className="space-y-6 md:space-y-8">
-      {/* Welcome Section */}
       <div
         className={cn(
           'flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-xl border transition-colors bg-green-50 border-green-100',
@@ -199,7 +197,6 @@ const DashboardPage = () => {
         </Link>
       </div>
 
-      {/* Revenue Filter for Seller */}
       {isSellerMode && (
         <div className="flex justify-end -mb-2">
           <div className="inline-flex bg-stone-100 p-1 rounded-lg">
@@ -221,7 +218,6 @@ const DashboardPage = () => {
         </div>
       )}
 
-      {/* Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
         {stats.map((stat, idx) => (
           <motion.div
@@ -279,7 +275,6 @@ const DashboardPage = () => {
         </div>
       )}
 
-      {/* Conditional Banner */}
       {!isSellerMode && (
         <Link
           href="/dashboard/cua-hang"
@@ -393,7 +388,6 @@ const DashboardPage = () => {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Recent Activity */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="font-bold text-stone-900">
@@ -448,7 +442,6 @@ const DashboardPage = () => {
           )}
         </div>
 
-        {/* Account News/Tips */}
         <div className="space-y-4">
           <h3 className="font-bold text-stone-900">
             {isSellerMode ? 'Công cụ bán hàng' : 'Thông tin tài khoản'}

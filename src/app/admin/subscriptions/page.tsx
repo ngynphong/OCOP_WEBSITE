@@ -52,7 +52,6 @@ const AdminSubscriptionPage = () => {
     <div className="space-y-10">
       {isLoading && null}
 
-      {/* Header Section */}
       <div className="flex justify-between items-end">
         <div>
           <h2 className="text-4xl font-extrabold text-[#00490E] tracking-tight mb-2">
@@ -70,7 +69,6 @@ const AdminSubscriptionPage = () => {
         </Button>
       </div>
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-xl shadow-sm border border-stone-100 flex flex-col justify-between hover:shadow-md transition-all">
           <FiPackage className="text-emerald-700 text-2xl mb-4" />
@@ -103,7 +101,6 @@ const AdminSubscriptionPage = () => {
         </div>
       </div>
 
-      {/* Table Section */}
       <div className="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden">
         <div className="p-6 border-b border-stone-50">
           <h3 className="text-lg font-black text-[#00490E] uppercase tracking-wider">
@@ -200,14 +197,12 @@ const AdminSubscriptionPage = () => {
         </div>
       </div>
 
-      {/* Drawer */}
       <SubscriptionFormDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         planId={selectedPlanId}
       />
 
-      {/* Confirm Toggle Modal */}
       <ConfirmModal
         isOpen={!!toggleTarget}
         title={toggleTarget?.isActive ? 'Vô hiệu hóa gói' : 'Kích hoạt gói'}

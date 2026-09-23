@@ -17,7 +17,6 @@ export const ReviewSummary = memo(({ summary }: ReviewSummaryProps) => {
   return (
     <div className="bg-stone-50/50 rounded-xl p-8 border border-stone-100 mb-10">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-center">
-        {/* Average Score */}
         <div className="md:col-span-4 flex flex-col items-center justify-center text-center md:border-r border-stone-200">
           <span className="text-6xl font-black text-stone-900 tracking-tighter">
             {summary.avgRating.toFixed(1)}
@@ -30,7 +29,6 @@ export const ReviewSummary = memo(({ summary }: ReviewSummaryProps) => {
           </p>
         </div>
 
-        {/* Breakdown Bars */}
         <div className="md:col-span-8 space-y-3">
           {memoizedRatings.map((star) => {
             const count = summary.distribution[star.toString()] || 0;

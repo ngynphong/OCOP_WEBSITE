@@ -28,7 +28,6 @@ export const PermissionGuard = ({
     if (isLoadingProfile) {
       timer = setTimeout(() => setShowTimeoutError(true), 5000);
     } else {
-      // Khi load xong, thực hiện redirect nếu cần
       if (!isAdminUser) {
         router.push('/dang-nhap');
       } else if (!isAuthorized) {
@@ -38,7 +37,6 @@ export const PermissionGuard = ({
 
     return () => {
       if (timer) clearTimeout(timer);
-      // Reset lỗi khi component unmount hoặc isLoadingProfile thay đổi
       setShowTimeoutError(false);
     };
   }, [isLoadingProfile, isAdminUser, isAuthorized, router]);

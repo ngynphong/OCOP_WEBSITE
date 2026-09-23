@@ -52,7 +52,6 @@ export const useAddToCart = () => {
         CART_QUERY_KEYS.count,
       );
 
-      // Optimistically update count
       queryClient.setQueryData<{ data: CartCountData }>(CART_QUERY_KEYS.count, (old) => {
         if (!old?.data) return old;
         return { data: { count: old.data.count + data.qty } };

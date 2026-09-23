@@ -19,17 +19,14 @@ import {
   OverridePlanRequest,
   AdminOverridePlanResponse,
   UpdateShopOwnerRequest,
-  // Subscription Plan
   CreateSubscriptionPlanRequest,
   UpdateSubscriptionPlanRequest,
   AdminSubscriptionPlanListResponse,
   AdminSubscriptionPlanDetailResponse,
-  // Roles & Permissions
   AdminRoleListResponse,
   AdminRoleDetailResponse,
   CreateRoleRequest,
   RolePermissionsRequest,
-  // Categories
   CategoryCreateRequest,
   CategoryUpdateRequest,
   AdminCategoryListResponse,
@@ -50,7 +47,6 @@ export const adminApi = {
   },
 
   getUsers: (params: GetUsersParams): Promise<AdminUserListResponse> => {
-    // Filter out undefined, null, or empty string values from params
     const filteredParams = Object.fromEntries(
       Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== ''),
     );
@@ -109,8 +105,6 @@ export const adminApi = {
   getStaffMyProfile: (): Promise<ResponseBase<StaffProfile>> => {
     return axiosClient.get(API_ENDPOINTS.STAFF.ME_PROFILE);
   },
-
-  // ─── Shop Management ─────────────────────────────────────────────────────
 
   getShops: (params: GetShopsParams): Promise<AdminShopListResponse> => {
     const filteredParams = Object.fromEntries(
@@ -189,8 +183,6 @@ export const adminApi = {
     return axiosClient.patch(buildRoute(API_ENDPOINTS.ADMIN.SHOPS, shopId, 'owner'), data);
   },
 
-  // ─── Subscription Plans ─────────────────────────────────────────────────────
-
   getSubscriptionPlans: (): Promise<AdminSubscriptionPlanListResponse> => {
     return axiosClient.get(API_ENDPOINTS.ADMIN.SUBSCRIPTION_PLANS);
   },
@@ -216,8 +208,6 @@ export const adminApi = {
     return axiosClient.patch(buildRoute(API_ENDPOINTS.ADMIN.SUBSCRIPTION_PLANS, planId, 'toggle'));
   },
 
-  // ─── Permissions ──────────────────────────────────────────────────────────
-
   getPermissions: (): Promise<AdminUserPermissionsResponse> => {
     return axiosClient.get(API_ENDPOINTS.PERMISSIONS);
   },
@@ -225,8 +215,6 @@ export const adminApi = {
   deletePermission: (permission: string): Promise<ResponseBase<string>> => {
     return axiosClient.delete(buildRoute(API_ENDPOINTS.PERMISSIONS, permission));
   },
-
-  // ─── Roles Management ──────────────────────────────────────────────────────
 
   getRoles: (): Promise<AdminRoleListResponse> => {
     return axiosClient.get(API_ENDPOINTS.ROLES);
@@ -257,8 +245,6 @@ export const adminApi = {
   deleteRole: (roleName: string): Promise<ResponseBase<string>> => {
     return axiosClient.delete(buildRoute(API_ENDPOINTS.ROLES, roleName));
   },
-
-  // ─── Category Management ────────────────────────────────────────────────────
 
   getCategories: (): Promise<AdminCategoryListResponse> => {
     return axiosClient.get(API_ENDPOINTS.ADMIN.CATEGORIES);
@@ -309,7 +295,6 @@ export const adminApi = {
   ): Promise<AdminCategoryDetailResponse> => {
     const formData = new FormData();
 
-    // Prepare request object (JSON)
     const requestObj = {
       name: data.name,
       slug: data.slug,
@@ -343,7 +328,6 @@ export const adminApi = {
   ): Promise<AdminCategoryListResponse> => {
     const formData = new FormData();
 
-    // Prepare data array (JSON)
     const dataArray = formDatas.map((fd) => ({
       name: fd.name,
       slug: fd.slug,
@@ -355,7 +339,6 @@ export const adminApi = {
 
     formData.append('data', JSON.stringify(dataArray));
 
-    // Append icons and banners
     formDatas.forEach((fd) => {
       if (fd.iconFile && fd.iconFile[0]) {
         formData.append('icons', fd.iconFile[0]);

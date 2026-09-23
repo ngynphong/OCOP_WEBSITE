@@ -43,9 +43,7 @@ export function FlashSaleDetailDrawer({
     try {
       await approveFlashSale(flashSaleId);
       onClose();
-    } catch {
-      // toast handled in mutation
-    }
+    } catch {}
   };
 
   const handleCancel = async () => {
@@ -53,9 +51,7 @@ export function FlashSaleDetailDrawer({
     try {
       await cancelFlashSale(flashSaleId);
       onClose();
-    } catch {
-      // toast handled in mutation
-    }
+    } catch {}
   };
 
   return (
@@ -76,7 +72,6 @@ export function FlashSaleDetailDrawer({
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
             className="fixed inset-y-0 right-0 w-full max-w-2xl bg-stone-50 shadow-2xl z-[70] overflow-hidden flex flex-col"
           >
-            {/* Header */}
             <div className="p-6 bg-white border-b border-stone-100 flex items-center justify-between shrink-0">
               <div>
                 <h2 className="text-xl font-black text-stone-800">Chi tiết Flash Sale</h2>
@@ -106,7 +101,6 @@ export function FlashSaleDetailDrawer({
                 </div>
               ) : (
                 <>
-                  {/* Overview Card */}
                   <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-sm space-y-6">
                     <div className="flex flex-col md:flex-row gap-6">
                       <div className="w-full md:w-1/3 aspect-video md:aspect-square rounded-xl overflow-hidden bg-stone-100 border border-stone-200 shrink-0">
@@ -178,7 +172,6 @@ export function FlashSaleDetailDrawer({
                     </div>
                   </div>
 
-                  {/* Summary Stats */}
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     <div className="bg-white p-4 rounded-xl border border-stone-100 flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center shrink-0">
@@ -215,7 +208,6 @@ export function FlashSaleDetailDrawer({
                     </div>
                   </div>
 
-                  {/* Product Details List */}
                   <div className="space-y-4">
                     <h4 className="text-sm font-black text-stone-800 flex items-center gap-2">
                       <FiPackage className="text-red-500" /> Danh sách sản phẩm tham gia
@@ -275,7 +267,6 @@ export function FlashSaleDetailDrawer({
               )}
             </div>
 
-            {/* Footer Actions */}
             {!isPending && flashSale && flashSale.status === 'SCHEDULED' && (
               <div className="p-6 bg-white border-t border-stone-100 grid grid-cols-2 gap-4 shrink-0">
                 <Button

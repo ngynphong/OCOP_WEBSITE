@@ -57,7 +57,6 @@ export const SellerWalletMetrics: React.FC<Props> = ({ wallet, revenue, isLoadin
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {/* Card 1: Số dư tích lũy kỳ này */}
       <div className="bg-emerald-50/70 border border-emerald-200/80 p-5 rounded-3xl shadow-xs flex flex-col justify-between">
         <div>
           <div className="flex items-center justify-between mb-2">
@@ -88,7 +87,6 @@ export const SellerWalletMetrics: React.FC<Props> = ({ wallet, revenue, isLoadin
         </div>
       </div>
 
-      {/* Card 2: Đang chờ giải ngân */}
       <div className="bg-amber-50/70 border border-amber-200/80 p-5 rounded-3xl shadow-xs flex flex-col justify-between">
         <div>
           <div className="flex items-center justify-between mb-2">
@@ -112,7 +110,6 @@ export const SellerWalletMetrics: React.FC<Props> = ({ wallet, revenue, isLoadin
         </div>
       </div>
 
-      {/* Card 3: Đã giải ngân thành công */}
       <div className="bg-blue-50/70 border border-blue-200/80 p-5 rounded-3xl shadow-xs flex flex-col justify-between">
         <div>
           <div className="flex items-center justify-between mb-2">
@@ -134,7 +131,6 @@ export const SellerWalletMetrics: React.FC<Props> = ({ wallet, revenue, isLoadin
         </div>
       </div>
 
-      {/* Card 4: Doanh thu gộp tháng này */}
       <div className="bg-purple-50/70 border border-purple-200/80 p-5 rounded-3xl shadow-xs flex flex-col justify-between">
         <div>
           <div className="flex items-center justify-between mb-2">

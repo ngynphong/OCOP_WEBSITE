@@ -68,7 +68,6 @@ export interface MinigameRecentWinner {
 }
 
 export const eventMinigameApi = {
-  // Public
   getConfig: async (slug: string, gameType: MinigameType): Promise<EventMinigameConfigResponse> => {
     const res = (await publicAxiosClient.get<ResponseBase<EventMinigameConfigResponse>>(
       `/events/${slug}/minigame/config`,
@@ -90,7 +89,6 @@ export const eventMinigameApi = {
     return res.data;
   },
 
-  // Authenticated (User)
   getUserStatus: async (slug: string): Promise<UserMinigameStatusResponse> => {
     const res = (await axiosClient.get<ResponseBase<UserMinigameStatusResponse>>(
       `/users/events/${slug}/minigame/status`,
@@ -120,7 +118,6 @@ export const eventMinigameApi = {
     return res.data;
   },
 
-  // Authenticated (Admin)
   getAdminConfig: async (eventId: number): Promise<EventMinigameConfigResponse> => {
     const res = (await axiosClient.get<ResponseBase<EventMinigameConfigResponse>>(
       `/admin/events/${eventId}/minigame-config`,

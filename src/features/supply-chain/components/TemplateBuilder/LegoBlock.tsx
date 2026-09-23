@@ -184,7 +184,6 @@ export function LegoBlock({ block, index, onRemove, onEdit, isOverlay }: LegoBlo
           {block.description || 'Chưa có mô tả'}
         </p>
 
-        {/* Dynamic Fields & Evidence Badges */}
         {(dynamicFields.length > 0 ||
           parsedRule?.photo === 'REQUIRED' ||
           parsedRule?.gps === 'REQUIRED') && (

@@ -75,7 +75,6 @@ export function PublicShopList() {
     (p) => p.id === selectedProvinceId,
   )?.name;
 
-  // Lọc client cho chế độ 34 tỉnh (so khớp các tỉnh thành hợp nhất với shop.provinceName)
   const displayedShops = useMemo(() => {
     if (provinceMode === '34' && selectedProvince34Code) {
       const p34 = PROVINCES_34_MAP[selectedProvince34Code];
@@ -144,12 +143,10 @@ export function PublicShopList() {
 
   return (
     <div className="w-full relative overflow-hidden">
-      {/* Decorative Liquid Glass Background Elements */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-emerald-300/20 rounded-full blur-[100px] pointer-events-none -z-10" />
       <div className="absolute top-40 right-1/4 w-80 h-80 bg-teal-200/20 rounded-full blur-[100px] pointer-events-none -z-10" />
 
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-12">
-        {/* Hero Section */}
         <div className="flex flex-col items-center text-center mb-12 relative">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -186,7 +183,6 @@ export function PublicShopList() {
             đậm đà bản sắc Việt.
           </motion.p>
 
-          {/* Liquid Glass Search Bar */}
           <motion.form
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -225,10 +221,8 @@ export function PublicShopList() {
           </motion.form>
         </div>
 
-        {/* Categories / Filters & Counter Bar */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 mb-6">
           <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-            {/* Mode Switcher 63 vs 34 */}
             <div className="inline-flex p-0.5 bg-stone-100 rounded-xl border border-stone-200 text-xs font-bold shrink-0">
               <button
                 type="button"
@@ -284,7 +278,6 @@ export function PublicShopList() {
               )}
             </div>
 
-            {/* Active Filter Chips */}
             {(searchQuery || selectedProvinceId || selectedProvince34Code) && (
               <div className="flex items-center gap-2 flex-wrap text-xs">
                 {searchQuery && (
@@ -334,7 +327,6 @@ export function PublicShopList() {
             )}
           </div>
 
-          {/* Results counter */}
           {!isLoading && displayedShops.length > 0 && (
             <span className="text-xs font-semibold text-stone-500 shrink-0">
               Hiển thị <strong className="text-stone-800">{displayedShops.length}</strong> /{' '}
@@ -343,7 +335,6 @@ export function PublicShopList() {
           )}
         </div>
 
-        {/* Grid List */}
         <AnimatePresence mode="wait">
           {displayedShops.length === 0 && !isLoading ? (
             <motion.div
@@ -385,14 +376,12 @@ export function PublicShopList() {
                   key={shop.id}
                   className="group relative bg-white/80 backdrop-blur-xl border border-stone-200/80 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-emerald-900/10 transition-all duration-300 flex flex-col cursor-pointer"
                 >
-                  {/* Entire Card Clickable Link */}
                   <Link
                     href={`/cua-hang/${shop.slug}`}
                     className="absolute inset-0 z-20 focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded-3xl"
                     aria-label={`Ghé thăm gian hàng ${shop.name}`}
                   />
 
-                  {/* Card Header Background Banner */}
                   <div className="h-36 bg-stone-900 relative overflow-hidden">
                     <Image
                       src={shop.bannerUrl || '/images/background.jpg'}
@@ -403,7 +392,6 @@ export function PublicShopList() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
 
-                    {/* Star Rating Badge */}
                     <div className="absolute top-3 right-3 flex items-center gap-1 bg-black/40 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/20 z-10">
                       <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
                       <span className="text-white text-xs font-bold">
@@ -412,9 +400,7 @@ export function PublicShopList() {
                     </div>
                   </div>
 
-                  {/* Shop Info Container */}
                   <div className="px-5 pb-5 pt-0 relative flex-1 flex flex-col">
-                    {/* Logo Overlap */}
                     <div className="absolute -top-10 left-5 w-20 h-20 bg-white rounded-2xl p-1 shadow-lg border border-stone-100 group-hover:-translate-y-1 transition-transform duration-300 z-10">
                       <div className="relative w-full h-full rounded-xl overflow-hidden bg-stone-50">
                         <Image
@@ -470,7 +456,6 @@ export function PublicShopList() {
           )}
         </AnimatePresence>
 
-        {/* Initial Loading Skeletons */}
         {isLoading && pageNo === 1 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
@@ -491,7 +476,6 @@ export function PublicShopList() {
           </div>
         )}
 
-        {/* Load More Button */}
         {!isLoading && hasMore && (
           <div className="flex justify-center mt-14 mb-6">
             <button

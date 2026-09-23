@@ -15,7 +15,7 @@ type ApiError = {
 export const useAdminBrandsQuery = () => {
   return useQuery({
     queryKey: ['admin-brands'],
-    queryFn: () => brandApi.getBrands(), // Using getBrands for now, but in a real app this might be a paginated admin list
+    queryFn: () => brandApi.getBrands(),
     staleTime: 5 * 60 * 1000,
   });
 };

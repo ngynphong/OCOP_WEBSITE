@@ -18,10 +18,8 @@ export function CategorySubNav({
   activeSubCategoryId,
   onSelectSubCategory,
 }: CategorySubNavProps) {
-  // Extract subcategories (children) or siblings if current category has parent
   const subCategories = currentCategory.children || [];
 
-  // If no children, check if currentCategory has siblings in allCategories
   const siblings =
     !subCategories.length && currentCategory.parentId
       ? allCategories.find((c) => c.id === currentCategory.parentId)?.children || []
@@ -46,7 +44,6 @@ export function CategorySubNav({
       </div>
 
       <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none scroll-smooth">
-        {/* All option */}
         {onSelectSubCategory && (
           <button
             onClick={() => onSelectSubCategory(null)}

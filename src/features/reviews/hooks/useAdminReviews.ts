@@ -3,8 +3,6 @@ import toast from 'react-hot-toast';
 import { reviewApi } from '../api/reviewApi';
 import { AdminReviewQueryParams, AdminModerationPayload } from '../types/reviewTypes';
 
-// ─── Query Hooks ──────────────────────────────────────────────────────────────
-
 export const useAdminPendingReviewsQuery = (params?: AdminReviewQueryParams) => {
   return useQuery({
     queryKey: ['admin-pending-reviews', params],
@@ -24,8 +22,6 @@ export const useAdminContentFlagsQuery = (params?: {
     staleTime: 60 * 1000,
   });
 };
-
-// ─── Mutation Hooks ───────────────────────────────────────────────────────────
 
 export const useAdminReviewMutations = () => {
   const queryClient = useQueryClient();
@@ -77,7 +73,7 @@ export const useAdminReviewMutations = () => {
     onSuccess: () => {
       toast.success('Đã giải quyết báo cáo vi phạm');
       queryClient.invalidateQueries({ queryKey: ['admin-content-flags'] });
-      invalidate(); // Also refresh review lists in case content was removed
+      invalidate();
     },
     onError: (error: { response?: { data?: { message?: string } } }) => {
       toast.error(error?.response?.data?.message || 'Có lỗi xảy ra khi xử lý báo cáo');

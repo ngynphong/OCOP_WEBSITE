@@ -35,14 +35,12 @@ export function LuckyEnvelopeModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
-      {/* Backdrop */}
       <div
         className="fixed inset-0 bg-slate-950/85 backdrop-blur-md transition-opacity"
         onClick={() => !isSpinning && onClose()}
         aria-hidden="true"
       />
 
-      {/* Modal Container */}
       <div
         className="relative w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl z-10 border transition-all my-auto"
         style={{
@@ -51,7 +49,6 @@ export function LuckyEnvelopeModal({
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.75)',
         }}
       >
-        {/* Header Đồng Bộ Theme Sự Kiện */}
         <div
           className="relative px-5 sm:px-8 py-5 border-b flex items-center justify-between"
           style={{
@@ -91,7 +88,6 @@ export function LuckyEnvelopeModal({
           </button>
         </div>
 
-        {/* Subheader: Lượt bốc & Nhiệm vụ */}
         <div className="px-5 sm:px-7 py-3 bg-black/25 border-b border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2">
             <span className="text-white/80 font-medium">Lượt bốc của bạn:</span>
@@ -117,7 +113,6 @@ export function LuckyEnvelopeModal({
           </div>
         </div>
 
-        {/* Dynamic Mystery Pick Grid */}
         <div className="p-5 sm:p-8">
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5 sm:gap-5">
             {items.map((item) => {
@@ -139,7 +134,6 @@ export function LuckyEnvelopeModal({
             })}
           </div>
 
-          {/* Bottom notice & Quick action */}
           <div className="mt-6 p-3.5 rounded-2xl bg-black/30 border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/80">
             <div className="flex items-center gap-2">
               <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />

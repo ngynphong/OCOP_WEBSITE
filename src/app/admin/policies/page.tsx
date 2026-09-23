@@ -70,7 +70,6 @@ const AdminPoliciesPage = () => {
 
   return (
     <div className="space-y-8">
-      {/* Page Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
           <h2 className="text-3xl font-black text-emerald-900 tracking-tight leading-none mb-2">
@@ -95,7 +94,6 @@ const AdminPoliciesPage = () => {
         </motion.div>
       </div>
 
-      {/* Main Table */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

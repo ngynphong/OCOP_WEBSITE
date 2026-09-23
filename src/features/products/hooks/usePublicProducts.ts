@@ -4,6 +4,8 @@ import { useQuery, useMutation, useInfiniteQuery, UseQueryOptions } from '@tanst
 import { publicProductApi } from '@/features/products/api/publicProductApi';
 import { brandApi } from '@/features/products/api/brandApi';
 import { aiChatApi } from '@/features/ai-chat/api/aiChatApi';
+import { supplyChainApi } from '@/features/supply-chain/api/supplyChainApi';
+import { queryKeys } from '@/lib/queryKeys';
 import {
   TraceDetailResponse,
   PublicProductListParams,
@@ -26,8 +28,6 @@ export const usePublicProvincesQuery = (options?: Record<string, unknown>) => {
     ...options,
   });
 };
-
-// ─── Standalone Query Hooks ───────────────────────────────────────────────────
 
 export const usePublicProductsQuery = (
   params?: PublicProductListParams,
@@ -194,13 +194,10 @@ export const usePublicTierPricesQuery = (productId: number, variantId?: number) 
   });
 };
 
-// ─── AI Semantic Search & Recommendations ──────────────────────────────────────────
-
 export const useAiSearchQuery = (query: string, limit = 5, enabled = true) => {
   return useQuery({
     queryKey: ['ai-search', query, limit],
     queryFn: async () => {
-      // API Backend giờ đã trả về trực tiếp danh sách ProductListResponse
       return await aiChatApi.semanticSearch(query, limit);
     },
     enabled: enabled && query.length >= 2,
@@ -217,10 +214,32 @@ export const useAiRecommendationsQuery = (
     queryFn: async () => {
       if (!productId) return [];
 
-      // API Backend giờ đã trả về trực tiếp danh sách ProductListResponse
       return await aiChatApi.getRecommendations(productId.toString(), limit);
     },
     enabled: !!productId,
     staleTime: 10 * 60 * 1000,
+  });
+};
+
+export const usePublicProductLotsQuery = (
+  productId?: number,
+  page = 0,
+  size = 6,
+  enabled = true,
+) => {
+  return useQuery({
+    queryKey: queryKeys.products.lots(productId, page, size),
+    queryFn: () => supplyChainApi.getPublicLots({ productId: productId!, page, size }),
+    enabled: !!productId && enabled,
+    staleTime: 60 * 1000,
+  });
+};
+
+export const usePublicLotByCodeQuery = (code?: string, enabled = true) => {
+  return useQuery({
+    queryKey: queryKeys.products.lotByCode(code),
+    queryFn: () => supplyChainApi.getLotByCode(code!),
+    enabled: enabled && !!code,
+    retry: false,
   });
 };

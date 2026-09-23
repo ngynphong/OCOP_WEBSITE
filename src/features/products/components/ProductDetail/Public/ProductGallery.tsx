@@ -77,7 +77,6 @@ export const ProductGallery = memo(function ProductGallery({
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Main Display */}
       <div className="w-full max-h-[500px] aspect-square relative rounded-xl overflow-hidden bg-stone-50 border border-stone-100 shadow-sm group">
         <Image
           key={activeMedia.url}
@@ -89,7 +88,6 @@ export const ProductGallery = memo(function ProductGallery({
           className="object-contain scale-105 p-4 group-hover:scale-110 transition-transform duration-1000 ease-out animate-in fade-in zoom-in-95"
         />
 
-        {/* Navigation Arrows */}
         {mediaList.length > 1 && (
           <>
             <button
@@ -110,9 +108,7 @@ export const ProductGallery = memo(function ProductGallery({
         )}
       </div>
 
-      {/* Thumbnails Row */}
       <div className="flex flex-wrap gap-2 md:gap-4 px-0 md:px-2">
-        {/* Image Thumbnails */}
         {sortedImages.map((image) => (
           <button
             key={image.id}

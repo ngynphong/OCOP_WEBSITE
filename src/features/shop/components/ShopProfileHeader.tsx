@@ -93,7 +93,6 @@ export const ShopProfileHeader = ({ shop, totalProductsCount }: ShopProfileHeade
 
   return (
     <div className="relative bg-stone-100">
-      {/* Cover Banner */}
       <div className="relative w-full h-40 sm:h-52 md:h-64 lg:h-72 bg-stone-900 overflow-hidden">
         <motion.div style={{ y: yParallax }} className="absolute inset-0 -top-12 -bottom-12">
           <Image
@@ -105,20 +104,15 @@ export const ShopProfileHeader = ({ shop, totalProductsCount }: ShopProfileHeade
             sizes="100vw"
           />
         </motion.div>
-        {/* Multi-layer gradient overlays for smooth depth */}
         <div className="absolute inset-0 bg-gradient-to-t from-stone-950/70 via-stone-950/20 to-stone-950/30 pointer-events-none" />
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-stone-950/80 to-transparent pointer-events-none" />
       </div>
 
-      {/* Main Profile Card Container */}
       <div className="container mx-auto px-3 sm:px-6">
         <div className="relative -mt-12 sm:-mt-16 md:-mt-20 pb-4">
           <div className="bg-white rounded-2xl sm:rounded-3xl border border-stone-200/80 shadow-xl shadow-stone-900/5 p-4 sm:p-6 md:p-7">
-            {/* Top row: Avatar + Info + Actions */}
             <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-5 sm:gap-6">
-              {/* Left group: Avatar & Shop Details */}
               <div className="flex items-start gap-3.5 sm:gap-5 min-w-0 flex-1">
-                {/* Logo / Avatar with active indicator */}
                 <div className="relative shrink-0">
                   <div className="relative w-18 h-18 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-2xl border-3 border-white bg-white shadow-md overflow-hidden ring-1 ring-stone-200/70">
                     {shop.logoUrl ? (
@@ -145,9 +139,7 @@ export const ShopProfileHeader = ({ shop, totalProductsCount }: ShopProfileHeade
                   )}
                 </div>
 
-                {/* Info & Metrics */}
                 <div className="min-w-0 flex-1 pt-0.5 sm:pt-1">
-                  {/* Shop Name & Badges */}
                   <div className="flex flex-wrap items-center gap-2">
                     <h1 className="text-lg sm:text-2xl md:text-3xl font-black text-stone-900 tracking-tight leading-snug line-clamp-2">
                       {shop.name}
@@ -168,9 +160,7 @@ export const ShopProfileHeader = ({ shop, totalProductsCount }: ShopProfileHeade
                     )}
                   </div>
 
-                  {/* Clean, Structured Stat Chips */}
                   <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 mt-3">
-                    {/* Rating Chip */}
                     <div className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-xl bg-amber-50/70 border border-amber-200/70 text-xs sm:text-sm font-semibold shadow-2xs">
                       <FiStar className="text-amber-500 fill-amber-400" size={13} />
                       <span className="text-stone-800">
@@ -181,7 +171,6 @@ export const ShopProfileHeader = ({ shop, totalProductsCount }: ShopProfileHeade
                       </span>
                     </div>
 
-                    {/* Followers Chip */}
                     <div className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-xl bg-stone-50 border border-stone-200/70 text-xs sm:text-sm font-medium shadow-2xs">
                       <FiUsers className="text-emerald-600" size={13} />
                       <span className="font-bold text-stone-900">
@@ -192,7 +181,6 @@ export const ShopProfileHeader = ({ shop, totalProductsCount }: ShopProfileHeade
                       <span className="text-stone-500 text-[11px] sm:text-xs">người theo dõi</span>
                     </div>
 
-                    {/* Products Count Chip */}
                     {totalProductsCount !== undefined && (
                       <div className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-xl bg-stone-50 border border-stone-200/70 text-xs sm:text-sm font-medium shadow-2xs">
                         <FiPackage className="text-stone-500" size={13} />
@@ -201,7 +189,6 @@ export const ShopProfileHeader = ({ shop, totalProductsCount }: ShopProfileHeade
                       </div>
                     )}
 
-                    {/* Location Chip */}
                     <div className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-xl bg-stone-50 border border-stone-200/70 text-xs sm:text-sm font-medium shadow-2xs">
                       <FiMapPin className="text-rose-500" size={13} />
                       <span className="text-stone-700 text-[11px] sm:text-xs font-semibold">
@@ -209,7 +196,6 @@ export const ShopProfileHeader = ({ shop, totalProductsCount }: ShopProfileHeade
                       </span>
                     </div>
 
-                    {/* Joined Date */}
                     <div className="hidden sm:inline-flex items-center gap-1 text-stone-400 text-xs font-normal pl-1">
                       <FiCalendar size={12} />
                       <span>Gia nhập {joinedDate}</span>
@@ -218,9 +204,7 @@ export const ShopProfileHeader = ({ shop, totalProductsCount }: ShopProfileHeade
                 </div>
               </div>
 
-              {/* Right group: Modern Action Buttons */}
               <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 pt-3 sm:pt-1 border-t sm:border-t-0 border-stone-100 w-full lg:w-auto">
-                {/* 1. Follow Button */}
                 <button
                   type="button"
                   onClick={handleToggleFollow}
@@ -248,7 +232,6 @@ export const ShopProfileHeader = ({ shop, totalProductsCount }: ShopProfileHeade
                   )}
                 </button>
 
-                {/* 2. Message / Chat Button */}
                 <button
                   type="button"
                   onClick={handleStartChat}
@@ -263,7 +246,6 @@ export const ShopProfileHeader = ({ shop, totalProductsCount }: ShopProfileHeade
                   <span>Nhắn tin</span>
                 </button>
 
-                {/* 3. Share Button */}
                 <button
                   type="button"
                   onClick={handleShareShop}
@@ -274,7 +256,6 @@ export const ShopProfileHeader = ({ shop, totalProductsCount }: ShopProfileHeade
                   <span className="hidden sm:inline">Chia sẻ</span>
                 </button>
 
-                {/* 4. Report Button */}
                 <button
                   type="button"
                   onClick={() => setIsComplaintModalOpen(true)}

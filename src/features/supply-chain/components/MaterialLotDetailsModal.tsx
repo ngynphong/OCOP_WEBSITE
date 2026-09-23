@@ -54,7 +54,6 @@ export default function MaterialLotDetailsModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Chi tiết Lô nguyên liệu" maxWidth="max-w-2xl">
       <div className="space-y-6">
-        {/* Thông tin chung */}
         <div className="bg-stone-50 rounded-xl p-5 border border-stone-100 flex flex-col md:flex-row gap-6">
           <div className="flex-1 space-y-3">
             <div>
@@ -102,7 +101,6 @@ export default function MaterialLotDetailsModal({
           </div>
         </div>
 
-        {/* Lịch sử sử dụng / Sản phẩm tạo thành */}
         <div>
           <h4 className="text-base font-semibold text-stone-800 mb-4 flex items-center gap-2">
             <FiBox className="text-emerald-600" /> Sản phẩm đã tạo thành (Từ nguyên liệu này)

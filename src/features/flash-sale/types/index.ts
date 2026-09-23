@@ -3,14 +3,11 @@ import { ResponseBase } from '@/features/admin/types/adminTypes';
 
 export type FlashSaleStatus = 'DRAFT' | 'SCHEDULED' | 'ACTIVE' | 'ENDED' | 'CANCELLED';
 
-// ─── Zod Schemas ─────────────────────────────────────────────────────────────
-
 export const FlashSaleItemSchema = z
   .object({
     variantId: z.number().int().positive('Variant ID không hợp lệ'),
     salePrice: z.number().min(0, 'Giá khuyến mãi phải >= 0'),
     qtyLimit: z.number().int().min(1, 'Số lượng giới hạn phải >= 1'),
-    // Các trường bổ trợ hiển thị (không gửi lên server)
     _productName: z.string().optional(),
     _variantName: z.string().optional(),
     _originalPrice: z.number().optional(),
@@ -56,8 +53,6 @@ export const FlashSaleRequestSchema = z
     }
   });
 
-// ─── Interfaces ──────────────────────────────────────────────────────────────
-
 export interface FlashSaleItem {
   id: number;
   variantId: number;
@@ -86,8 +81,6 @@ export interface FlashSale {
   items: FlashSaleItem[];
   active: boolean;
 }
-
-// ─── Request/Response Types ──────────────────────────────────────────────────
 
 export type CreateFlashSaleRequest = z.infer<typeof FlashSaleRequestSchema>;
 export type UpdateFlashSaleRequest = CreateFlashSaleRequest;

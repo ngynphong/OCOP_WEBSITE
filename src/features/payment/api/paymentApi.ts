@@ -10,7 +10,6 @@ import {
 } from '../types';
 
 export const paymentApi = {
-  // Admin APIs
   getAdminGateways: (): Promise<ApiResponse<IPaymentGatewayAdmin[]>> =>
     axiosClient.get(API_ENDPOINTS.ADMIN.PAYMENT_GATEWAYS),
 
@@ -26,7 +25,6 @@ export const paymentApi = {
   ): Promise<ApiResponse<IPaymentGatewayAdmin>> =>
     axiosClient.patch(buildRoute(API_ENDPOINTS.ADMIN.PAYMENT_GATEWAYS, id, 'config'), data),
 
-  // User APIs
   getUserGateways: (): Promise<ApiResponse<IPaymentGateway[]>> =>
     axiosClient.get(API_ENDPOINTS.PUBLIC.PAYMENT_GATEWAYS),
 

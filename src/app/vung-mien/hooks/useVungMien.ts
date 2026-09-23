@@ -43,20 +43,15 @@ export function useVungMien() {
 
   const isClient = useSyncExternalStore(emptySubscribe, getSnapshot, getServerSnapshot);
 
-  // Chế độ xem: '63' (hiện hành - 3 cấp) hoặc '34' (quy hoạch mới - 2 cấp, bãi bỏ cấp huyện)
   const [mode, setMode] = useState<ProvinceMode>('63');
   const isTwoTierMode = mode === '34';
 
-  // Lọc theo Miền lớn ('all' | 'bac' | 'trung' | 'nam')
   const [macroRegion, setMacroRegion] = useState<MacroRegionKey>('all');
 
-  // Lọc theo 8 Vùng sinh thái ('all' | 1..8)
   const [selectedRegionId, setSelectedRegionId] = useState<RegionId | 'all'>('all');
 
-  // Chế độ xem bản đồ: 'overview' (SVG toàn quốc) hoặc 'satellite' (Leaflet vệ tinh chi tiết Xã / Vùng trồng)
   const [activeMapView, setActiveMapView] = useState<'overview' | 'satellite'>('overview');
 
-  // Tỉnh/thành đang chọn từ URL query param
   const rawProvinceQuery = searchParams.get('province');
   const selectedProvince = useMemo(() => {
     if (!rawProvinceQuery || rawProvinceQuery === 'undefined' || rawProvinceQuery === 'null') {
@@ -65,17 +60,14 @@ export function useVungMien() {
     return rawProvinceQuery;
   }, [rawProvinceQuery]);
 
-  // Thông tin chi tiết của tỉnh đang chọn
   const selectedProvinceInfo = useMemo(() => {
     if (!selectedProvince) return undefined;
     return findProvince(selectedProvince, mode);
   }, [selectedProvince, mode]);
 
-  // Danh mục tỉnh thành từ backend
   const { data: provincesRes } = usePublicProvincesQuery();
   const backendProvinces = useMemo(() => provincesRes?.data || [], [provincesRes]);
 
-  // Tìm ID tỉnh để query sản phẩm từ backend
   const provinceId = useMemo(() => {
     if (!selectedProvince || backendProvinces.length === 0) return undefined;
 
@@ -101,8 +93,6 @@ export function useVungMien() {
     return undefined;
   }, [selectedProvince, backendProvinces, mode]);
 
-  // ─── CHẾ ĐỘ 34 TỈNH: KHÔNG CÒN CẤP HUYỆN (CHÍNH QUYỀN 2 CẤP) ─────────────────
-  // Danh sách các khu vực/tỉnh hợp nhất nếu là tỉnh 34 sáp nhập
   const constituentProvinces = useMemo(() => {
     if (mode !== '34' || !selectedProvinceInfo?.constituentCodes) return [];
     return selectedProvinceInfo.constituentCodes.map((code) => {
@@ -123,7 +113,6 @@ export function useVungMien() {
 
   const [selectedConstituentCode, setSelectedConstituentCode] = useState<string | null>(null);
 
-  // Danh sách provinceId thực tế để truy xuất Xã
   const effectiveProvinceIds = useMemo(() => {
     if (mode === '63') {
       return provinceId ? [provinceId] : [];
@@ -137,11 +126,9 @@ export function useVungMien() {
     return provinceId ? [provinceId] : [];
   }, [mode, provinceId, selectedConstituentCode, constituentProvinces]);
 
-  // ─── CHẾ ĐỘ 63 TỈNH: 3 CẤP (TỈNH ➔ HUYỆN ➔ XÃ) ──────────────────────────────
   const [selectedDistrictId, setSelectedDistrictId] = useState<number | null>(null);
   const [selectedWardCode, setSelectedWardCode] = useState<string | null>(null);
 
-  // 1. Danh sách Quận / Huyện (Chỉ sử dụng khi ở mode 63)
   const { data: districtsRes, isLoading: isLoadingDistricts } = useQuery({
     queryKey: ['vung-mien-districts', provinceId],
     queryFn: () => locationApi.getDistricts(provinceId!),
@@ -149,11 +136,10 @@ export function useVungMien() {
     staleTime: 15 * 60 * 1000,
   });
   const districts: District[] = useMemo(() => {
-    if (mode === '34') return []; // 34 Tỉnh mới bãi bỏ hoàn toàn cấp huyện!
+    if (mode === '34') return [];
     return districtsRes?.data || [];
   }, [districtsRes, mode]);
 
-  // 2. Danh sách Phường / Xã cho mode 63 (theo cấp Huyện)
   const { data: wards63Res, isLoading: isLoadingWards63 } = useQuery({
     queryKey: ['vung-mien-wards-63', selectedDistrictId],
     queryFn: () => locationApi.getWards(selectedDistrictId!),
@@ -161,13 +147,11 @@ export function useVungMien() {
     staleTime: 15 * 60 * 1000,
   });
 
-  // 3. Danh sách Phường / Xã trực thuộc Tỉnh cho mode 34 (Chính quyền 2 cấp: Tỉnh ➔ Xã trực thuộc)
   const { data: wards34Res, isLoading: isLoadingWards34 } = useQuery({
     queryKey: ['vung-mien-wards-34', effectiveProvinceIds],
     queryFn: async () => {
       if (!effectiveProvinceIds.length) return [];
       try {
-        // Lấy toàn bộ các huyện ngầm bên dưới
         const distResponses = await Promise.all(
           effectiveProvinceIds.map((pid) =>
             locationApi.getDistricts(pid).catch(() => ({ data: [] })),
@@ -175,7 +159,6 @@ export function useVungMien() {
         );
         const allDistricts = distResponses.flatMap((r) => r.data || []);
 
-        // Gom tất cả các xã vào danh mục Phường / Xã trực thuộc Tỉnh
         const wardPromises = allDistricts.map((d) =>
           locationApi
             .getWards(d.id)
@@ -198,7 +181,6 @@ export function useVungMien() {
     staleTime: 30 * 60 * 1000,
   });
 
-  // Tổng hợp danh sách Wards tương ứng theo chế độ
   const wards: WardWithMeta[] = useMemo(() => {
     if (mode === '34') {
       return (wards34Res || []).sort((a, b) => a.name.localeCompare(b.name, 'vi'));
@@ -208,7 +190,6 @@ export function useVungMien() {
 
   const isLoadingWards = mode === '34' ? isLoadingWards34 : isLoadingWards63;
 
-  // Thực thể Huyện và Xã đang chọn
   const selectedDistrict = useMemo(
     () => (mode === '63' ? districts.find((d) => d.id === selectedDistrictId) || null : null),
     [districts, selectedDistrictId, mode],
@@ -220,7 +201,6 @@ export function useVungMien() {
     [wards, selectedWardCode],
   );
 
-  // ─── ĐIỀU CHỈNH STATE KHI ĐỔI TỈNH HOẶC CHẾ ĐỘ ─────────────────────────────
   const [prevProvince, setPrevProvince] = useState(selectedProvince);
   const [prevMode, setPrevMode] = useState(mode);
 
@@ -232,7 +212,6 @@ export function useVungMien() {
     setSelectedConstituentCode(null);
   }
 
-  // ─── ĐỊNH VỊ TOẠ ĐỘ XÃ / HUYỆN CHO BẢN ĐỒ VỆ TINH ─────────────────────────────
   const defaultProvinceCoords = useMemo(() => {
     if (!selectedProvince) return null;
     return getProvinceGeo(selectedProvince, mode)?.center ?? null;
@@ -275,7 +254,6 @@ export function useVungMien() {
 
   const communeCoords = geocodedCoords ?? defaultProvinceCoords;
 
-  // ─── QUERY SẢN PHẨM OCOP VÙNG MIỀN ───────────────────────────────────────────
   const [selectedStar, setSelectedStar] = useState<number | null>(null);
 
   const {
@@ -301,7 +279,6 @@ export function useVungMien() {
     [productsInfiniteRes],
   );
 
-  // Lọc sản phẩm chi tiết theo Xã / Huyện đã chọn
   const { filteredProducts, isFilteredByCommune, isFilteredByDistrict } = useMemo(() => {
     if (!rawProducts || rawProducts.length === 0) {
       return { filteredProducts: [], isFilteredByCommune: false, isFilteredByDistrict: false };
@@ -357,7 +334,6 @@ export function useVungMien() {
     };
   }, [rawProducts, selectedWard, selectedDistrict, mode]);
 
-  // ─── CALLBACKS ───────────────────────────────────────────────────────────────
   const handleSelectMode = useCallback(
     (newMode: ProvinceMode) => {
       setMode(newMode);
@@ -455,7 +431,6 @@ export function useVungMien() {
     }
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  // Danh mục danh sách miền & vùng
   const availableRegions: AdministrativeRegion[] = useMemo(() => {
     const all: AdministrativeRegion[] = Object.values(ADMINISTRATIVE_REGIONS);
     if (macroRegion === 'all') return all;
@@ -485,7 +460,6 @@ export function useVungMien() {
     isFetching,
     isFetchingNextPage,
     hasNextPage,
-    // Phân cấp hành chính
     constituentProvinces,
     selectedConstituentCode,
     handleSelectConstituent,
@@ -503,10 +477,8 @@ export function useVungMien() {
         ? getProvinceGeo(selectedProvinceInfo.name, mode)?.center || VIETNAM_CENTER
         : VIETNAM_CENTER),
     isResolvingCoords,
-    // Bản đồ
     activeMapView,
     setActiveMapView,
-    // Handlers
     handleSelectMode,
     handleSelectMacroRegion,
     handleSelectRegion,

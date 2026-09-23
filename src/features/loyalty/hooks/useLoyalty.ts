@@ -3,8 +3,6 @@ import { loyaltyApi } from '../api/loyaltyApi';
 import { IAdjustPointsRequest } from '../types/loyaltyTypes';
 import toast from 'react-hot-toast';
 
-// --- Admin Hooks ---
-
 export const useAdminLoyaltyAccount = (userId: string) => {
   return useQuery({
     queryKey: ['admin', 'loyalty', 'account', userId],
@@ -24,8 +22,6 @@ export const useAdjustPoints = (userId: string) => {
     },
   });
 };
-
-// --- User Hooks ---
 
 export const useUserLoyaltyAccount = () => {
   return useQuery({

@@ -58,7 +58,6 @@ export function EventBasicInfoSection({
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Tên sự kiện */}
         <div className="md:col-span-2">
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
             Tên Sự Kiện <span className="text-red-500">*</span>
@@ -73,7 +72,6 @@ export function EventBasicInfoSection({
           />
         </div>
 
-        {/* Loại sự kiện */}
         <div>
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
             Phân Loại Sự Kiện <span className="text-red-500">*</span>
@@ -94,7 +92,6 @@ export function EventBasicInfoSection({
           </p>
         </div>
 
-        {/* Mã code */}
         <div>
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
             Mã Sự Kiện (Unique Code) <span className="text-red-500">*</span>
@@ -112,7 +109,6 @@ export function EventBasicInfoSection({
           </p>
         </div>
 
-        {/* Đường dẫn URL Slug */}
         <div className="md:col-span-2">
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
             Đường Dẫn Công Khai<span className="text-red-500">*</span>
@@ -132,7 +128,6 @@ export function EventBasicInfoSection({
           </div>
         </div>
 
-        {/* Thời gian bắt đầu */}
         <div>
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
             Thời Gian Bắt Đầu <span className="text-red-500">*</span>
@@ -146,7 +141,6 @@ export function EventBasicInfoSection({
           />
         </div>
 
-        {/* Thời gian kết thúc */}
         <div>
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
             Thời Gian Kết Thúc <span className="text-red-500">*</span>
@@ -160,7 +154,6 @@ export function EventBasicInfoSection({
           />
         </div>
 
-        {/* Mô tả chiến dịch */}
         <div className="md:col-span-2">
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
             Mô Tả & Thông Điệp Chiến Dịch
@@ -174,7 +167,6 @@ export function EventBasicInfoSection({
           />
         </div>
 
-        {/* Tùy chọn hiển thị Trang chủ */}
         <div className="md:col-span-2">
           <label className="flex items-center gap-3 p-3.5 rounded-xl border border-gray-200 bg-gray-50/50 hover:bg-gray-50 transition cursor-pointer select-none">
             <input

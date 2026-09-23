@@ -19,7 +19,6 @@ export const VoucherHomeSection = memo(function VoucherHomeSection() {
   const { saveVoucher } = useSaveVoucherMutations();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
 
-  // Fetch saved vouchers to check status
   const { data: savedResp } = useSavedVouchers(1, 50, isAuthenticated);
 
   const vouchers = vouchersResp?.data || [];
@@ -75,7 +74,6 @@ export const VoucherHomeSection = memo(function VoucherHomeSection() {
           </button>
         </div>
 
-        {/* 6 Vouchers in 1 row on desktop */}
         <div className="flex overflow-x-auto sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3 pb-2 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x hide-scrollbar">
           {vouchers.slice(0, 6).map((voucher) => (
             <motion.div
@@ -84,7 +82,6 @@ export const VoucherHomeSection = memo(function VoucherHomeSection() {
               whileTap={{ scale: 0.98 }}
               className="relative flex bg-white border border-stone-200/80 rounded-xl overflow-hidden shadow-2xs hover:shadow-md transition-all group min-h-[86px] sm:min-h-[90px] w-[185px] sm:w-auto shrink-0 snap-start"
             >
-              {/* Left Cut-out part */}
               <div className="w-14 sm:w-16 bg-linear-to-br from-red-500 to-rose-600 flex flex-col items-center justify-center border-r border-dashed border-white/30 relative shrink-0 p-1.5 text-center text-white">
                 <div className="absolute top-0 right-0 w-2.5 h-2.5 bg-stone-100 rounded-full translate-x-1/2 -translate-y-1/2 shadow-inner" />
                 <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-stone-100 rounded-full translate-x-1/2 translate-y-1/2 shadow-inner" />
@@ -105,7 +102,6 @@ export const VoucherHomeSection = memo(function VoucherHomeSection() {
                 </span>
               </div>
 
-              {/* Right Content part */}
               <div className="flex-1 p-2 flex flex-col justify-between gap-1 overflow-hidden">
                 <div className="space-y-0.5">
                   <h3 className="text-[11px] font-black text-stone-900 line-clamp-1 group-hover:text-red-600 transition-colors uppercase tracking-tight">

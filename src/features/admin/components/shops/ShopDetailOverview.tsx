@@ -35,7 +35,6 @@ const ShopDetailOverview: React.FC<ShopDetailOverviewProps> = React.memo(({ shop
 
   return (
     <div className="space-y-10">
-      {/* Shop Introduction */}
       <section>
         <h4 className="text-lg font-black text-stone-800 mb-6 flex items-center gap-3">
           <div className="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
@@ -46,7 +45,6 @@ const ShopDetailOverview: React.FC<ShopDetailOverviewProps> = React.memo(({ shop
         </div>
       </section>
 
-      {/* Owner Info Section */}
       <section className="bg-white rounded-xl border border-stone-100 overflow-hidden">
         <div className="px-8 py-6 bg-stone-50/50 border-b border-stone-100 flex justify-between items-center">
           <h4 className="text-sm font-black text-stone-800 uppercase tracking-widest flex items-center gap-2">
@@ -163,7 +161,6 @@ const ShopDetailOverview: React.FC<ShopDetailOverviewProps> = React.memo(({ shop
         </div>
       </section>
 
-      {/* Basic Stats */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white p-6 rounded-xl border border-stone-100 flex items-center gap-5">
           <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">

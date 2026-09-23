@@ -63,7 +63,6 @@ const AdminPaymentGatewaysManager = () => {
 
   return (
     <div className="flex flex-col lg:flex-row gap-6 h-[calc(100vh-180px)]">
-      {/* Left side: List of gateways */}
       <div className="w-full lg:w-1/3 xl:w-1/4 flex flex-col gap-4 overflow-y-auto p-2 custom-scrollbar">
         {gateways?.map((gateway) => (
           <motion.div
@@ -129,7 +128,6 @@ const AdminPaymentGatewaysManager = () => {
         ))}
       </div>
 
-      {/* Right side: Configuration Form */}
       <div className="flex-1 bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden flex flex-col">
         <AnimatePresence mode="wait">
           {selectedGateway ? (
@@ -140,7 +138,6 @@ const AdminPaymentGatewaysManager = () => {
               exit={{ opacity: 0, y: -10 }}
               className="flex-1 flex flex-col h-full"
             >
-              {/* Header */}
               <div className="p-6 border-b border-slate-50 flex items-center justify-between bg-slate-50/30">
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 relative rounded-xl border border-white bg-white shadow-sm p-3 flex items-center justify-center">
@@ -188,7 +185,6 @@ const AdminPaymentGatewaysManager = () => {
                 </div>
               </div>
 
-              {/* Form Content */}
               <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
                 <div className="max-w-2xl space-y-8">
                   <section className="space-y-6">
@@ -199,7 +195,6 @@ const AdminPaymentGatewaysManager = () => {
                       </h3>
                     </div>
 
-                    {/* Use key to force unmount/remount on ID change, avoiding useEffect for state sync */}
                     <GatewayConfigForm key={selectedGateway.id} gateway={selectedGateway} />
                   </section>
                 </div>
@@ -271,7 +266,7 @@ const GatewayConfigForm = ({ gateway }: { gateway: IPaymentGatewayAdmin }) => {
   };
 
   const handleFieldChange = (key: string, value: string) => {
-    if (!allowedFields.includes(key)) return; // Bảo vệ nếu cố tình sửa field bị disable
+    if (!allowedFields.includes(key)) return;
     setConfig((prev) => ({ ...prev, [key]: value }));
     setIsChanged(true);
   };

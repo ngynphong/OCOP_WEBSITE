@@ -29,10 +29,8 @@ export interface ProvinceInfo {
   regionName: string;
   macroRegion: 'bac' | 'trung' | 'nam';
   macroRegionName: string;
-  // Cho chế độ 34 tỉnh: danh sách các tỉnh cũ tương ứng
   constituentCodes?: string[];
   constituentNames?: string[];
-  // Cho chế độ 63 tỉnh: tỉnh mới tương ứng trong đề án 34
   parent34Code?: string;
   parent34Name?: string;
 }
@@ -51,19 +49,19 @@ export const MACRO_REGIONS: Record<string, MacroRegion> = {
     key: 'bac',
     name: 'Miền Bắc',
     regionIds: [1, 2, 3],
-    color: '#0284c7', // Sky Blue
+    color: '#0284c7',
   },
   trung: {
     key: 'trung',
     name: 'Miền Trung',
     regionIds: [4, 5, 6],
-    color: '#d97706', // Amber
+    color: '#d97706',
   },
   nam: {
     key: 'nam',
     name: 'Miền Nam',
     regionIds: [7, 8],
-    color: '#16a34a', // Green
+    color: '#16a34a',
   },
 };
 
@@ -76,56 +74,56 @@ export const ADMINISTRATIVE_REGIONS: Record<RegionId, AdministrativeRegion> = {
     name: 'Đông Bắc Bộ',
     codeName: 'dong_bac_bo',
     macroRegion: 'bac',
-    color: '#38bdf8', // Light blue
+    color: '#38bdf8',
   },
   2: {
     id: 2,
     name: 'Tây Bắc Bộ',
     codeName: 'tay_bac_bo',
     macroRegion: 'bac',
-    color: '#818cf8', // Indigo
+    color: '#818cf8',
   },
   3: {
     id: 3,
     name: 'Đồng bằng sông Hồng',
     codeName: 'dong_bang_song_hong',
     macroRegion: 'bac',
-    color: '#0284c7', // Cyan / Deep Sky
+    color: '#0284c7',
   },
   4: {
     id: 4,
     name: 'Bắc Trung Bộ',
     codeName: 'bac_trung_bo',
     macroRegion: 'trung',
-    color: '#f59e0b', // Amber
+    color: '#f59e0b',
   },
   5: {
     id: 5,
     name: 'Duyên hải Nam Trung Bộ',
     codeName: 'duyen_hai_nam_trung_bo',
     macroRegion: 'trung',
-    color: '#ea580c', // Orange
+    color: '#ea580c',
   },
   6: {
     id: 6,
     name: 'Tây Nguyên',
     codeName: 'tay_nguyen',
     macroRegion: 'trung',
-    color: '#b45309', // Brown-amber
+    color: '#b45309',
   },
   7: {
     id: 7,
     name: 'Đông Nam Bộ',
     codeName: 'dong_nam_bo',
     macroRegion: 'nam',
-    color: '#10b981', // Emerald
+    color: '#10b981',
   },
   8: {
     id: 8,
     name: 'Đồng bằng sông Cửu Long',
     codeName: 'dong_bang_song_cuu_long',
     macroRegion: 'nam',
-    color: '#059669', // Deep green
+    color: '#059669',
   },
 };
 
@@ -479,7 +477,6 @@ export const PROVINCES_34_MAP: Record<string, ProvinceInfo> = {
  * Danh mục 63 Tỉnh Thành truyền thống (kèm thông tin Vùng và Tỉnh 34 tương ứng)
  */
 export const PROVINCES_63_MAP: Record<string, ProvinceInfo> = {
-  // Miền Bắc - Vùng 1: Đông Bắc Bộ
   '02': {
     code: '02',
     name: 'Hà Giang',
@@ -571,7 +568,6 @@ export const PROVINCES_63_MAP: Record<string, ProvinceInfo> = {
     parent34Name: 'Phú Thọ',
   },
 
-  // Miền Bắc - Vùng 2: Tây Bắc Bộ
   '10': {
     code: '10',
     name: 'Lào Cai',
@@ -633,7 +629,6 @@ export const PROVINCES_63_MAP: Record<string, ProvinceInfo> = {
     parent34Name: 'Phú Thọ',
   },
 
-  // Miền Bắc - Vùng 3: Đồng bằng sông Hồng
   '01': {
     code: '01',
     name: 'Hà Nội',
@@ -735,7 +730,6 @@ export const PROVINCES_63_MAP: Record<string, ProvinceInfo> = {
     parent34Name: 'Ninh Bình',
   },
 
-  // Miền Trung - Vùng 4: Bắc Trung Bộ
   '38': {
     code: '38',
     name: 'Thanh Hóa',
@@ -797,7 +791,6 @@ export const PROVINCES_63_MAP: Record<string, ProvinceInfo> = {
     parent34Name: 'Huế',
   },
 
-  // Miền Trung - Vùng 5: Duyên hải Nam Trung Bộ
   '48': {
     code: '48',
     name: 'Đà Nẵng',
@@ -879,7 +872,6 @@ export const PROVINCES_63_MAP: Record<string, ProvinceInfo> = {
     parent34Name: 'Lâm Đồng',
   },
 
-  // Miền Trung - Vùng 6: Tây Nguyên
   '62': {
     code: '62',
     name: 'Kon Tum',
@@ -931,7 +923,6 @@ export const PROVINCES_63_MAP: Record<string, ProvinceInfo> = {
     parent34Name: 'Lâm Đồng',
   },
 
-  // Miền Nam - Vùng 7: Đông Nam Bộ
   '70': {
     code: '70',
     name: 'Bình Phước',
@@ -993,7 +984,6 @@ export const PROVINCES_63_MAP: Record<string, ProvinceInfo> = {
     parent34Name: 'Hồ Chí Minh',
   },
 
-  // Miền Nam - Vùng 8: Đồng bằng sông Cửu Long
   '80': {
     code: '80',
     name: 'Long An',
@@ -1151,10 +1141,8 @@ export function findProvince(
   if (!identifier) return undefined;
   const map = mode === '34' ? PROVINCES_34_MAP : PROVINCES_63_MAP;
 
-  // Tìm trực tiếp theo code
   if (map[identifier]) return map[identifier];
 
-  // Tìm theo tên chuẩn hóa
   const normInput = normalizeVietnamese(identifier);
   const values = Object.values(map);
 
@@ -1195,12 +1183,10 @@ export function isProvinceInRegion(
   const p = findProvince(provinceNameOrCode, mode);
   if (!p) return false;
 
-  // Lọc theo Vùng cụ thể (1-8)
   if (selectedRegionId !== 'all') {
     return p.regionId === selectedRegionId;
   }
 
-  // Lọc theo Miền lớn (Bắc - Trung - Nam)
   if (macroRegion !== 'all') {
     return p.macroRegion === macroRegion;
   }

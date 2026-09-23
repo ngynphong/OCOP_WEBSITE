@@ -54,7 +54,6 @@ export const UserAffiliateOverview: React.FC<UserAffiliateOverviewProps> = ({ ac
 
   return (
     <div className="space-y-6">
-      {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {stats.map((stat, index) => (
           <div
@@ -72,7 +71,6 @@ export const UserAffiliateOverview: React.FC<UserAffiliateOverviewProps> = ({ ac
         ))}
       </div>
 
-      {/* Affiliate Link Card */}
       <div className="bg-white p-5 md:p-8 rounded-xl border border-stone-100 shadow-xl shadow-stone-200/50">
         <h3 className="text-base md:text-lg font-bold text-stone-900 mb-3 md:mb-4 flex items-center gap-2">
           <FiTrendingUp className="text-emerald-600" />

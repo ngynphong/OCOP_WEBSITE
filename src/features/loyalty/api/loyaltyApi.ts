@@ -13,7 +13,6 @@ import {
 } from '../types/loyaltyTypes';
 
 export const loyaltyApi = {
-  // Admin Endpoints
   getAdminLoyaltyAccount: (userId: string): Promise<AdminLoyaltyAccountResponse> => {
     return axiosClient.get(buildRoute(API_ENDPOINTS.ADMIN.LOYALTY, userId));
   },
@@ -25,7 +24,6 @@ export const loyaltyApi = {
     return axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.LOYALTY, userId, 'adjust'), data);
   },
 
-  // User Endpoints
   getUserLoyaltyAccount: (): Promise<UserLoyaltyAccountResponse> => {
     return axiosClient.get(`${API_ENDPOINTS.LOYALTY}/account`);
   },

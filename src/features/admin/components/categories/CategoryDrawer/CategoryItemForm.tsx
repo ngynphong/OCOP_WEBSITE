@@ -77,7 +77,6 @@ const CategoryItemForm = React.memo(
       };
     }, [iconPreview, bannerPreview]);
 
-    // Auto-slug
     useEffect(() => {
       if (!selectedCategoryId && watchedName) {
         const generatedSlug = slugify(watchedName);
@@ -85,7 +84,6 @@ const CategoryItemForm = React.memo(
       }
     }, [watchedName, setValue, index, selectedCategoryId]);
 
-    // Check Slug
     useEffect(() => {
       const performCheck = async () => {
         if (!debouncedSlug || debouncedSlug === freshCategory?.slug) {
@@ -107,7 +105,6 @@ const CategoryItemForm = React.memo(
       <div
         className={`bg-white rounded-xl border transition-all ${isExpanded ? 'border-emerald-200 shadow-md ring-4 ring-emerald-500/5' : 'border-stone-100 shadow-sm'}`}
       >
-        {/* Header / Accordion Trigger */}
         <div className="p-4 flex items-center justify-between cursor-pointer" onClick={onToggle}>
           <div className="flex items-center gap-3 overflow-hidden">
             <div className="w-8 h-8 rounded-xl bg-stone-50 flex items-center justify-center text-[10px] font-black text-stone-400 border border-stone-100 shrink-0">
@@ -144,7 +141,6 @@ const CategoryItemForm = React.memo(
           </div>
         </div>
 
-        {/* Expanded Content */}
         <AnimatePresence>
           {isExpanded && (
             <motion.div
@@ -205,7 +201,6 @@ const CategoryItemForm = React.memo(
                   </div>
                 </div>
 
-                {/* Visuals */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="block text-[10px] font-black text-stone-500 uppercase ml-1">
@@ -282,7 +277,6 @@ const CategoryItemForm = React.memo(
                       <div className="w-11 h-6 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-emerald-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
                     </label>
                   </div>
-                  {/* sortOrder is now managed automatically, hidden from UI */}
                   <input
                     type="hidden"
                     {...register(`categories.${index}.sortOrder`, { valueAsNumber: true })}

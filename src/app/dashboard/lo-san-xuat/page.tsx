@@ -48,7 +48,6 @@ export default function ProductionBatchPage() {
 
   return (
     <div className="space-y-4 md:space-y-6 pb-20 md:pb-6">
-      {/* HEADER SECTION */}
       <div className="flex flex-col md:flex-row justify-between md:items-center bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-100 gap-4">
         <div>
           <h1 className="text-xl md:text-2xl font-bold text-slate-800 flex items-center gap-2">
@@ -70,7 +69,6 @@ export default function ProductionBatchPage() {
         </Link>
       </div>
 
-      {/* TABS LỌC THEO DÕI & GIÁM SÁT */}
       <div className="flex flex-wrap items-center gap-2 p-1.5 bg-slate-100/90 rounded-xl border border-slate-200">
         <button
           type="button"
@@ -120,7 +118,6 @@ export default function ProductionBatchPage() {
         </button>
       </div>
 
-      {/* DANH SÁCH LÔ - DẠNG CARD */}
       <div className="bg-transparent md:bg-white md:rounded-xl md:shadow-sm md:border md:border-slate-200">
         {isLoading ? (
           <div className="p-16 text-center text-slate-500 flex flex-col items-center justify-center gap-3">
@@ -167,7 +164,6 @@ export default function ProductionBatchPage() {
                   lot.isFlaggedByAi ? 'border-rose-300 ring-1 ring-rose-200' : 'border-slate-200'
                 }`}
               >
-                {/* Header Card */}
                 <div className="p-4 border-b border-slate-100 flex justify-between items-start gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="text-xs text-slate-500 mb-1 flex items-center flex-wrap gap-1">
@@ -185,7 +181,6 @@ export default function ProductionBatchPage() {
                   </div>
                 </div>
 
-                {/* Huy hiệu Giám sát Chất lượng AI */}
                 <div className="px-4 pt-3 pb-1">
                   {lot.isFlaggedByAi ? (
                     <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-lg text-xs font-semibold">
@@ -200,9 +195,7 @@ export default function ProductionBatchPage() {
                   )}
                 </div>
 
-                {/* Body Card */}
                 <div className="p-4 flex-1 space-y-2.5">
-                  {/* Thông tin đời thường nhận diện */}
                   <div className="bg-slate-50/90 p-2.5 rounded-lg border border-slate-100 space-y-1.5 text-xs text-slate-600">
                     <div className="flex items-center justify-between">
                       <span className="text-slate-500 flex items-center gap-1.5">
@@ -256,7 +249,6 @@ export default function ProductionBatchPage() {
                         : 'N/A'}
                     </span>
                   </div>
-                  {/* Progress bar */}
                   <div className="pt-1">
                     <div className="flex justify-between text-xs text-slate-500 mb-1">
                       <span>Tiến độ</span>
@@ -278,7 +270,6 @@ export default function ProductionBatchPage() {
                   </div>
                 </div>
 
-                {/* Footer Buttons */}
                 <div className="p-3 bg-slate-50/80 border-t border-slate-100 grid grid-cols-1 gap-2">
                   <Link href={`/dashboard/lo-san-xuat/${lot.id}`} className="block">
                     <Button
@@ -289,14 +280,6 @@ export default function ProductionBatchPage() {
                       Chi tiết
                     </Button>
                   </Link>
-                  {/* Tạm thời ẩn nút Ghi nhật ký trên web
-                  <Link href={`/dashboard/lo-san-xuat/${lot.id}?action=log`} className="block">
-                    <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white h-9 rounded-lg px-2 text-xs font-semibold">
-                      <Camera className="w-3.5 h-3.5 mr-1.5 shrink-0" />
-                      Ghi nhật ký
-                    </Button>
-                  </Link>
-                  */}
                 </div>
               </div>
             ))}

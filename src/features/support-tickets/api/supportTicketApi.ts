@@ -11,8 +11,6 @@ import {
 } from '../types/supportTicketTypes';
 
 export const supportTicketApi = {
-  // ─── Consumer APIs ─────────────────────────────────────────────────────────
-
   getMyTickets: (params: {
     pageNo?: number;
     pageSize?: number;
@@ -36,8 +34,6 @@ export const supportTicketApi = {
   closeTicket: (id: number): Promise<SupportTicketResponse> => {
     return axiosClient.post(buildRoute(API_ENDPOINTS.USERS.SUPPORT_TICKETS, id, 'close'));
   },
-
-  // ─── Admin APIs ────────────────────────────────────────────────────────────
 
   adminGetTickets: (params: {
     pageNo?: number;

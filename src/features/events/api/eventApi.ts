@@ -21,13 +21,12 @@ export interface PageResponse<T> {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-// ── Server-side fetcher for Next.js Server Components ────────────────────────
 export async function getActiveEventServer(): Promise<ActiveEventResponse | null> {
   if (!API_BASE_URL) return null;
 
   try {
     const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.PUBLIC.EVENTS_ACTIVE}`, {
-      next: { revalidate: 60 }, // Cache 1 minute on CDN/Server
+      next: { revalidate: 60 },
     });
 
     if (!response.ok) return null;
@@ -40,9 +39,7 @@ export async function getActiveEventServer(): Promise<ActiveEventResponse | null
   }
 }
 
-// ── Client-side API ──────────────────────────────────────────────────────────
 export const eventApi = {
-  // Public
   getActiveEvent: async (): Promise<ActiveEventResponse | null> => {
     const res = (await publicAxiosClient.get<ResponseBase<ActiveEventResponse | null>>(
       API_ENDPOINTS.PUBLIC.EVENTS_ACTIVE,
@@ -63,7 +60,6 @@ export const eventApi = {
     return res.data;
   },
 
-  // Admin
   getAdminEvents: async (params?: {
     status?: CampaignEventStatus;
     page?: number;
@@ -112,6 +108,7 @@ export const eventApi = {
   publishEvent: async (id: number): Promise<EventDetailResponse> => {
     const res = (await axiosClient.post<ResponseBase<EventDetailResponse>>(
       `${API_ENDPOINTS.ADMIN.EVENTS}/${id}/publish`,
+      { headers: { 'X-Silent-Loading': 'true' } },
     )) as unknown as ResponseBase<EventDetailResponse>;
     return res.data;
   },

@@ -4,11 +4,10 @@ import React, { useState } from 'react';
 import { useAiAssistantMutations } from '../../hooks/useAiAssistant';
 import { Button } from '@/components/ui/AppButton';
 import { FiMic, FiEdit3, FiRefreshCw, FiList } from 'react-icons/fi';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import { AiStoryResponse } from '../../api/aiApi';
 import { JOURNAL_STEP_LABELS } from '../../utils/ProductConstants';
 
-// Definition for Web Speech API
 interface SpeechRecognitionEvent extends Event {
   results: {
     length: number;
@@ -82,7 +81,7 @@ export function AiStoryBuilder({ productId, onStepSelected }: AiStoryBuilderProp
 
     recognition.onstart = () => {
       setIsRecording(true);
-      toast.info('Đang ghi âm... Hãy kể câu chuyện của bạn.');
+      toast('Đang ghi âm... Hãy kể câu chuyện của bạn.', { icon: '🎙️' });
     };
 
     recognition.onresult = (event: SpeechRecognitionEvent) => {
@@ -155,12 +154,10 @@ export function AiStoryBuilder({ productId, onStepSelected }: AiStoryBuilderProp
       id="tour-journal-ai-builder"
       className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-5 sm:p-6 mb-8 border border-indigo-100 shadow-sm relative overflow-hidden"
     >
-      {/* Decorative AI background blobs */}
       <div className="absolute -top-10 -right-10 w-40 h-40 bg-purple-200/50 rounded-full blur-3xl" />
       <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-indigo-200/50 rounded-full blur-3xl" />
 
       <div className="relative z-10 flex flex-col md:flex-row gap-6">
-        {/* Left side: Input */}
         <div className="flex-1 flex flex-col">
           <div className="flex items-center gap-2 mb-3">
             <div className="bg-indigo-600 text-white p-1.5 rounded-lg">
@@ -205,7 +202,6 @@ export function AiStoryBuilder({ productId, onStepSelected }: AiStoryBuilderProp
           </Button>
         </div>
 
-        {/* Right side: Output */}
         <div className="flex-1 flex flex-col border-t md:border-t-0 md:border-l border-indigo-200/50 pt-6 md:pt-0 md:pl-6">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-bold text-indigo-950">Các bước được đề xuất</h3>

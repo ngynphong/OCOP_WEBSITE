@@ -61,7 +61,6 @@ export function Pagination({
 
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 w-full">
-      {/* Page Size & Stats */}
       <div className="flex items-center gap-4 order-2 sm:order-1">
         {onPageSizeChange && (
           <div className="relative" ref={dropdownRef}>
@@ -106,7 +105,6 @@ export function Pagination({
         )}
       </div>
 
-      {/* Navigation Buttons */}
       <nav className="flex items-center gap-1 order-1 sm:order-2">
         <button
           onClick={() => onPageChange(currentPage - 1)}

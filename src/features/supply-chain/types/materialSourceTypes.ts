@@ -153,7 +153,7 @@ export interface IMaterialLot {
   unit: string;
   receivedAt?: string;
   expiresAt?: string;
-  evidences?: string; // JSON String
+  evidences?: string;
   status: LotStatus;
   createdAt: string;
 }

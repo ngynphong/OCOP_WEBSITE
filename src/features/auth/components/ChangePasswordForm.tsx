@@ -31,14 +31,12 @@ export const ChangePasswordForm = () => {
       });
       reset();
     } catch (error) {
-      // Error handled by interceptor
       console.error(error);
     }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="max-w-md space-y-6">
-      {/* Current Password */}
       <div className="space-y-1.5">
         <label className="text-sm font-semibold text-stone-700">Mật khẩu hiện tại</label>
         <div className="relative">
@@ -66,7 +64,6 @@ export const ChangePasswordForm = () => {
         )}
       </div>
 
-      {/* New Password */}
       <div className="space-y-1.5">
         <label className="text-sm font-semibold text-stone-700">Mật khẩu mới</label>
         <div className="relative">
@@ -94,7 +91,6 @@ export const ChangePasswordForm = () => {
         )}
       </div>
 
-      {/* Confirm Password */}
       <div className="space-y-1.5">
         <label className="text-sm font-semibold text-stone-700">Xác nhận mật khẩu mới</label>
         <div className="relative">

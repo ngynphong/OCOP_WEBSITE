@@ -54,12 +54,10 @@ export function FlashSaleFormDrawer({
     name: 'items',
   });
 
-  // Sync data when products or initialData change
   useEffect(() => {
     if (!isOpen) return;
 
     const initForm = async () => {
-      // TRƯỜNG HỢP CHỈNH SỬA
       if (initialData) {
         reset({
           name: initialData.name,
@@ -71,14 +69,13 @@ export function FlashSaleFormDrawer({
             salePrice: item.salePrice,
             qtyLimit: item.qtyLimit,
             _productName: item.productName,
-            _variantName: '', // Variant name not always present in FlashSaleItem but can be part of productName
+            _variantName: '',
             _originalPrice: item.originalPrice,
           })),
         });
         return;
       }
 
-      // TRƯỜNG HỢP TẠO MỚI
       if (products.length === 0) {
         return;
       }
@@ -132,7 +129,6 @@ export function FlashSaleFormDrawer({
 
   const onSubmit = async (data: CreateFlashSaleRequest) => {
     try {
-      // Chuyển đổi định dạng ngày và sanitize items (bỏ các trường display _ prefix)
       const formattedData = {
         ...data,
         startTime: new Date(data.startTime).toISOString(),
@@ -172,7 +168,6 @@ export function FlashSaleFormDrawer({
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
             className="fixed right-0 top-0 w-full max-w-xl bg-white h-full shadow-2xl z-[60] flex flex-col"
           >
-            {/* Header */}
             <div className="p-6 border-b border-stone-100 flex justify-between items-center bg-red-50/30">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-red-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-red-600/20">
@@ -200,7 +195,6 @@ export function FlashSaleFormDrawer({
               className="flex-1 overflow-hidden flex flex-col"
             >
               <div className="flex-1 overflow-y-auto p-8 custom-scrollbar space-y-8">
-                {/* Selection Summary */}
                 <div className="flex items-center justify-between p-4 bg-stone-50 rounded-xl border border-stone-100 italic">
                   <span className="text-xs text-stone-500 font-bold">
                     Đã chọn <span className="text-emerald-600">{products.length}</span> sản phẩm
@@ -229,7 +223,6 @@ export function FlashSaleFormDrawer({
                   </div>
                 </div>
 
-                {/* Info Section */}
                 <section className="space-y-4">
                   <h4 className="text-[10px] font-black text-stone-400 uppercase tracking-widest flex items-center gap-2">
                     <FiInfo className="text-red-500" /> Thông tin chương trình
@@ -301,7 +294,6 @@ export function FlashSaleFormDrawer({
                   </div>
                 </section>
 
-                {/* Variants Section */}
                 <section className="space-y-4">
                   <h4 className="text-[10px] font-black text-stone-400 uppercase tracking-widest flex items-center gap-2">
                     <FiPackage className="text-red-500" /> Cấu hình giá và số lượng Flash Sale
@@ -327,7 +319,6 @@ export function FlashSaleFormDrawer({
                             key={field.id}
                             className="p-4 bg-white border border-stone-100 rounded-xl space-y-3 relative overflow-hidden group"
                           >
-                            {/* Item Header */}
                             <div className="flex justify-between items-start gap-4">
                               <div className="min-w-0">
                                 <p className="text-[10px] font-black text-red-600 uppercase tracking-tight">
@@ -427,7 +418,6 @@ export function FlashSaleFormDrawer({
                 </section>
               </div>
 
-              {/* Action Footer */}
               <div className="p-6 border-t border-stone-100 bg-stone-50/50 sticky bottom-0">
                 <button
                   type="submit"

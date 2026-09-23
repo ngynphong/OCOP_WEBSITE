@@ -186,7 +186,6 @@ export const AdminBlogList = () => {
           </table>
         </div>
 
-        {/* Pagination placeholder */}
         {totalPages > 1 && (
           <div className="p-4 border-t border-stone-100 flex justify-center gap-2">
             {Array.from({ length: totalPages }).map((_, i) => (

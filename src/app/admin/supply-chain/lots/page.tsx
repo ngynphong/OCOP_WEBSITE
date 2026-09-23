@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { FiEye, FiCheckCircle, FiXCircle, FiClock, FiSearch } from 'react-icons/fi';
-import { adminSupplyChainApi } from '@/features/admin/api/adminSupplyChainApi';
+import { useAdminLotsQuery } from '@/features/admin/hooks/useAdminSupplyChain';
 import { ISupplyChainLot } from '@/features/supply-chain/types/supplyChainTypes';
 import { Button } from '@/components/ui/AppButton';
 import { format } from 'date-fns';
@@ -13,16 +12,12 @@ export default function AdminLotsPage() {
   const router = useRouter();
   const [page] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState<string>('SUBMITTED_FOR_VERIFICATION'); // Default filter to SUBMITTED_FOR_VERIFICATION
+  const [filterStatus, setFilterStatus] = useState<string>('SUBMITTED_FOR_VERIFICATION');
 
-  const { data: lotsRes, isLoading } = useQuery({
-    queryKey: ['admin_lots', page, filterStatus],
-    queryFn: () =>
-      adminSupplyChainApi.getLots({
-        page,
-        size: 10,
-        verificationStatus: filterStatus === 'ALL' ? undefined : filterStatus,
-      }),
+  const { data: lotsRes, isLoading } = useAdminLotsQuery({
+    page,
+    size: 10,
+    verificationStatus: filterStatus === 'ALL' ? undefined : filterStatus,
   });
 
   const getVerificationBadge = (status: string) => {

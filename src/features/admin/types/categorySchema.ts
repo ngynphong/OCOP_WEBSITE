@@ -1,9 +1,8 @@
 import { z } from 'zod';
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
-// Schema for the JSON data part
 export const categorySchema = z.object({
   name: z.string().min(1, 'Tên danh mục không được để trống'),
   slug: z
@@ -16,7 +15,6 @@ export const categorySchema = z.object({
   isActive: z.boolean().default(true),
 });
 
-// Schema for the Form including Files
 export const categoryFormSchema = categorySchema.extend({
   iconFile: z
     .any()

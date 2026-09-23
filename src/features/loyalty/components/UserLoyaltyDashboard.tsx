@@ -43,9 +43,7 @@ const UserLoyaltyDashboard = () => {
 
   return (
     <div className="space-y-8 pb-10">
-      {/* Header Info Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Available Points */}
         <div className="bg-linear-to-br from-green-600 to-emerald-700 rounded-xl p-5 md:p-6 text-white shadow-xl shadow-green-900/20 relative overflow-hidden group">
           <div className="relative z-10">
             <p className="text-green-100 font-medium text-xs md:text-sm mb-1">Điểm hiện có</p>
@@ -60,7 +58,6 @@ const UserLoyaltyDashboard = () => {
           <FiAward className="absolute -right-4 -bottom-4 text-white/10 text-8xl md:text-9xl rotate-12 group-hover:scale-110 transition-transform duration-500" />
         </div>
 
-        {/* Tier Info */}
         <div className="bg-white rounded-xl p-5 md:p-6 border border-stone-100 shadow-xl shadow-stone-200/50 flex flex-col justify-between">
           <div>
             <p className="text-stone-400 font-medium text-xs md:text-sm mb-1">Hạng thành viên</p>
@@ -78,13 +75,12 @@ const UserLoyaltyDashboard = () => {
             <div className="w-full h-1.5 md:h-2 bg-stone-100 rounded-full overflow-hidden">
               <div
                 className="h-full bg-green-500 rounded-full transition-all duration-1000"
-                style={{ width: `${Math.min(100, ((account?.totalEarned || 0) / 1000) * 100)}%` }} // Ví dụ logic
+                style={{ width: `${Math.min(100, ((account?.totalEarned || 0) / 1000) * 100)}%` }}
               />
             </div>
           </div>
         </div>
 
-        {/* Expiring Soon */}
         <div className="bg-white rounded-xl p-5 md:p-6 border border-stone-100 shadow-xl shadow-stone-200/50">
           <p className="text-stone-400 font-medium text-xs md:text-sm mb-1">Điểm sắp hết hạn</p>
           <h3 className="text-xl md:text-2xl font-bold text-orange-500">
@@ -99,7 +95,6 @@ const UserLoyaltyDashboard = () => {
         </div>
       </div>
 
-      {/* Cơ chế tích luỹ và sử dụng điểm */}
       <div className="bg-white rounded-xl border border-stone-100 shadow-xl shadow-stone-200/50 p-5 md:p-6">
         <h3 className="text-base md:text-lg font-bold text-stone-900 mb-4">
           Cơ chế tích luỹ & sử dụng điểm
@@ -150,7 +145,6 @@ const UserLoyaltyDashboard = () => {
         </div>
       </div>
 
-      {/* Transaction History */}
       <div className="bg-white rounded-xl border border-stone-100 shadow-xl shadow-stone-200/50 overflow-hidden">
         <div className="p-4 md:p-6 border-b border-stone-50 flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4">
           <h3 className="text-base md:text-lg font-bold text-stone-900">Lịch sử giao dịch điểm</h3>

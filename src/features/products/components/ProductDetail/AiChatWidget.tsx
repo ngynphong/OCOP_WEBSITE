@@ -6,7 +6,7 @@ import { useAiAssistantMutations } from '../../hooks/useAiAssistant';
 import { useSellerJournalsQuery } from '../../hooks/useSellerJournals';
 import { ChatMessage } from '../../api/aiApi';
 import { JournalStepType } from '../../types/productTypes';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import ReactMarkdown from 'react-markdown';
 
 export interface SuggestedJournalPayload {
@@ -28,7 +28,6 @@ interface AiChatWidgetProps {
   onJournalSuggested?: (payload: SuggestedJournalPayload) => void;
 }
 
-// Định nghĩa kiểu dữ liệu cho Web Speech API để tránh dùng 'any'
 interface SpeechRecognitionEvent extends Event {
   results: {
     [index: number]: {
@@ -77,14 +76,12 @@ export function AiChatWidget({
   const { chat, isChatting } = useAiAssistantMutations();
 
   useEffect(() => {
-    // Dùng setTimeout để tránh lỗi gọi setState đồng bộ (synchronous setState) trong useEffect
     const timer = setTimeout(() => {
       if (typeof window !== 'undefined') {
         setIsSpeechSupported('webkitSpeechRecognition' in window || 'SpeechRecognition' in window);
       }
     }, 0);
 
-    // Show tooltip after 2 seconds
     const tooltipTimer = setTimeout(() => {
       const isDismissed = localStorage.getItem('ai-journal-tooltip-dismissed');
       if (!isDismissed) {
@@ -107,7 +104,6 @@ export function AiChatWidget({
   const journalEntries = journalsData?.data;
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Calculate missing groups internally if not provided via props
   const missingGroups = useMemo(() => {
     if (propMissingGroups) return propMissingGroups;
     if (!journalEntries) return [];
@@ -143,12 +139,10 @@ export function AiChatWidget({
     [defaultGreeting, messages],
   );
 
-  // Auto scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [displayMessages, isOpen]);
 
-  // Web Speech API
   const handleMicrophoneClick = () => {
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
       toast.error('Trình duyệt của bạn không hỗ trợ nhận diện giọng nói. Hãy dùng Chrome.');
@@ -267,7 +261,6 @@ export function AiChatWidget({
               >
                 <FiX size={14} />
               </button>
-              {/* Right arrow pointing to button */}
               <div className="absolute right-[-6px] bottom-[22px] border-y-[6px] border-y-transparent border-l-[6px] border-l-white" />
               <div className="absolute right-[-7px] bottom-[21px] border-y-[7px] border-y-transparent border-l-[7px] border-l-emerald-100 -z-10" />
             </div>
@@ -293,7 +286,6 @@ export function AiChatWidget({
 
   return (
     <div className="fixed bottom-6 right-6 w-80 h-[500px] bg-white rounded-2xl shadow-2xl border border-stone-200 flex flex-col z-50 overflow-hidden">
-      {/* Header */}
       <div className="bg-emerald-600 px-4 py-3 flex items-center justify-between text-white">
         <div>
           <h3 className="font-bold text-sm">Trợ lý OCOP AI</h3>
@@ -310,7 +302,6 @@ export function AiChatWidget({
         </button>
       </div>
 
-      {/* Chat Area */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-stone-50">
         {displayMessages.map((msg, idx) => (
           <div
@@ -387,7 +378,6 @@ export function AiChatWidget({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Quick Replies (only show when no messages yet) */}
       {messages.length === 0 && missingGroups && missingGroups.length > 0 && (
         <div className="px-4 pb-3 bg-stone-50 flex flex-wrap gap-2">
           {missingGroups.map((group) => (
@@ -403,7 +393,6 @@ export function AiChatWidget({
         </div>
       )}
 
-      {/* Input Area */}
       <div className="p-3 border-t border-stone-100 bg-white flex items-end gap-2">
         {isSpeechSupported && (
           <button

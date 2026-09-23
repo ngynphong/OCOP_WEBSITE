@@ -2,9 +2,6 @@ import { publicAxiosClient, axiosClient } from '@/lib/axios';
 import { Product } from '@/features/products/types/productTypes';
 
 export const aiChatApi = {
-  /**
-   * Gọi API chat trả về toàn bộ chuỗi (Blocking)
-   */
   chat: async (message: string): Promise<{ content: string }> => {
     return axiosClient.post(
       '/ai/chat/stream',
@@ -15,9 +12,6 @@ export const aiChatApi = {
     );
   },
 
-  /**
-   * Tìm kiếm ngữ nghĩa (Semantic Search)
-   */
   semanticSearch: async (query: string, limit: number = 10): Promise<Product[]> => {
     try {
       const response = await publicAxiosClient.get<unknown, Product[]>('/ai/search', {
@@ -31,9 +25,6 @@ export const aiChatApi = {
     }
   },
 
-  /**
-   * Lấy gợi ý sản phẩm liên quan
-   */
   getRecommendations: async (productId: string, limit: number = 5): Promise<Product[]> => {
     try {
       const response = await publicAxiosClient.get<unknown, Product[]>(

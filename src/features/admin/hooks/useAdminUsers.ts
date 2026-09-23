@@ -3,8 +3,6 @@ import { adminApi } from '@/features/admin/api/adminApi';
 import { GetUsersParams, UpdateStaffProfileRequest } from '@/features/admin/types/adminTypes';
 import toast from 'react-hot-toast';
 
-// ─── Standalone Query Hooks ────────────────────────────────────────────────────
-
 export const useUsersQuery = (params: GetUsersParams) => {
   return useQuery({
     queryKey: ['admin-users', params],
@@ -55,8 +53,6 @@ export const useAllPermissionsQuery = () => {
     staleTime: 5 * 60 * 1000,
   });
 };
-
-// ─── Mutation Hook ─────────────────────────────────────────────────────────────
 
 export const useAdminUserMutations = () => {
   const queryClient = useQueryClient();

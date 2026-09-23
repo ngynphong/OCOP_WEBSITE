@@ -6,7 +6,7 @@ export const useActiveFlashSales = (categoryId?: number) => {
   return useQuery({
     queryKey: ['flash-sales', 'active', categoryId],
     queryFn: () => flashSaleApi.getActiveFlashSales(categoryId),
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 5,
   });
 };
 

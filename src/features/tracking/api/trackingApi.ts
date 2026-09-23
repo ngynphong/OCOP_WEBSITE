@@ -1,10 +1,10 @@
 import { axiosClient } from '@/lib/axios';
 
 export interface UserBehaviorEvent {
-  userId?: string; // UUID user ID (optional, nullable for guest)
-  sessionId: string; // Session ID (required)
+  userId?: string;
+  sessionId: string;
   eventType: 'VIEW_PRODUCT' | 'SEARCH' | 'WISHLIST' | 'ADD_TO_CART' | 'PURCHASE';
-  targetId: string; // Product ID or search query string
+  targetId: string;
 }
 
 export const trackingApi = {

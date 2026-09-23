@@ -1,8 +1,6 @@
 import { z } from 'zod';
 import { ResponseBase } from '@/features/auth/types/index';
 
-// ─── Core Interfaces ─────────────────────────────────────────────────────────
-
 export interface SellerReply {
   content: string;
   repliedAt: string;
@@ -19,8 +17,8 @@ export interface Review {
   helpfulCount: number;
   createdAt: string;
   sellerReply?: SellerReply;
-  productSlug?: string; // Optional context
-  productName?: string; // Optional context
+  productSlug?: string;
+  productName?: string;
 }
 
 export interface ReviewSummary {
@@ -44,8 +42,6 @@ export interface ReviewListResponseData extends ReviewPaginatedResponse<Review> 
 export type ReviewListResponse = ResponseBase<ReviewListResponseData>;
 export type ReviewDetailResponse = ResponseBase<Review>;
 
-// ─── Content Flag Interfaces ─────────────────────────────────────────────────
-
 export type ContentFlagStatus = 'PENDING' | 'RESOLVED_KEPT' | 'RESOLVED_REMOVED';
 
 export interface ContentFlag {
@@ -57,12 +53,10 @@ export interface ContentFlag {
   status: ContentFlagStatus | undefined;
   createdAt: string;
   resolvedAt?: string;
-  review?: Review; // Nested review context
+  review?: Review;
 }
 
 export type ContentFlagListResponse = ResponseBase<ReviewPaginatedResponse<ContentFlag>>;
-
-// ─── Validation Schemas ──────────────────────────────────────────────────────
 
 export const submitReviewSchema = z.object({
   orderItemId: z.number({ message: 'ID sản phẩm không khớp' }),
@@ -96,8 +90,6 @@ export const adminModerationSchema = z.object({
 });
 
 export type AdminModerationPayload = z.infer<typeof adminModerationSchema>;
-
-// ─── Query Parameters ────────────────────────────────────────────────────────
 
 export interface ReviewQueryParams {
   pageNo?: number;

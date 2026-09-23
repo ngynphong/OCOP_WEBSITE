@@ -47,7 +47,6 @@ export default function AiSettingsPage() {
             console.error('Lỗi parse JSON cấu hình', e);
           }
         } else {
-          // If no config exists, try to fetch the raw prompt and put it in role just in case
           const rawPrompt = await aiSettingsApi.getSetting(SYSTEM_PROMPT_KEY);
           if (rawPrompt) {
             setConfig((prev) => ({ ...prev, role: rawPrompt }));
@@ -91,13 +90,11 @@ LƯU Ý QUAN TRỌNG: Hãy sử dụng thông tin trong [SẢN PHẨM LIÊN QUAN
     try {
       const compiledPrompt = generatePrompt(config);
 
-      // Lưu Markdown cho Backend xài
       await aiSettingsApi.updateSetting(SYSTEM_PROMPT_KEY, {
         value: compiledPrompt,
         description: 'Cấu hình System Prompt (compiled) cho Chatbot AI',
       });
 
-      // Lưu JSON Config cho UI dùng
       await aiSettingsApi.updateSetting(SYSTEM_PROMPT_CONFIG_KEY, {
         value: JSON.stringify(config),
         description: 'Trạng thái UI Cấu hình AI',
@@ -138,7 +135,6 @@ LƯU Ý QUAN TRỌNG: Hãy sử dụng thông tin trong [SẢN PHẨM LIÊN QUAN
 
   return (
     <div className="p-6 max-w-7xl mx-auto flex flex-col lg:flex-row gap-6 animate-in fade-in duration-500">
-      {/* Left Column: Form */}
       <div className="flex-1 space-y-6">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-100 text-purple-600">
@@ -163,7 +159,6 @@ LƯU Ý QUAN TRỌNG: Hãy sử dụng thông tin trong [SẢN PHẨM LIÊN QUAN
           </div>
 
           <div className="p-6 space-y-8">
-            {/* Vai trò */}
             <div>
               <label className="block text-sm font-semibold text-gray-800 mb-2">
                 Nhân vật / Vai trò (Role)
@@ -177,7 +172,6 @@ LƯU Ý QUAN TRỌNG: Hãy sử dụng thông tin trong [SẢN PHẨM LIÊN QUAN
               />
             </div>
 
-            {/* Giọng điệu */}
             <div>
               <label className="block text-sm font-semibold text-gray-800 mb-2">
                 Giọng điệu (Tone)
@@ -192,7 +186,6 @@ LƯU Ý QUAN TRỌNG: Hãy sử dụng thông tin trong [SẢN PHẨM LIÊN QUAN
               />
             </div>
 
-            {/* Kỹ năng */}
             <div>
               <div className="flex items-center justify-between mb-2">
                 <label className="block text-sm font-semibold text-gray-800">
@@ -230,7 +223,6 @@ LƯU Ý QUAN TRỌNG: Hãy sử dụng thông tin trong [SẢN PHẨM LIÊN QUAN
               </div>
             </div>
 
-            {/* Quy tắc */}
             <div>
               <div className="flex items-center justify-between mb-2">
                 <label className="block text-sm font-semibold text-gray-800">
@@ -271,7 +263,6 @@ LƯU Ý QUAN TRỌNG: Hãy sử dụng thông tin trong [SẢN PHẨM LIÊN QUAN
         </div>
       </div>
 
-      {/* Right Column: Preview */}
       <div className="lg:w-[400px] shrink-0">
         <div className="sticky top-6 rounded-2xl border border-gray-200 bg-gray-900 shadow-xl overflow-hidden flex flex-col h-[calc(100vh-6rem)]">
           <div className="bg-gray-800 px-4 py-3 flex items-center justify-between shrink-0 border-b border-gray-700">

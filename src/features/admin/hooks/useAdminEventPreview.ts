@@ -175,9 +175,7 @@ export function resolveBasePresetId(theme?: EventTheme | null): string {
           return normalized;
         }
       }
-    } catch {
-      // ignore json error
-    }
+    } catch {}
   }
 
   const rawCode = theme.code?.trim().toLowerCase();
@@ -217,7 +215,6 @@ export function useAdminEventPreviewQuery(eventId: number) {
 export function useAdminEventPreview(eventId: number) {
   const queryClient = useQueryClient();
 
-  // ── 1. React Query Data Fetching ──────────────────────────────────────────
   const previewQuery = useAdminEventPreviewQuery(eventId);
 
   const event = previewQuery.data?.previewData ?? null;
@@ -233,17 +230,14 @@ export function useAdminEventPreview(eventId: number) {
         ? 'Không thể tải dữ liệu xem trước sự kiện'
         : null;
 
-  // ── 2. Viewport & Canvas Controls ───────────────────────────────────────────
   const [device, setDevice] = useState<PreviewDevice>('desktop');
   const [zoom, setZoom] = useState<PreviewZoom>(100);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  // ── 3. Simulator Sidebar State ──────────────────────────────────────────────
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [activeSidebarTab, setActiveSidebarTab] = useState<SidebarTab>('simulator');
   const [isCustomerView, setIsCustomerView] = useState(false);
 
-  // Time Simulator (Derived state with user override)
   const [customTimeScenario, setCustomTimeScenario] = useState<TimeScenario | null>(null);
   const [customSelectedSlotId, setCustomSelectedSlotId] = useState<number | null>(null);
 
@@ -269,7 +263,6 @@ export function useAdminEventPreview(eventId: number) {
     setCustomSelectedSlotId(slotId);
   }, []);
 
-  // Live Theme Tester
   const [customThemePresetId, setCustomThemePresetId] = useState<string | null>(null);
   const [enableAtmosphereOverride, setEnableAtmosphereOverride] = useState<boolean | null>(null);
   const [atmosphereTypeOverride, setAtmosphereTypeOverride] = useState<AtmosphereEffectType | null>(
@@ -277,10 +270,8 @@ export function useAdminEventPreview(eventId: number) {
   );
   const [enableStickersOverride, setEnableStickersOverride] = useState<boolean | null>(null);
 
-  // Publish Flow
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
 
-  // ── 4. Effective Theme Computation ──────────────────────────────────────────
   const defaultThemePresetId = useMemo(() => {
     return resolveBasePresetId(event?.theme);
   }, [event]);
@@ -298,14 +289,11 @@ export function useAdminEventPreview(eventId: number) {
     const concept = CONCEPT_PACKS.find((c) => c.suggestedThemePresetId === activeThemeCode);
     const isCustomPreset = Boolean(customThemePresetId);
 
-    // 1. Phân giải màu sắc
     let baseColors: Record<string, string> = {};
     if (baseTheme.colorsJson) {
       try {
         baseColors = JSON.parse(baseTheme.colorsJson);
-      } catch {
-        // ignore
-      }
+      } catch {}
     }
 
     const primary = isCustomPreset
@@ -338,14 +326,11 @@ export function useAdminEventPreview(eventId: number) {
       glow: baseColors.glow || tokens.glow,
     };
 
-    // 2. Phân giải cấu hình trang trí (conceptId, atmosphereType, cornerStickers)
     let baseDecorations: Partial<EventThemeDecorations> = {};
     if (baseTheme.decorationsJson) {
       try {
         baseDecorations = JSON.parse(baseTheme.decorationsJson);
-      } catch {
-        // ignore
-      }
+      } catch {}
     }
 
     const resolvedConceptId =
@@ -392,7 +377,6 @@ export function useAdminEventPreview(eventId: number) {
     enableStickersOverride,
   ]);
 
-  // ── 5. Effective Simulated Event ────────────────────────────────────────────
   const simulatedEvent = useMemo<EventDetailResponse | null>(() => {
     if (!event) return null;
 
@@ -431,13 +415,11 @@ export function useAdminEventPreview(eventId: number) {
     };
   }, [event, timeScenario, effectiveTheme]);
 
-  // ── 6. QA Checklist Evaluation ──────────────────────────────────────────────
   const qaChecklist = useMemo<QACheckItem[]>(() => {
     if (!event) return [];
 
     const items: QACheckItem[] = [];
 
-    // 1. Desktop Banner
     if (event.bannerDesktopUrl) {
       items.push({
         id: 'banner_desktop',
@@ -455,7 +437,6 @@ export function useAdminEventPreview(eventId: number) {
       });
     }
 
-    // 2. Mobile Banner
     if (event.bannerMobileUrl) {
       items.push({
         id: 'banner_mobile',
@@ -481,7 +462,6 @@ export function useAdminEventPreview(eventId: number) {
       });
     }
 
-    // 3. Flash Sale Slots
     if (flashSales.length > 0) {
       items.push({
         id: 'flash_sale',
@@ -499,7 +479,6 @@ export function useAdminEventPreview(eventId: number) {
       });
     }
 
-    // 4. Vouchers
     if (vouchers.length > 0) {
       items.push({
         id: 'vouchers',
@@ -517,7 +496,6 @@ export function useAdminEventPreview(eventId: number) {
       });
     }
 
-    // 5. Product Collections
     if (collections.length > 0) {
       items.push({
         id: 'collections',
@@ -535,7 +513,6 @@ export function useAdminEventPreview(eventId: number) {
       });
     }
 
-    // 6. Time Validity
     const startDate = new Date(event.startAt);
     const endDate = new Date(event.endAt);
     if (startDate < endDate) {
@@ -573,7 +550,6 @@ export function useAdminEventPreview(eventId: number) {
     return { total, passed, warnings, failed, score, isReady };
   }, [qaChecklist]);
 
-  // ── 7. Actions & Mutations ──────────────────────────────────────────────────
   const publishMutation = useMutation({
     mutationFn: (id: number) => eventApi.publishEvent(id),
     onSuccess: (updated) => {
@@ -624,7 +600,6 @@ export function useAdminEventPreview(eventId: number) {
   }, []);
 
   return {
-    // Data
     event: simulatedEvent,
     rawEvent: event,
     collections,
@@ -634,7 +609,6 @@ export function useAdminEventPreview(eventId: number) {
     refreshing,
     error,
 
-    // Viewport & Canvas
     device,
     zoom,
     isFullscreen,
@@ -642,7 +616,6 @@ export function useAdminEventPreview(eventId: number) {
     setZoom,
     toggleFullscreen,
 
-    // Sidebar & Simulator
     isSidebarOpen,
     setIsSidebarOpen,
     activeSidebarTab,
@@ -650,13 +623,11 @@ export function useAdminEventPreview(eventId: number) {
     isCustomerView,
     setIsCustomerView,
 
-    // Time Simulator
     timeScenario,
     setTimeScenario,
     selectedSlotId,
     setSelectedSlotId,
 
-    // Live Theme Tester
     customThemePresetId,
     defaultThemePresetId,
     activeThemePresetId: customThemePresetId || defaultThemePresetId,
@@ -669,17 +640,14 @@ export function useAdminEventPreview(eventId: number) {
     setEnableStickersOverride,
     resetThemeOverrides,
 
-    // QA Checklist
     qaChecklist,
     qaStats,
 
-    // Publish Flow
     isPublishModalOpen,
     setIsPublishModalOpen,
     isPublishing: publishMutation.isPending,
     handlePublishEvent,
 
-    // Refresh
     handleRefresh: () => void previewQuery.refetch(),
   };
 }

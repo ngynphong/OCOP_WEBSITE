@@ -65,17 +65,14 @@ export const PublicShopProfile = ({ shopSlug }: PublicShopProfileProps) => {
 
   return (
     <div className="min-h-screen bg-stone-50/70 pb-24">
-      {/* Breadcrumb Container */}
       <div className="bg-white border-b border-stone-100">
         <div className="container mx-auto px-3 sm:px-6 py-2.5 sm:py-3.5">
           <Breadcrumb items={breadcrumbItems} />
         </div>
       </div>
 
-      {/* Main Profile Header */}
       <ShopProfileHeader shop={shop} totalProductsCount={totalProductsCount} />
 
-      {/* Navigation Tabs Bar */}
       <div className="container mx-auto px-3 sm:px-6 mt-2.5 sm:mt-4">
         <div className="sticky top-0 z-20 bg-stone-50/95 backdrop-blur-md py-2 sm:py-2.5 border-b border-stone-200">
           <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto hide-scrollbar scrollbar-none pb-0.5">
@@ -119,7 +116,6 @@ export const PublicShopProfile = ({ shopSlug }: PublicShopProfileProps) => {
           </div>
         </div>
 
-        {/* Tab Content */}
         <div className="w-full">
           {activeTab === 'PRODUCTS' && (
             <ShopProductsTab shopSlug={shopSlug} onTotalCountChange={setTotalProductsCount} />

@@ -20,7 +20,6 @@ export default function WishlistPage() {
   const totalElements = wishlistData?.data?.totalElements || 0;
   const totalPages = wishlistData?.data?.totalPages || 0;
 
-  // Batching Wishlist Status for red heart display
   const productIds = items.map((item) => item.productId);
   const { data: statusData } = useWishlistStatus(productIds);
   const wishlistStatusMap = statusData?.data || {};
@@ -55,7 +54,6 @@ export default function WishlistPage() {
 
   return (
     <div className="flex flex-col gap-8">
-      {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-stone-900 uppercase tracking-tight">
@@ -111,7 +109,7 @@ export default function WishlistPage() {
                 rating={item.ratingAvg}
                 reviewCount={0}
                 shopName={item.shopName}
-                isWishlisted={wishlistStatusMap[item.productId] ?? true} // Ưu tiên từ Map, mặc định là true vì đang ở trang Wishlist
+                isWishlisted={wishlistStatusMap[item.productId] ?? true}
                 ocopStar={
                   typeof item.ocopStar === 'number'
                     ? item.ocopStar
@@ -122,7 +120,6 @@ export default function WishlistPage() {
             ))}
           </div>
 
-          {/* Pagination */}
           {totalPages > 1 && (
             <div className="flex justify-center items-center gap-2 mt-8">
               {Array.from({ length: totalPages }).map((_, i) => (

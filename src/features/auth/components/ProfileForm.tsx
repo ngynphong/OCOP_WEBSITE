@@ -49,7 +49,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ initialData }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Họ */}
         <div className="space-y-1.5">
           <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">Họ</label>
           <div className="relative">
@@ -69,7 +68,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ initialData }) => {
           )}
         </div>
 
-        {/* Tên */}
         <div className="space-y-1.5">
           <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">Tên</label>
           <div className="relative">
@@ -89,7 +87,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ initialData }) => {
           )}
         </div>
 
-        {/* Số điện thoại */}
         <div className="space-y-1.5">
           <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
             Số điện thoại
@@ -111,7 +108,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ initialData }) => {
           )}
         </div>
 
-        {/* Giới tính */}
         <div className="space-y-1.5">
           <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
             Giới tính
@@ -134,7 +130,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ initialData }) => {
           {errors.gender && <p className="text-xs text-red-500 mt-1">{errors.gender.message}</p>}
         </div>
 
-        {/* Ngày sinh */}
         <div className="space-y-1.5">
           <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
             Ngày sinh

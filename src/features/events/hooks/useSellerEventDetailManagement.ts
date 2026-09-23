@@ -54,7 +54,6 @@ export function useSellerEventDetailManagement(eventId: number) {
     [event?.applications, selectedSlotId],
   );
 
-  // Sync items and seller note when selectedApplication changes
   useEffect(() => {
     if (
       !selectedApplication ||

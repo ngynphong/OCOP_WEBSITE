@@ -84,7 +84,6 @@ export default function BankAccountPage() {
     );
   }
 
-  // Nếu bị lỗi 404 (chưa có tài khoản) hoặc API trả về lỗi khác
   // @ts-expect-error axios
   const isNotFound = isError && error?.response?.status === 404;
 

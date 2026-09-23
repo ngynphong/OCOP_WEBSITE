@@ -44,7 +44,6 @@ export function NewsletterSection() {
 
   return (
     <section className="relative w-full py-20 overflow-hidden flex flex-col items-center">
-      {/* Background Decor */}
       <div className="absolute inset-0 bg-[#113B28] z-0" />
       <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none z-0">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-500 rounded-full blur-[120px]" />
@@ -53,7 +52,6 @@ export function NewsletterSection() {
 
       <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 w-full">
         <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[48px] p-8 md:p-16 lg:p-20 overflow-hidden relative group">
-          {/* Animated Background Element */}
           <motion.div
             animate={{
               rotate: [0, 360],

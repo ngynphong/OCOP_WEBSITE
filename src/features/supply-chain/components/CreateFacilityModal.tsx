@@ -145,7 +145,6 @@ export default function CreateFacilityModal({ isOpen, onClose }: Props) {
           </div>
         </div>
 
-        {/* BẢN ĐỒ & TOẠ ĐỘ */}
         <div>
           <h3 className="text-sm font-semibold text-stone-900 uppercase tracking-wider mb-4 pb-2 border-b border-stone-100 flex items-center gap-2">
             <FiMapPin className="text-emerald-600" /> Vị trí & Ranh giới
@@ -175,7 +174,6 @@ export default function CreateFacilityModal({ isOpen, onClose }: Props) {
               </div>
             </div>
 
-            {/* Hidden fields just to store data for react-hook-form */}
             <input type="hidden" {...register('latitude', { valueAsNumber: true })} />
             <input type="hidden" {...register('longitude', { valueAsNumber: true })} />
             <input type="hidden" {...register('boundary')} />

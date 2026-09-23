@@ -96,7 +96,7 @@ export const AdminPolicyTable = ({
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => onEdit(policy)}
-                      disabled={policy.active} // Only allow edit if not active
+                      disabled={policy.active}
                       className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all ${
                         policy.active
                           ? 'bg-stone-50 text-stone-300 cursor-not-allowed'

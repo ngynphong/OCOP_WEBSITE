@@ -9,7 +9,6 @@ import { ProductCard } from '@/components/ui/ProductCard';
 
 export function BestSellersSection() {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
-  // Fetch 12 products for 2 full rows of 6 products on desktop
   const { data: featuredResp, isLoading } = useFeaturedProductsQuery(12);
 
   const products = Array.isArray(featuredResp?.data)
@@ -55,7 +54,6 @@ export function BestSellersSection() {
           </span>
         </div>
       ) : (
-        /* Max 6 products per row on Desktop */
         <div className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-3.5">
           {products.slice(0, 12).map((product, idx) => (
             <ProductCard

@@ -97,7 +97,6 @@ export default function SellerShopPage() {
     );
   }
 
-  // Check for registration draft
   const hasDraft =
     typeof window !== 'undefined' && !!localStorage.getItem('shop_registration_draft');
 
@@ -139,7 +138,6 @@ export default function SellerShopPage() {
           <p className="text-xs text-stone-400">Xét duyệt trong vòng 1-3 ngày làm việc</p>
         </div>
 
-        {/* Benefits list */}
         <div className="w-full grid grid-cols-3 gap-3 mt-2">
           {[
             { icon: FiShoppingBag, label: 'Đăng sản phẩm', sub: 'OCOP đặc sản' },
@@ -165,16 +163,13 @@ export default function SellerShopPage() {
   const { shopResponse: shop, missingRequiredDocuments, missingFields } = shopData.data;
   const currentSub = subData?.data;
 
-  // ─── Has shop ──────────────────────────────────────────────────────────────
   return (
     <div className="space-y-6">
-      {/* Shop Header Card */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         className="relative rounded-xl overflow-hidden border border-stone-100 shadow-sm bg-white"
       >
-        {/* Banner */}
         <div className="relative h-36 bg-linear-to-r from-green-600 to-emerald-500 overflow-hidden group">
           <Image
             src={shop.bannerUrl || '/images/background.jpg'}
@@ -203,7 +198,6 @@ export default function SellerShopPage() {
           </label>
         </div>
 
-        {/* Logo */}
         <div className="absolute left-6 top-20 w-20 h-20 rounded-xl border-4 border-white shadow-xl bg-white overflow-hidden group">
           {shop.logoUrl ? (
             <Image src={shop.logoUrl} fill alt="Logo" className="w-full h-full object-cover" />
@@ -230,7 +224,6 @@ export default function SellerShopPage() {
           </label>
         </div>
 
-        {/* Shop meta */}
         <div className="pt-14 pb-5 px-6 flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-0 justify-between">
           <div>
             <div className="flex items-center gap-3 flex-wrap">
@@ -275,7 +268,6 @@ export default function SellerShopPage() {
         </div>
       </motion.div>
 
-      {/* Resubmit Notice (When Rejected) */}
       {shop.status === 'REJECTED' && (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 bg-rose-50 border border-rose-100 rounded-[28px] shadow-sm">
           <div className="flex gap-3">
@@ -308,7 +300,6 @@ export default function SellerShopPage() {
         </div>
       )}
 
-      {/* Status Notice (General) */}
       {shop.status === 'PENDING' && (
         <div className="flex gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl">
           <FiAlertCircle size={18} className="text-amber-600 mt-0.5 shrink-0" />
@@ -321,7 +312,6 @@ export default function SellerShopPage() {
         </div>
       )}
 
-      {/* Missing Documents Warning */}
       {missingRequiredDocuments && (
         <div className="flex gap-3 p-5 bg-rose-50 border border-rose-100 rounded-xl shadow-sm">
           <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center shrink-0">
@@ -346,7 +336,6 @@ export default function SellerShopPage() {
         </div>
       )}
 
-      {/* Edit Section */}
       <AnimatePresence>
         {isEditing && (
           <motion.div
@@ -368,14 +357,12 @@ export default function SellerShopPage() {
         <p className="text-sm text-stone-500 whitespace-pre-wrap">{shop.description || '—'}</p>
       </div>
 
-      {/* Shop Detail Info */}
       {!isEditing && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="bg-white rounded-xl border border-stone-100 shadow-sm p-5">
             <h3 className="text-sm font-bold text-stone-700 mb-3 flex items-center gap-2">
               <FiTag size={15} className="text-green-600" /> Thông tin shop
             </h3>
-            {/* <InfoRow label="Mô tả" value={shop.description || '—'} /> */}
             <InfoRow label="Địa chỉ" value={shop.addressLine || '—'} />
             <InfoRow label="Phường/Xã" value={shop.wardName || '—'} />
             <InfoRow label="Quận/Huyện" value={shop.districtName} />
@@ -406,7 +393,6 @@ export default function SellerShopPage() {
           </div>
         </div>
       )}
-      {/* Current Subscription Card */}
       {!isEditing && currentSub && (
         <div className="bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden">
           <div className="p-5 border-b border-stone-50 bg-stone-50/50 flex justify-between items-center">

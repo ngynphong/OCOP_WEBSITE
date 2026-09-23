@@ -74,7 +74,6 @@ export default function MaterialLotTab({ isCreating, setIsCreating }: MaterialLo
   return (
     <div className="space-y-4 animate-in fade-in duration-300">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Left Column: Table of Material Lots */}
         <div
           className={`${isRightPanelOpen ? 'lg:col-span-7' : 'lg:col-span-12'} transition-all duration-300`}
         >
@@ -196,7 +195,6 @@ export default function MaterialLotTab({ isCreating, setIsCreating }: MaterialLo
           </div>
         </div>
 
-        {/* Right Column: Detail or Create panel */}
         {isRightPanelOpen && (
           <div className="lg:col-span-5 bg-white border border-stone-200 rounded-xl shadow-sm p-6 animate-in fade-in zoom-in-95 duration-200">
             {isCreating ? (

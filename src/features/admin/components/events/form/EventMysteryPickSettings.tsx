@@ -83,7 +83,6 @@ export function EventMysteryPickSettings({
         </div>
       </div>
 
-      {/* Grid chọn Concept Preset */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
         {MYSTERY_CONCEPT_OPTIONS.map((c) => {
           const isSelected = mysteryPickConcept === c.id;
@@ -121,7 +120,6 @@ export function EventMysteryPickSettings({
         })}
       </div>
 
-      {/* Tùy chỉnh Tiêu đề & Hướng dẫn khi chọn concept CUSTOM */}
       {mysteryPickConcept === 'CUSTOM' && (
         <div className="p-4 rounded-xl bg-amber-50/60 border border-amber-200 grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
@@ -151,7 +149,6 @@ export function EventMysteryPickSettings({
         </div>
       )}
 
-      {/* Chi tiết 6 ô bốc thăm có thể tinh chỉnh tên & mô tả */}
       <div className="p-4 rounded-2xl bg-gray-50 border border-gray-200/90 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>

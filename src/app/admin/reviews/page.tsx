@@ -43,7 +43,6 @@ export default function AdminReviewsPage() {
   const { hasPermission } = usePermission();
   const canViewComplaints = hasPermission(PERMISSIONS.COMPLAINT_MANAGE);
 
-  // States for Reviews Tab
   const [reviewParams, setReviewParams] = useState<AdminReviewQueryParams>({
     pageNo: 1,
     pageSize: 10,
@@ -55,7 +54,6 @@ export default function AdminReviewsPage() {
   } | null>(null);
   const [note, setNote] = useState('');
 
-  // States for Flags Tab
   const [flagParams, setFlagParams] = useState({
     pageNo: 1,
     pageSize: 10,
@@ -64,7 +62,6 @@ export default function AdminReviewsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearch = useDebounce(searchTerm, 500);
 
-  // API Queries & Mutations
   const { data: reviewResp, isLoading: isReviewLoading } = useAdminPendingReviewsQuery({
     ...reviewParams,
     search: debouncedSearch,
@@ -73,7 +70,6 @@ export default function AdminReviewsPage() {
     status: flagParams.status === 'ALL' ? undefined : flagParams.status,
     pageNo: flagParams.pageNo,
     pageSize: flagParams.pageSize,
-    // search: debouncedSearch,
   });
 
   const { approve, reject, hide, resolveFlag, isApproving, isRejecting, isHiding, isResolving } =
@@ -85,7 +81,6 @@ export default function AdminReviewsPage() {
   const flags = flagResp?.data?.content || [];
   const flagTotalPages = flagResp?.data?.totalPages || 0;
 
-  // States & Queries for Complaints Tab
   const [complaintParams, setComplaintParams] = useState({
     pageNo: 1,
     pageSize: 10,
@@ -152,7 +147,6 @@ export default function AdminReviewsPage() {
         </div>
       </div>
 
-      {/* Main Tab Switcher */}
       <div className="flex gap-4 border-b border-stone-100">
         <button
           onClick={() => setActiveTab('REVIEWS')}
@@ -201,7 +195,6 @@ export default function AdminReviewsPage() {
 
       {activeTab === 'REVIEWS' ? (
         <div className="space-y-6">
-          {/* Reviews Filters */}
           <div className="flex flex-wrap items-center gap-4 bg-white p-4 rounded-xl border border-stone-100 shadow-sm">
             <div className="flex gap-2">
               {['PENDING', 'APPROVED', 'REJECTED', 'HIDDEN'].map((s) => (
@@ -315,7 +308,6 @@ export default function AdminReviewsPage() {
         />
       ) : activeTab === 'COMPLAINTS' && canViewComplaints ? (
         <div className="space-y-6">
-          {/* Complaints Filters */}
           <div className="flex flex-wrap items-center gap-4 bg-white p-4 rounded-xl border border-stone-100 shadow-sm">
             <div className="flex gap-2">
               {['ALL', 'OPEN', 'INVESTIGATING', 'RESOLVED', 'REJECTED'].map((s) => (
@@ -347,7 +339,6 @@ export default function AdminReviewsPage() {
                 </button>
               ))}
             </div>
-            {/* Search shared with other tabs */}
           </div>
 
           <AdminComplaintTable
@@ -379,7 +370,6 @@ export default function AdminReviewsPage() {
         </div>
       ) : null}
 
-      {/* Reviews Moderation Modal */}
       <Modal
         isOpen={!!moderatingReview}
         onClose={() => setModeratingReview(null)}

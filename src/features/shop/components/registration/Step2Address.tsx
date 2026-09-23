@@ -3,10 +3,8 @@
 import React, { memo, useState, useMemo } from 'react';
 import { UseFormRegister, FieldErrors, UseFormSetValue, Control, useWatch } from 'react-hook-form';
 import { FiLoader } from 'react-icons/fi';
-import { useQuery } from '@tanstack/react-query';
 import { CreateShopFormData } from '@/features/shop/types/shopTypes';
-import { useLocationQuery } from '@/features/shop/hooks/useLocationQuery';
-import { locationApi } from '@/features/admin/api/locationApi';
+import { useLocationQuery, useAllWards34Query } from '@/features/shop/hooks/useLocationQuery';
 import { PROVINCES_34_MAP, ProvinceMode } from '@/constants/regions-map';
 import FormField, { selectCls, inputCls } from './FormField';
 import { cn } from '@/lib/utils';
@@ -43,36 +41,17 @@ const Step2Address: React.FC<Step2AddressProps> = memo(
       selectedRegion,
     );
 
-    // Danh sách Xã trực thuộc khi ở chế độ 34 tỉnh (Bãi bỏ cấp huyện)
-    const { data: wards34Data, isLoading: isLoadingWards34 } = useQuery({
-      queryKey: ['shop-reg-all-wards-34', provinceId],
-      queryFn: async () => {
-        if (!provinceId || !districts.data?.data?.length) return [];
-        const promises = districts.data.data.map((d) =>
-          locationApi
-            .getWards(d.id)
-            .then((res) =>
-              (res.data || []).map((w) => ({
-                ...w,
-                districtId: d.id,
-                districtName: d.name,
-              })),
-            )
-            .catch(() => []),
-        );
-        const results = await Promise.all(promises);
-        return results.flat();
-      },
-      enabled: mode === '34' && !!provinceId && !!districts.data?.data?.length,
-      staleTime: 30 * 60 * 1000,
-    });
+    const { data: wards34Data, isLoading: isLoadingWards34 } = useAllWards34Query(
+      provinceId || undefined,
+      districts.data?.data,
+      mode === '34',
+    );
 
     const selectedProv34 = selectedProv34Code ? PROVINCES_34_MAP[selectedProv34Code] : undefined;
 
     const handleRegionChange = (region: Region) => {
       const next = selectedRegion === region ? undefined : region;
       setSelectedRegion(next);
-      // Reset location values when region changes
       setValue('provinceId', 0);
       setValue('districtId', 0);
       setValue('wardId', 0);
@@ -91,7 +70,6 @@ const Step2Address: React.FC<Step2AddressProps> = memo(
 
       const p34 = PROVINCES_34_MAP[code];
       if (p34) {
-        // Tự động map sang ID tỉnh thành đầu tiên / duy nhất
         const firstConstituentName = p34.constituentNames?.[0] || p34.name;
         const found = provinces.data?.data?.find(
           (p) =>
@@ -123,7 +101,6 @@ const Step2Address: React.FC<Step2AddressProps> = memo(
 
     return (
       <div className="space-y-5">
-        {/* Mode Switcher: 63 vs 34 */}
         <div className="flex items-center justify-between p-3 bg-stone-50 rounded-xl border border-stone-200">
           <div className="flex flex-col">
             <span className="text-xs font-bold text-stone-800">Mô hình phân cấp hành chính</span>
@@ -172,7 +149,6 @@ const Step2Address: React.FC<Step2AddressProps> = memo(
           </div>
         </div>
 
-        {/* Region Filter (Chỉ ở mode 63) */}
         {mode === '63' && (
           <div className="space-y-2">
             <p className="text-xs font-semibold text-stone-500 uppercase tracking-wider">
@@ -202,7 +178,6 @@ const Step2Address: React.FC<Step2AddressProps> = memo(
           </div>
         )}
 
-        {/* Cascade Selectors */}
         {mode === '63' ? (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <FormField label="Tỉnh / Thành phố" error={errors.provinceId?.message} required>
@@ -307,7 +282,6 @@ const Step2Address: React.FC<Step2AddressProps> = memo(
             </FormField>
           </div>
         ) : (
-          /* CHẾ ĐỘ 34 TỈNH: 2 CẤP (TỈNH ➔ XÃ TRỰC THUỘC) */
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-3">
               <FormField

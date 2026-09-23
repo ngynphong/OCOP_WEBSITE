@@ -9,8 +9,6 @@ import {
 
 type ApiError = { response?: { data?: { message?: string } } };
 
-// ─── Standalone Query Hooks ───────────────────────────────────────────────────
-
 export const useSellerProductsQuery = (params?: ProductListParams) => {
   return useQuery({
     queryKey: ['seller-products', params],
@@ -27,8 +25,6 @@ export const useSellerProductDetailQuery = (id: number | null | undefined) => {
     staleTime: 30 * 1000,
   });
 };
-
-// ─── Mutation Hook ────────────────────────────────────────────────────────────
 
 export const useSellerProductMutations = () => {
   const queryClient = useQueryClient();

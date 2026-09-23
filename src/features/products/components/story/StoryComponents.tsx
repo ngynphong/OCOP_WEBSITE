@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { MapPin, Quote } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-// --- StoryHero ---
 export const StoryHero = ({
   name,
   province,
@@ -60,7 +59,6 @@ export const StoryHero = ({
   </section>
 );
 
-// --- StoryOrigin ---
 export const StoryOrigin = ({
   title,
   content,
@@ -101,7 +99,6 @@ export const StoryOrigin = ({
   </section>
 );
 
-// --- StoryArtisan ---
 export const StoryArtisan = ({
   name,
   role,
@@ -146,7 +143,6 @@ export const StoryArtisan = ({
   </section>
 );
 
-// --- StoryTimeline ---
 export interface StoryTimelineStep {
   date?: string;
   title: string;
@@ -208,7 +204,6 @@ export const StoryTimeline = ({ steps }: { steps: StoryTimelineStep[] }) => (
   </section>
 );
 
-// --- StoryImpact ---
 export interface StoryImpactItem {
   icon: React.ReactNode;
   value: string;

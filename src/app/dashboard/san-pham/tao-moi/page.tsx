@@ -46,7 +46,6 @@ export default function CreateProductPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center gap-3">
         <button
           type="button"
@@ -63,12 +62,9 @@ export default function CreateProductPage() {
         </div>
       </div>
 
-      {/* Timeline placeholder (0% progress) */}
       <ProductSetupProgress />
 
-      {/* Form */}
       <form id="tour-product-form" onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-        {/* Tên sản phẩm */}
         <div>
           <label className="text-xs font-bold text-stone-500 uppercase tracking-widest block mb-1.5">
             Tên sản phẩm <span className="text-red-400">*</span>
@@ -81,7 +77,6 @@ export default function CreateProductPage() {
           {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
         </div>
 
-        {/* Category + OCOP Star */}
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="text-xs font-bold text-stone-500 uppercase tracking-widest block mb-1.5">
@@ -119,7 +114,6 @@ export default function CreateProductPage() {
           </div>
         </div>
 
-        {/* Mô tả ngắn */}
         <div>
           <label className="text-xs font-bold text-stone-500 uppercase tracking-widest block mb-1.5">
             Mô tả ngắn
@@ -134,7 +128,6 @@ export default function CreateProductPage() {
           )}
         </div>
 
-        {/* Unit + Weight */}
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="text-xs font-bold text-stone-500 uppercase tracking-widest block mb-1.5">
@@ -165,7 +158,6 @@ export default function CreateProductPage() {
           </div>
         </div>
 
-        {/* Production Area */}
         <div>
           <label className="text-xs font-bold text-stone-500 uppercase tracking-widest block mb-1.5">
             Khu vực sản xuất
@@ -177,7 +169,6 @@ export default function CreateProductPage() {
           />
         </div>
 
-        {/* Tiêu chuẩn & Quy cách OCOP */}
         <div className="p-4 bg-stone-50/70 rounded-2xl border border-stone-200/80 space-y-4">
           <h4 className="text-xs font-bold text-stone-700 uppercase tracking-wider">
             Hồ sơ tiêu chuẩn & Quy cách OCOP
@@ -220,7 +211,6 @@ export default function CreateProductPage() {
           </div>
         </div>
 
-        {/* Description */}
         <div>
           <label className="text-xs font-bold text-stone-500 uppercase tracking-widest block mb-1.5">
             Mô tả chi tiết
@@ -233,7 +223,6 @@ export default function CreateProductPage() {
           />
         </div>
 
-        {/* Actions */}
         <div className="flex items-center justify-end gap-3 pt-6 mt-6 border-t border-stone-100">
           <Button type="button" variant="ghost" onClick={() => router.push('/dashboard/san-pham')}>
             Hủy

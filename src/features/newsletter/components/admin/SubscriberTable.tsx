@@ -47,7 +47,6 @@ export const SubscriberTable = () => {
 
   return (
     <div className="space-y-6">
-      {/* Filters */}
       <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white p-6 rounded-xl shadow-sm border border-stone-100">
         <div className="relative w-full md:w-96">
           <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" />
@@ -79,7 +78,6 @@ export const SubscriberTable = () => {
         </div>
       </div>
 
-      {/* Table */}
       <div className="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
@@ -151,7 +149,6 @@ export const SubscriberTable = () => {
           </table>
         </div>
 
-        {/* Pagination */}
         <div className="p-8 border-t border-stone-100">
           <Pagination
             currentPage={currentPage}

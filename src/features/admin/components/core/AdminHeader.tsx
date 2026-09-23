@@ -42,7 +42,6 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
 
-  // Generate dynamic breadcrumbs
   const pathSegments = pathname.split('/').filter(Boolean);
   const breadcrumbs = pathSegments.map((segment) => ({
     label: BREADCRUMB_MAP[segment] || segment,
@@ -70,7 +69,6 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
       }`}
     >
       <div className="flex items-center gap-6 flex-1">
-        {/* Dynamic Breadcrumbs */}
         <nav className="hidden lg:flex items-center gap-2 text-xs font-bold text-stone-400 uppercase tracking-widest">
           <span>OCOP Market</span>
           <FiChevronRight className="text-stone-300" />
@@ -90,7 +88,6 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
       </div>
 
       <div className="flex items-center gap-4">
-        {/* Admin Profile */}
         <div
           className="relative ml-4 flex items-center gap-3 pl-4 border-l border-stone-200 cursor-pointer"
           onMouseEnter={() => setIsUserDropdownOpen(true)}

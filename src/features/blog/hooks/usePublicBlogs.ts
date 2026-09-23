@@ -40,6 +40,6 @@ export const usePublicBlogTagsQuery = () => {
   return useQuery({
     queryKey: PUBLIC_BLOG_KEYS.tags(),
     queryFn: () => publicBlogApi.getTags(),
-    staleTime: 24 * 60 * 60 * 1000, // Ít khi thay đổi
+    staleTime: 24 * 60 * 60 * 1000,
   });
 };

@@ -10,13 +10,9 @@ import {
 } from '@/features/inventory/types/inventoryTypes';
 import toast from 'react-hot-toast';
 
-// ─── Query Keys ────────────────────────────────────────────────────────────────
-
 const INVENTORY_KEY = 'seller-inventory';
 const INVENTORY_LOGS_KEY = 'seller-inventory-logs';
 const LOW_STOCK_KEY = 'seller-inventory-low-stock';
-
-// ─── Query Hooks ───────────────────────────────────────────────────────────────
 
 export const useInventoryListQuery = (
   params?: InventoryListParams,
@@ -59,8 +55,6 @@ export const useLowStockAlertsQuery = (options?: { enabled?: boolean }) => {
     enabled: options?.enabled ?? true,
   });
 };
-
-// ─── Mutation Hooks ────────────────────────────────────────────────────────────
 
 export const useAddStockMutation = (variantId: number) => {
   const queryClient = useQueryClient();

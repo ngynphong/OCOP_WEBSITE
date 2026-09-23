@@ -8,8 +8,6 @@ import {
   UpdateQuickLinkRequest,
 } from '@/features/admin/types/adminHomeTypes';
 
-// ─── Banner Hooks ────────────────────────────────────────────────────────────
-
 export const useAdminBannersQuery = () => {
   return useQuery({
     queryKey: ['admin-banners'],
@@ -81,8 +79,6 @@ export const useToggleBannerStatusMutation = () => {
     },
   });
 };
-
-// ─── Quick Link Hooks ────────────────────────────────────────────────────────
 
 export const useAdminQuickLinksQuery = () => {
   return useQuery({

@@ -82,7 +82,6 @@ const FormMode = ({
           </div>
         )}
 
-        {/* Global Settings (Only for Create) */}
         {!selectedCategory && (
           <div className="p-5 bg-white rounded-xl border border-emerald-100 shadow-sm mb-4">
             <label className="block text-[10px] font-black text-emerald-800 uppercase mb-3 ml-1 tracking-wider">
@@ -107,7 +106,6 @@ const FormMode = ({
           </div>
         )}
 
-        {/* Categories List */}
         <div className="space-y-4">
           {fields.map((field, index) => (
             <CategoryItemForm
@@ -128,7 +126,6 @@ const FormMode = ({
           ))}
         </div>
 
-        {/* Add Button (Only for Create) */}
         {!selectedCategory && (
           <button
             type="button"

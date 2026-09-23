@@ -49,7 +49,6 @@ export const OcopMallSection = memo(function OcopMallSection() {
               whileHover={{ y: -6 }}
               className="group relative bg-white/60 backdrop-blur-md border border-white/40 rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-green-900/5 transition-all duration-500"
             >
-              {/* Card Header Background - Using shop.bannerUrl if available */}
               <div className="h-28 relative bg-green-900 overflow-hidden">
                 {shop.bannerUrl ? (
                   <Image
@@ -76,9 +75,7 @@ export const OcopMallSection = memo(function OcopMallSection() {
                 </div>
               </div>
 
-              {/* Shop Info Container */}
               <div className="px-6 pb-6 pt-0 relative">
-                {/* Logo Overlap */}
                 <div className="absolute -top-10 left-6 w-20 h-20 bg-white rounded-full p-2 shadow-xl border border-stone-100 group-hover:scale-105 transition-transform duration-500">
                   <div className="relative w-full h-full rounded-full overflow-hidden">
                     <Image

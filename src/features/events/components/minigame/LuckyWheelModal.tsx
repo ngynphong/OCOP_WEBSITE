@@ -17,14 +17,14 @@ interface LuckyWheelModalProps {
 }
 
 const SLICE_COLORS = [
-  '#DC2626', // Red
-  '#059669', // Emerald
-  '#D97706', // Amber
-  '#2563EB', // Blue
-  '#7C3AED', // Purple
-  '#DB2777', // Pink
-  '#4B5563', // Slate
-  '#CA8A04', // Gold
+  '#DC2626',
+  '#059669',
+  '#D97706',
+  '#2563EB',
+  '#7C3AED',
+  '#DB2777',
+  '#4B5563',
+  '#CA8A04',
 ];
 
 export function LuckyWheelModal({
@@ -45,19 +45,15 @@ export function LuckyWheelModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
-      {/* Backdrop */}
       <div
         className="fixed inset-0 bg-slate-950/85 backdrop-blur-md transition-opacity"
         onClick={() => !isSpinning && onClose()}
         aria-hidden="true"
       />
 
-      {/* Main Container */}
       <div className="relative w-full max-w-xl bg-linear-to-b from-slate-900 via-slate-900 to-slate-950 rounded-3xl shadow-2xl border border-slate-800 overflow-hidden z-10 text-white animate-in zoom-in-95 duration-200">
-        {/* Decorative Top Glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-40 bg-radial from-emerald-500/20 via-teal-500/10 to-transparent blur-2xl pointer-events-none" />
 
-        {/* Header Bar */}
         <div className="relative p-5 sm:p-6 border-b border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center text-xl shadow-inner">
@@ -83,7 +79,6 @@ export function LuckyWheelModal({
           </button>
         </div>
 
-        {/* Subheader: Lượt quay & Daily check-in */}
         <div className="px-5 sm:px-6 py-3 bg-slate-950/60 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2">
             <span className="text-slate-400 font-medium">Lượt quay còn lại:</span>
@@ -107,21 +102,17 @@ export function LuckyWheelModal({
           </div>
         </div>
 
-        {/* Wheel Wheel Canvas Container */}
         <div className="p-6 sm:p-8 flex flex-col items-center justify-center">
           <div className="relative w-72 h-72 sm:w-80 sm:h-80 flex items-center justify-center">
-            {/* Outer Golden Border with Lights */}
             <div className="absolute inset-0 rounded-full bg-linear-to-tr from-amber-400 via-yellow-200 to-amber-500 p-2 shadow-2xl shadow-emerald-950/50">
               <div className="w-full h-full rounded-full border-4 border-dashed border-amber-200/60 bg-slate-900" />
             </div>
 
-            {/* Pointer / Needle Indicator at 12 o'clock */}
             <div className="absolute -top-3 z-30 flex flex-col items-center">
               <div className="w-5 h-7 bg-amber-400 rounded-b-full shadow-lg shadow-black/50 border-2 border-white transform rotate-180" />
               <div className="w-3 h-3 rounded-full bg-red-600 border border-white -mt-2" />
             </div>
 
-            {/* Rotating Wheel Disk */}
             <div
               className="relative w-64 h-64 sm:w-72 sm:h-72 rounded-full overflow-hidden shadow-inner"
               style={{
@@ -156,7 +147,6 @@ export function LuckyWheelModal({
                 })}
               </svg>
 
-              {/* Labels on Slices */}
               {rewards.map((reward, i) => {
                 const rotation = i * sliceAngle + sliceAngle / 2;
 
@@ -178,7 +168,6 @@ export function LuckyWheelModal({
               })}
             </div>
 
-            {/* Center Spin Button Knob */}
             <button
               type="button"
               disabled={isSpinning || spinsLeft <= 0}
@@ -196,7 +185,6 @@ export function LuckyWheelModal({
             </button>
           </div>
 
-          {/* Bottom helper notice */}
           <div className="mt-6 p-3 rounded-xl bg-slate-800/40 border border-slate-700/50 text-xs text-slate-300 text-center flex items-center justify-center gap-2 max-w-md">
             <AlertCircle className="w-4 h-4 text-emerald-400 shrink-0" />
             <span>Quay trúng Voucher sẽ được tự động lưu vào ví và áp dụng ngay khi đặt hàng.</span>

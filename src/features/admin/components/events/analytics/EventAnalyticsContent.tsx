@@ -83,7 +83,6 @@ export function EventAnalyticsContent({
 
   return (
     <div className="space-y-6">
-      {/* Header bar with live indicator & refresh button */}
       <div className="flex flex-wrap items-center justify-between gap-3 bg-stone-50/80 p-4 rounded-xl border border-stone-200/70">
         <div>
           <div className="flex items-center gap-2">
@@ -111,9 +110,7 @@ export function EventAnalyticsContent({
         )}
       </div>
 
-      {/* KPI Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* GMV */}
         <div className="bg-white p-5 rounded-2xl border border-stone-200/80 shadow-sm relative overflow-hidden group">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-stone-500 uppercase tracking-wider">
@@ -130,7 +127,6 @@ export function EventAnalyticsContent({
           <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-400" />
         </div>
 
-        {/* Orders */}
         <div className="bg-white p-5 rounded-2xl border border-stone-200/80 shadow-sm relative overflow-hidden group">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-stone-500 uppercase tracking-wider">
@@ -147,7 +143,6 @@ export function EventAnalyticsContent({
           <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-cyan-400" />
         </div>
 
-        {/* Participating Products */}
         <div className="bg-white p-5 rounded-2xl border border-stone-200/80 shadow-sm relative overflow-hidden group">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-stone-500 uppercase tracking-wider">
@@ -164,7 +159,6 @@ export function EventAnalyticsContent({
           <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-yellow-400" />
         </div>
 
-        {/* Participating Shops */}
         <div className="bg-white p-5 rounded-2xl border border-stone-200/80 shadow-sm relative overflow-hidden group">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-stone-500 uppercase tracking-wider">
@@ -182,7 +176,6 @@ export function EventAnalyticsContent({
         </div>
       </div>
 
-      {/* Minigame Analytics Section */}
       <div className="bg-white rounded-2xl border border-stone-200/80 p-6 shadow-sm">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
@@ -205,7 +198,6 @@ export function EventAnalyticsContent({
 
         {minigameStats ? (
           <div className="space-y-4">
-            {/* Progress bar */}
             <div>
               <div className="flex justify-between text-xs font-medium text-stone-600 mb-1.5">
                 <span>
@@ -224,7 +216,6 @@ export function EventAnalyticsContent({
               </div>
             </div>
 
-            {/* Sub stats */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
               <div className="bg-stone-50 p-3 rounded-xl border border-stone-200/60">
                 <div className="text-xs text-stone-500">Tổng Lượt Quay</div>
@@ -262,9 +253,7 @@ export function EventAnalyticsContent({
         )}
       </div>
 
-      {/* Top Products & Top Shops Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Top 5 Products */}
         <div className="bg-white rounded-2xl border border-stone-200/80 p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-4">
             <Trophy className="w-5 h-5 text-amber-500" />
@@ -311,7 +300,6 @@ export function EventAnalyticsContent({
           )}
         </div>
 
-        {/* Top 5 Shops */}
         <div className="bg-white rounded-2xl border border-stone-200/80 p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-4">
             <Store className="w-5 h-5 text-purple-600" />

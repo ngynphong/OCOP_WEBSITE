@@ -24,7 +24,6 @@ export const AdminOrderFilterBar = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearchTerm]);
 
-  // Synchronize searchTerm if params.keyword is changed from outside
   useEffect(() => {
     if (params.keyword !== searchTerm) {
       setSearchTerm(params.keyword || '');

@@ -15,7 +15,6 @@ import {
 } from '../types/affiliateTypes';
 
 export const affiliateApi = {
-  // User APIs
   getAffiliateAccount: (): Promise<ApiResponse<AffiliateAccount>> => {
     return axiosClient.get(API_ENDPOINTS.USERS.AFFILIATE_ACCOUNT);
   },
@@ -40,7 +39,6 @@ export const affiliateApi = {
     return axiosClient.post(API_ENDPOINTS.USERS.AFFILIATE_WITHDRAWALS, payload);
   },
 
-  // Admin APIs
   adminGetWithdrawals: (
     params: GetWithdrawalsParams,
   ): Promise<ApiResponse<PaginatedResponse<WithdrawalRequest>>> => {

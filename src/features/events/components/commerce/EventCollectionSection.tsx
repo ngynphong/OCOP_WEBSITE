@@ -58,7 +58,6 @@ export function EventCollectionSection({
         isMobile ? 'py-4 px-2.5' : 'py-10 px-4 sm:px-6 lg:px-8'
       }`}
     >
-      {/* Section Header */}
       <div className={`text-center ${isMobile ? 'mb-4' : 'mb-8'}`}>
         <div
           className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-2 border shadow-xs"
@@ -85,7 +84,6 @@ export function EventCollectionSection({
         )}
       </div>
 
-      {/* Collection Tabs */}
       {collections.length > 1 && (
         <div className="flex items-center justify-center gap-1.5 sm:gap-3 flex-wrap mb-5">
           {collections.map((col) => {
@@ -115,7 +113,6 @@ export function EventCollectionSection({
         </div>
       )}
 
-      {/* Quick filters: OCOP stars and province */}
       <div
         className="flex items-center justify-between flex-wrap gap-2.5 mb-5 p-2.5 sm:p-3 rounded-2xl border backdrop-blur-md shadow-xs"
         style={{
@@ -176,7 +173,6 @@ export function EventCollectionSection({
         </span>
       </div>
 
-      {/* Products Grid */}
       {filteredProducts.length === 0 ? (
         <div
           className="py-12 text-center rounded-2xl border border-dashed bg-white"
@@ -222,7 +218,6 @@ function ProductCard({ product, formatPrice, isMobile = false }: ProductCardProp
         borderColor: 'var(--event-card-border, rgba(0, 0, 0, 0.08))',
       }}
     >
-      {/* Product Image */}
       <div className="relative aspect-square w-full bg-slate-100 overflow-hidden">
         {product.mainImageUrl ? (
           <Image
@@ -238,7 +233,6 @@ function ProductCard({ product, formatPrice, isMobile = false }: ProductCardProp
           </div>
         )}
 
-        {/* OCOP Star Badge */}
         {isOcop && (
           <div className="absolute top-2 left-2 z-10 flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-amber-500 text-white text-[10px] font-extrabold shadow-md">
             <span>OCOP {product.ocopStar}</span>
@@ -246,7 +240,6 @@ function ProductCard({ product, formatPrice, isMobile = false }: ProductCardProp
           </div>
         )}
 
-        {/* Highlighted Ribbon */}
         {product.isHighlighted && (
           <div
             className="absolute top-2 right-2 z-10 px-1.5 py-0.5 rounded-md text-[9px] font-bold text-white shadow-md uppercase tracking-wider"
@@ -256,7 +249,6 @@ function ProductCard({ product, formatPrice, isMobile = false }: ProductCardProp
           </div>
         )}
 
-        {/* Province Chip */}
         {product.provinceName && (
           <div className="absolute bottom-2 left-2 z-10 px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-sm text-white text-[9px] font-medium flex items-center gap-1">
             <MapPin className="w-2.5 h-2.5 text-amber-400 shrink-0" />
@@ -265,12 +257,10 @@ function ProductCard({ product, formatPrice, isMobile = false }: ProductCardProp
         )}
       </div>
 
-      {/* Product Content */}
       <div
         className={`${isMobile ? 'p-2.5' : 'p-3.5 sm:p-4'} flex-1 flex flex-col justify-between`}
       >
         <div>
-          {/* Shop Name */}
           {product.shopName && (
             <p className="text-[10px] text-slate-500 truncate mb-1 flex items-center gap-1">
               <Store className="w-3 h-3 shrink-0 text-slate-400" />
@@ -278,7 +268,6 @@ function ProductCard({ product, formatPrice, isMobile = false }: ProductCardProp
             </p>
           )}
 
-          {/* Product Name */}
           <h3
             className={`${
               isMobile ? 'text-xs min-h-[30px]' : 'text-xs sm:text-sm min-h-[36px]'
@@ -288,7 +277,6 @@ function ProductCard({ product, formatPrice, isMobile = false }: ProductCardProp
           </h3>
         </div>
 
-        {/* Price & Rating */}
         <div className="mt-2.5 pt-2 border-t border-slate-100">
           <div className="flex items-baseline gap-1.5">
             <span
@@ -307,7 +295,6 @@ function ProductCard({ product, formatPrice, isMobile = false }: ProductCardProp
             <span>Đã bán {product.soldCount}</span>
           </div>
 
-          {/* Action CTA */}
           <Link
             href={`/product/${product.slug}`}
             className={`mt-2.5 w-full block text-center ${

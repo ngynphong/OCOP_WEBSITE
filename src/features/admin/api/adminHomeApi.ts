@@ -15,8 +15,6 @@ import {
 import { ResponseBase } from '@/features/auth/types';
 
 export const adminHomeApi = {
-  // ─── Banner Management ─────────────────────────────────────────────────────
-
   getBanners: (): Promise<AdminBannerListResponse> => {
     return axiosClient.get(API_ENDPOINTS.ADMIN.BANNERS);
   },
@@ -44,8 +42,6 @@ export const adminHomeApi = {
   toggleBannerStatus: (id: number): Promise<ResponseBase<AdminBanner>> => {
     return axiosClient.post(buildRoute(API_ENDPOINTS.ADMIN.BANNERS, id, 'toggle'));
   },
-
-  // ─── Quick Link Management ─────────────────────────────────────────────────
 
   getQuickLinks: (): Promise<AdminQuickLinkListResponse> => {
     return axiosClient.get(API_ENDPOINTS.ADMIN.QUICK_LINKS);

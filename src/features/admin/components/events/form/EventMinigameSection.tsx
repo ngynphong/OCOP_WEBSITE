@@ -108,7 +108,6 @@ export function EventMinigameSection({
 
       {minigameActive ? (
         <div className="space-y-6 animate-in fade-in duration-200">
-          {/* 1. Chọn thể loại Minigame */}
           <div>
             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
               Loại Trò Chơi Mặc Định
@@ -174,7 +173,6 @@ export function EventMinigameSection({
             </div>
           </div>
 
-          {/* 2. Cấu hình Chủ Đề Concept Cho Trò Bốc Quà (Mystery Pick) */}
           <EventMysteryPickSettings
             effectiveMysteryPickConcept={effectiveMysteryPickConcept}
             mysteryPickConcept={mysteryPickConcept}
@@ -188,7 +186,6 @@ export function EventMinigameSection({
             onResetPickItemsToConcept={onResetPickItemsToConcept}
           />
 
-          {/* 3. Điều kiện & lượt quay */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2 border-t border-gray-100">
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
@@ -245,7 +242,6 @@ export function EventMinigameSection({
             </div>
           </div>
 
-          {/* 4. Ngân sách giải thưởng */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 border-t border-gray-100">
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
@@ -284,7 +280,6 @@ export function EventMinigameSection({
             </div>
           </div>
 
-          {/* 5. Cơ cấu phần thưởng */}
           <EventMinigameRewardsConfig
             activeRewards={activeRewards}
             totalRewardWeight={totalRewardWeight}

@@ -22,9 +22,7 @@ import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { FiX, FiPlus } from 'react-icons/fi';
 import { Sparkles } from 'lucide-react';
 import Image from 'next/image';
-import { toast } from 'react-toastify';
-// import { AiStoryBuilder } from './AiStoryBuilder';
-// import { AiStoryResponse } from '../../api/aiApi';
+import { toast } from 'react-hot-toast';
 import { useAiAssistantMutations } from '@/features/products/hooks/useAiAssistant';
 import { useProductionBatch } from '@/features/supply-chain/hooks/useProductionBatch';
 
@@ -73,14 +71,11 @@ export function JournalsTab({ productId }: JournalsTabProps) {
         appendOnly: false,
       });
       setShowAiConfirmModal(false);
-    } catch {
-      // Toast already handled in hook
-    }
+    } catch {}
   };
 
   const journals: ProductJournal[] = data?.data ?? [];
 
-  // Logic tính missing groups
   const existingSteps = new Set(journals.map((j) => j.stepType));
   const missingGroups: string[] = [];
   const hasSource =
@@ -212,31 +207,8 @@ export function JournalsTab({ productId }: JournalsTabProps) {
 
   if (isPending) return <div className="h-48 bg-stone-100 rounded-xl animate-pulse" />;
 
-  // const handleStepSelected = (step: NonNullable<AiStoryResponse['extractedJournals']>[0]) => {
-  //   setEditId(null);
-  //   reset({
-  //     stepType: step.stepType,
-  //     title: step.title,
-  //     description: step.description,
-  //     stepOrder: journals.length + 1,
-  //     location: '',
-  //     activityDate: new Date().toISOString().split('T')[0],
-  //     images: [],
-  //   });
-  //   setPreviewUrls([]);
-  //   setSelectedFiles([]);
-  //   setShowForm(true);
-  //   setTimeout(() => {
-  //     formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  //   }, 100);
-  //   toast.info('Đã tải chi tiết bước. Vui lòng bổ sung Ngày và Ảnh minh chứng!');
-  // };
-
   return (
     <div id="tour-journals-tab-content" className="space-y-8">
-      {/* <AiStoryBuilder productId={productId} onStepSelected={handleStepSelected} /> */}
-
-      {/* Production Log Section */}
       <div className="space-y-4 border-t border-stone-100 pt-8">
         <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
           <div>
@@ -278,7 +250,6 @@ export function JournalsTab({ productId }: JournalsTabProps) {
           </div>
         </div>
 
-        {/* Journal steps */}
         {journals.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-8 bg-stone-50/80 rounded-2xl border border-dashed border-stone-200 text-center space-y-3">
             <div className="w-12 h-12 rounded-full bg-emerald-100/70 text-emerald-600 flex items-center justify-center">
@@ -385,7 +356,6 @@ export function JournalsTab({ productId }: JournalsTabProps) {
           </div>
         )}
 
-        {/* Confirm Delete Modal */}
         {deleteId && (
           <ConfirmModal
             title="Xóa bước nhật ký"
@@ -398,7 +368,6 @@ export function JournalsTab({ productId }: JournalsTabProps) {
           />
         )}
 
-        {/* Confirm AI Generation Modal */}
         {showAiConfirmModal && (
           <ConfirmModal
             title="Tự động sinh nhật ký từ Quy trình chuẩn"
@@ -446,9 +415,7 @@ export function JournalsTab({ productId }: JournalsTabProps) {
           </ConfirmModal>
         )}
 
-        {/* Add journal form */}
         {showForm ? (
-          // ... (rest of the form remains the same, I don't need to replace it here)
           <form
             ref={formRef}
             onSubmit={handleSubmit(onSubmit)}

@@ -13,7 +13,6 @@ import {
 import { FlashSaleBuyRequest } from '@/features/checkout/types/checkoutTypes';
 
 export const flashSaleApi = {
-  // ─── Public API ────────────────────────────────────────────────────────────
   getActiveFlashSales: (categoryId?: number): Promise<FlashSaleListResponse> =>
     publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.FLASH_SALES}/active`, {
       params: { categoryId },
@@ -37,7 +36,6 @@ export const flashSaleApi = {
   ): Promise<BuyFlashSaleResponse> =>
     axiosClient.post(buildRoute(API_ENDPOINTS.PUBLIC.FLASH_SALES, flashSaleItemId, 'buy'), data),
 
-  // ─── Seller API ────────────────────────────────────────────────────────────
   getSellerFlashSales: (): Promise<FlashSaleListResponse> =>
     axiosClient.get(API_ENDPOINTS.SELLER.FLASH_SALES, {
       headers: { 'X-Silent-Loading': 'true' },
@@ -59,7 +57,6 @@ export const flashSaleApi = {
       headers: { 'X-Silent-Loading': 'true' },
     }),
 
-  // ─── Admin API ─────────────────────────────────────────────────────────────
   getAdminFlashSales: (params?: Record<string, unknown>): Promise<FlashSaleAdminListResponse> =>
     axiosClient.get(API_ENDPOINTS.ADMIN.FLASH_SALES, {
       params,

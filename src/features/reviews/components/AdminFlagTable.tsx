@@ -34,7 +34,6 @@ export const AdminFlagTable = ({
 }: AdminFlagTableProps) => {
   return (
     <div className="space-y-6">
-      {/* Tabs / Filter Status */}
       <div className="flex gap-2 p-1 bg-stone-100 rounded-xl w-fit">
         {['PENDING', 'RESOLVED_KEPT', 'RESOLVED_REMOVED', 'ALL'].map((s) => (
           <button
@@ -72,7 +71,6 @@ export const AdminFlagTable = ({
               className="bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden group"
             >
               <div className="p-6 flex flex-col md:flex-row gap-6">
-                {/* Reporter Info */}
                 <div className="md:w-1/4 space-y-3">
                   <div className="flex items-center gap-2">
                     <AlertCircle size={16} className="text-red-500" />
@@ -99,7 +97,6 @@ export const AdminFlagTable = ({
                   </p>
                 </div>
 
-                {/* Targeted Content Context */}
                 <div className="flex-1 p-6 bg-stone-50 rounded-xl border border-stone-100 relative">
                   <div className="absolute -top-3 left-6 px-2 bg-stone-50 text-[10px] font-black text-stone-400 uppercase tracking-widest">
                     Nội dung bị báo cáo
@@ -133,7 +130,6 @@ export const AdminFlagTable = ({
                   )}
                 </div>
 
-                {/* Actions */}
                 <div className="md:w-1/4 flex flex-col justify-center gap-3">
                   {flag.status === 'PENDING' ? (
                     <>
@@ -182,7 +178,6 @@ export const AdminFlagTable = ({
             </div>
           ))}
 
-          {/* Pagination */}
           {totalPages > 1 && (
             <div className="flex justify-center gap-2 mt-8">
               {Array.from({ length: totalPages }).map((_, idx) => (

@@ -2,8 +2,6 @@ import { ResponseBase, PaginatedResponse } from '@/features/admin/types/adminTyp
 
 export type { ResponseBase, PaginatedResponse };
 
-// ─── Enums ────────────────────────────────────────────────────────────────────
-
 export type InventoryChangeType =
   | 'IMPORT'
   | 'SALE_RESERVE'
@@ -14,8 +12,6 @@ export type InventoryChangeType =
   | 'DAMAGED'
   | 'FLASH_RESERVE'
   | 'FLASH_RELEASE';
-
-// ─── Response interfaces ──────────────────────────────────────────────────────
 
 export interface InventoryItem {
   id: number;
@@ -48,12 +44,9 @@ export interface InventoryLog {
   createdAt: string;
 }
 
-// ─── Request interfaces ───────────────────────────────────────────────────────
-
 export interface InventoryListParams {
   pageNo?: number;
   pageSize?: number;
-  // keyword?: string;
   shopId?: string | number;
 }
 
@@ -76,8 +69,6 @@ export interface DamagedStockRequest {
 export interface ThresholdRequest {
   threshold: number;
 }
-
-// ─── Response type aliases ────────────────────────────────────────────────────
 
 export type InventoryListResponse = ResponseBase<PaginatedResponse<InventoryItem>>;
 export type InventoryDetailResponse = ResponseBase<InventoryItem>;

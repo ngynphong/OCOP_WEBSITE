@@ -23,22 +23,17 @@ export function EventHeroSection({ event, device }: EventHeroSectionProps) {
   if (event.theme?.decorationsJson) {
     try {
       decorations = JSON.parse(event.theme.decorationsJson);
-    } catch {
-      // ignore
-    }
+    } catch {}
   }
 
   return (
     <section className="relative w-full overflow-hidden rounded-2xl md:rounded-3xl shadow-xl border border-amber-500/20 my-4">
-      {/* Background Image Layer with Fallback */}
       <div
         className={`relative w-full ${
           isForcedMobile ? 'h-[360px]' : 'h-[360px] sm:h-[420px] md:h-[480px] lg:h-[520px]'
         }`}
       >
-        {/* Device-aware Image Rendering */}
         {isForcedMobile ? (
-          /* Explicit Mobile Banner (used in preview mode) */
           <div className="absolute inset-0">
             <Image
               src={mobileImg}
@@ -50,7 +45,6 @@ export function EventHeroSection({ event, device }: EventHeroSectionProps) {
             />
           </div>
         ) : isForcedDesktop ? (
-          /* Explicit Desktop Banner (used in preview mode) */
           <div className="absolute inset-0">
             <Image
               src={desktopImg}
@@ -62,7 +56,6 @@ export function EventHeroSection({ event, device }: EventHeroSectionProps) {
             />
           </div>
         ) : (
-          /* Responsive pair for standard public view */
           <>
             <div className="hidden sm:block absolute inset-0">
               <Image
@@ -87,7 +80,6 @@ export function EventHeroSection({ event, device }: EventHeroSectionProps) {
           </>
         )}
 
-        {/* Gradient Overlay for Readability */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent flex items-center">
           <div
             className={`max-w-7xl mx-auto w-full ${
@@ -95,13 +87,11 @@ export function EventHeroSection({ event, device }: EventHeroSectionProps) {
             }`}
           >
             <div className={`max-w-xl text-white ${isForcedMobile ? 'space-y-2.5' : 'space-y-4'}`}>
-              {/* Event Badge */}
               <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-600/90 border border-amber-400/40 text-amber-200 text-xs sm:text-sm font-semibold tracking-wide shadow-md backdrop-blur-sm animate-pulse">
                 <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-300" />
                 <span>SỰ KIỆN ĐẶC BIỆT</span>
               </div>
 
-              {/* Event Title */}
               <h1
                 className={`font-extrabold tracking-tight text-white drop-shadow-md leading-tight ${
                   isForcedMobile ? 'text-xl' : 'text-2xl sm:text-4xl lg:text-5xl'
@@ -110,7 +100,6 @@ export function EventHeroSection({ event, device }: EventHeroSectionProps) {
                 {event.name}
               </h1>
 
-              {/* Event Description */}
               {event.description && (
                 <p
                   className={`text-gray-200 leading-relaxed drop-shadow ${
@@ -121,7 +110,6 @@ export function EventHeroSection({ event, device }: EventHeroSectionProps) {
                 </p>
               )}
 
-              {/* Date badge */}
               <div className="flex items-center gap-2 text-xs sm:text-sm text-amber-300/90 font-medium">
                 <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 <span>
@@ -130,7 +118,6 @@ export function EventHeroSection({ event, device }: EventHeroSectionProps) {
                 </span>
               </div>
 
-              {/* CTA Action */}
               <div className="pt-1 sm:pt-2 flex flex-wrap items-center gap-3">
                 <Link
                   href={`/events/${event.slug}`}
@@ -144,7 +131,6 @@ export function EventHeroSection({ event, device }: EventHeroSectionProps) {
           </div>
         </div>
 
-        {/* 3. Cụm Sticker Biểu Tượng Lễ Hội (Bánh Chưng, Bao Lì Xì...) */}
         {decorations?.enableCornerStickers && !isForcedMobile && (
           <div className="absolute bottom-6 right-8 hidden lg:block z-10">
             <EventHeroFestiveSticker conceptId={decorations.conceptId} />

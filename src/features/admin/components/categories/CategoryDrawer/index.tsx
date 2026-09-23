@@ -97,7 +97,6 @@ const CategoryDrawerContent = ({
       >
         {isLoadingDetail && <LoadingOverlay />}
 
-        {/* Header */}
         <div className="p-6 border-b border-stone-100 flex justify-between items-center bg-stone-50/50 shrink-0">
           <div className="flex-1 min-w-0 pr-4">
             <h3 className="text-xl font-black text-emerald-900 leading-tight truncate">
@@ -133,7 +132,6 @@ const CategoryDrawerContent = ({
           </div>
         </div>
 
-        {/* Content Area */}
         <div className="flex-1 overflow-hidden flex flex-col">
           {selectedCategory && !isEditing && freshCategory ? (
             <DetailMode

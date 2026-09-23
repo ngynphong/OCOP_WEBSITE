@@ -10,13 +10,11 @@ import toast from 'react-hot-toast';
 
 type ApiError = { response?: { data?: { message?: string } } };
 
-// ─── Standalone Query Hooks ──────
-
 export const useShopsQuery = (params: GetShopsParams) => {
   return useQuery({
     queryKey: ['admin-shops', params],
     queryFn: () => adminApi.getShops(params),
-    staleTime: 30 * 1000, // Cache 30s
+    staleTime: 30 * 1000,
   });
 };
 
@@ -37,8 +35,6 @@ export const useShopStatusLogsQuery = (shopId: number | string | null | undefine
     staleTime: 60 * 1000,
   });
 };
-
-// ─── Mutation Hook ─────────────────────────────────────────────────────────────
 
 export const useAdminShopMutations = () => {
   const queryClient = useQueryClient();

@@ -7,8 +7,8 @@ import { ProvinceMode } from './regions-map';
 export interface ProvinceGeoData {
   code: string;
   name: string;
-  center: [number, number]; // [latitude, longitude]
-  bbox: [number, number, number, number]; // [minLon, minLat, maxLon, maxLat]
+  center: [number, number];
+  bbox: [number, number, number, number];
   regionName?: string;
   constituentCodes?: string[];
   constituentNames?: string[];
@@ -16,8 +16,8 @@ export interface ProvinceGeoData {
 
 /** Giới hạn địa lý bản đồ Việt Nam (bao gồm cả vùng biển đảo, Hoàng Sa, Trường Sa) */
 export const VIETNAM_MAP_BOUNDS: [[number, number], [number, number]] = [
-  [7.0, 101.0], // Tây Nam
-  [24.5, 118.5], // Đông Bắc
+  [7.0, 101.0],
+  [24.5, 118.5],
 ];
 
 export const VIETNAM_CENTER: [number, number] = [16.04, 107.5];
@@ -835,20 +835,17 @@ export function getProvinceGeo(
   if (!identifier) return undefined;
   const map = mode === '34' ? PROVINCE_COORDINATES_34 : PROVINCE_COORDINATES_63;
 
-  // 1. Tìm theo mã code chính xác
   if (map[identifier]) return map[identifier];
 
   const normInput = normalizeSearchStr(identifier);
   const compactInput = normInput.replace(/\s+/g, '');
 
-  // 2. Tra qua bí danh
   const alias = PROVINCE_ALIASES[normInput] || PROVINCE_ALIASES[compactInput];
   if (alias) {
     const code = mode === '34' ? alias.code34 : alias.code63;
     if (map[code]) return map[code];
   }
 
-  // 3. Tìm theo tên tỉnh
   const values = Object.values(map);
   for (const item of values) {
     const normName = normalizeSearchStr(item.name);
@@ -863,7 +860,6 @@ export function getProvinceGeo(
     }
   }
 
-  // 4. Nếu ở chế độ 34 tỉnh, kiểm tra tỉnh cấu thành
   if (mode === '34') {
     for (const item of values) {
       for (const cName of item.constituentNames || []) {
@@ -903,7 +899,6 @@ export function searchProvinces(
   const map = mode === '34' ? PROVINCE_COORDINATES_34 : PROVINCE_COORDINATES_63;
   const results: ProvinceSearchResult[] = [];
 
-  // Kiểm tra alias
   const alias = PROVINCE_ALIASES[q] || PROVINCE_ALIASES[qCompact];
   const priorityCode = alias ? (mode === '34' ? alias.code34 : alias.code63) : undefined;
 
@@ -922,7 +917,6 @@ export function searchProvinces(
     } else if (normName.includes(q) || compactName.includes(qCompact)) {
       score = 70;
     } else if (mode === '34' && item.constituentNames) {
-      // Tìm trong danh sách các tỉnh cấu thành
       for (const cName of item.constituentNames) {
         const normC = normalizeSearchStr(cName);
         const compactC = normC.replace(/\s+/g, '');

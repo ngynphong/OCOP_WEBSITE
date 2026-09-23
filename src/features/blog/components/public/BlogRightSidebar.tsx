@@ -66,7 +66,7 @@ export const BlogRightSidebar = ({ toc = [] }: BlogRightSidebarProps) => {
     e.preventDefault();
     const element = document.getElementById(id);
     if (element) {
-      const y = element.getBoundingClientRect().top + window.scrollY - 100; // Offset for sticky header
+      const y = element.getBoundingClientRect().top + window.scrollY - 100;
       window.scrollTo({ top: y, behavior: 'smooth' });
       window.history.pushState(null, '', `#${id}`);
     }
@@ -77,7 +77,6 @@ export const BlogRightSidebar = ({ toc = [] }: BlogRightSidebarProps) => {
   return (
     <div className="hidden lg:flex flex-col w-full max-w-[260px] ml-auto transition-all duration-300">
       <div className="bg-white rounded-2xl border border-stone-100 p-5 shadow-sm">
-        {/* Header */}
         <div className="flex items-center gap-3 mb-5">
           <span className="text-[11px] font-bold text-emerald-800 tracking-[0.2em] uppercase">
             Mục lục
@@ -85,9 +84,7 @@ export const BlogRightSidebar = ({ toc = [] }: BlogRightSidebarProps) => {
           <div className="flex-1 h-px bg-stone-100"></div>
         </div>
 
-        {/* TOC List */}
         <ul className="relative text-[13px] text-stone-500 max-h-[55vh] overflow-y-auto pr-1 custom-scrollbar mb-6">
-          {/* Vertical line behind items */}
           <div className="absolute left-[5px] top-1.5 bottom-1.5 w-px bg-stone-100 z-0"></div>
 
           {toc.map((item, index) => {
@@ -118,7 +115,6 @@ export const BlogRightSidebar = ({ toc = [] }: BlogRightSidebarProps) => {
           })}
         </ul>
 
-        {/* Reading Progress */}
         <div className="pt-5 border-t border-stone-100">
           <div className="flex justify-between items-center mb-2">
             <span className="text-xs text-stone-500">Tiến độ đọc</span>

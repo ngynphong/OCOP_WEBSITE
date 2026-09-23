@@ -24,11 +24,7 @@ import { InventoryItem, InventoryListParams } from '@/features/inventory/types/i
 import { Pagination } from '@/components/ui/Pagination';
 import { useAuthProfile } from '@/features/auth/hooks/useAuthProfile';
 
-// ─── Static config ─────────────────────────────────────────────────────────────
-
 const PAGE_SIZE = 10;
-
-// ─── Stock status badge ────────────────────────────────────────────────────────
 
 function StockBadge({ item }: { item: InventoryItem }) {
   if (item.outOfStock) {
@@ -53,8 +49,6 @@ function StockBadge({ item }: { item: InventoryItem }) {
   );
 }
 
-// ─── Action modal state ────────────────────────────────────────────────────────
-
 type ActionType = 'add' | 'adjust' | 'damaged' | 'threshold' | null;
 
 interface ActionState {
@@ -62,8 +56,6 @@ interface ActionState {
   variantId: number;
   variantName: string;
 }
-
-// ─── Simple inline action form ─────────────────────────────────────────────────
 
 function ActionModal({ action, onClose }: { action: ActionState; onClose: () => void }) {
   const [qty, setQty] = useState('');
@@ -193,8 +185,6 @@ function ActionModal({ action, onClose }: { action: ActionState; onClose: () => 
   );
 }
 
-// ─── Loading skeleton ──────────────────────────────────────────────────────────
-
 function TableSkeleton() {
   return (
     <div className="animate-pulse space-y-3">
@@ -204,8 +194,6 @@ function TableSkeleton() {
     </div>
   );
 }
-
-// ─── Main component ────────────────────────────────────────────────────────────
 
 export default function InventoryListClient() {
   const { profile } = useAuthProfile();
@@ -230,7 +218,6 @@ export default function InventoryListClient() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-semibold text-stone-800">Quản lý tồn kho</h1>
@@ -256,7 +243,6 @@ export default function InventoryListClient() {
         </div>
       </div>
 
-      {/* Table */}
       <div className="overflow-hidden rounded-xl border border-stone-200 bg-white">
         {isPending ? (
           <div className="p-6">
@@ -355,7 +341,6 @@ export default function InventoryListClient() {
         )}
       </div>
 
-      {/* Pagination */}
       <div className="mt-8 border-t border-stone-100 pt-6">
         <Pagination
           currentPage={pageNo}
@@ -366,7 +351,6 @@ export default function InventoryListClient() {
         />
       </div>
 
-      {/* Action modal */}
       {action && <ActionModal action={action} onClose={() => setAction(null)} />}
     </div>
   );

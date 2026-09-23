@@ -78,7 +78,6 @@ export const UserTicketDetailModal = ({
 
   const ticket = resp?.data;
 
-  // Tự động cuộn xuống khi có tin nhắn mới
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -120,7 +119,6 @@ export const UserTicketDetailModal = ({
         </div>
       ) : ticket ? (
         <div className="flex flex-col h-[70vh]">
-          {/* Header Info Bar */}
           <div className="bg-stone-50/80 backdrop-blur-md p-4 rounded-xl border border-stone-100 flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <div
@@ -168,9 +166,7 @@ export const UserTicketDetailModal = ({
             </div>
           </div>
 
-          {/* Conversation Area */}
           <div ref={scrollRef} className="flex-1 overflow-y-auto px-2 space-y-6 scroll-smooth pb-4">
-            {/* Original Ticket Description */}
             <div className="flex flex-col items-center py-4">
               <div className="bg-stone-50 border border-stone-100 px-4 py-1.5 rounded-full flex items-center gap-2 text-[10px] font-bold text-stone-400 mb-6 uppercase tracking-widest">
                 <Clock size={12} /> Bắt đầu yêu cầu lúc{' '}
@@ -200,7 +196,6 @@ export const UserTicketDetailModal = ({
               </div>
             </div>
 
-            {/* Replies List */}
             {(ticket.replies || []).map((reply) => {
               const isAdmin = reply.senderType === 'ADMIN' || reply.senderType === 'STAFF';
               return (
@@ -255,7 +250,6 @@ export const UserTicketDetailModal = ({
             })}
           </div>
 
-          {/* Reply Input Area */}
           <div className="mt-4 pt-4 border-t border-stone-100">
             {ticket.status === 'CLOSED' || ticket.status === 'RESOLVED' ? (
               <div className="bg-stone-50 p-4 rounded-xl border border-dashed border-stone-200 text-center">

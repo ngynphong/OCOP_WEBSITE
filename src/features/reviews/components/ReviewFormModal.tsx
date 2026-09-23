@@ -57,7 +57,6 @@ export const ReviewFormModal = ({
     defaultValue: 5,
   });
 
-  // Cleanup ObjectURLs to prevent memory leaks
   React.useEffect(() => {
     const urls = imageFiles.map((file) => URL.createObjectURL(file));
     setPreviews(urls);
@@ -99,7 +98,6 @@ export const ReviewFormModal = ({
     try {
       const formData = new FormData();
 
-      // Request body as Blob
       const request = {
         orderItemId: data.orderItemId,
         rating: data.rating,
@@ -107,7 +105,6 @@ export const ReviewFormModal = ({
       };
       formData.append('request', new Blob([JSON.stringify(request)], { type: 'application/json' }));
 
-      // Images
       imageFiles.forEach((file) => {
         formData.append('images', file);
       });
@@ -124,7 +121,6 @@ export const ReviewFormModal = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Đánh giá sản phẩm" maxWidth="max-w-2xl">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* Product Brief */}
         <div className="flex gap-4 p-4 rounded-xl bg-stone-50 border border-stone-100">
           <div className="relative w-16 h-16 rounded-xl overflow-hidden border border-stone-200 shrink-0 bg-white">
             <Image src={productImage} alt={productName} fill className="object-cover" />
@@ -137,7 +133,6 @@ export const ReviewFormModal = ({
           </div>
         </div>
 
-        {/* Rating Section */}
         <div className="flex flex-col items-center justify-center py-4">
           <p className="text-sm font-bold text-stone-800 mb-3">Chất lượng sản phẩm thế nào?</p>
           <StarRating rating={rating} size={40} interactive onRatingChange={handleRatingChange} />
@@ -154,7 +149,6 @@ export const ReviewFormModal = ({
           </p>
         </div>
 
-        {/* Content Section */}
         <div className="space-y-2">
           <label className="text-xs font-black text-stone-400 uppercase tracking-widest">
             Chia sẻ trải nghiệm của bạn
@@ -173,7 +167,6 @@ export const ReviewFormModal = ({
           )}
         </div>
 
-        {/* Image Upload Section */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <label className="text-xs font-black text-stone-400 uppercase tracking-widest">
@@ -219,7 +212,6 @@ export const ReviewFormModal = ({
           </div>
         </div>
 
-        {/* Footer Actions */}
         <div className="pt-4 flex gap-3">
           <Button
             type="button"

@@ -4,7 +4,7 @@ export interface IPolicy {
   slug: string;
   content: string;
   version: string;
-  effectiveDate: string; // YYYY-MM-DD
+  effectiveDate: string;
   active: boolean;
   required: boolean;
   targetRoles: string[];

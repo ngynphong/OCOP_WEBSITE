@@ -95,7 +95,6 @@ export function FlashSaleManagementTab({ role, onCreateClick }: FlashSaleManagem
             className="bg-white rounded-xl border border-stone-100 p-6 hover:shadow-lg transition-all"
           >
             <div className="flex flex-col md:flex-row justify-between gap-6">
-              {/* Flash Sale Header Info */}
               <div className="flex-1">
                 <div className="flex items-center gap-3">
                   <h3 className="text-lg font-black text-stone-800">{fs.name}</h3>
@@ -121,7 +120,6 @@ export function FlashSaleManagementTab({ role, onCreateClick }: FlashSaleManagem
                   <span>{new Date(fs.endTime).toLocaleString()}</span>
                 </div>
 
-                {/* Items List */}
                 <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {fs.items.map((item) => (
                     <div
@@ -175,7 +173,6 @@ export function FlashSaleManagementTab({ role, onCreateClick }: FlashSaleManagem
                 </div>
               </div>
 
-              {/* Actions */}
               <div className="flex flex-col gap-2 shrink-0 md:w-48">
                 {role === 'ADMIN' && (
                   <Button
@@ -239,7 +236,6 @@ export function FlashSaleManagementTab({ role, onCreateClick }: FlashSaleManagem
         ))
       )}
 
-      {/* Edit Drawer */}
       {role === 'SELLER' && (
         <FlashSaleFormDrawer
           isOpen={isDrawerOpen}
@@ -247,12 +243,11 @@ export function FlashSaleManagementTab({ role, onCreateClick }: FlashSaleManagem
             setIsDrawerOpen(false);
             setEditingFlashSale(null);
           }}
-          products={[]} // Không cần truyền products khi edit
+          products={[]}
           initialData={editingFlashSale}
         />
       )}
 
-      {/* Detail Drawer */}
       <FlashSaleDetailDrawer
         isOpen={isDetailOpen}
         onClose={() => {

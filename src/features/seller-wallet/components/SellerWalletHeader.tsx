@@ -30,7 +30,6 @@ export const SellerWalletHeader: React.FC<Props> = ({ isB2B, onToggleB2B, onOpen
       </div>
 
       <div className="flex flex-wrap items-center gap-2.5">
-        {/* Toggle B2C / B2B */}
         <div className="p-1 bg-gray-100 rounded-xl flex items-center gap-1 border border-gray-200/60">
           <button
             type="button"
@@ -54,7 +53,6 @@ export const SellerWalletHeader: React.FC<Props> = ({ isB2B, onToggleB2B, onOpen
           </button>
         </div>
 
-        {/* Policy button */}
         <button
           type="button"
           onClick={onOpenPolicy}
@@ -64,7 +62,6 @@ export const SellerWalletHeader: React.FC<Props> = ({ isB2B, onToggleB2B, onOpen
           <span>Quy chế đối soát</span>
         </button>
 
-        {/* Bank settings button */}
         <Link
           href="/dashboard/cua-hang/tai-khoan-ngan-hang"
           className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm shadow-emerald-200 transition-colors"

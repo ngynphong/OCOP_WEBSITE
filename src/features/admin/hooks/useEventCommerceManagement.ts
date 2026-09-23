@@ -78,10 +78,8 @@ export function useEventCommerceManagement(event: EventDetailResponse) {
   );
   const loading = commerceQuery.isLoading;
 
-  // Selected collection
   const [selectedColId, setSelectedColId] = useState<number | null>(null);
 
-  // Auto pick first collection if none selected or deleted
   const effectiveSelectedColId = useMemo(() => {
     if (selectedColId !== null && collections.some((c) => c.id === selectedColId)) {
       return selectedColId;
@@ -89,15 +87,12 @@ export function useEventCommerceManagement(event: EventDetailResponse) {
     return collections[0]?.id || null;
   }, [collections, selectedColId]);
 
-  // Form states for creating collection
   const [newCollectionName, setNewCollectionName] = useState('');
   const [newCollectionDesc, setNewCollectionDesc] = useState('');
 
-  // Product Picker state
   const [isProductPickerOpen, setIsProductPickerOpen] = useState(false);
   const [reorderingProductId, setReorderingProductId] = useState<number | null>(null);
 
-  // Voucher state
   const [selectedVoucherId, setSelectedVoucherId] = useState<number | null>(null);
   const [isVoucherDrawerOpen, setIsVoucherDrawerOpen] = useState(false);
   const { createVoucher } = useAdminVoucherMutations();
@@ -108,7 +103,6 @@ export function useEventCommerceManagement(event: EventDetailResponse) {
     queryClient.invalidateQueries({ queryKey: ['admin-event-preview', event.id] });
   }, [queryClient, event.id]);
 
-  // Mutations
   const createCollectionMutation = useMutation({
     mutationFn: (data: { name: string; description?: string; sortOrder: number }) =>
       eventCommerceApi.createCollection(event.id, data),
@@ -174,7 +168,6 @@ export function useEventCommerceManagement(event: EventDetailResponse) {
     },
   });
 
-  // Handlers
   const handleCreateCollection = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newCollectionName.trim()) return;

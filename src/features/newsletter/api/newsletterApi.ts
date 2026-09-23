@@ -9,7 +9,6 @@ import {
 } from '../types/newsletterTypes';
 
 export const newsletterApi = {
-  // Public / User
   subscribe: (data: SubscribeRequest): Promise<NewsletterResponse> =>
     axiosClient.post(`${API_ENDPOINTS.NEWSLETTER}/subscribe`, data),
 
@@ -22,7 +21,6 @@ export const newsletterApi = {
   unsubscribe: (token: string): Promise<NewsletterConfirmResponse> =>
     axiosClient.get(`${API_ENDPOINTS.NEWSLETTER}/unsubscribe?token=${token}`),
 
-  // Admin
   broadcast: (data: BroadcastRequest): Promise<NewsletterConfirmResponse> =>
     axiosClient.post(`${API_ENDPOINTS.ADMIN.NEWSLETTER}/broadcast`, data),
 

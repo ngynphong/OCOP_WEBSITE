@@ -40,7 +40,6 @@ export function VoucherCard({
         isExpired && 'border-red-100',
       )}
     >
-      {/* 🎫 Left Side: Discount Indicator (The "Stub") */}
       <div
         className={cn(
           'w-32 shrink-0 flex flex-col items-center justify-center p-4 text-white relative border-r border-dashed border-white/30 transition-colors',
@@ -66,15 +65,12 @@ export function VoucherCard({
           </span>
         </div>
 
-        {/* Decorative Ticket Circles */}
         <div className="absolute -top-3 -right-3 w-6 h-6 bg-white rounded-full transition-colors group-hover:bg-stone-50" />
         <div className="absolute -bottom-3 -right-3 w-6 h-6 bg-white rounded-full transition-colors group-hover:bg-stone-50" />
       </div>
 
-      {/* 📋 Right Side: Voucher Details (The "Body") */}
       <div className="flex-1 p-5 flex flex-col justify-between overflow-hidden">
         <div className="space-y-2">
-          {/* Header & Badges */}
           <div className="flex justify-between items-start gap-4">
             <div className="flex flex-wrap items-center gap-2 overflow-hidden">
               <span className="px-2.5 py-0.5 bg-emerald-50 text-emerald-700 rounded-lg text-[10px] font-black uppercase tracking-wider border border-emerald-100 whitespace-nowrap">
@@ -87,7 +83,6 @@ export function VoucherCard({
               )}
             </div>
 
-            {/* Quick Actions Menu */}
             <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
               {onToggle && (
                 <button
@@ -157,7 +152,6 @@ export function VoucherCard({
           </div>
         </div>
 
-        {/* Usable Status Badge (for User Wallet) */}
         {'usable' in voucher && (
           <div className="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between">
             <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest">

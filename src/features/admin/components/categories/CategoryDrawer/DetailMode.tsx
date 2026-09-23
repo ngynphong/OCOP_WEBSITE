@@ -16,7 +16,6 @@ interface DetailModeProps {
 const DetailMode = ({ freshCategory, activeTab, setActiveTab, onAddSub }: DetailModeProps) => {
   return (
     <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
-      {/* Banner & Brand Card */}
       <div className="relative h-48 bg-stone-100 shrink-0">
         {freshCategory.bannerUrl ? (
           <Image
@@ -32,7 +31,6 @@ const DetailMode = ({ freshCategory, activeTab, setActiveTab, onAddSub }: Detail
           </div>
         )}
 
-        {/* Floating Info Card */}
         <div className="absolute -bottom-12 left-8 right-8 bg-white rounded-xl p-6 shadow-xl shadow-stone-200 border border-stone-50 flex items-center gap-6">
           <div className="w-20 h-20 rounded-xl bg-stone-50 border-4 border-white shadow-md overflow-hidden shrink-0">
             {freshCategory.iconUrl ? (
@@ -67,7 +65,6 @@ const DetailMode = ({ freshCategory, activeTab, setActiveTab, onAddSub }: Detail
         </div>
       </div>
 
-      {/* Tabs Navigation */}
       <div className="mt-16 px-8 flex items-center gap-8 border-b border-stone-100 bg-white sticky top-0 z-10">
         <button
           onClick={() => setActiveTab('info')}
@@ -109,7 +106,6 @@ const DetailMode = ({ freshCategory, activeTab, setActiveTab, onAddSub }: Detail
               exit={{ opacity: 0, y: -10 }}
               className="space-y-8"
             >
-              {/* Description */}
               <div className="bg-white p-6 rounded-xl border border-stone-100 shadow-sm">
                 <label className="block text-[10px] font-black text-stone-400 uppercase tracking-widest mb-4">
                   Mô tả chi tiết
@@ -119,7 +115,6 @@ const DetailMode = ({ freshCategory, activeTab, setActiveTab, onAddSub }: Detail
                 </p>
               </div>
 
-              {/* Stats/Meta */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white p-5 rounded-xl border border-stone-100 flex items-center gap-4">
                   <div className="w-10 h-10 rounded-xl bg-stone-50 flex items-center justify-center text-stone-400">

@@ -58,7 +58,6 @@ export const ShopRegistrationForm = () => {
 
   const watchedValues = useWatch({ control });
 
-  // 1. Load data from localStorage on mount
   React.useEffect(() => {
     const savedData = localStorage.getItem('shop_registration_draft');
     const savedStep = localStorage.getItem('shop_registration_step');
@@ -84,7 +83,6 @@ export const ShopRegistrationForm = () => {
     setIsLoaded(true);
   }, [setValue]);
 
-  // 2. Save data to localStorage when values change
   React.useEffect(() => {
     if (isLoaded) {
       localStorage.setItem('shop_registration_draft', JSON.stringify(watchedValues));
@@ -92,7 +90,6 @@ export const ShopRegistrationForm = () => {
     }
   }, [watchedValues, currentStep, isLoaded]);
 
-  // Persistence logic from BE: If shop exists and pending, jump to step 5 (Documents)
   React.useEffect(() => {
     if (myShopData?.data && myShopData.data.shopResponse?.status === 'PENDING') {
       setCurrentStep(5);
@@ -113,7 +110,6 @@ export const ShopRegistrationForm = () => {
     async (data: CreateShopFormData) => {
       try {
         await createShop(data);
-        // Clear draft after success
         localStorage.removeItem('shop_registration_draft');
         localStorage.removeItem('shop_registration_step');
         setCurrentStep(5);

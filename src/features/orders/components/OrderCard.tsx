@@ -55,7 +55,6 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, isB2B = false }) =>
 
   return (
     <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-sm mb-4 transition-all hover:shadow-md group">
-      {/* Header: Shop Info & Status */}
       <div className="flex flex-wrap justify-between items-center mb-4 md:mb-5 pb-3 md:pb-4 border-b border-stone-100 gap-3">
         <div className="flex items-center gap-2 md:gap-3">
           <div className="relative w-8 h-8 rounded-full overflow-hidden bg-stone-50 border border-stone-100 shadow-sm">
@@ -89,7 +88,6 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, isB2B = false }) =>
         </div>
       </div>
 
-      {/* Main Content: Product Details */}
       <div className="flex gap-3 md:gap-5">
         <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden bg-stone-50 border border-stone-100 shrink-0 shadow-sm">
           {order.thumbnail ? (
@@ -149,7 +147,6 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, isB2B = false }) =>
         </div>
       </div>
 
-      {/* Footer: Price & Actions */}
       <div className="mt-4 md:mt-6 pt-4 md:pt-5 border-t border-stone-50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 md:gap-4">
         <div className="flex items-baseline gap-2">
           <span className="text-[11px] md:text-xs font-black text-stone-400 uppercase tracking-widest">

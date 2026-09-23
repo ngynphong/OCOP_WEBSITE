@@ -110,7 +110,6 @@ export function EventFormPage({ initialData }: EventFormPageProps) {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6 pb-24">
-      {/* ── STICKY TOP NAVIGATION & ACTION BAR ── */}
       <EventFormHeader
         isEdit={isEdit}
         name={name}
@@ -122,10 +121,8 @@ export function EventFormPage({ initialData }: EventFormPageProps) {
         onSubmit={() => void handleSubmit()}
       />
 
-      {/* ── FORM CONTENT CONTAINER ── */}
       <div className="mt-6">
         <form onSubmit={handleSubmit} className="space-y-8">
-          {/* 1. THÔNG TIN CƠ BẢN & LỊCH TRÌNH */}
           <EventBasicInfoSection
             name={name}
             onNameChange={handleNameChange}
@@ -145,7 +142,6 @@ export function EventFormPage({ initialData }: EventFormPageProps) {
             onIsHomeFeaturedChange={setIsHomeFeatured}
           />
 
-          {/* 2. BANNER & HÌNH ẢNH TRUYỀN THÔNG */}
           <EventBannersSection
             bannerDesktopUrl={bannerDesktopUrl}
             onBannerDesktopChange={setBannerDesktopUrl}
@@ -156,7 +152,6 @@ export function EventFormPage({ initialData }: EventFormPageProps) {
             onUpload={handleUpload}
           />
 
-          {/* 3. THEME NHẬN DIỆN & BẢNG MÀU */}
           <EventThemeSection
             selectedPresetId={selectedPresetId}
             onSelectPreset={handleSelectPreset}
@@ -169,7 +164,6 @@ export function EventFormPage({ initialData }: EventFormPageProps) {
             eventName={name}
           />
 
-          {/* 4. CONCEPT TRANG TRÍ & KHÍ QUYỂN LỄ HỘI */}
           <EventConceptSection
             conceptId={conceptId}
             onSelectConcept={handleSelectConcept}
@@ -182,7 +176,6 @@ export function EventFormPage({ initialData }: EventFormPageProps) {
             onOpenSvgGallery={handleOpenSvgGallery}
           />
 
-          {/* 5. CỔNG ĐĂNG KÝ CHO NHÀ BÁN OCOP (SELLER PORTAL) */}
           <EventSellerPortalSection
             sellerPortalVisible={sellerPortalVisible}
             onSellerPortalVisibleChange={setSellerPortalVisible}
@@ -199,7 +192,6 @@ export function EventFormPage({ initialData }: EventFormPageProps) {
             onMaxProductsPerShopChange={setMaxProductsPerShop}
           />
 
-          {/* 6. CẤU HÌNH MINIGAME VÀ VÒNG QUAY MAY MẮN */}
           <EventMinigameSection
             minigameActive={minigameActive}
             onMinigameActiveChange={setMinigameActive}
@@ -231,7 +223,6 @@ export function EventFormPage({ initialData }: EventFormPageProps) {
             onResetDefaultRewards={handleResetDefaultRewards}
           />
 
-          {/* BOTTOM ACTION BAR */}
           <EventFormFooter
             isEdit={isEdit}
             submitting={submitting}
@@ -241,7 +232,6 @@ export function EventFormPage({ initialData }: EventFormPageProps) {
         </form>
       </div>
 
-      {/* SVG Gallery Modal */}
       {showSvgGallery && (
         <EventSvgGalleryModal isOpen={showSvgGallery} onClose={() => setShowSvgGallery(false)} />
       )}

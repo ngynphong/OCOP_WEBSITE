@@ -45,7 +45,6 @@ export function ProductSetupProgress({ product, onNavigateTab }: Props) {
     return <div className="h-28 bg-stone-100 rounded-2xl animate-pulse mb-6" />;
   }
 
-  // Calculate progress
   let completedCount = 0;
 
   const hasBasicInfo = !!product;
@@ -121,7 +120,7 @@ export function ProductSetupProgress({ product, onNavigateTab }: Props) {
     },
   ];
 
-  if (progress === 100) return null; // Hide if fully completed
+  if (progress === 100) return null;
 
   return (
     <div className="bg-white p-5 sm:p-6 rounded-2xl border border-stone-200 shadow-sm mb-6 animate-in fade-in slide-in-from-top-2 duration-500">

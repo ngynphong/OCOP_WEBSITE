@@ -25,7 +25,6 @@ export default function B2BCheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | undefined>(undefined);
   const [note, setNote] = useState('');
 
-  // VAT Invoice Info
   const [showVAT, setShowVAT] = useState(false);
   const [vatInfo, setVatInfo] = useState({
     taxCode: '',
@@ -111,7 +110,6 @@ export default function B2BCheckoutPage() {
         </button>
 
         <div className="flex flex-col lg:flex-row gap-10">
-          {/* Main Content */}
           <div className="flex-1 space-y-8">
             <div className="bg-white rounded-xl p-8 md:p-10 shadow-xl shadow-stone-200/50 border border-stone-100">
               <div className="flex items-center gap-4 mb-8">
@@ -137,7 +135,6 @@ export default function B2BCheckoutPage() {
                   onSelect={(m) => setPaymentMethod(m)}
                 />
 
-                {/* VAT Section */}
                 <div className="pt-8 border-t border-stone-100">
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="text-sm font-bold text-stone-800 flex items-center gap-2">
@@ -223,7 +220,6 @@ export default function B2BCheckoutPage() {
             </div>
           </div>
 
-          {/* Sidebar Summary */}
           <div className="w-full lg:w-[400px] shrink-0">
             <div className="sticky top-24 space-y-6">
               <div className="bg-white rounded-xl p-8 shadow-xl shadow-stone-200/50 border border-stone-100 overflow-hidden relative">

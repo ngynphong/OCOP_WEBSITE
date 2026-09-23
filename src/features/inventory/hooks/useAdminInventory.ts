@@ -10,7 +10,7 @@ export const useAdminInventory = (params?: InventoryListParams) => {
   return useQuery({
     queryKey: ['admin-inventory', params],
     queryFn: () => adminInventoryApi.getInventory(params),
-    placeholderData: (previousData) => previousData, // Giữ data cũ khi đang fetch data mới (phân trang)
+    placeholderData: (previousData) => previousData,
   });
 };
 
@@ -35,7 +35,6 @@ export const useAdjustStock = () => {
       adminInventoryApi.adjustStock(variantId, data),
     onSuccess: () => {
       toast.success('Điều chỉnh tồn kho thành công!');
-      // Invalidate queries để cập nhật dữ liệu mới nhất
       queryClient.invalidateQueries({ queryKey: ['admin-inventory'] });
       queryClient.invalidateQueries({ queryKey: ['admin-inventory-alerts'] });
     },

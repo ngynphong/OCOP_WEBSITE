@@ -90,7 +90,6 @@ export const ContactForm = () => {
       </h3>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* Category Selection */}
         <div className="space-y-3">
           <label className="text-[10px] font-black text-stone-500 uppercase tracking-widest ml-1">
             Lĩnh vực hỗ trợ
@@ -139,7 +138,6 @@ export const ContactForm = () => {
           )}
         </div>
 
-        {/* Priority & Subject */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="space-y-3">
             <label className="text-[10px] font-black text-stone-500 uppercase tracking-widest ml-1">
@@ -198,7 +196,6 @@ export const ContactForm = () => {
           </div>
         </div>
 
-        {/* Description */}
         <div className="space-y-2">
           <label className="text-[10px] font-black text-stone-500 uppercase tracking-widest ml-1">
             Chi tiết nội dung cần hỗ trợ
@@ -214,7 +211,6 @@ export const ContactForm = () => {
           )}
         </div>
 
-        {/* Footer */}
         <Button
           type="submit"
           disabled={isPending}

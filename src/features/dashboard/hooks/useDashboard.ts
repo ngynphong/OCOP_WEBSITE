@@ -7,7 +7,7 @@ export const useAdminDashboard = (params: IAdminDashboardParams) => {
     queryKey: ['adminDashboard', params],
     queryFn: () => dashboardApi.getAdminDashboard(params),
     placeholderData: (previousData) => previousData,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
     retry: 1,
   });
 };

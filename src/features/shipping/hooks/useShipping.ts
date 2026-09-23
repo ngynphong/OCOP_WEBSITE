@@ -3,7 +3,6 @@ import { shippingApi } from '../api/shippingApi';
 import { IEstimateFeeRequest, ICreateShippingProvider, IUpdateShippingProvider } from '../types';
 import toast from 'react-hot-toast';
 
-// Admin hooks
 export const useAdminShippingProviders = () => {
   return useQuery({
     queryKey: ['admin-shipping-providers'],
@@ -46,7 +45,6 @@ export const useToggleShippingProvider = () => {
   });
 };
 
-// User hooks
 export const useShippingProviders = () => {
   return useQuery({
     queryKey: ['shipping-providers'],
@@ -58,7 +56,5 @@ export const useShippingProviders = () => {
 export const useEstimateShippingFee = () => {
   return useMutation({
     mutationFn: (req: IEstimateFeeRequest) => shippingApi.estimateFee(req),
-    // For estimate fee, we might want the whole res.data because it has services
-    // The mutation's data property will be res.data because of onResponse interceptor
   });
 };

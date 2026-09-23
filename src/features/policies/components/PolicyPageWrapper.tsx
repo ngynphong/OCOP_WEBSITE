@@ -16,7 +16,6 @@ export const PolicyPageWrapper = ({ slug, fallbackTitle }: PolicyPageWrapperProp
 
   const content = policy?.content;
 
-  // Sanitize HTML content to prevent XSS
   const sanitizedContent = useMemo(() => {
     if (!content) return '';
     const rawHtml = content.replace(/\n/g, '<br/>');

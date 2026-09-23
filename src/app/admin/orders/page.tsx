@@ -56,7 +56,6 @@ const AdminOrdersPage = () => {
 
   return (
     <div className="space-y-8 pb-20">
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h2 className="text-4xl font-extrabold text-[#00490E] tracking-tight mb-2">
@@ -67,7 +66,6 @@ const AdminOrdersPage = () => {
           </p>
         </div>
 
-        {/* Tab Switcher */}
         <div className="flex p-1.5 bg-stone-100 rounded-xl w-fit border border-stone-200 shadow-inner">
           <button
             onClick={() => setActiveTab('orders')}
@@ -105,10 +103,8 @@ const AdminOrdersPage = () => {
         </div>
       </div>
 
-      {/* Stats Section */}
       <AdminOrderStats data={dashboardData?.data} isLoading={isDashboardLoading} />
 
-      {/* Content Section */}
       {activeTab === 'orders' && (
         <AdminOrderTable
           orders={ordersData?.data?.content || []}

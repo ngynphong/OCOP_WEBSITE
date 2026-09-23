@@ -46,7 +46,6 @@ const UserListPage = () => {
 
   const { data, isLoading } = useUsersQuery(queryParams);
 
-  // Modal State
   const [lockTarget, setLockTarget] = useState<AdminUserListItem | null>(null);
 
   const users = data?.data?.items || [];
@@ -66,7 +65,6 @@ const UserListPage = () => {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
       <div className="flex justify-between items-end">
         <div>
           <h2 className="text-3xl font-black text-emerald-900 tracking-tight mb-2">
@@ -90,7 +88,6 @@ const UserListPage = () => {
         </div>
       </div>
 
-      {/* Filters & Search */}
       <div className="bg-white p-4 rounded-xl shadow-sm border border-stone-100 flex flex-wrap gap-4 items-center">
         <div className="relative flex-1 min-w-[300px]">
           <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" />
@@ -141,7 +138,6 @@ const UserListPage = () => {
         </select>
       </div>
 
-      {/* Users Table */}
       <div className="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
@@ -267,7 +263,6 @@ const UserListPage = () => {
           </table>
         </div>
 
-        {/* Lock/Unlock Confirm Modal */}
         <ConfirmModal
           isOpen={!!lockTarget}
           title={lockTarget?.status === 'LOCKED' ? 'Mở khóa tài khoản?' : 'Khóa tài khoản?'}
@@ -290,7 +285,6 @@ const UserListPage = () => {
           onCancel={() => setLockTarget(null)}
         />
 
-        {/* Pagination Section */}
         <div className="px-8 py-5 bg-stone-50 border-t border-stone-100 flex items-center justify-between">
           <Pagination
             currentPage={params.pageNo || 1}

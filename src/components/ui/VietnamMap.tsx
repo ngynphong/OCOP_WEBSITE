@@ -49,19 +49,16 @@ const VietnamMap = memo(function VietnamMap({
 }: VietnamMapProps) {
   const [tooltip, setTooltip] = useState<TooltipData | null>(null);
 
-  // Chọn nguồn dữ liệu bản đồ tương ứng theo chế độ
   const geoUrl = useMemo(() => {
     return mode === '34' ? '/maps/vn-34-provinces.geojson' : '/maps/vn-topo.json';
   }, [mode]);
 
-  // Trích xuất tên tỉnh từ thuộc tính của Geography
   const getGeoProvinceName = useCallback((properties: MapGeographyProperties): string => {
     return (
       properties.name || properties['woe-name'] || properties.NAME_1 || properties.ten_tinh || ''
     );
   }, []);
 
-  // Xử lý khi click vào tỉnh
   const handleProvinceClick = useCallback(
     (properties: MapGeographyProperties) => {
       const rawName = getGeoProvinceName(properties);
@@ -75,7 +72,6 @@ const VietnamMap = memo(function VietnamMap({
     [getGeoProvinceName, mode, onSelectProvince],
   );
 
-  // Xử lý hover
   const handleMouseEnter = useCallback(
     (properties: MapGeographyProperties) => {
       const rawName = getGeoProvinceName(properties);
@@ -94,7 +90,6 @@ const VietnamMap = memo(function VietnamMap({
 
   const handleMouseLeave = useCallback(() => setTooltip(null), []);
 
-  // Kiểm tra tỉnh có đang được chọn không
   const checkIsSelected = useCallback(
     (properties: MapGeographyProperties) => {
       if (!selectedProvince) return false;
@@ -114,7 +109,6 @@ const VietnamMap = memo(function VietnamMap({
     [selectedProvince, getGeoProvinceName, mode],
   );
 
-  // Kiểm tra tỉnh có nằm trong Vùng/Miền đang lọc không
   const checkIsInRegion = useCallback(
     (properties: MapGeographyProperties) => {
       if (selectedMacroRegion === 'all' && selectedRegionId === 'all') return true;
@@ -124,12 +118,10 @@ const VietnamMap = memo(function VietnamMap({
     [selectedMacroRegion, selectedRegionId, getGeoProvinceName, mode],
   );
 
-  // Tên đảo Phú Quốc theo mode (63: Kiên Giang, 34: An Giang)
   const phuQuocParent = mode === '34' ? 'An Giang' : 'Kiên Giang';
 
   return (
     <div className={className}>
-      {/* Tooltip hiển thị thông tin vùng miền khi hover */}
       {tooltip && (
         <div className="absolute top-2 right-2 bg-white/95 backdrop-blur-md px-4 py-2.5 border border-emerald-500/50 rounded-xl shadow-xl z-20 animate-in fade-in zoom-in-95 duration-150 pointer-events-none max-w-xs">
           <div className="flex items-center gap-2">
@@ -168,18 +160,16 @@ const VietnamMap = memo(function VietnamMap({
                 const rawName = getGeoProvinceName(geo.properties);
                 const info = findProvince(rawName, mode);
 
-                // Tính toán màu sắc hiển thị
                 let defaultFill = '#DCFCE7';
                 let defaultStroke = '#6EE7B7';
 
                 if (isSelected) {
-                  defaultFill = '#059669'; // Highlight xanh đậm khi chọn
+                  defaultFill = '#059669';
                   defaultStroke = '#ffffff';
                 } else if (!isInActiveRegion) {
-                  defaultFill = '#F1F5F9'; // Mờ khi không thuộc vùng lọc
+                  defaultFill = '#F1F5F9';
                   defaultStroke = '#E2E8F0';
                 } else if (info) {
-                  // Tô màu nhẹ theo vùng miền
                   defaultFill = `${getRegionColor(info.regionId)}25`;
                   defaultStroke = getRegionColor(info.regionId);
                 }
@@ -217,7 +207,6 @@ const VietnamMap = memo(function VietnamMap({
             }
           </Geographies>
 
-          {/* Quần đảo Hoàng Sa (Đà Nẵng) */}
           {[
             [111.5, 16.8],
             [111.8, 16.6],
@@ -280,7 +269,6 @@ const VietnamMap = memo(function VietnamMap({
             </text>
           </Marker>
 
-          {/* Quần đảo Trường Sa (Khánh Hòa) */}
           {[
             [114.0, 10.0],
             [113.5, 9.7],
@@ -355,7 +343,6 @@ const VietnamMap = memo(function VietnamMap({
             </text>
           </Marker>
 
-          {/* Đảo Phú Quốc */}
           <Marker
             coordinates={[103.95, 10.21]}
             onClick={() => handleProvinceClick({ name: phuQuocParent })}

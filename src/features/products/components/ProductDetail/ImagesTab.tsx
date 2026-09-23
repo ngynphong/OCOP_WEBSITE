@@ -46,7 +46,6 @@ export function ImagesTab({ productId }: ImagesTabProps) {
 
   return (
     <div className="space-y-4">
-      {/* Upload button */}
       <label
         id="tour-images-upload"
         className="flex items-center justify-center gap-2 w-full py-4 border-2 border-dashed border-stone-200 rounded-xl cursor-pointer hover:border-emerald-300 transition"
@@ -63,7 +62,6 @@ export function ImagesTab({ productId }: ImagesTabProps) {
         />
       </label>
 
-      {/* Images grid */}
       {images.length === 0 ? (
         <div className="flex items-center justify-center h-24 bg-stone-50 rounded-xl border border-dashed border-stone-200">
           <p className="text-stone-400 text-sm">Chưa có ảnh nào</p>

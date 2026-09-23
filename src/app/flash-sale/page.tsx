@@ -43,9 +43,7 @@ export default function FlashSalePage() {
       <Header />
 
       <main className="flex-1">
-        {/* Hero Section - Brighter & More Vibrant */}
         <section className="relative w-full overflow-hidden pt-16 pb-24 px-6">
-          {/* Vibrant Gradient Background */}
           <div className="absolute inset-0 bg-linear-to-br from-red-600 via-orange-500 to-amber-500" />
 
           <div className="absolute inset-0 opacity-20 mix-blend-overlay">
@@ -101,7 +99,6 @@ export default function FlashSalePage() {
           </div>
         </section>
 
-        {/* Category Ribbon - Sticky */}
         <div className="sticky top-16 z-40 bg-white/80 backdrop-blur-md border-b border-stone-200 shadow-sm overflow-x-auto hide-scrollbar">
           <div className="max-w-7xl mx-auto px-6 py-4 flex items-center gap-3">
             <button
@@ -131,7 +128,6 @@ export default function FlashSalePage() {
         </div>
 
         <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col gap-16">
-          {/* Active Flash Sales Section */}
           <section id="active-sales">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-3">
@@ -197,7 +193,6 @@ export default function FlashSalePage() {
             )}
           </section>
 
-          {/* Upcoming Flash Sales Section */}
           <section id="upcoming-sales" className="pt-8 border-t border-stone-200">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-3">
@@ -260,7 +255,6 @@ export default function FlashSalePage() {
           </section>
         </div>
 
-        {/* Support Section */}
         <section className="bg-red-600 py-16 px-6">
           <div className="max-w-4xl mx-auto text-center flex flex-col items-center gap-8 text-white">
             <h2 className="text-3xl md:text-5xl font-black tracking-tighter">
@@ -284,7 +278,6 @@ export default function FlashSalePage() {
 
       <Footer />
 
-      {/* Styles for hidden scrollbar and custom text effects */}
       <style jsx global>{`
         .hide-scrollbar::-webkit-scrollbar {
           display: none;

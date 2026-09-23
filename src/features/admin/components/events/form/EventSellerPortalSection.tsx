@@ -64,7 +64,6 @@ export function EventSellerPortalSection({
 
       {sellerPortalVisible ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-in fade-in duration-200">
-          {/* Thời gian mở đăng ký */}
           <div>
             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
               Bắt Đầu Nhận Đăng Ký <span className="text-red-500">*</span>
@@ -78,7 +77,6 @@ export function EventSellerPortalSection({
             />
           </div>
 
-          {/* Thời gian đóng đăng ký */}
           <div>
             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
               Đóng Cổng Đăng Ký <span className="text-red-500">*</span>
@@ -95,7 +93,6 @@ export function EventSellerPortalSection({
             </p>
           </div>
 
-          {/* Sao OCOP tối thiểu */}
           <div>
             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
               Xếp Hạng OCOP Tối Thiểu
@@ -111,7 +108,6 @@ export function EventSellerPortalSection({
             </select>
           </div>
 
-          {/* Mức giảm giá tối thiểu */}
           <div>
             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
               % Giảm Giá Tối Thiểu (%)
@@ -129,7 +125,6 @@ export function EventSellerPortalSection({
             </p>
           </div>
 
-          {/* Số lượng sản phẩm tối đa */}
           <div>
             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
               Sản Phẩm Tối Đa Mỗi Gian Hàng

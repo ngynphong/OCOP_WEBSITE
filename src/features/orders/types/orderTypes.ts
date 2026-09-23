@@ -32,7 +32,6 @@ export interface IOrderListRes {
   size: number;
 }
 
-// BATCH ORDER TYPES
 export interface IShopOrderRequest {
   shopId: number;
   itemIds: number[];
@@ -44,7 +43,7 @@ export interface IBatchOrderReq {
   shops: IShopOrderRequest[];
   addressId: number;
   shippingProviderId: string;
-  paymentMethod: string; // COD, VNPAY, MOMO, ZALOPAY, BANK_TRANSFER
+  paymentMethod: string;
   shippingFee?: number;
   usePoints?: number;
   affiliateCode?: string;
@@ -96,9 +95,8 @@ export interface IBuyNowRes {
   status: string;
 }
 
-// OTHER ORDER ENDPOINTS
 export interface IRefundReq {
-  refundType: string; // FULL, PARTIAL
+  refundType: string;
   reason: string;
   evidenceImages?: File[];
 }
@@ -118,7 +116,7 @@ export interface IOrderDetailsItem {
 export interface IOrderDetailsRes {
   id: number;
   orderCode: string;
-  status: string; // PENDING, PAID, PENDING_DEPOSIT, PARTIALLY_PAID, ...
+  status: string;
   paymentStatus: string;
   shop: {
     id: number;

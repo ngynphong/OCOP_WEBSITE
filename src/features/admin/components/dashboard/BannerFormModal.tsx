@@ -108,7 +108,6 @@ export const BannerFormModal = memo(function BannerFormModal({
     if (selectedImage && selectedImage instanceof FileList && selectedImage.length > 0) {
       const file = selectedImage[0];
       const url = URL.createObjectURL(file);
-      // Use Promise.resolve() to avoid synchronous setState in effect error
       Promise.resolve().then(() => setFilePreview(url));
       return () => URL.revokeObjectURL(url);
     } else {
@@ -161,7 +160,6 @@ export const BannerFormModal = memo(function BannerFormModal({
       if (banner) {
         await updateMutation.mutateAsync({ id: banner.id, formData });
       } else {
-        // Kiểm tra bắt buộc ảnh khi tạo mới
         if (!image || (image instanceof FileList && image.length === 0)) {
           toast.error('Vui lòng chọn ảnh cho banner');
           return;
@@ -183,7 +181,6 @@ export const BannerFormModal = memo(function BannerFormModal({
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-5">
-          {/* Thông tin cơ bản */}
           <div className="space-y-1 md:col-span-2 lg:col-span-4">
             <label className="text-xs font-black text-stone-400 uppercase tracking-widest">
               Tiêu đề
@@ -224,7 +221,6 @@ export const BannerFormModal = memo(function BannerFormModal({
             )}
           </div>
 
-          {/* Cấu hình link và loại */}
           <div className="space-y-1 md:col-span-1 lg:col-span-2">
             <label className="text-xs font-black text-stone-400 uppercase tracking-widest">
               Loại Banner
@@ -265,7 +261,6 @@ export const BannerFormModal = memo(function BannerFormModal({
             </label>
           </div>
 
-          {/* Hình ảnh */}
           <div className="space-y-1 md:col-span-1 lg:col-span-3">
             <label className="text-xs font-black text-stone-400 uppercase tracking-widest">
               Ảnh Desktop
@@ -387,7 +382,6 @@ export const BannerFormModal = memo(function BannerFormModal({
             </div>
           </div>
 
-          {/* Thời gian */}
           <div className="space-y-1 md:col-span-1 lg:col-span-3">
             <label className="text-xs font-black text-stone-400 uppercase tracking-widest">
               Ngày bắt đầu

@@ -154,7 +154,6 @@ export const BroadcastForm = () => {
               ))}
             </ul>
           </div>
-          {/* Decor */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl" />
         </div>
 

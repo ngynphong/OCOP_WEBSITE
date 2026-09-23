@@ -50,7 +50,6 @@ const AdminShippingManager = () => {
 
   return (
     <div className="flex flex-col lg:flex-row gap-6 h-[calc(100vh-180px)]">
-      {/* Left side: List of providers */}
       <div className="w-full lg:w-1/3 xl:w-1/4 flex flex-col gap-4 overflow-y-auto p-2 custom-scrollbar">
         <Button
           onClick={() => setActiveId('new')}
@@ -127,7 +126,6 @@ const AdminShippingManager = () => {
         ))}
       </div>
 
-      {/* Right side: Configuration Form */}
       <div className="flex-1 bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden flex flex-col">
         <AnimatePresence mode="wait">
           {selectedProvider ? (
@@ -138,7 +136,6 @@ const AdminShippingManager = () => {
               exit={{ opacity: 0, y: -10 }}
               className="flex-1 flex flex-col h-full"
             >
-              {/* Header */}
               <div className="p-6 border-b border-slate-50 flex items-center justify-between bg-slate-50/30">
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 relative rounded-xl border border-white bg-white shadow-sm p-3 flex items-center justify-center">
@@ -186,7 +183,6 @@ const AdminShippingManager = () => {
                 </div>
               </div>
 
-              {/* Form Content */}
               <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
                 <div className="max-w-2xl space-y-8">
                   <section className="space-y-6">
@@ -234,7 +230,7 @@ const ShippingConfigForm = ({ provider }: { provider: IAdminShippingProvider }) 
   const { mutate: createProvider, isPending: isCreating } = useCreateShippingProvider();
 
   const isPending = isUpdating || isCreating;
-  const [isChanged, setIsChanged] = useState(isNew); // Mark as changed if it's new to enable Save button
+  const [isChanged, setIsChanged] = useState(isNew);
 
   const handleSave = () => {
     if (isNew) {

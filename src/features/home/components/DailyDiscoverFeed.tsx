@@ -64,9 +64,7 @@ export const DailyDiscoverFeed = memo(function DailyDiscoverFeed() {
 
   return (
     <section className="w-full max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8">
-      {/* 2-Column Layout on Desktop: Left 1/4 Category Sidebar, Right 3/4 Product Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6 items-start">
-        {/* === Left 1/4 Sticky Category Sidebar (Desktop) === */}
         <aside className="hidden lg:block lg:col-span-3 sticky top-[80px] self-start bg-[#f3f6e9]/85 backdrop-blur-md rounded-2xl border border-emerald-900/10 shadow-[0_10px_30px_rgba(38,76,49,0.08)] p-3.5 space-y-3">
           <div className="flex items-center gap-2 pb-2.5 border-b border-emerald-900/10">
             <div className="w-7 h-7 rounded-lg bg-emerald-100/70 text-emerald-800 flex items-center justify-center">
@@ -137,9 +135,7 @@ export const DailyDiscoverFeed = memo(function DailyDiscoverFeed() {
           </div>
         </aside>
 
-        {/* === Right 3/4 Content Section === */}
         <div className="lg:col-span-9 flex flex-col gap-4">
-          {/* Header Bar: Title + Sorting UI */}
           <div className="bg-[#f3f6e9]/85 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-emerald-900/10 shadow-[0_8px_24px_rgba(38,76,49,0.07)] flex flex-col sm:flex-row justify-between sm:items-center gap-3">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center">
@@ -150,7 +146,6 @@ export const DailyDiscoverFeed = memo(function DailyDiscoverFeed() {
               </h2>
             </div>
 
-            {/* Sorting pills */}
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 hide-scrollbar">
               <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider whitespace-nowrap mr-1">
                 Sắp xếp:
@@ -172,7 +167,6 @@ export const DailyDiscoverFeed = memo(function DailyDiscoverFeed() {
             </div>
           </div>
 
-          {/* Mobile Category Horizontal Scroll (Visible only on < lg) */}
           <div className="lg:hidden flex items-center gap-2 overflow-x-auto pb-1 -mx-4 px-4 hide-scrollbar">
             <button
               onClick={() => setActiveCategoryId(null)}
@@ -201,7 +195,6 @@ export const DailyDiscoverFeed = memo(function DailyDiscoverFeed() {
             ))}
           </div>
 
-          {/* Product Grid inside 3/4 section */}
           {isError ? (
             <div className="py-16 text-center bg-[#f3f6e9]/75 backdrop-blur-sm rounded-2xl border border-dashed border-emerald-900/20">
               <p className="text-stone-500 font-medium text-sm">
@@ -231,7 +224,6 @@ export const DailyDiscoverFeed = memo(function DailyDiscoverFeed() {
                 ))}
               </div>
 
-              {/* Load More Button */}
               {(hasNextPage || allProducts.length > 0) && (
                 <div className="w-full py-8 flex flex-col items-center gap-4">
                   {hasNextPage ? (

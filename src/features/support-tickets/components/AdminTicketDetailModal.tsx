@@ -106,10 +106,8 @@ export const AdminTicketDetailModal = ({
         </div>
       ) : ticket ? (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 h-[75vh]">
-          {/* Left Panel: Conversation (8 cols) */}
           <div className="lg:col-span-8 flex flex-col min-h-0">
             <div className="flex-1 overflow-y-auto px-4 space-y-6 scroll-smooth">
-              {/* User Original Request */}
               <div className="bg-stone-50 rounded-xl p-6 border border-stone-100 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
@@ -138,7 +136,6 @@ export const AdminTicketDetailModal = ({
                 <div className="flex-1 h-px bg-stone-100" />
               </div>
 
-              {/* Replies List */}
               {(ticket.replies || []).map((reply) => {
                 const isAdmin = reply.senderType === 'ADMIN' || reply.senderType === 'STAFF';
                 return (
@@ -180,7 +177,6 @@ export const AdminTicketDetailModal = ({
               <div ref={scrollRef} />
             </div>
 
-            {/* Reply Area */}
             <div className="mt-4 pt-4 border-t border-stone-100">
               <form onSubmit={handleSendReply} className="flex gap-2">
                 <div className="flex-1 relative">
@@ -202,9 +198,7 @@ export const AdminTicketDetailModal = ({
             </div>
           </div>
 
-          {/* Right Panel: Operations (4 cols) */}
           <div className="lg:col-span-4 bg-stone-50/50 rounded-xl p-6 border border-stone-100 flex flex-col gap-8">
-            {/* General Info */}
             <div className="space-y-4">
               <h4 className="text-[10px] font-black text-stone-400 uppercase tracking-widest flex items-center gap-2">
                 <ShieldCheck size={14} className="text-emerald-800" /> Quản trị nội bộ
@@ -267,7 +261,6 @@ export const AdminTicketDetailModal = ({
               </div>
             </div>
 
-            {/* User Info Card */}
             <div className="mt-auto space-y-4">
               <h4 className="text-[10px] font-black text-stone-400 uppercase tracking-widest flex items-center gap-2">
                 <AlertCircle size={14} /> Thông tin khách hàng

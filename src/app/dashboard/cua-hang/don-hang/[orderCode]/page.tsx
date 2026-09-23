@@ -27,7 +27,6 @@ import { sellerShipmentApi } from '@/features/seller-orders/api/sellerShipmentAp
 import toast from 'react-hot-toast';
 import { ISellerOrderDetailsRes } from '@/features/seller-orders/types/sellerOrderTypes';
 
-// Imported modular subcomponents
 import { B2BShippingModal } from '@/features/seller-orders/components/B2BShippingModal';
 import { SellerPaymentProofBox } from '@/features/seller-orders/components/SellerPaymentProofBox';
 import { SellerActionButtons } from '@/features/seller-orders/components/SellerActionButtons';
@@ -114,7 +113,6 @@ function SellerOrderDetailsContent({ params }: PageProps) {
   const [isCreateTrackingModalOpen, setCreateTrackingModalOpen] = useState(false);
   const [isCreatingTracking, setIsCreatingTracking] = useState(false);
 
-  // B2B Shipping States
   const [isB2BShippingModalOpen, setB2BShippingModalOpen] = useState(false);
 
   const order = data?.data as unknown as IExtendedSellerOrder;
@@ -264,8 +262,6 @@ function SellerOrderDetailsContent({ params }: PageProps) {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
         <div className="flex items-center gap-4 min-w-0">
           <Link
@@ -289,7 +285,6 @@ function SellerOrderDetailsContent({ params }: PageProps) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main Content (Trái) */}
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-sm">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
@@ -337,7 +332,6 @@ function SellerOrderDetailsContent({ params }: PageProps) {
             </div>
           </div>
 
-          {/* Customer Note Section */}
           {order.note && (
             <div className="bg-amber-50 rounded-xl p-6 border border-amber-100 shadow-sm animate-in fade-in slide-in-from-bottom-2">
               <h3 className="font-bold text-amber-900 flex items-center gap-2 mb-3">
@@ -349,7 +343,6 @@ function SellerOrderDetailsContent({ params }: PageProps) {
             </div>
           )}
 
-          {/* Hóa đơn VAT (nếu có) */}
           {order.invoiceInfo && (
             <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-sm animate-in fade-in slide-in-from-bottom-2">
               <h3 className="font-bold text-stone-900 flex items-center gap-2 mb-4">
@@ -386,7 +379,6 @@ function SellerOrderDetailsContent({ params }: PageProps) {
             </div>
           )}
 
-          {/* Minh chứng thanh toán (B2B) */}
           {isB2B && (
             <SellerPaymentProofBox
               order={order}
@@ -402,9 +394,7 @@ function SellerOrderDetailsContent({ params }: PageProps) {
           />
         </div>
 
-        {/* Sidebar (Phải) */}
         <div className="lg:col-span-1 space-y-6">
-          {/* Action Priorities */}
           <SellerActionButtons
             order={order}
             isB2B={isB2B}
@@ -525,7 +515,6 @@ function SellerOrderDetailsContent({ params }: PageProps) {
         isLoading={isCreatingTracking}
       />
 
-      {/* B2B Shipping Setup Modal */}
       <B2BShippingModal
         isOpen={isB2BShippingModalOpen}
         onClose={() => setB2BShippingModalOpen(false)}

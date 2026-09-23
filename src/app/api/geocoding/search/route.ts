@@ -12,7 +12,6 @@ export async function GET(request: NextRequest) {
   const query = q.trim();
   const results: Array<{ lat: string; lon: string; display_name: string }> = [];
 
-  // 1. Kiểm tra khớp Tỉnh/Thành phố Việt Nam từ dữ liệu nội bộ (chính xác 100%, 0ms latency)
   const localProvinces = searchProvinces(query, '63', 3);
   for (const prov of localProvinces) {
     results.push({
@@ -22,7 +21,6 @@ export async function GET(request: NextRequest) {
     });
   }
 
-  // 2. Thử Photon Geocoder (Komoot) có giới hạn bounding box Việt Nam
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 4000);
@@ -46,7 +44,6 @@ export async function GET(request: NextRequest) {
           const latNum = f.geometry.coordinates[1];
           const lonNum = f.geometry.coordinates[0];
 
-          // Lọc nghiêm ngặt: chỉ lấy toạ độ nằm trong lãnh thổ Việt Nam
           if (latNum < 7.0 || latNum > 24.5 || lonNum < 101.0 || lonNum > 119.0) {
             continue;
           }
@@ -58,7 +55,6 @@ export async function GET(request: NextRequest) {
           const displayName =
             parts.length > 0 ? Array.from(new Set(parts)).join(', ') : p.name || query;
 
-          // Tránh trùng lặp toạ độ
           if (
             !results.some(
               (r) =>
@@ -79,7 +75,6 @@ export async function GET(request: NextRequest) {
     console.warn('[Geocoding API] Photon search failed, trying fallback...', err);
   }
 
-  // Nếu đã có kết quả thì trả về luôn
   if (results.length > 0) {
     return NextResponse.json(results, {
       headers: {
@@ -88,7 +83,6 @@ export async function GET(request: NextRequest) {
     });
   }
 
-  // 3. Dự phòng: Nominatim OpenStreetMap (giới hạn chặt chẽ countrycodes=vn và viewbox Việt Nam)
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 4000);

@@ -21,7 +21,6 @@ export const LoyaltyCheckoutRedeem = ({
   const { data: redeemRes, isLoading } = useCheckRedeem(orderAmount);
   const info = redeemRes?.data;
 
-  // Cập nhật thông tin lên cha khi dữ liệu API thay đổi
   const lastPointsRef = React.useRef(0);
   const lastDiscountRef = React.useRef(0);
 

@@ -105,6 +105,42 @@ export function useUpdateFacility(facilityId: number, { onSuccess }: { onSuccess
   };
 }
 
+export function useSaveFacility({
+  facilityId,
+  isEditing,
+  onSuccess,
+}: {
+  facilityId?: number;
+  isEditing: boolean;
+  onSuccess?: () => void;
+}) {
+  const queryClient = useQueryClient();
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const mutation = useMutation({
+    mutationFn: (data: ISourceFacilityReq) =>
+      isEditing && facilityId
+        ? materialSourceApi.updateFacility(facilityId, data)
+        : materialSourceApi.createFacility(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['facilities'] });
+      toast.success(
+        isEditing ? 'Cập nhật cơ sở/vùng trồng thành công' : 'Thêm cơ sở/vùng trồng mới thành công',
+      );
+      onSuccess?.();
+    },
+    onError: (err: ApiErrorResponse) => {
+      setErrorMsg(err?.response?.data?.message || 'Có lỗi xảy ra');
+    },
+  });
+
+  return {
+    mutation,
+    errorMsg,
+    setErrorMsg,
+  };
+}
+
 export function useDeleteFacility(onSuccess?: () => void) {
   const queryClient = useQueryClient();
   return useMutation({
@@ -152,7 +188,6 @@ export function useCreateCycle({
 
   const onSubmit = (data: ISourceCycleReq) => {
     setErrorMsg('');
-    // Chuyển chuỗi trống thành undefined trước khi gửi API
     const payload = {
       ...data,
       startDate: data.startDate || undefined,

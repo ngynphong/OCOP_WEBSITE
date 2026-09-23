@@ -3,8 +3,6 @@ import toast from 'react-hot-toast';
 import { reviewApi } from '../api/reviewApi';
 import { SellerReviewQueryParams, SellerReplyPayload } from '../types/reviewTypes';
 
-// ─── Query Hook ───────────────────────────────────────────────────────────────
-
 export const useSellerReviewsQuery = (params?: SellerReviewQueryParams) => {
   return useQuery({
     queryKey: ['seller-reviews', params],
@@ -12,8 +10,6 @@ export const useSellerReviewsQuery = (params?: SellerReviewQueryParams) => {
     staleTime: 2 * 60 * 1000,
   });
 };
-
-// ─── Mutation Hook ────────────────────────────────────────────────────────────
 
 export const useSellerReviewMutations = () => {
   const queryClient = useQueryClient();

@@ -8,9 +8,7 @@ import { motion } from 'framer-motion';
 import { FiEdit2, FiSave, FiLoader, FiAlertCircle, FiMapPin, FiX } from 'react-icons/fi';
 import { updateShopSchema, UpdateShopFormData, ShopInfo } from '@/features/shop/types/shopTypes';
 import { useSellerShop } from '@/features/shop/hooks/useSellerShop';
-import { useLocationQuery } from '@/features/shop/hooks/useLocationQuery';
-import { useQuery } from '@tanstack/react-query';
-import { locationApi } from '@/features/admin/api/locationApi';
+import { useLocationQuery, useAllWards34Query } from '@/features/shop/hooks/useLocationQuery';
 import { PROVINCES_34_MAP, PROVINCES_63_MAP, ProvinceMode } from '@/constants/regions-map';
 import { cn } from '@/lib/utils';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
@@ -84,7 +82,6 @@ export const ShopEditForm = ({ shop, onCancel }: ShopEditFormProps) => {
     districtId || undefined,
   );
 
-  // Auto-mapping 34 province from existing shop province
   const initialProv34Code = useMemo(() => {
     if (!shop.provinceName) return '';
     const p63 = Object.values(PROVINCES_63_MAP).find(
@@ -103,29 +100,11 @@ export const ShopEditForm = ({ shop, onCancel }: ShopEditFormProps) => {
     setSelectedProv34Code(initialProv34Code);
   }
 
-  // Query tất cả xã của tỉnh khi ở mode 34
-  const { data: wards34Data, isLoading: isLoadingWards34 } = useQuery({
-    queryKey: ['shop-edit-all-wards-34', provinceId],
-    queryFn: async () => {
-      if (!provinceId || !districts.data?.data?.length) return [];
-      const promises = districts.data.data.map((d) =>
-        locationApi
-          .getWards(d.id)
-          .then((res) =>
-            (res.data || []).map((w) => ({
-              ...w,
-              districtId: d.id,
-              districtName: d.name,
-            })),
-          )
-          .catch(() => []),
-      );
-      const results = await Promise.all(promises);
-      return results.flat();
-    },
-    enabled: mode === '34' && !!provinceId && !!districts.data?.data?.length,
-    staleTime: 30 * 60 * 1000,
-  });
+  const { data: wards34Data, isLoading: isLoadingWards34 } = useAllWards34Query(
+    provinceId || undefined,
+    districts.data?.data,
+    mode === '34',
+  );
 
   const selectedProv34 = selectedProv34Code ? PROVINCES_34_MAP[selectedProv34Code] : undefined;
   const constituentProvinces = React.useMemo(() => {
@@ -169,7 +148,6 @@ export const ShopEditForm = ({ shop, onCancel }: ShopEditFormProps) => {
     }
   };
 
-  // Auto-mapping: Province
   useEffect(() => {
     if (provinces.data?.data && !provinceId) {
       const found = provinces.data.data.find((p) => p.name === shop.provinceName);
@@ -177,7 +155,6 @@ export const ShopEditForm = ({ shop, onCancel }: ShopEditFormProps) => {
     }
   }, [provinces.data, shop.provinceName, provinceId, setValue]);
 
-  // Auto-mapping: District
   useEffect(() => {
     if (provinceId && districts.data?.data && !districtId) {
       const found = districts.data.data.find((d) => d.name === shop.districtName);
@@ -185,7 +162,6 @@ export const ShopEditForm = ({ shop, onCancel }: ShopEditFormProps) => {
     }
   }, [districts.data, shop.districtName, provinceId, districtId, setValue]);
 
-  // Auto-mapping: Ward
   useEffect(() => {
     if (districtId && wards.data?.data && !wardId) {
       const found = wards.data.data.find((w) => w.name === shop.wardName);
@@ -221,7 +197,6 @@ export const ShopEditForm = ({ shop, onCancel }: ShopEditFormProps) => {
       noValidate
       className="space-y-6"
     >
-      {/* Basic Info */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-3">
           <FiEdit2 size={16} className="text-green-600" />
@@ -239,7 +214,6 @@ export const ShopEditForm = ({ shop, onCancel }: ShopEditFormProps) => {
         </Field>
       </div>
 
-      {/* Address */}
       <div className="space-y-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
@@ -340,7 +314,6 @@ export const ShopEditForm = ({ shop, onCancel }: ShopEditFormProps) => {
             </Field>
           </div>
         ) : (
-          /* CHẾ ĐỘ 34 TỈNH: 2 CẤP (TỈNH ➔ XÃ TRỰC THUỘC) */
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-2">
               <Field label="Tỉnh / Thành (34 mới)" error={errors.provinceId?.message} required>
@@ -426,7 +399,6 @@ export const ShopEditForm = ({ shop, onCancel }: ShopEditFormProps) => {
         </Field>
       </div>
 
-      {/* Submit Actions */}
       <div className="flex justify-end gap-3 pt-4 border-t border-stone-100">
         <button
           type="button"

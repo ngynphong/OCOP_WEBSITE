@@ -37,7 +37,6 @@ export default function AdminSupportTicketsPage() {
 
   return (
     <div className="space-y-8 pb-20 p-6 bg-stone-50/30 min-h-screen">
-      {/* Admin Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-emerald-800">
@@ -63,7 +62,6 @@ export default function AdminSupportTicketsPage() {
         </div>
       </div>
 
-      {/* Stats Quick View */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {[
           {
@@ -118,7 +116,6 @@ export default function AdminSupportTicketsPage() {
         ))}
       </div>
 
-      {/* Filter & Search Bar */}
       <div className="bg-white p-4 rounded-xl border border-stone-100 shadow-sm flex flex-col lg:flex-row gap-6">
         <div className="flex-1 overflow-x-auto scroller-hide">
           <div className="flex items-center gap-2">
@@ -162,7 +159,6 @@ export default function AdminSupportTicketsPage() {
         </form>
       </div>
 
-      {/* Admin Table */}
       <div className="space-y-4">
         <div className="flex items-center justify-between px-2">
           <div className="flex items-center gap-3">

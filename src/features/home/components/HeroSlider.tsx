@@ -46,7 +46,6 @@ export const HeroSlider = memo(function HeroSlider({
   return (
     <section className="w-full max-w-7xl mx-auto px-4 md:px-6 pt-3 md:pt-4">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-stretch">
-        {/* Main Banner Slider (2/3 width on Desktop, Full on Mobile) */}
         <div
           className="lg:col-span-8 relative w-full h-[200px] sm:h-[260px] md:h-[320px] lg:h-[380px] rounded-2xl overflow-hidden shadow-sm group bg-emerald-950"
           onMouseEnter={() => setIsPaused(true)}
@@ -65,10 +64,8 @@ export const HeroSlider = memo(function HeroSlider({
               sizes="(max-width: 1024px) 100vw, 66vw"
               className="object-cover transition-transform duration-700 group-hover:scale-[1.02]"
             />
-            {/* Subtle Gradient for Title Readability */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none" />
 
-            {/* Banner Text Overlay */}
             {(currentBanner.title || currentBanner.description) && (
               <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-7 md:p-8 text-white z-10 pointer-events-none">
                 {currentBanner.title && (
@@ -85,7 +82,6 @@ export const HeroSlider = memo(function HeroSlider({
             )}
           </Link>
 
-          {/* Navigation Arrows (Visible on Desktop hover) */}
           {total > 1 && (
             <>
               <button
@@ -107,7 +103,6 @@ export const HeroSlider = memo(function HeroSlider({
             </>
           )}
 
-          {/* Pagination Indicators */}
           {total > 1 && (
             <div className="absolute bottom-3 right-4 z-20 flex items-center gap-1.5">
               {mainBanners.map((_, idx) => (
@@ -127,9 +122,7 @@ export const HeroSlider = memo(function HeroSlider({
           )}
         </div>
 
-        {/* Side Banners (1/3 width, 2 stacked cards on Desktop - Shopee / Lazada pattern) */}
         <div className="hidden lg:flex lg:col-span-4 flex-col gap-3.5 h-[380px]">
-          {/* Top Side Card */}
           {subBanners[0] ? (
             <Link
               href={subBanners[0].link || '/san-pham'}
@@ -178,7 +171,6 @@ export const HeroSlider = memo(function HeroSlider({
             </Link>
           )}
 
-          {/* Bottom Side Card */}
           {subBanners[1] ? (
             <Link
               href={subBanners[1].link || '/san-pham'}

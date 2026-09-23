@@ -79,12 +79,10 @@ export function ProductListClient({ initialProducts }: ProductListClientProps) {
     getServerDesktopSnapshot,
   );
 
-  // Debounce inputs to prevent excessive API calls
   const debouncedSearch = useDebounce(searchQuery, 500);
   const debouncedMinPrice = useDebounce(minPrice, 500);
   const debouncedMaxPrice = useDebounce(maxPrice, 500);
 
-  // Fetch meta-data for displaying tags
   const { data: categoriesData } = usePublicCategoriesQuery({
     enabled: selectedCategoryIds.length > 0,
   });
@@ -129,7 +127,6 @@ export function ProductListClient({ initialProducts }: ProductListClientProps) {
   const totalElement = data?.data?.totalElement ?? 0;
   const totalPage = data?.data?.totalPage ?? 1;
 
-  // Batching Wishlist Status
   const productIds = products.map((p) => p.id);
   const { data: wishlistStatusData } = useWishlistStatus(isAuthenticated ? productIds : []);
   const wishlistStatusMap = wishlistStatusData?.data || {};
@@ -155,7 +152,6 @@ export function ProductListClient({ initialProducts }: ProductListClientProps) {
     minPrice > 0 ||
     maxPrice < MAX_PRICE_LIMIT;
 
-  // Helper to get name from ID for tags
   const getCategoryName = (id: number) =>
     categoriesData?.data?.find((c) => c.id === id)?.name || id;
   const getProvinceName = (id: number) =>
@@ -166,13 +162,11 @@ export function ProductListClient({ initialProducts }: ProductListClientProps) {
     <div className="min-h-screen flex flex-col font-sans bg-stone-50/30">
       <Header />
       <main className="flex-1 pt-8 md:pt-12 pb-16 max-w-7xl mx-auto px-6 md:px-8 w-full">
-        {/* Breadcrumb */}
         <Breadcrumb
           items={[{ label: 'Trang chủ', href: '/' }, { label: 'Sản phẩm' }]}
           className="mb-8"
         />
 
-        {/* Header Stats */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div>
             <h1 className="text-4xl md:text-[3.5rem] font-bold font-sans leading-tight tracking-tight text-stone-900">
@@ -186,7 +180,6 @@ export function ProductListClient({ initialProducts }: ProductListClientProps) {
           </div>
 
           <div className="flex flex-wrap items-center gap-4">
-            {/* Mobile Filter Button */}
             <button
               onClick={() => setIsSidebarOpen(true)}
               className="lg:hidden flex items-center gap-2 bg-white px-5 py-3 rounded-xl border border-stone-200 font-bold text-sm text-stone-700 shadow-sm hover:bg-stone-50 transition-all active:scale-95"
@@ -195,7 +188,6 @@ export function ProductListClient({ initialProducts }: ProductListClientProps) {
               Bộ lọc {hasActiveFilters && <span className="w-2 h-2 bg-green-600 rounded-full" />}
             </button>
 
-            {/* Sort Dropdown */}
             <div className="flex items-center gap-4 relative">
               <span className="hidden sm:inline text-sm font-semibold text-neutral-500 uppercase tracking-widest font-sans whitespace-nowrap">
                 Sắp xếp
@@ -221,7 +213,6 @@ export function ProductListClient({ initialProducts }: ProductListClientProps) {
         </div>
 
         <div className="flex flex-col lg:flex-row gap-12">
-          {/* Desktop Sidebar Filter */}
           {isDesktop && (
             <div className="hidden lg:block">
               <ProductSidebar
@@ -270,15 +261,12 @@ export function ProductListClient({ initialProducts }: ProductListClientProps) {
             </div>
           )}
 
-          {/* Mobile Drawer Filter */}
           {isSidebarOpen && (
             <div className="fixed inset-0 z-[200] lg:hidden transition-opacity duration-300 opacity-100">
-              {/* Backdrop */}
               <div
                 className="absolute inset-0 bg-stone-900/60 backdrop-blur-sm"
                 onClick={() => setIsSidebarOpen(false)}
               />
-              {/* Sliding Panel */}
               <div
                 className={`absolute top-0 right-0 h-[100dvh] w-[320px] max-w-[90vw] bg-white shadow-2xl transition-transform duration-300 ease-out transform flex flex-col ${
                   isSidebarOpen ? 'translate-x-0' : 'translate-x-full'
@@ -352,9 +340,7 @@ export function ProductListClient({ initialProducts }: ProductListClientProps) {
             </div>
           )}
 
-          {/* Product Grid Area */}
           <div className="grow flex flex-col">
-            {/* Active Filter Tags */}
             <div className="flex flex-wrap gap-2 mb-6">
               {selectedCategoryIds.map((id) => (
                 <span
@@ -428,7 +414,6 @@ export function ProductListClient({ initialProducts }: ProductListClientProps) {
               )}
             </div>
 
-            {/* Loading skeleton */}
             {isPending && (
               <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                 {Array.from({ length: 6 }).map((_, i) => (
@@ -441,7 +426,6 @@ export function ProductListClient({ initialProducts }: ProductListClientProps) {
               </div>
             )}
 
-            {/* Error state */}
             {isError && (
               <div className="w-full h-64 flex flex-col items-center justify-center bg-red-50 rounded-xl border border-red-100 border-dashed">
                 <p className="text-red-500 text-lg font-medium">
@@ -456,7 +440,6 @@ export function ProductListClient({ initialProducts }: ProductListClientProps) {
               </div>
             )}
 
-            {/* Products grid */}
             {!isPending && !isError && (
               <>
                 {products.length > 0 ? (

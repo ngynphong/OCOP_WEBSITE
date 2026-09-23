@@ -24,28 +24,22 @@ export interface AdministrativeHierarchyFilterProps {
   mode: ProvinceMode;
   isTwoTierMode: boolean;
   onSelectMode: (mode: ProvinceMode) => void;
-  // Vùng miền lớn
   macroRegion: MacroRegionKey;
   macroRegionsList: MacroRegion[];
   onSelectMacroRegion: (key: MacroRegionKey) => void;
-  // Vùng sinh thái 8 vùng
   availableRegions: AdministrativeRegion[];
   selectedRegionId: RegionId | 'all';
   onSelectRegion: (id: RegionId | 'all') => void;
-  // Tỉnh / Thành
   selectedProvince: string | null;
   onSelectProvince: (provName: string) => void;
   onClearProvince: () => void;
-  // Cấp sáp nhập cho 34 tỉnh
   constituentProvinces: ConstituentOption[];
   selectedConstituentCode: string | null;
   onSelectConstituent: (code: string | null) => void;
-  // Cấp Huyện (chỉ dùng cho 63 tỉnh)
   districts: District[];
   selectedDistrictId: number | null;
   isLoadingDistricts: boolean;
   onSelectDistrict: (districtId: number | null) => void;
-  // Cấp Xã
   wards: WardWithMeta[];
   selectedWardCode: string | null;
   isLoadingWards: boolean;
@@ -96,9 +90,7 @@ export function AdministrativeHierarchyFilter({
 
   return (
     <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-stone-200/80 space-y-4 transition-all">
-      {/* ─── DÒNG 1: BỘ CHUYỂN CHẾ ĐỘ & BỘ LỌC MIỀN LỚN (GỌN GÀNG, CHUYÊN NGHIỆP) ─── */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pb-3.5 border-b border-stone-100">
-        {/* Toggle 63 vs 34 Tỉnh Thành */}
         <div className="flex items-center gap-2">
           <span className="text-xs font-bold text-stone-500 uppercase tracking-wider flex items-center gap-1.5">
             <Layers className="w-3.5 h-3.5 text-emerald-600" />
@@ -133,7 +125,6 @@ export function AdministrativeHierarchyFilter({
           </div>
         </div>
 
-        {/* Lọc nhanh theo Miền lớn (Bắc - Trung - Nam) */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0 scrollbar-none">
           <span className="text-xs font-bold text-stone-400 mr-1 hidden sm:inline">Khu vực:</span>
           {macroRegionsList.map((mr) => {
@@ -156,7 +147,6 @@ export function AdministrativeHierarchyFilter({
         </div>
       </div>
 
-      {/* ─── DÒNG 2: BỘ CHỌN ĐỊA GIỚI PHÂN CẤP (TỈNH ➔ [HUYỆN] ➔ XÃ) ─── */}
       <div>
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
@@ -175,7 +165,6 @@ export function AdministrativeHierarchyFilter({
             )}
           </div>
 
-          {/* Quick reset */}
           {hasAnyFilter && (
             <button
               type="button"
@@ -196,7 +185,6 @@ export function AdministrativeHierarchyFilter({
               : 'grid-cols-1 md:grid-cols-3'
           }`}
         >
-          {/* CỘT 1: TỈNH / THÀNH PHỐ */}
           <div>
             <label className="block text-[11px] font-bold text-stone-600 mb-1 flex items-center gap-1">
               <Building2 className="w-3.5 h-3.5 text-emerald-600" />
@@ -222,7 +210,6 @@ export function AdministrativeHierarchyFilter({
             </select>
           </div>
 
-          {/* CỘT 2 (CHẾ ĐỘ 63 TỈNH): QUẬN / HUYỆN / THỊ XÃ */}
           {!isTwoTierMode && (
             <div>
               <label className="block text-[11px] font-bold text-stone-600 mb-1 flex items-center gap-1">
@@ -259,7 +246,6 @@ export function AdministrativeHierarchyFilter({
             </div>
           )}
 
-          {/* CỘT 2 (CHẾ ĐỘ 34 TỈNH SÁP NHẬP): KHU VỰC THÀNH PHẦN */}
           {isTwoTierMode && hasConstituents && (
             <div>
               <label className="block text-[11px] font-bold text-amber-800 mb-1 flex items-center gap-1">
@@ -284,7 +270,6 @@ export function AdministrativeHierarchyFilter({
             </div>
           )}
 
-          {/* CỘT 3: PHƯỜNG / XÃ TRỰC THUỘC */}
           <div>
             <label className="block text-[11px] font-bold text-stone-600 mb-1 flex items-center gap-1">
               <MapPin className="w-3.5 h-3.5 text-emerald-600" />
@@ -328,7 +313,6 @@ export function AdministrativeHierarchyFilter({
         </div>
       </div>
 
-      {/* ─── DÒNG 3: SUB-REGION PILLS (8 VÙNG SINH THÁI NHẸ NHÀNG, KHÔNG RỐI) ─── */}
       {availableRegions.length > 0 && (
         <div className="pt-2 border-t border-stone-100 flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-xs">
           <span className="text-[11px] font-semibold text-stone-400 whitespace-nowrap mr-1">

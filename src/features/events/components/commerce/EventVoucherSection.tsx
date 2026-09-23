@@ -84,7 +84,6 @@ export function EventVoucherSection({ vouchers }: EventVoucherSectionProps) {
               key={v.id}
               className="relative flex bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300"
             >
-              {/* Left stub */}
               <div
                 className="w-28 sm:w-32 flex flex-col items-center justify-center p-3 text-white relative text-center"
                 style={{ backgroundColor: 'var(--event-primary, #DC2626)' }}
@@ -95,12 +94,10 @@ export function EventVoucherSection({ vouchers }: EventVoucherSectionProps) {
                 </span>
                 <span className="text-[10px] opacity-80 mt-0.5">OCOP Voucher</span>
 
-                {/* Jagged cutout dots */}
                 <div className="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-slate-50 dark:bg-slate-900" />
                 <div className="absolute -bottom-2 -right-2 w-4 h-4 rounded-full bg-slate-50 dark:bg-slate-900" />
               </div>
 
-              {/* Right content */}
               <div className="flex-1 p-4 flex flex-col justify-between">
                 <div>
                   <div className="flex items-start justify-between gap-2">

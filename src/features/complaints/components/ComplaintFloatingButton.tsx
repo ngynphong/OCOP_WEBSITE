@@ -24,7 +24,6 @@ export const ComplaintFloatingButton = () => {
   useEffect(() => {
     if (!isMounted) return;
 
-    // Show tooltip after 5s for first time
     const timer = setTimeout(() => setShowTooltip(true), 5000);
     return () => clearTimeout(timer);
   }, [isMounted]);
@@ -43,7 +42,6 @@ export const ComplaintFloatingButton = () => {
   return (
     <>
       <div className="fixed bottom-26 right-6 z-[998] flex items-center gap-4">
-        {/* Tooltip */}
         <AnimatePresence>
           {showTooltip && !isOpen && (
             <motion.div
@@ -65,7 +63,6 @@ export const ComplaintFloatingButton = () => {
           )}
         </AnimatePresence>
 
-        {/* Main Floating Button Wrapper */}
         <div className="relative">
           <motion.button
             whileHover={{ scale: 1.05 }}

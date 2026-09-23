@@ -83,19 +83,6 @@ export const publicProductApi = {
   },
 
   recordQrScan: (qrCode: string): Promise<ResponseBase<string>> => {
-    // Note: We might not be able to record scan for digital link directly unless backend supports it,
-    // but we can send it just in case. Backend might ignore or process it.
-    if (qrCode.startsWith('01-') && qrCode.includes('-10-')) {
-      // Backend does not have an endpoint for recording scan by digital link yet,
-      // but digital link tracing doesn't need to increment QR scan count (or we can just skip it).
-      return Promise.resolve({
-        data: 'Skipped scan for GS1 link',
-        message: 'Success',
-        status: 200,
-        code: 200,
-        timestamp: '',
-      });
-    }
     return publicAxiosClient.post(buildRoute(API_ENDPOINTS.PUBLIC.TRACE, qrCode, 'scan'));
   },
 

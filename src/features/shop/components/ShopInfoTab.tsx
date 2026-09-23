@@ -29,7 +29,6 @@ export const ShopInfoTab = ({ shop }: ShopInfoTabProps) => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mt-4 sm:mt-6 pb-12">
-      {/* Cột trái: Mô tả cửa hàng */}
       <div className="lg:col-span-2 space-y-4 sm:space-y-6">
         <div className="bg-white p-4 sm:p-6 md:p-8 rounded-2xl border border-stone-200/80 shadow-2xs">
           <div className="flex items-center gap-3 mb-4 sm:mb-5 pb-3 sm:pb-4 border-b border-stone-100">
@@ -56,9 +55,7 @@ export const ShopInfoTab = ({ shop }: ShopInfoTabProps) => {
         </div>
       </div>
 
-      {/* Cột phải: Liên hệ & Pháp lý */}
       <div className="space-y-4 sm:space-y-6">
-        {/* Thông tin liên hệ */}
         <div className="bg-white p-4 sm:p-6 rounded-2xl border border-stone-200/80 shadow-2xs">
           <div className="flex items-center gap-3 mb-4 sm:mb-5 pb-3 border-b border-stone-100">
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100 shrink-0">
@@ -113,7 +110,6 @@ export const ShopInfoTab = ({ shop }: ShopInfoTabProps) => {
           </div>
         </div>
 
-        {/* Thông tin pháp lý */}
         <div className="bg-white p-4 sm:p-6 rounded-2xl border border-stone-200/80 shadow-2xs">
           <div className="flex items-center gap-3 mb-5 pb-3 border-b border-stone-100">
             <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center border border-purple-100">

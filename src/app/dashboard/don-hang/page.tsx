@@ -72,7 +72,6 @@ function OrderListContent() {
 
   return (
     <div className="space-y-6">
-      {/* Switcher Mua lẻ / Mua sỉ B2B */}
       <div className="flex gap-4 p-1.5 bg-stone-100/80 border border-stone-200/50 rounded-xl w-fit">
         <button
           onClick={() => handleTypeChange('retail')}
@@ -130,7 +129,6 @@ function OrderListContent() {
             <OrderCard key={`${order.id}-${idx}`} order={order} isB2B={isB2B} />
           ))}
 
-          {/* Load more trigger - Switched to Button for stability */}
           <div className="py-12 flex flex-col items-center gap-4">
             {hasNextPage ? (
               <Button

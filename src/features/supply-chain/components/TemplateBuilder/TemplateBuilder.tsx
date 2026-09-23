@@ -83,7 +83,6 @@ export function TemplateBuilder({
           <div className="flex flex-col">
             {fields.map((field, index) => {
               const block = getValues(index);
-              // Ensure we pass the field.id as block.id for DND to track correctly
               const blockWithId = { ...block, id: field.id };
               return (
                 <div key={field.id} className="flex flex-col mb-3">

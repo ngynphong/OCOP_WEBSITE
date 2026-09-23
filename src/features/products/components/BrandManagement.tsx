@@ -32,7 +32,6 @@ export function BrandManagement() {
 
   return (
     <div className="space-y-8">
-      {/* Header & Actions */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
           <h2 className="text-3xl font-black text-stone-900 tracking-tight leading-none mb-3">
@@ -63,7 +62,6 @@ export function BrandManagement() {
         </div>
       </div>
 
-      {/* Brands Table */}
       <div className="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">

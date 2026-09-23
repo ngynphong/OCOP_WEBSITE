@@ -15,7 +15,6 @@ import { TemplateBuilder } from '@/features/supply-chain/components/TemplateBuil
 import { EditBlockModal } from '@/features/supply-chain/components/TemplateBuilder/EditBlockModal';
 import { TemplateBlock } from '@/features/supply-chain/components/TemplateBuilder/LegoBlock';
 
-// Schema Validation
 const processTemplateSchema = z.object({
   name: z.string().min(3, 'Tên quy trình mẫu phải có ít nhất 3 ký tự'),
   description: z.string().optional(),
@@ -92,7 +91,6 @@ export function ProcessTemplateTab({
   const { generateDesc, isGenerating } = useAiGeneration();
 
   const onSubmit = (data: ProcessTemplateFormData) => {
-    // Make sure step orders are correct
     const formattedData = {
       productId,
       name: data.name,
@@ -152,7 +150,6 @@ export function ProcessTemplateTab({
       id="tour-process-tab-content"
       className="flex flex-col gap-8 w-full max-w-4xl mx-auto pb-20"
     >
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-black text-stone-900 tracking-tight mb-1">Quy trình mẫu</h2>

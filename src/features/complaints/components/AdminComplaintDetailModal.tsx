@@ -109,7 +109,6 @@ export const AdminComplaintDetailModal = ({
         </div>
       ) : complaint ? (
         <div className="space-y-8">
-          {/* Header Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <div className="flex items-center gap-3">
@@ -153,7 +152,6 @@ export const AdminComplaintDetailModal = ({
             </div>
           </div>
 
-          {/* Content */}
           <div className="bg-stone-50 rounded-xl p-6 border border-stone-100 space-y-4">
             <div className="flex items-start gap-3">
               <FileText className="text-stone-400 shrink-0 mt-1" size={20} />
@@ -165,7 +163,6 @@ export const AdminComplaintDetailModal = ({
               </div>
             </div>
 
-            {/* Images handling */}
             {complaint.evidenceUrls && (
               <div className="pt-4 border-t border-stone-200">
                 <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-3 flex items-center gap-2">
@@ -193,7 +190,6 @@ export const AdminComplaintDetailModal = ({
 
           <hr className="border-stone-100" />
 
-          {/* Action Section */}
           <div className="space-y-6">
             <div className="flex items-center gap-2">
               <MessageSquare size={18} className="text-emerald-800" />

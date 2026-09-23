@@ -14,7 +14,6 @@ export const ShopApprovedModal = () => {
     <AnimatePresence>
       {isShopApproved && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-          {/* Backdrop (Blur & Dark) */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -22,14 +21,12 @@ export const ShopApprovedModal = () => {
             className="absolute inset-0 bg-stone-900/80 backdrop-blur-md"
           />
 
-          {/* Modal Content */}
           <motion.div
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             className="relative w-full max-w-md bg-white rounded-[2rem] p-8 shadow-2xl text-center overflow-hidden"
           >
-            {/* Decoration */}
             <div className="absolute top-0 left-0 w-full h-2 bg-linear-to-r from-green-500 to-emerald-600" />
 
             <div className="w-20 h-20 bg-green-100 text-green-600 rounded-xl flex items-center justify-center mx-auto mb-6 rotate-3">

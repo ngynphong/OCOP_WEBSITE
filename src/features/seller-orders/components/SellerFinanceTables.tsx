@@ -170,7 +170,6 @@ export const PayoutsTable: React.FC<{ payouts: IPayoutItem[]; isLoading: boolean
 
   return (
     <div className="space-y-4">
-      {/* Bank Account Info Card or Warning Banner */}
       {!isBankLoading &&
         (hasBank ? (
           <div className="p-4 rounded-xl bg-stone-50 border border-stone-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">

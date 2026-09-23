@@ -20,7 +20,7 @@ export const useSellerShop = () => {
     return useQuery({
       queryKey: ['seller-my-shop'],
       queryFn: () => sellerApi.getMyShop(),
-      enabled: !!profile?.isOwnerShop, // Chỉ fetch nếu profile báo user là chủ shop
+      enabled: !!profile?.isOwnerShop,
       retry: 1,
     });
   };

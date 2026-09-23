@@ -13,13 +13,9 @@ import {
 } from '@/features/inventory/types/inventoryTypes';
 
 export const sellerInventoryApi = {
-  // ─── Inventory List ────────────────────────────────────────────────────────
-
   getInventory: (params?: InventoryListParams): Promise<InventoryListResponse> => {
     return axiosClient.get(API_ENDPOINTS.SELLER.INVENTORY, { params });
   },
-
-  // ─── Variant Inventory ─────────────────────────────────────────────────────
 
   getInventoryByVariant: (variantId: number): Promise<InventoryDetailResponse> => {
     return axiosClient.get(`${API_ENDPOINTS.SELLER.INVENTORY}/variants/${variantId}`);
@@ -33,8 +29,6 @@ export const sellerInventoryApi = {
       params,
     });
   },
-
-  // ─── Stock Actions ─────────────────────────────────────────────────────────
 
   addStock: (variantId: number, data: AddStockRequest): Promise<InventoryDetailResponse> => {
     return axiosClient.post(
@@ -66,8 +60,6 @@ export const sellerInventoryApi = {
       data,
     );
   },
-
-  // ─── Alerts ────────────────────────────────────────────────────────────────
 
   getLowStockAlerts: (): Promise<LowStockAlertResponse> => {
     return axiosClient.get(API_ENDPOINTS.SELLER.INVENTORY_LOW_STOCK_ALERTS);

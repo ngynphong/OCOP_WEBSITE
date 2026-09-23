@@ -101,7 +101,6 @@ export function EventCountdownSection({
           </div>
         </div>
 
-        {/* Countdown Digits */}
         <div
           className={`flex items-center justify-center font-mono font-black ${
             isForcedMobile ? 'gap-1.5 text-base w-full' : 'gap-2 sm:gap-3 text-lg sm:text-2xl'

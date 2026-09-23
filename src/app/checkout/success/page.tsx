@@ -29,13 +29,11 @@ const SuccessContent = () => {
   } else if (status) {
     isSuccess = status.toUpperCase() === 'SUCCESS';
   } else {
-    // Nếu không có param cổng thanh toán, mặc định là COD đã đẩy sang đây theo logic code cũ
     isSuccess = true;
   }
 
   const orderId = vnp_TxnRef || momoOrderId || zaloApptransid || 'N/A';
 
-  // VNPAY amount is multiplied by 100
   const amountStr = searchParams.get('vnp_Amount')
     ? (Number(searchParams.get('vnp_Amount')) / 100).toString()
     : searchParams.get('amount');
@@ -47,7 +45,6 @@ const SuccessContent = () => {
         animate={{ opacity: 1, y: 0 }}
         className="max-w-md w-full bg-white rounded-xl shadow-sm border border-stone-100 p-8 md:p-12 text-center"
       >
-        {/* Status Icon */}
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
@@ -66,7 +63,6 @@ const SuccessContent = () => {
           )}
         </motion.div>
 
-        {/* Text content */}
         <h1 className="text-2xl font-bold text-stone-900 mb-2">
           {isSuccess ? 'Thanh toán thành công!' : 'Thanh toán thất bại!'}
         </h1>
@@ -76,7 +72,6 @@ const SuccessContent = () => {
             : 'Giao dịch của bạn đã bị hủy hoặc có lỗi xảy ra. Vui lòng thử lại.'}
         </p>
 
-        {/* Order Info Card */}
         <div className="bg-stone-50 rounded-xl p-6 mb-8 text-left space-y-3">
           <div className="flex justify-between items-center text-sm">
             <span className="text-stone-500 font-medium">Mã giao dịch:</span>
@@ -104,7 +99,6 @@ const SuccessContent = () => {
           </div>
         </div>
 
-        {/* Actions */}
         <div className="flex flex-col gap-3">
           <Button
             className="w-full"

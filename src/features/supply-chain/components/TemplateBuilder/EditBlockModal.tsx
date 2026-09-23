@@ -80,7 +80,6 @@ export function EditBlockModal({
   const stepErrors = errors?.steps?.[index];
   const [modalTab, setModalTab] = useState<'BASIC' | 'FORM' | 'EVIDENCE'>('BASIC');
 
-  // ── Dynamic Form Fields State ──
   const [fields, setFields] = useState<IStepField[]>(() => {
     const raw = getValues(`steps.${index}.dynamicFieldsSchema`);
     if (raw) {
@@ -106,7 +105,6 @@ export function EditBlockModal({
     return [];
   });
 
-  // ── Evidence Rule State ──
   const [evidence, setEvidence] = useState<IEvidenceRule>(() => {
     const raw = getValues(`steps.${index}.evidenceRule`);
     if (raw) {
@@ -119,7 +117,6 @@ export function EditBlockModal({
     return { photo: 'OPTIONAL', gps: 'OPTIONAL', video: 'OPTIONAL' };
   });
 
-  // New field input draft
   const [newLabel, setNewLabel] = useState('');
   const [newKey, setNewKey] = useState('');
   const [newType, setNewType] = useState<TStepFieldType>('NUMBER');
@@ -218,7 +215,6 @@ export function EditBlockModal({
 
   return (
     <div className="mt-2 ml-14 mr-4 bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden flex flex-col animate-in slide-in-from-top-2">
-      {/* Modal Top Header */}
       <div className="flex items-center justify-between p-3.5 border-b border-stone-100 bg-stone-50">
         <h3 className="font-bold text-stone-800 text-sm">Cài đặt Khối Công Việc #{index + 1}</h3>
         <button
@@ -231,7 +227,6 @@ export function EditBlockModal({
         </button>
       </div>
 
-      {/* Navigation Sub-Tabs */}
       <div className="flex border-b border-stone-200 bg-white px-3 gap-1">
         <button
           type="button"
@@ -271,7 +266,6 @@ export function EditBlockModal({
         </button>
       </div>
 
-      {/* Tab 1: Basic Info */}
       {modalTab === 'BASIC' && (
         <div className="p-4 flex flex-col gap-4">
           <div className="flex flex-col gap-1">
@@ -369,7 +363,6 @@ export function EditBlockModal({
         </div>
       )}
 
-      {/* Tab 2: Dynamic Form Fields */}
       {modalTab === 'FORM' && (
         <div className="p-4 flex flex-col gap-4">
           <p className="text-xs text-stone-500">
@@ -377,7 +370,6 @@ export function EditBlockModal({
             trên ứng dụng Mobile.
           </p>
 
-          {/* List of current fields */}
           {fields.length > 0 ? (
             <div className="flex flex-col gap-2 max-h-48 overflow-y-auto pr-1">
               {fields.map((field) => (
@@ -421,7 +413,6 @@ export function EditBlockModal({
             </div>
           )}
 
-          {/* Add new field form */}
           <div className="p-3.5 border border-emerald-200/80 rounded-xl bg-emerald-50/30 flex flex-col gap-3">
             <h4 className="text-xs font-bold text-emerald-800 uppercase flex items-center gap-1.5">
               <FiPlus className="w-3.5 h-3.5 text-emerald-600" />
@@ -524,7 +515,6 @@ export function EditBlockModal({
         </div>
       )}
 
-      {/* Tab 3: Evidence Rules */}
       {modalTab === 'EVIDENCE' && (
         <div className="p-4 flex flex-col gap-5">
           <p className="text-xs text-stone-500">
@@ -532,7 +522,6 @@ export function EditBlockModal({
             nhận hoàn thành công đoạn.
           </p>
 
-          {/* Photo requirement */}
           <div className="flex flex-col gap-2 p-3.5 border border-stone-200 rounded-xl bg-stone-50/50">
             <div className="flex items-center gap-2">
               <FiCamera className="w-4 h-4 text-emerald-600" />
@@ -549,7 +538,6 @@ export function EditBlockModal({
             )}
           </div>
 
-          {/* GPS requirement */}
           <div className="flex flex-col gap-2 p-3.5 border border-stone-200 rounded-xl bg-stone-50/50">
             <div className="flex items-center gap-2">
               <FiMapPin className="w-4 h-4 text-blue-600" />
@@ -565,7 +553,6 @@ export function EditBlockModal({
             )}
           </div>
 
-          {/* Video requirement */}
           <div className="flex flex-col gap-2 p-3.5 border border-stone-200 rounded-xl bg-stone-50/50">
             <div className="flex items-center gap-2">
               <FiVideo className="w-4 h-4 text-purple-600" />
@@ -583,7 +570,6 @@ export function EditBlockModal({
         </div>
       )}
 
-      {/* Footer */}
       <div className="p-3 border-t border-stone-100 bg-stone-50 flex justify-between items-center">
         <span className="text-xs text-stone-400 pl-2">
           {fields.length > 0

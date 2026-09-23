@@ -82,7 +82,6 @@ export const SellerPayoutHistoryTable: React.FC<Props> = ({
     }
   };
 
-  // Filter payouts based on filterStatus
   const filteredPayouts =
     filterStatus === 'ALL' ? payouts : payouts.filter((p) => p.status === filterStatus);
 
@@ -101,7 +100,6 @@ export const SellerPayoutHistoryTable: React.FC<Props> = ({
 
   return (
     <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
-      {/* Header & Filter */}
       <div className="p-5 sm:p-6 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-2.5">
           <div className="p-2 rounded-xl bg-emerald-50 text-emerald-700">
@@ -115,7 +113,6 @@ export const SellerPayoutHistoryTable: React.FC<Props> = ({
           </div>
         </div>
 
-        {/* Filter Pills */}
         <div className="flex flex-wrap items-center gap-1.5 text-xs">
           {[
             { key: 'ALL', label: 'Tất cả' },
@@ -139,7 +136,6 @@ export const SellerPayoutHistoryTable: React.FC<Props> = ({
         </div>
       </div>
 
-      {/* Table Content */}
       {!filteredPayouts.length ? (
         <div className="py-16 px-4 text-center flex flex-col items-center justify-center">
           <div className="p-4 rounded-3xl bg-gray-50 text-gray-400 mb-3">
@@ -247,7 +243,6 @@ export const SellerPayoutHistoryTable: React.FC<Props> = ({
         </div>
       )}
 
-      {/* Pagination Footer */}
       {onPageChange && (totalElements !== undefined ? totalElements > 0 : payouts.length > 0) && (
         <div className="px-6 py-4 border-t border-gray-100 bg-gray-50/40">
           <Pagination

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FiTrash2, FiChevronDown, FiChevronUp, FiClock, FiList, FiActivity } from 'react-icons/fi';
 import { format } from 'date-fns';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import { useCycleLogs, useManageCycleLogs, useDeleteCycle } from '../../hooks/useFacility';
 import { ISourceCycle } from '../../types/materialSourceTypes';
 
@@ -49,7 +49,6 @@ export function CycleAccordionItem({ cycle, onCycleDeleted }: CycleAccordionItem
 
   return (
     <div className="border border-stone-200 rounded-xl overflow-hidden bg-white hover:border-stone-300 transition-colors shadow-sm mb-3">
-      {/* Header Accordion */}
       <div
         onClick={() => setIsExpanded(!isExpanded)}
         className="p-4 flex items-center justify-between cursor-pointer hover:bg-stone-50 select-none"
@@ -92,10 +91,8 @@ export function CycleAccordionItem({ cycle, onCycleDeleted }: CycleAccordionItem
         </div>
       </div>
 
-      {/* Body Accordion */}
       {isExpanded && (
         <div className="border-t border-stone-100 bg-stone-50/50 p-4 space-y-4">
-          {/* Section: Log Timeline */}
           <div className="space-y-3 relative border-l border-stone-200 ml-3 pl-4">
             {isLoading ? (
               <div className="text-center py-2 text-xs text-stone-500">Đang tải nhật ký...</div>
@@ -109,7 +106,6 @@ export function CycleAccordionItem({ cycle, onCycleDeleted }: CycleAccordionItem
                   key={log.id}
                   className="relative group bg-white border border-stone-150 rounded-lg p-3 hover:border-emerald-250 transition-colors shadow-sm"
                 >
-                  {/* Timeline dot */}
                   <div className="absolute w-2 h-2 bg-emerald-500 rounded-full -left-[21px] top-[18px] border border-white shadow-sm"></div>
 
                   <div className="flex justify-between items-start">

@@ -65,7 +65,6 @@ export const SellerWalletSummaryCard: React.FC<Props> = ({ wallet, isLoading = f
           </Link>
         </div>
 
-        {/* Warning banner if bank account not configured */}
         {!hasBankAccount && (
           <div className="mt-4 p-3 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 text-xs text-amber-800 font-medium">
@@ -81,7 +80,6 @@ export const SellerWalletSummaryCard: React.FC<Props> = ({ wallet, isLoading = f
           </div>
         )}
 
-        {/* 2 Main Finance Cards */}
         <div className="my-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="p-4 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50/60 border border-blue-100">
             <div className="flex items-center justify-between text-xs text-blue-800 font-medium mb-1">
@@ -112,7 +110,6 @@ export const SellerWalletSummaryCard: React.FC<Props> = ({ wallet, isLoading = f
           </div>
         </div>
 
-        {/* Total Paid Out Banner */}
         <div className="mb-3 px-3.5 py-2.5 rounded-xl bg-emerald-50/50 border border-emerald-100 flex items-center justify-between text-xs">
           <div className="flex items-center gap-2 text-emerald-800 font-medium">
             <Landmark className="w-4 h-4 text-emerald-600" />
@@ -122,7 +119,6 @@ export const SellerWalletSummaryCard: React.FC<Props> = ({ wallet, isLoading = f
         </div>
       </div>
 
-      {/* Footer Schedule */}
       <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
         <div className="flex items-center gap-1.5">
           <Calendar className="w-4 h-4 text-gray-400" />

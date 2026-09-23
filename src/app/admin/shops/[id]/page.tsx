@@ -12,7 +12,6 @@ import { ShopDetailTabType } from '@/features/admin/types/adminTypes';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 
-// Modular Components
 import ShopDetailHeader from '@/features/admin/components/shops/ShopDetailHeader';
 import ShopDetailSidebar from '@/features/admin/components/shops/ShopDetailSidebar';
 import ShopDetailTabs from '@/features/admin/components/shops/ShopDetailTabs';
@@ -111,7 +110,6 @@ const ShopDetailPage = () => {
 
   return (
     <div className="space-y-6 pb-20">
-      {/* Navigation & Header */}
       <ShopDetailHeader
         shop={shop}
         onConfirmAction={handleConfirmAction}
@@ -119,10 +117,8 @@ const ShopDetailPage = () => {
       />
 
       <div className="grid grid-cols-12 gap-6">
-        {/* Left Column - Shop Card & Quick Info */}
         <ShopDetailSidebar shop={shop} />
 
-        {/* Right Column - Navigation & Detailed Content */}
         <div className="col-span-12 lg:col-span-8 flex flex-col gap-6">
           <ShopDetailTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 

@@ -100,7 +100,6 @@ export const AdminTicketDetail = ({ ticketId }: AdminTicketDetailProps) => {
 
   return (
     <div className="space-y-6">
-      {/* Header with Navigation */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <Link
@@ -152,13 +151,11 @@ export const AdminTicketDetail = ({ ticketId }: AdminTicketDetailProps) => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left Panel: Conversation (8 cols) */}
         <div className="lg:col-span-8 space-y-6 flex flex-col h-[calc(100vh-280px)] min-h-[550px]">
           <div
             className="flex-1 overflow-y-auto pr-2 space-y-8 scroller-hide scroll-smooth"
             ref={scrollRef}
           >
-            {/* User Original Request */}
             <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-lg shadow-stone-200/10 relative overflow-hidden group">
               <div className="absolute -top-6 -right-6 p-4 opacity-[0.02] -rotate-12 transition-transform duration-700 group-hover:scale-110">
                 <MessageSquare size={160} />
@@ -202,7 +199,6 @@ export const AdminTicketDetail = ({ ticketId }: AdminTicketDetailProps) => {
               <div className="flex-1 h-px bg-stone-100" />
             </div>
 
-            {/* Replies List */}
             <div className="space-y-6">
               {(ticket.replies || []).map((reply) => {
                 const isAdmin = reply.senderType === 'ADMIN' || reply.senderType === 'STAFF';
@@ -267,7 +263,6 @@ export const AdminTicketDetail = ({ ticketId }: AdminTicketDetailProps) => {
             </div>
           </div>
 
-          {/* Reply Area */}
           <div className="bg-white p-4 rounded-[28px] border border-stone-100 shadow-2xl shadow-stone-200/30 mt-auto relative overflow-hidden group">
             <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-emerald-500/0 via-emerald-500/30 to-emerald-500/0" />
             <form onSubmit={handleSendReply} className="flex gap-3 items-center">
@@ -302,9 +297,7 @@ export const AdminTicketDetail = ({ ticketId }: AdminTicketDetailProps) => {
           </div>
         </div>
 
-        {/* Right Panel: Internal Tools (4 cols) - Sticky */}
         <div className="lg:col-span-4 space-y-6 sticky top-24">
-          {/* Assignment & Status Control */}
           <div className="bg-white rounded-xl p-8 border border-stone-100 shadow-sm space-y-8">
             <div className="space-y-6">
               <div className="flex items-center gap-3">
@@ -392,7 +385,6 @@ export const AdminTicketDetail = ({ ticketId }: AdminTicketDetailProps) => {
               </div>
             </div>
 
-            {/* Quick Info */}
             <div className="pt-8 border-t border-stone-50 space-y-4">
               <div className="flex items-center gap-3">
                 <AlertCircle size={16} className="text-stone-300" />

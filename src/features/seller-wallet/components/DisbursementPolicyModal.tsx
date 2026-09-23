@@ -31,7 +31,6 @@ export const DisbursementPolicyModal: React.FC<Props> = ({ isOpen, onClose }) =>
         onClick={(e) => e.stopPropagation()}
         className="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden max-h-[90vh] flex flex-col cursor-default"
       >
-        {/* Header */}
         <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-emerald-50/50">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-xl bg-emerald-600 text-white shadow-sm shadow-emerald-200">
@@ -55,9 +54,7 @@ export const DisbursementPolicyModal: React.FC<Props> = ({ isOpen, onClose }) =>
           </button>
         </div>
 
-        {/* Content */}
         <div className="p-6 overflow-y-auto space-y-5 text-xs text-gray-600 leading-relaxed">
-          {/* Section 1 */}
           <div className="space-y-2">
             <h4 className="text-sm font-bold text-gray-900 flex items-center gap-2">
               <Calendar className="w-4 h-4 text-emerald-600" />
@@ -91,7 +88,6 @@ export const DisbursementPolicyModal: React.FC<Props> = ({ isOpen, onClose }) =>
             </div>
           </div>
 
-          {/* Section 2 */}
           <div className="space-y-2">
             <h4 className="text-sm font-bold text-gray-900 flex items-center gap-2">
               <Calculator className="w-4 h-4 text-emerald-600" />
@@ -108,7 +104,6 @@ export const DisbursementPolicyModal: React.FC<Props> = ({ isOpen, onClose }) =>
             </div>
           </div>
 
-          {/* Section 3 */}
           <div className="space-y-2">
             <h4 className="text-sm font-bold text-gray-900 flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-600" />
@@ -128,7 +123,6 @@ export const DisbursementPolicyModal: React.FC<Props> = ({ isOpen, onClose }) =>
             </ul>
           </div>
 
-          {/* Warning */}
           <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 flex items-start gap-2.5">
             <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
             <p className="text-[11px] text-amber-900 leading-normal">
@@ -140,7 +134,6 @@ export const DisbursementPolicyModal: React.FC<Props> = ({ isOpen, onClose }) =>
           </div>
         </div>
 
-        {/* Footer */}
         <div className="px-6 py-3.5 bg-gray-50 border-t border-gray-100 flex justify-end">
           <button
             type="button"

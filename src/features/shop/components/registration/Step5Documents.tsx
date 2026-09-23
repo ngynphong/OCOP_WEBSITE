@@ -82,7 +82,6 @@ const Step5Documents = () => {
 
   return (
     <div className="space-y-8">
-      {/* Celebration Header */}
       <div className="text-center space-y-2">
         <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 text-green-600 rounded-full mb-2">
           <FiCheckCircle size={32} />
@@ -94,7 +93,6 @@ const Step5Documents = () => {
         </p>
       </div>
 
-      {/* Upload Progress */}
       <div className="p-4 bg-stone-50 rounded-xl border border-stone-100 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-green-600">
@@ -111,7 +109,6 @@ const Step5Documents = () => {
         )}
       </div>
 
-      {/* Document grid */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {REQUIRED_DOCS.map((doc) => {
           const uploadedDoc = existingDocs.find((d) => d.docType === doc.type);
@@ -187,7 +184,6 @@ const Step5Documents = () => {
         })}
       </div>
 
-      {/* Disclaimer */}
       <div className="flex gap-3 p-4 bg-amber-50 rounded-xl border border-amber-100">
         <FiAlertCircle size={18} className="text-amber-600 mt-0.5 shrink-0" />
         <p className="text-[11px] text-amber-800 leading-relaxed">
@@ -196,7 +192,6 @@ const Step5Documents = () => {
         </p>
       </div>
 
-      {/* Action */}
       <div className="pt-4">
         {uploadProgress.isFinished ? (
           <motion.button

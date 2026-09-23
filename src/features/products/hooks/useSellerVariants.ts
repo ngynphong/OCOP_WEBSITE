@@ -10,8 +10,6 @@ import {
 
 type ApiError = { response?: { data?: { message?: string } } };
 
-// ─── Standalone Query Hook ────────────────────────────────────────────────────
-
 export const useSellerVariantsQuery = (productId: number | null | undefined) => {
   return useQuery({
     queryKey: ['seller-variants', productId],
@@ -20,8 +18,6 @@ export const useSellerVariantsQuery = (productId: number | null | undefined) => 
     staleTime: 30 * 1000,
   });
 };
-
-// ─── Mutation Hook ────────────────────────────────────────────────────────────
 
 export const useSellerVariantMutations = (productId: number) => {
   const queryClient = useQueryClient();
@@ -114,8 +110,6 @@ export const useSellerVariantMutations = (productId: number) => {
     isSettingDefault: setDefaultVariantMutation.isPending,
   };
 };
-
-// ─── Tier Price Hooks ──────────────────────────────────────────────────────────
 
 export const useSellerTierPricesQuery = (productId: number, variantId?: number) => {
   return useQuery({

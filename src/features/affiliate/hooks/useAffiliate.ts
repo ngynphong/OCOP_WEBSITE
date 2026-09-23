@@ -8,9 +8,6 @@ import {
   GetCommissionsParams,
 } from '../types/affiliateTypes';
 
-/**
- * Hook lấy thông tin tài khoản affiliate của người dùng
- */
 export const useAffiliateAccount = () => {
   const accountQuery = useQuery({
     queryKey: ['affiliate-account'],
@@ -26,9 +23,6 @@ export const useAffiliateAccount = () => {
   };
 };
 
-/**
- * Hook lấy lịch sử hoa hồng của người dùng
- */
 export const useUserCommissions = (params: GetCommissionsParams) => {
   const commissionsQuery = useQuery({
     queryKey: ['user-commissions', params],
@@ -50,9 +44,6 @@ export const useUserCommissions = (params: GetCommissionsParams) => {
   };
 };
 
-/**
- * Hook lấy lịch sử rút tiền của người dùng
- */
 export const useUserWithdrawals = (params: GetWithdrawalsParams) => {
   const withdrawalsQuery = useQuery({
     queryKey: ['user-withdrawals', params],
@@ -74,9 +65,6 @@ export const useUserWithdrawals = (params: GetWithdrawalsParams) => {
   };
 };
 
-/**
- * Hook quản lý các mutations cho affiliate (rút tiền)
- */
 export const useAffiliateMutations = () => {
   const queryClient = useQueryClient();
 
@@ -95,9 +83,6 @@ export const useAffiliateMutations = () => {
   };
 };
 
-/**
- * Hook dành cho Admin quản lý affiliate
- */
 export const useAdminAffiliate = (params: GetWithdrawalsParams) => {
   const queryClient = useQueryClient();
 

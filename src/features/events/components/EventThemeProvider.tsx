@@ -22,31 +22,24 @@ export function EventThemeProvider({
     return <>{children}</>;
   }
 
-  // Phân giải các biến màu sắc an toàn trong quá trình render
   let parsedColors: Record<string, string> = {};
   if (theme.colorsJson) {
     try {
       parsedColors = JSON.parse(theme.colorsJson);
-    } catch {
-      // Fallback
-    }
+    } catch {}
   }
 
-  // Phân giải cấu hình concept trang trí & hiệu ứng lễ hội
   let decorations: EventThemeDecorations | null = null;
   if (theme.decorationsJson) {
     try {
       decorations = JSON.parse(theme.decorationsJson);
-    } catch {
-      // Fallback
-    }
+    } catch {}
   }
 
   const primary = parsedColors.primary || '#DC2626';
   const secondary = parsedColors.secondary || '#F59E0B';
   const surface = parsedColors.surface || '#FFF1F2';
 
-  // Xây dựng style inline dựa trên token thiết kế của sự kiện
   const styleVars: Record<string, string> = {
     '--event-primary': primary,
     '--event-secondary': secondary,
@@ -69,7 +62,6 @@ export function EventThemeProvider({
       className={`event-theme-wrapper transition-colors duration-300 relative ${className}`}
       data-event-theme={theme.code}
     >
-      {/* 1. Hiệu ứng khí quyển rơi lất phất (Hoa mai, hoa đào, pháo giấy) */}
       {decorations && (
         <EventAtmosphereEffect
           type={decorations.atmosphereType}
@@ -78,7 +70,6 @@ export function EventThemeProvider({
         />
       )}
 
-      {/* 2. Họa tiết trang trí góc (Cành mai, lồng đèn...) */}
       {decorations && (
         <EventCornerDecorations
           conceptId={decorations.conceptId}

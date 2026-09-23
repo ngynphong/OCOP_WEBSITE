@@ -41,7 +41,6 @@ export const useProductionBatch = () => {
       onSuccess: (response) => {
         toast.success('Tạo lô sản xuất thành công!');
 
-        // Cập nhật UI ngay lập tức
         queryClient.setQueriesData(
           { queryKey: ['production-batches'] },
           (

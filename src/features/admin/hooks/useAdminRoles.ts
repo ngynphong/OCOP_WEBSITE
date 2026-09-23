@@ -3,8 +3,6 @@ import { adminApi } from '@/features/admin/api/adminApi';
 import { CreateRoleRequest, RolePermissionsRequest } from '@/features/admin/types/adminTypes';
 import toast from 'react-hot-toast';
 
-// ─── Standalone Query Hooks ────────────────────────────────────────────────────
-
 export const useRolesQuery = () => {
   return useQuery({
     queryKey: ['admin-roles'],
@@ -21,8 +19,6 @@ export const useRolePermissionsQuery = (roleName: string | null | undefined) => 
     staleTime: 60 * 1000,
   });
 };
-
-// ─── Mutation Hook ─────────────────────────────────────────────────────────────
 
 export const useAdminRoleMutations = () => {
   const queryClient = useQueryClient();

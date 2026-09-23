@@ -10,7 +10,6 @@ import Image from 'next/image';
 interface ShippingSelectorProps {
   selectedId?: string;
   onSelect: (provider: ShippingProvider) => void;
-  // If we have calculated fees for each provider, we can pass them here
   providerFees?: Record<string, number>;
   isCalculating?: boolean;
 }

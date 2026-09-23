@@ -11,8 +11,6 @@ import { PermissionGuard } from '@/components/guards/PermissionGuard';
 import { usePermission } from '@/features/auth/hooks/usePermission';
 import { PERMISSIONS } from '@/features/auth/constants/permissions';
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
-
 type TabType = 'products' | 'categories';
 
 const AdminProductsPage = () => {
@@ -49,7 +47,6 @@ const AdminProductsPage = () => {
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      {/* Page Header */}
       <div className="flex justify-between items-end">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
           <h2 className="text-3xl font-black text-emerald-900 tracking-tight leading-none mb-3">
@@ -61,7 +58,6 @@ const AdminProductsPage = () => {
         </motion.div>
       </div>
 
-      {/* Tabs Navigation — chỉ hiện tab nếu có permission tương ứng */}
       <div className="flex gap-1 p-1 bg-stone-100/50 rounded-xl w-fit border border-stone-100">
         <button
           onClick={() => setActiveTab('products')}
@@ -89,7 +85,6 @@ const AdminProductsPage = () => {
         )}
       </div>
 
-      {/* Main Content Area */}
       <div className="min-h-[600px]">
         <AnimatePresence mode="wait">
           {activeTab === 'products' && (
@@ -116,7 +111,6 @@ const AdminProductsPage = () => {
         </AnimatePresence>
       </div>
 
-      {/* Form Drawer */}
       <CategoryFormDrawer
         isOpen={isDrawerOpen}
         onClose={handleCloseDrawer}

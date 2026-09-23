@@ -11,12 +11,10 @@ import { QuickLink } from '../api/homeApi';
 export const QuickLinksRow = memo(function QuickLinksRow() {
   const { data: quickLinksResp, isLoading } = useQuickLinksQuery();
 
-  // Dữ liệu từ API nằm trong quickLinksResp.data
   const quickLinks = Array.isArray(quickLinksResp?.data)
     ? (quickLinksResp.data as QuickLink[])
     : [];
 
-  // Color palette for icons
   const colors = [
     'bg-amber-100 text-amber-600',
     'bg-red-100 text-red-600',
@@ -45,7 +43,6 @@ export const QuickLinksRow = memo(function QuickLinksRow() {
     );
   }
 
-  // Fallback to empty state if no data
   if (quickLinks.length === 0) return null;
 
   return (

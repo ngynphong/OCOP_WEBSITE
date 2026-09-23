@@ -9,8 +9,6 @@ import {
 
 type ApiError = { response?: { data?: { message?: string } } };
 
-// ─── Standalone Query Hooks ───────────────────────────────────────────────────
-
 export const useSellerJournalsQuery = (productId: number | null | undefined) => {
   return useQuery({
     queryKey: ['seller-journals', productId],
@@ -28,8 +26,6 @@ export const useSellerQrQuery = (productId: number | null | undefined) => {
     staleTime: 60 * 1000,
   });
 };
-
-// ─── Mutation Hook ────────────────────────────────────────────────────────────
 
 export const useSellerJournalMutations = (productId: number) => {
   const queryClient = useQueryClient();

@@ -129,7 +129,6 @@ export const OpportunitiesList: React.FC<Props> = ({
 
   return (
     <div id="opportunities-section" className="space-y-4">
-      {/* Category filter tabs */}
       <div className="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-none">
         {tabs.map((t) => {
           const count = getTabCount(t.key);
@@ -157,7 +156,6 @@ export const OpportunitiesList: React.FC<Props> = ({
         })}
       </div>
 
-      {/* Grid of opportunities */}
       {filteredOpportunities.length === 0 ? (
         <div className="p-12 text-center bg-white border border-gray-100 rounded-2xl shadow-sm">
           <Filter className="w-8 h-8 text-gray-300 mx-auto mb-2" />

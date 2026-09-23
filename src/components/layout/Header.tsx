@@ -353,7 +353,6 @@ export function Header() {
           </div>
         </div>
 
-        {/* Mobile Search Bar Expansion */}
         {isSearchOpen && (
           <div className="w-full bg-green-800 lg:hidden relative z-50 animate-in fade-in slide-in-from-top-2 duration-200">
             <div className="py-3 px-4">
@@ -362,7 +361,6 @@ export function Header() {
           </div>
         )}
 
-        {/* Mobile Menu Expansion */}
         {isMenuOpen && (
           <div className="w-full bg-green-800 overflow-hidden lg:hidden animate-in fade-in slide-in-from-top-2 duration-200">
             <nav className="flex flex-col gap-4 py-4 px-6">

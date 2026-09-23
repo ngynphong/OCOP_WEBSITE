@@ -1,5 +1,3 @@
-// import 'client-only';
-
 import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 import Cookies from 'js-cookie';
 import toast from 'react-hot-toast';
@@ -62,7 +60,6 @@ interface CustomRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
 }
 
-// =================== REQUEST INTERCEPTOR ===================
 const onRequest = (config: InternalAxiosRequestConfig) => {
   const customConfig = config as CustomRequestConfig;
   const isSilent = config.headers?.['X-Silent-Loading'] === 'true';
@@ -99,7 +96,6 @@ const onRequestError = (error: AxiosError) => {
 axiosClient.interceptors.request.use(onRequest, onRequestError);
 publicAxiosClient.interceptors.request.use(onRequest, onRequestError);
 
-// =================== RESPONSE INTERCEPTOR LOGIC ===================
 const onResponse = (response: AxiosResponse) => {
   const customConfig = response.config as CustomRequestConfig | undefined;
   if (!customConfig?._isSilent) {
@@ -130,13 +126,11 @@ const onResponseError = async (error: AxiosError) => {
   }
   const originalRequest = error.config as CustomRequestConfig | undefined;
 
-  // 1. Lỗi mạng hoặc server không phản hồi
   if (!error.response) {
     toast.error('Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng!');
     return Promise.reject(new AppError('Network Error / Timeout', 503));
   }
 
-  // 2. Lấy dữ liệu lỗi từ response
   const { status, data: responseBody } = error.response;
   const errorData = responseBody as ApiErrorResponse;
 
@@ -147,7 +141,6 @@ const onResponseError = async (error: AxiosError) => {
     error.message ||
     'Có lỗi xảy ra, vui lòng thử lại sau';
 
-  // 3. Xử lý Token hết hạn (Code 1009 hoặc HTTP 401)
   if (
     (code === 1009 || status === 401 || code === 401) &&
     originalRequest &&
@@ -249,7 +242,6 @@ const onResponseError = async (error: AxiosError) => {
     }
   }
 
-  // 4. Hiển thị thông báo lỗi cho các trường hợp khác
   const SILENT_CODES = [1009, 403];
   if (!SILENT_CODES.includes(status) && !SILENT_CODES.includes(code)) {
     toast.error(errorMessage);
@@ -258,7 +250,6 @@ const onResponseError = async (error: AxiosError) => {
   return Promise.reject(new AppError(errorMessage, code, errorData));
 };
 
-// Gán interceptor cho cả 2 client
 axiosClient.interceptors.response.use(onResponse, onResponseError);
 publicAxiosClient.interceptors.response.use(onResponse, onResponseError);
 

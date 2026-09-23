@@ -17,8 +17,6 @@ export const quotationKeys = {
   detail: (id: string) => [...quotationKeys.details(), id] as const,
 };
 
-// ─── Buyer Hooks ──────────────────────────────────────────────────────────────
-
 export const useCreateQuotation = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -60,8 +58,6 @@ export const useAcceptQuotation = () => {
     },
   });
 };
-
-// ─── Seller Hooks ─────────────────────────────────────────────────────────────
 
 export const useSellerQuotations = (params?: QuotationListParams) => {
   return useQuery({

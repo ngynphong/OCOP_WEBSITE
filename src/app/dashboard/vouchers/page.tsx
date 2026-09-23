@@ -27,7 +27,6 @@ export default function VoucherDashboardPage() {
   const isSeller = dashboardMode === 'SELLER';
 
   useEffect(() => {
-    // A small timeout to ensure the role and profile are fully synced from store (Standard Pattern)
     const timer = setTimeout(() => {
       setIsMounted(true);
     }, 400);
@@ -35,7 +34,6 @@ export default function VoucherDashboardPage() {
     return () => clearTimeout(timer);
   }, []);
 
-  // API Hooks based on mode - Optimize: Only call the relevant API based on role/mode
   const sellerVouchers = useSellerVouchers(page, 10, isSeller);
   const savedVouchers = useSavedVouchers(page, 10, !isSeller);
 
@@ -76,7 +74,6 @@ export default function VoucherDashboardPage() {
 
   return (
     <div className="p-4 md:p-10 space-y-6 md:space-y-10 min-h-screen bg-stone-50/30">
-      {/* Premium Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -124,7 +121,6 @@ export default function VoucherDashboardPage() {
         </div>
       </motion.div>
 
-      {/* Modern Toolbar */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
         <div className="lg:col-span-7 relative group">
           <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
@@ -166,7 +162,6 @@ export default function VoucherDashboardPage() {
         </div>
       </div>
 
-      {/* Voucher List Content */}
       <AnimatePresence mode="wait">
         <motion.div
           key={`${dashboardMode}-${page}`}
@@ -182,7 +177,6 @@ export default function VoucherDashboardPage() {
             hideActions={!isSeller}
           />
 
-          {/* Luxury Pagination */}
           {voucherData && voucherData.totalPages > 1 && (
             <div className="mt-16 flex flex-col items-center gap-6">
               <div className="flex items-center gap-2 text-[10px] font-black text-stone-400 uppercase tracking-[0.2em]">
@@ -199,7 +193,6 @@ export default function VoucherDashboardPage() {
         </motion.div>
       </AnimatePresence>
 
-      {/* Form Drawer */}
       {isSeller && (
         <VoucherFormDrawer
           isOpen={isDrawerOpen}

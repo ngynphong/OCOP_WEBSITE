@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { ChatMessage } from '../types/chatTypes';
-import { cn } from '@/utils/cn'; // Assuming this utility exists or using standard clsx/tailwind-merge
+import { cn } from '@/utils/cn';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { FiFile, FiCheck, FiCheckCircle } from 'react-icons/fi';
@@ -14,7 +14,7 @@ interface ChatBubbleProps {
 }
 
 export const ChatBubble = ({ message }: ChatBubbleProps) => {
-  const { profile } = useAuthProfile(); // [MỚI] - Lấy profile từ React Query cache
+  const { profile } = useAuthProfile();
   const currentUserEmail = profile?.email;
   const isOwn = message.senderEmail === currentUserEmail;
 

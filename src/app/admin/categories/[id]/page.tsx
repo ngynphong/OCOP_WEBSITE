@@ -79,7 +79,6 @@ const CategoryDetailPage = ({ params }: PageProps) => {
 
   return (
     <div className="space-y-8 pb-20 animate-in fade-in duration-700">
-      {/* ─── Breadcrumbs & Navigation ─── */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link
@@ -118,7 +117,6 @@ const CategoryDetailPage = ({ params }: PageProps) => {
         </div>
       </div>
 
-      {/* ─── Main Hero Section ─── */}
       <div className="relative">
         <div className="relative h-64 w-full rounded-xl overflow-hidden group shadow-2xl shadow-stone-200/50">
           {category.bannerUrl ? (
@@ -137,7 +135,6 @@ const CategoryDetailPage = ({ params }: PageProps) => {
           <div className="absolute inset-0 group-hover:bg-transparent transition-all" />
         </div>
 
-        {/* Floating Category Info */}
         <div className="relative -mt-16 px-12 z-20">
           <div className="bg-white/80 backdrop-blur-xl rounded-xl p-8 border border-white/50 shadow-2xl flex items-center gap-8">
             <div className="relative w-24 h-24 rounded-xl bg-white border-4 border-white shadow-xl overflow-hidden shrink-0">
@@ -188,9 +185,7 @@ const CategoryDetailPage = ({ params }: PageProps) => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-6">
-        {/* ─── Navigation Left Column ─── */}
         <div className="lg:col-span-1 space-y-6">
-          {/* Parent Info */}
           <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-sm">
             <h4 className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-4">
               Cấu trúc cha
@@ -216,7 +211,6 @@ const CategoryDetailPage = ({ params }: PageProps) => {
             )}
           </div>
 
-          {/* Quick Stats Placeholder */}
           <div className="bg-emerald-900 rounded-xl p-8 text-white relative overflow-hidden shadow-xl shadow-emerald-900/20">
             <div className="relative z-10">
               <h4 className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-6">
@@ -239,9 +233,7 @@ const CategoryDetailPage = ({ params }: PageProps) => {
           </div>
         </div>
 
-        {/* ─── Content Right Column ─── */}
         <div className="lg:col-span-2 space-y-8">
-          {/* Description Section */}
           <section className="bg-white rounded-xl p-10 border border-stone-100 shadow-sm relative overflow-hidden">
             <div className="flex items-center gap-3 mb-8">
               <div className="w-10 h-10 rounded-xl bg-stone-50 flex items-center justify-center text-emerald-600">
@@ -256,7 +248,6 @@ const CategoryDetailPage = ({ params }: PageProps) => {
             </div>
           </section>
 
-          {/* Sub-categories Section */}
           <section className="bg-white rounded-xl p-10 border border-stone-100 shadow-sm">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-3">

@@ -23,7 +23,6 @@ export function TierPricesPanel({ productId, variantId, variantName }: TierPrice
 
   const [tiers, setTiers] = useState<WholesalePrice[]>([]);
 
-  // Sync from API response
   useEffect(() => {
     const apiTiers: WholesalePrice[] = Array.isArray(data?.data) ? data.data : [];
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -62,7 +61,6 @@ export function TierPricesPanel({ productId, variantId, variantName }: TierPrice
 
   return (
     <div className="p-4 mt-4 bg-amber-50/40 rounded-xl border border-amber-100 space-y-4">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h5 className="text-xs font-black text-stone-800 uppercase tracking-widest">
@@ -93,7 +91,6 @@ export function TierPricesPanel({ productId, variantId, variantName }: TierPrice
         </div>
       </div>
 
-      {/* Tiers list */}
       {tiers.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-6 gap-2 text-stone-400">
           <PackageSearch size={28} className="text-stone-300" />
@@ -108,7 +105,6 @@ export function TierPricesPanel({ productId, variantId, variantName }: TierPrice
         </div>
       ) : (
         <div className="space-y-3">
-          {/* Column headers */}
           <div className="grid grid-cols-[1fr_1.5fr_auto] gap-3 px-1">
             <span className="text-[9px] font-black text-stone-400 uppercase tracking-widest">
               Từ số lượng (sản phẩm)
@@ -150,7 +146,6 @@ export function TierPricesPanel({ productId, variantId, variantName }: TierPrice
         </div>
       )}
 
-      {/* Save button */}
       {tiers.length > 0 && (
         <div className="flex justify-end pt-2 border-t border-amber-100">
           <Button

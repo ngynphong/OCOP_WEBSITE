@@ -5,7 +5,6 @@ import { AlertTriangle, RefreshCcw } from 'lucide-react';
 import type { CartValidateIssue } from '../types/cartTypes';
 
 interface PriceChangedBannerProps {
-  /** Danh sách issues loại PRICE_CHANGED */
   issues: CartValidateIssue[];
   onSync: () => void;
   isSyncing: boolean;

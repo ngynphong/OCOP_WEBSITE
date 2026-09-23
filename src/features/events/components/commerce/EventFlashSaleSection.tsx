@@ -60,10 +60,8 @@ export function EventFlashSaleSection({ flashSales }: EventFlashSaleSectionProps
       className="w-full py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto scroll-mt-24"
     >
       <div className="relative rounded-3xl p-6 sm:p-8 overflow-hidden shadow-xl border border-amber-400/30 bg-gradient-to-br from-amber-500/10 via-red-500/10 to-transparent dark:from-amber-950/30 dark:via-red-950/30 dark:to-slate-900/60 backdrop-blur-md">
-        {/* Decorative corner glow */}
         <div className="absolute -top-24 -right-24 w-60 h-60 rounded-full bg-amber-400/20 blur-3xl pointer-events-none" />
 
-        {/* Header with Title and Countdown */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-black/10 dark:border-white/10">
           <div className="flex items-center gap-3">
             <div
@@ -87,7 +85,6 @@ export function EventFlashSaleSection({ flashSales }: EventFlashSaleSectionProps
             </div>
           </div>
 
-          {/* Countdown Clock */}
           <div className="flex items-center gap-1.5 self-end sm:self-auto bg-black/80 dark:bg-black/90 px-4 py-2 rounded-2xl shadow-inner text-white">
             <span className="text-xs font-semibold uppercase tracking-wider text-amber-300 mr-1">
               Kết thúc sau
@@ -106,7 +103,6 @@ export function EventFlashSaleSection({ flashSales }: EventFlashSaleSectionProps
           </div>
         </div>
 
-        {/* Items Carousel/Grid */}
         <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
           {activeSale.items.map((item) => {
             const isAlmostGone = item.progressPercent >= 75;
@@ -115,7 +111,6 @@ export function EventFlashSaleSection({ flashSales }: EventFlashSaleSectionProps
                 key={item.id}
                 className="group relative bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col hover:-translate-y-1"
               >
-                {/* Image & Discount Tag */}
                 <div className="relative aspect-square w-full bg-slate-100 dark:bg-slate-900 overflow-hidden">
                   {item.productImageUrl ? (
                     <Image
@@ -131,7 +126,6 @@ export function EventFlashSaleSection({ flashSales }: EventFlashSaleSectionProps
                     </div>
                   )}
 
-                  {/* Discount percent badge */}
                   {item.discountPercent > 0 && (
                     <div className="absolute top-2 left-2 z-10 px-2 py-0.5 rounded-lg bg-red-600 text-white text-xs font-black shadow-md flex items-center gap-0.5">
                       <span>-{item.discountPercent}%</span>
@@ -139,7 +133,6 @@ export function EventFlashSaleSection({ flashSales }: EventFlashSaleSectionProps
                   )}
                 </div>
 
-                {/* Content */}
                 <div className="p-3.5 sm:p-4 flex-1 flex flex-col justify-between">
                   <div>
                     <h3 className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 line-clamp-2 leading-snug">
@@ -148,7 +141,6 @@ export function EventFlashSaleSection({ flashSales }: EventFlashSaleSectionProps
                   </div>
 
                   <div className="mt-3">
-                    {/* Prices */}
                     <div className="flex items-baseline gap-2">
                       <span
                         className="text-base sm:text-lg font-black tracking-tight"
@@ -163,7 +155,6 @@ export function EventFlashSaleSection({ flashSales }: EventFlashSaleSectionProps
                       )}
                     </div>
 
-                    {/* Progress bar */}
                     <div className="mt-2.5">
                       <div className="w-full h-3 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden relative">
                         <div
@@ -198,7 +189,6 @@ export function EventFlashSaleSection({ flashSales }: EventFlashSaleSectionProps
                       </div>
                     </div>
 
-                    {/* CTA Button */}
                     <Link
                       href={`/product/${item.productSlug}`}
                       className="mt-3 w-full flex items-center justify-center gap-1.5 text-center py-2 px-3 rounded-xl text-xs font-bold text-white transition-all shadow-md group-hover:scale-[1.02] cursor-pointer"

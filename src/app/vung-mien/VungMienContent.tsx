@@ -41,7 +41,6 @@ export default function VungMienContent() {
     isFetching,
     isFetchingNextPage,
     hasNextPage,
-    // Phân cấp hành chính
     constituentProvinces,
     selectedConstituentCode,
     handleSelectConstituent,
@@ -57,7 +56,6 @@ export default function VungMienContent() {
     isResolvingCoords,
     activeMapView,
     setActiveMapView,
-    // Handlers
     handleSelectMode,
     handleSelectMacroRegion,
     handleSelectRegion,
@@ -73,11 +71,9 @@ export default function VungMienContent() {
 
   return (
     <div className="flex flex-col gap-5 sm:gap-6">
-      {/* ─── HEADER & BREADCRUMB & HERO BANNER ─── */}
       <div className="flex flex-col gap-3">
         <Breadcrumb items={[{ label: 'Trang chủ', href: '/' }, { label: 'Đặc sản vùng miền' }]} />
 
-        {/* Hero Card: Gọn gàng, hiện đại, biophilic accents, không choán diện tích */}
         <div className="bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900 rounded-2xl p-5 sm:p-7 text-white shadow-sm overflow-hidden relative border border-emerald-700/40">
           <div className="absolute top-0 right-0 w-72 h-72 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-emerald-400/10 rounded-full blur-2xl translate-y-1/3 -translate-x-1/4 pointer-events-none" />
@@ -102,7 +98,6 @@ export default function VungMienContent() {
               . Tích hợp bản đồ vệ tinh vùng trồng và sản phẩm OCOP đạt chuẩn 3 - 5 sao.
             </p>
 
-            {/* Quick Stat Pills */}
             <div className="flex flex-wrap items-center gap-2 text-[11px] font-medium text-emerald-100/90">
               <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-white/10 rounded-lg backdrop-blur-xs border border-white/10">
                 <Sparkles className="w-3 h-3 text-amber-300" />
@@ -121,7 +116,6 @@ export default function VungMienContent() {
         </div>
       </div>
 
-      {/* ─── BỘ LỌC ĐIỀU HÀNH TẬP TRUNG (COMMAND BAR DUY NHẤT) ─── */}
       <AdministrativeHierarchyFilter
         mode={mode}
         isTwoTierMode={isTwoTierMode}
@@ -149,11 +143,8 @@ export default function VungMienContent() {
         onResetHierarchy={handleResetHierarchy}
       />
 
-      {/* ─── NỘI DUNG CHÍNH: BẢN ĐỒ TƯƠNG TÁC (TRÁI) & SẢN PHẨM OCOP (PHẢI) ─── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-        {/* CỘT TRÁI: BẢN ĐỒ & THẺ THÔNG TIN ĐỊA BÀN */}
         <div className="lg:col-span-5 bg-white rounded-2xl shadow-sm border border-stone-200/80 p-4 sm:p-5 flex flex-col items-center h-fit lg:sticky lg:top-20 transition-all">
-          {/* Header Bản đồ với Bộ chuyển đổi Chế độ hiển thị duy nhất */}
           <div className="w-full flex items-center justify-between mb-3.5 border-b border-stone-100 pb-3">
             <div className="flex items-center gap-2 min-w-0">
               <MapPin className="text-emerald-700 w-4 h-4 shrink-0" />
@@ -164,7 +155,6 @@ export default function VungMienContent() {
               </h2>
             </div>
 
-            {/* Toggle 2 chế độ bản đồ: Overview vs Satellite */}
             <div className="inline-flex p-0.5 bg-stone-100 rounded-lg border border-stone-200 text-xs font-bold shrink-0">
               <button
                 type="button"
@@ -195,7 +185,6 @@ export default function VungMienContent() {
             </div>
           </div>
 
-          {/* Vùng hiển thị Bản đồ */}
           {activeMapView === 'satellite' ? (
             <div className="w-full">
               <CommuneMapWrapper
@@ -220,7 +209,6 @@ export default function VungMienContent() {
             </div>
           )}
 
-          {/* Thẻ thông tin Xã / Huyện / Tỉnh bên dưới bản đồ */}
           {selectedWard || (mode === '63' && selectedDistrict) ? (
             <CommuneInfoCard
               provinceName={selectedProvince}
@@ -237,7 +225,6 @@ export default function VungMienContent() {
               onClearHierarchy={handleResetHierarchy}
             />
           ) : selectedProvince && selectedProvinceInfo ? (
-            /* Card thông tin Tỉnh thành đang chọn */
             <div className="w-full mt-4 p-4 bg-emerald-50/70 rounded-xl border border-emerald-200/80 animate-in fade-in slide-in-from-bottom-2 duration-200">
               <div className="flex items-start justify-between gap-2">
                 <div>
@@ -257,7 +244,6 @@ export default function VungMienContent() {
                 </button>
               </div>
 
-              {/* Thông tin hợp nhất cho 34 tỉnh */}
               {isTwoTierMode &&
                 selectedProvinceInfo.constituentNames &&
                 selectedProvinceInfo.constituentNames.length > 1 && (
@@ -278,10 +264,8 @@ export default function VungMienContent() {
           )}
         </div>
 
-        {/* CỘT PHẢI: DANH SÁCH SẢN PHẨM OCOP & BỘ LỌC SAO */}
         <div className="lg:col-span-7 flex flex-col gap-4">
           <div className="bg-white rounded-2xl shadow-sm border border-stone-200/80 p-5 sm:p-6">
-            {/* Header Showcase: Tiêu đề địa bàn & nút hoàn tác nhanh */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3.5 border-b border-stone-100">
               <div className="flex items-center gap-3 min-w-0">
                 <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-700 shadow-xs shrink-0">
@@ -317,7 +301,6 @@ export default function VungMienContent() {
                 </div>
               </div>
 
-              {/* Quick Reset Buttons */}
               <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
                 {selectedWard && (
                   <button
@@ -340,7 +323,6 @@ export default function VungMienContent() {
               </div>
             </div>
 
-            {/* Bộ lọc Hạng Sao OCOP: Tất cả | 5 Sao | 4 Sao | 3 Sao */}
             <div className="flex items-center gap-1.5 overflow-x-auto pb-2 mb-4 scrollbar-none">
               <span className="text-xs font-bold text-stone-500 mr-1 whitespace-nowrap">
                 Hạng OCOP:
@@ -381,7 +363,6 @@ export default function VungMienContent() {
               })}
             </div>
 
-            {/* Product Grid Area */}
             <div className="relative min-h-[400px]">
               {isFetching && !isFetchingNextPage && (
                 <div className="absolute inset-0 bg-white/70 backdrop-blur-xs z-10 flex items-center justify-center rounded-xl transition-all">
@@ -446,7 +427,6 @@ export default function VungMienContent() {
               </div>
             </div>
 
-            {/* Load More Button */}
             {hasNextPage && (
               <div className="mt-8 flex justify-center">
                 <button

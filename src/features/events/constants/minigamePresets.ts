@@ -185,7 +185,7 @@ export const LUCKY_WHEEL_REWARDS: MinigameReward[] = [
     minOrderValue: 250000,
     iconName: 'ticket',
     themeColor: '#EF4444',
-    weight: 10, // Giảm từ 20 xuống 10%
+    weight: 10,
   },
   {
     id: 'whl_ship_20k',
@@ -248,7 +248,7 @@ export const LUCKY_WHEEL_REWARDS: MinigameReward[] = [
     minOrderValue: 699000,
     iconName: 'ticket',
     themeColor: '#EC4899',
-    weight: 2, // Giảm từ 6 xuống 2%
+    weight: 2,
   },
   {
     id: 'whl_wish_may_man',
@@ -261,7 +261,7 @@ export const LUCKY_WHEEL_REWARDS: MinigameReward[] = [
     minOrderValue: 89000,
     iconName: 'sparkles',
     themeColor: '#6B7280',
-    weight: 20, // Tăng mạnh từ 5 lên 20%
+    weight: 20,
   },
   {
     id: 'whl_vch_100k',
@@ -274,7 +274,7 @@ export const LUCKY_WHEEL_REWARDS: MinigameReward[] = [
     minOrderValue: 999000,
     iconName: 'gift',
     themeColor: '#EAB308',
-    weight: 1, // Giảm từ 2 xuống 1%
+    weight: 1,
   },
 ];
 
@@ -810,7 +810,6 @@ export function resolveMysteryPickConcept({
     return MYSTERY_PICK_CONCEPTS[minigameConcept as Exclude<MysteryPickConceptId, 'AUTO'>];
   }
 
-  // Tự động suy luận theo Concept ID, Theme Code, Event Type, hoặc Slug
   const normalizedConcept = (conceptId || '').toUpperCase();
   const normalizedTheme = (themeCode || '').toLowerCase();
   const normalizedSlug = (slug || '').toLowerCase();

@@ -83,7 +83,6 @@ export function CommuneInfoCard({
         </button>
       </div>
 
-      {/* Thông số tọa độ và sản phẩm */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 mt-3.5 pt-3 border-t border-emerald-100 text-xs">
         <div className="bg-white/80 p-2 rounded-xl border border-emerald-100/60">
           <span className="text-[10px] text-stone-400 uppercase font-bold block">Tọa độ tâm</span>
@@ -128,7 +127,6 @@ export function CommuneInfoCard({
         </div>
       </div>
 
-      {/* Ghi chú về sản phẩm OCOP tại xã */}
       <div className="mt-2.5 flex items-center gap-1.5 text-[11px] text-emerald-800 bg-emerald-100/40 px-3 py-1.5 rounded-xl">
         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
         <span>

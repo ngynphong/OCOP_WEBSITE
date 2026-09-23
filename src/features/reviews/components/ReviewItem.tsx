@@ -43,7 +43,6 @@ export const ReviewItem = ({ review, variant = 'public', onAction }: ReviewItemP
   return (
     <div className="py-6 border-b border-stone-100 last:border-0 group">
       <div className="flex gap-4">
-        {/* Avatar */}
         <div className="relative w-12 h-12 rounded-full overflow-hidden bg-stone-100 shrink-0 border border-stone-200">
           {review.avatarUrl ? (
             <Image src={review.avatarUrl} alt={review.userName} fill className="object-cover" />
@@ -54,7 +53,6 @@ export const ReviewItem = ({ review, variant = 'public', onAction }: ReviewItemP
           )}
         </div>
 
-        {/* Content */}
         <div className="flex-1">
           <div className="flex justify-between items-start">
             <div>
@@ -90,7 +88,6 @@ export const ReviewItem = ({ review, variant = 'public', onAction }: ReviewItemP
             {review.content}
           </p>
 
-          {/* Review Images */}
           {review.images && review.images.length > 0 && (
             <div className="flex gap-2 mt-4 overflow-x-auto pb-2 scrollbar-none">
               {review.images.map((img, idx) => (
@@ -105,7 +102,6 @@ export const ReviewItem = ({ review, variant = 'public', onAction }: ReviewItemP
             </div>
           )}
 
-          {/* Image Preview Modal */}
           {selectedImage && (
             <div
               className="fixed inset-0 z-[10001] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-300"
@@ -129,7 +125,6 @@ export const ReviewItem = ({ review, variant = 'public', onAction }: ReviewItemP
             </div>
           )}
 
-          {/* Seller Reply */}
           {review.sellerReply && (
             <div className="mt-4 p-4 rounded-xl bg-stone-50/80 border border-stone-100 relative">
               <div className="absolute -top-2 left-6 w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-b-8 border-b-stone-100" />
@@ -150,7 +145,6 @@ export const ReviewItem = ({ review, variant = 'public', onAction }: ReviewItemP
             </div>
           )}
 
-          {/* Actions */}
           {variant === 'public' && (
             <div className="mt-4 flex items-center gap-4">
               <Button

@@ -109,7 +109,6 @@ function SellerQuotationCard({
     >
       <div className="p-5">
         <div className="flex flex-col sm:flex-row gap-5">
-          {/* Buyer Info & Status */}
           <div className="w-full sm:w-48 shrink-0 space-y-3">
             <div className="flex items-center justify-between sm:block">
               <span

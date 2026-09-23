@@ -70,7 +70,6 @@ export function CategoriesClient() {
                     </h3>
                   </Link>
 
-                  {/* Subcategories (Children) */}
                   {cat.children && cat.children.length > 0 && (
                     <div className="mt-4 pt-4 border-t border-stone-50 flex flex-wrap gap-2 justify-center">
                       {cat.children.map((child: PublicCategory) => (

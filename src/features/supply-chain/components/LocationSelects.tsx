@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { useQuery } from '@tanstack/react-query';
-import { locationApi } from '@/features/admin/api/locationApi';
-import { useLocationQuery } from '@/features/shop/hooks/useLocationQuery';
+import { useLocationQuery, useAllWards34Query } from '@/features/shop/hooks/useLocationQuery';
 import { PROVINCES_34_MAP, PROVINCES_63_MAP, ProvinceMode } from '@/constants/regions-map';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -18,37 +16,17 @@ export function LocationSelects({ form }: { form: UseFormReturn<any> }) {
 
   const { provinces, districts, wards } = useLocationQuery(selectedProvId, selectedDistId);
 
-  // Danh mục Xã trực thuộc cho mô hình 2 cấp (34 tỉnh không qua cấp huyện)
-  const { data: wards34Data, isLoading: isLoadingWards34 } = useQuery({
-    queryKey: ['location-all-wards-34', selectedProvId],
-    queryFn: async () => {
-      if (!selectedProvId || !districts.data?.data?.length) return [];
-      const promises = districts.data.data.map((d) =>
-        locationApi
-          .getWards(d.id)
-          .then((res) =>
-            (res.data || []).map((w) => ({
-              ...w,
-              districtCode: d.code,
-              districtName: d.name,
-            })),
-          )
-          .catch(() => []),
-      );
-      const results = await Promise.all(promises);
-      return results.flat();
-    },
-    enabled: mode === '34' && !!selectedProvId && !!districts.data?.data?.length,
-    staleTime: 30 * 60 * 1000,
-  });
+  const { data: wards34Data, isLoading: isLoadingWards34 } = useAllWards34Query(
+    selectedProvId,
+    districts.data?.data,
+    mode === '34',
+  );
 
-  // Sync initial codes to IDs & 34-code
   useEffect(() => {
     if (provinces.data?.data && provinceCode) {
       const p = provinces.data.data.find((x) => x.code === provinceCode);
       if (p && p.id !== selectedProvId) setSelectedProvId(p.id);
 
-      // Map to 34 province if available
       const p63 = PROVINCES_63_MAP[provinceCode];
       if (p63?.parent34Code) {
         setSelectedProv34Code(p63.parent34Code);
@@ -72,7 +50,6 @@ export function LocationSelects({ form }: { form: UseFormReturn<any> }) {
 
   return (
     <div className="space-y-3 mb-4">
-      {/* Mode Switcher */}
       <div className="flex items-center justify-between text-xs">
         <span className="font-semibold text-stone-700">Địa chỉ hành chính</span>
         <div className="inline-flex rounded-md border border-stone-200 bg-stone-50 p-0.5">

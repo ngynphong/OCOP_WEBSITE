@@ -10,7 +10,7 @@ export const usePaymentMethods = (
     queryKey: ['payment-gateways'],
     queryFn: () => paymentApi.getUserGateways(),
     select: (res) => res.data,
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 5,
     ...options,
   });
 };

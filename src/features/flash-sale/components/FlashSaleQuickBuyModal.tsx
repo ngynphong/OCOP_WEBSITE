@@ -56,7 +56,6 @@ export function FlashSaleQuickBuyModal({ isOpen, onClose, item }: FlashSaleQuick
     };
   }, [isOpen]);
 
-  // Derive defaults instead of using useEffect to set state
   const defaultAddress = addresses?.find((a) => a.isDefault) || addresses?.[0];
   const activeAddress = selectedAddress || defaultAddress;
 
@@ -153,7 +152,6 @@ export function FlashSaleQuickBuyModal({ isOpen, onClose, item }: FlashSaleQuick
 
   const modalContent = (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
-      {/* Backdrop */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -162,14 +160,12 @@ export function FlashSaleQuickBuyModal({ isOpen, onClose, item }: FlashSaleQuick
         className="absolute inset-0 bg-stone-900/60 backdrop-blur-sm"
       />
 
-      {/* Modal Content */}
       <motion.div
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 20 }}
         className="relative w-full max-w-4xl max-h-[90vh] bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col"
       >
-        {/* Close Button */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 md:top-6 md:right-6 z-50 p-2 bg-white/80 backdrop-blur hover:bg-stone-100 shadow-sm md:shadow-none rounded-full text-stone-500 transition-colors cursor-pointer"
@@ -178,7 +174,6 @@ export function FlashSaleQuickBuyModal({ isOpen, onClose, item }: FlashSaleQuick
         </button>
 
         <div className="flex flex-col md:flex-row w-full h-full overflow-y-auto md:overflow-hidden">
-          {/* Left Side: Summary & Product */}
           <div className="w-full md:w-1/3 bg-stone-50 p-6 md:p-8 border-b md:border-b-0 md:border-r border-stone-100 md:overflow-y-auto shrink-0">
             <div className="flex items-center gap-2 mb-8 bg-red-600 text-white px-4 py-2 rounded-xl w-fit">
               <Zap className="w-4 h-4 fill-current" />
@@ -241,7 +236,6 @@ export function FlashSaleQuickBuyModal({ isOpen, onClose, item }: FlashSaleQuick
             </div>
           </div>
 
-          {/* Right Side: Selectors */}
           <div className="flex-1 p-6 md:p-8 md:overflow-y-auto custom-scrollbar">
             <div className="space-y-6">
               <AddressSelector selectedId={activeAddress?.id} onSelect={setSelectedAddress} />

@@ -11,7 +11,6 @@ interface SupportHeroProps {
 export const SupportHero = ({ searchQuery, onSearchChange }: SupportHeroProps) => {
   return (
     <div className="relative bg-[#113B28] text-white overflow-hidden py-20 px-4 sm:px-6 lg:px-8">
-      {/* Decorative background elements */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
         <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-white/5 blur-[100px]"></div>
         <div className="absolute bottom-10 -right-20 w-80 h-80 rounded-full bg-[#D4AF37]/20 blur-[100px]"></div>

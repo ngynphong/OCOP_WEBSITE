@@ -58,7 +58,6 @@ export function CategoryDetailClient() {
   const { slug } = useParams() as { slug: string };
   const { isAuthenticated } = useAppSelector((state) => state.auth);
 
-  // Filter States
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRatings, setSelectedRatings] = useState<number[]>([]);
   const [provinceMode, setProvinceMode] = useState<ProvinceMode>('63');
@@ -77,29 +76,23 @@ export function CategoryDetailClient() {
     getServerDesktopSnapshot,
   );
 
-  // Debounced filters
   const debouncedSearch = useDebounce(searchQuery, 400);
   const debouncedMinPrice = useDebounce(minPrice, 400);
   const debouncedMaxPrice = useDebounce(maxPrice, 400);
 
-  // 1. Fetch Category Detail
   const { data: categoryData, isPending: isCategoryLoading } = usePublicCategoryDetailQuery(slug);
   const category = categoryData?.data;
 
-  // 2. Fetch All Categories for SubNav / Sibling mapping
   const { data: categoriesData } = usePublicCategoriesQuery();
   const allCategories = categoriesData?.data || [];
 
-  // 3. Fetch Featured Products for this Category
   const { data: featuredData } = useFeaturedProductsQuery(6, category?.id);
   const featuredProducts = featuredData?.data?.items ?? [];
 
-  // 4. Fetch Meta Data for Provinces
   const { data: provincesData } = usePublicProvincesQuery({
     enabled: selectedProvinceId !== null,
   });
 
-  // Prepare Query Params for Product Search in Category
   const targetCategoryIds = selectedSubCategoryId
     ? [selectedSubCategoryId]
     : category?.id
@@ -119,7 +112,6 @@ export function CategoryDetailClient() {
     sort: sort,
   };
 
-  // 5. Fetch Paginated Products for this Category
   const {
     data: productsData,
     isPending: isProductsLoading,
@@ -130,7 +122,6 @@ export function CategoryDetailClient() {
   const totalElement = productsData?.data?.totalElement ?? 0;
   const totalPage = productsData?.data?.totalPage ?? 1;
 
-  // 6. Batch Wishlist Status
   const allProductIds = [...products.map((p) => p.id), ...featuredProducts.map((p) => p.id)];
   const { data: wishlistStatusData } = useWishlistStatus(
     isAuthenticated ? Array.from(new Set(allProductIds)) : [],
@@ -175,7 +166,6 @@ export function CategoryDetailClient() {
     <div className="min-h-screen flex flex-col font-sans bg-stone-50/40">
       <Header />
       <main className="flex-1 pt-6 md:pt-10 pb-16 max-w-7xl mx-auto px-4 sm:px-6 md:px-8 w-full">
-        {/* Breadcrumb */}
         <Breadcrumb
           items={[
             { label: 'Trang chủ', href: '/' },
@@ -185,7 +175,6 @@ export function CategoryDetailClient() {
           className="mb-6"
         />
 
-        {/* Category Hero Banner */}
         <div className="relative w-full h-[220px] sm:h-[280px] md:h-[340px] rounded-3xl overflow-hidden mb-8 shadow-xl group border border-stone-200/50">
           {category?.bannerUrl ? (
             <Image
@@ -223,7 +212,6 @@ export function CategoryDetailClient() {
           </div>
         </div>
 
-        {/* Category Section: Subcategories / Related Categories Navigation */}
         {category && (
           <CategorySubNav
             currentCategory={category}
@@ -236,7 +224,6 @@ export function CategoryDetailClient() {
           />
         )}
 
-        {/* Category Featured Products Section */}
         {featuredProducts.length > 0 && (
           <section className="my-10 p-6 md:p-8 bg-linear-to-br from-emerald-900/5 via-green-50/40 to-stone-50 rounded-3xl border border-green-800/10 shadow-xs">
             <div className="flex items-center justify-between mb-6">
@@ -281,7 +268,6 @@ export function CategoryDetailClient() {
           </section>
         )}
 
-        {/* Category Product Filter & Grid Area Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div>
             <h2 className="text-2xl md:text-3xl font-bold text-stone-900 font-sans tracking-tight">
@@ -293,7 +279,6 @@ export function CategoryDetailClient() {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Mobile Filter Button */}
             <button
               onClick={() => setIsSidebarOpen(true)}
               className="lg:hidden flex items-center gap-2 bg-white px-4 py-2.5 rounded-xl border border-stone-200 font-bold text-xs md:text-sm text-stone-700 shadow-xs hover:bg-stone-50 transition-all active:scale-95"
@@ -302,7 +287,6 @@ export function CategoryDetailClient() {
               Bộ lọc {hasActiveFilters && <span className="w-2 h-2 bg-green-600 rounded-full" />}
             </button>
 
-            {/* Sort Selector */}
             <div className="flex items-center gap-2">
               <span className="hidden sm:inline text-xs font-semibold text-stone-500 uppercase tracking-wider whitespace-nowrap">
                 Sắp xếp:
@@ -328,9 +312,7 @@ export function CategoryDetailClient() {
           </div>
         </div>
 
-        {/* Main Content Layout (Sidebar + Product Grid) */}
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Desktop Product Sidebar */}
           {isDesktop && (
             <div className="hidden lg:block shrink-0">
               <ProductSidebar
@@ -374,7 +356,6 @@ export function CategoryDetailClient() {
             </div>
           )}
 
-          {/* Mobile Filter Drawer */}
           {isSidebarOpen && (
             <div className="fixed inset-0 z-50 lg:hidden flex">
               <div
@@ -450,9 +431,7 @@ export function CategoryDetailClient() {
             </div>
           )}
 
-          {/* Product Grid Area */}
           <div className="flex-1 flex flex-col min-w-0">
-            {/* Active Filter Tags */}
             {hasActiveFilters && (
               <div className="flex flex-wrap items-center gap-2 mb-6">
                 {selectedSubCategoryId && (
@@ -576,7 +555,6 @@ export function CategoryDetailClient() {
                   ))}
                 </div>
 
-                {/* Pagination */}
                 {totalPage > 1 && (
                   <div className="mt-12">
                     <ProductPagination

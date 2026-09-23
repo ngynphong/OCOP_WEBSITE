@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useMemo, useSyncExternalStore, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import type { EventType, EventTheme, EventMinigameConfigDetail } from '../types/eventTypes';
 import type {
@@ -59,7 +60,7 @@ export function useEventMinigame({
   theme,
   minigameConfig,
 }: UseEventMinigameOptions) {
-  // Trích xuất conceptId từ theme decorations
+  const router = useRouter();
   const decorationConceptId = useMemo(() => {
     if (!theme?.decorationsJson) return null;
     try {
@@ -70,9 +71,7 @@ export function useEventMinigame({
     }
   }, [theme?.decorationsJson]);
 
-  // Giải quyết Mystery Pick Concept cho sự kiện (Bánh trung thu, Bao lì xì, Nông sản, Hộp quà...)
   const mysteryPickConceptConfig = useMemo<MysteryPickConceptConfig>(() => {
-    // 1. Ưu tiên conceptConfig đã được backend resolve và cấp phát trực tiếp
     if (minigameConfig?.conceptConfig) {
       const backendConcept = minigameConfig.conceptConfig;
       let items = backendConcept.defaultItems;
@@ -84,9 +83,7 @@ export function useEventMinigame({
           if (Array.isArray(parsed) && parsed.length === 6) {
             items = parsed;
           }
-        } catch {
-          // fallback to backendConcept.defaultItems
-        }
+        } catch {}
       }
 
       return {
@@ -97,7 +94,6 @@ export function useEventMinigame({
       };
     }
 
-    // 2. Fallback sang logic resolve tại Frontend nếu chưa có conceptConfig từ backend
     const baseConfig = resolveMysteryPickConcept({
       minigameConcept: minigameConfig?.mysteryPickConcept,
       conceptId: decorationConceptId,
@@ -113,9 +109,7 @@ export function useEventMinigame({
         if (Array.isArray(parsedItems) && parsedItems.length === 6) {
           items = parsedItems;
         }
-      } catch {
-        // fallback to defaultItems
-      }
+      } catch {}
     }
 
     return {
@@ -126,7 +120,6 @@ export function useEventMinigame({
     };
   }, [minigameConfig, decorationConceptId, theme?.code, eventType, eventSlug]);
 
-  // Xác định trò chơi mặc định theo loại sự kiện (A3 đã thống nhất với user)
   const defaultGameType: MinigameType = useMemo(() => {
     if (minigameConfig?.gameType) {
       return minigameConfig.gameType;
@@ -148,7 +141,6 @@ export function useEventMinigame({
   const storageKey = `${STORAGE_KEY_PREFIX}${eventId}`;
   const todayStr = getTodayString();
 
-  // Reactive localStorage store subscription (chuẩn React 18/19 không gây cascading render)
   const rawStorage = useSyncExternalStore(
     subscribeMinigameStorage,
     () => (typeof window !== 'undefined' ? localStorage.getItem(storageKey) : null),
@@ -190,7 +182,6 @@ export function useEventMinigame({
   const lastDailyClaim = userState.lastDailyClaim;
   const history = userState.history;
 
-  // Sync state ra localStorage và broadcast thông báo reactive
   const persistState = useCallback(
     (newSpins: number, newClaim: string | null, newHistory: MinigameHistoryEntry[]) => {
       if (typeof window === 'undefined') return;
@@ -205,14 +196,11 @@ export function useEventMinigame({
         };
         localStorage.setItem(storageKey, JSON.stringify(data));
         notifyMinigameUpdate();
-      } catch {
-        // Bỏ qua lỗi quota nếu có
-      }
+      } catch {}
     },
     [storageKey],
   );
 
-  // Tự động đồng bộ số lượt và lịch sử từ Backend nếu user đã đăng nhập qua TanStack Query
   const { data: remoteStatus } = useQuery({
     queryKey: ['event-minigame-user-status', eventSlug],
     queryFn: () => (eventSlug ? eventMinigameApi.getUserStatus(eventSlug) : Promise.reject()),
@@ -232,12 +220,10 @@ export function useEventMinigame({
     }
   }, [remoteStatus, persistState]);
 
-  // Kiểm tra trạng thái đã điểm danh nhận lượt ngày hôm nay chưa
   const canClaimDailyFreeSpin = useMemo(() => {
     return lastDailyClaim !== todayStr;
   }, [lastDailyClaim, todayStr]);
 
-  // Hành động nhận lượt miễn phí hàng ngày (Daily Check-in)
   const handleClaimDailyFreeSpin = useCallback(async () => {
     if (!canClaimDailyFreeSpin) {
       toast.error('Bạn đã nhận lượt miễn phí hôm nay rồi. Hãy quay lại vào ngày mai nhé!');
@@ -245,45 +231,28 @@ export function useEventMinigame({
     }
 
     const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
-    if (token && eventSlug) {
-      try {
-        const res = await eventMinigameApi.claimDailySpin(eventSlug);
-        persistState(res.spinsLeft, res.lastDailyClaimDate, res.recentHistory);
-        toast.success('Nhận thành công +1 lượt chơi miễn phí hôm nay!');
-        return;
-      } catch (err: unknown) {
-        const errorObj = err as { response?: { data?: { message?: string } } };
-        const msg = errorObj?.response?.data?.message || 'Bạn đã nhận lượt miễn phí hôm nay rồi.';
-        toast.error(msg);
-        return;
-      }
+    if (!token) {
+      toast.error('Vui lòng đăng nhập để nhận lượt chơi miễn phí mỗi ngày!');
+      router.push('/dang-nhap');
+      return;
     }
 
-    // Fallback nếu khách vãng lai hoặc demo
-    const nextSpins = spinsLeft + 1;
-    persistState(nextSpins, todayStr, history);
-    toast.success('Nhận thành công +1 lượt chơi miễn phí hôm nay!');
-  }, [canClaimDailyFreeSpin, eventSlug, spinsLeft, todayStr, history, persistState]);
+    if (!eventSlug) {
+      toast.error('Không tìm thấy sự kiện hợp lệ.');
+      return;
+    }
 
-  // Thuật toán Weighted Random Probability fallback phía client
-  const selectRewardByWeight = useCallback(
-    (rewards: MinigameReward[]): { reward: MinigameReward; index: number } => {
-      const totalWeight = rewards.reduce((sum, r) => sum + r.weight, 0);
-      let randomNum = Math.random() * totalWeight;
+    try {
+      const res = await eventMinigameApi.claimDailySpin(eventSlug);
+      persistState(res.spinsLeft, res.lastDailyClaimDate, res.recentHistory);
+      toast.success('Nhận thành công +1 lượt chơi miễn phí hôm nay!');
+    } catch (err: unknown) {
+      const errorObj = err as { response?: { data?: { message?: string } } };
+      const msg = errorObj?.response?.data?.message || 'Bạn đã nhận lượt miễn phí hôm nay rồi.';
+      toast.error(msg);
+    }
+  }, [canClaimDailyFreeSpin, eventSlug, router, persistState]);
 
-      for (let i = 0; i < rewards.length; i++) {
-        if (randomNum < rewards[i].weight) {
-          return { reward: rewards[i], index: i };
-        }
-        randomNum -= rewards[i].weight;
-      }
-
-      return { reward: rewards[0], index: 0 };
-    },
-    [],
-  );
-
-  // Chơi Bốc Lì Xì (Backend-first, Fallback Mock)
   const playEnvelope = useCallback(
     async (envelopeIndex: number) => {
       if (isSpinning) return;
@@ -293,109 +262,28 @@ export function useEventMinigame({
       }
 
       const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
-
-      // ── Luồng Backend Production ───────────────────────────────────────
-      if (token && eventSlug) {
-        try {
-          setIsSpinning(true);
-          setSelectedEnvelopeIndex(envelopeIndex);
-
-          const serverRes = await eventMinigameApi.play(eventSlug, 'LUCKY_ENVELOPE');
-
-          // Hiệu ứng mở bao lì xì 1.2s
-          await new Promise((resolve) => setTimeout(resolve, 1200));
-
-          const newEntry: MinigameHistoryEntry = {
-            id: `won_${Date.now()}`,
-            gameType: 'LUCKY_ENVELOPE',
-            reward: serverRes.reward,
-            wonAt: serverRes.wonAt,
-          };
-          const nextHistory = [newEntry, ...history];
-          persistState(serverRes.spinsLeft, lastDailyClaim, nextHistory);
-
-          setCurrentReward(serverRes.reward);
-          setIsSpinning(false);
-          setIsRewardModalOpen(true);
-          return;
-        } catch (err: unknown) {
-          setIsSpinning(false);
-          setSelectedEnvelopeIndex(null);
-          const errorObj = err as { response?: { data?: { message?: string } } };
-          const msg = errorObj?.response?.data?.message || 'Không thể tham gia minigame lúc này';
-          toast.error(msg);
-          return;
-        }
+      if (!token) {
+        toast.error('Vui lòng đăng nhập để tham gia bốc quà và nhận voucher!');
+        router.push('/dang-nhap');
+        return;
       }
 
-      // ── Luồng Demo / Preview cục bộ ──────────────────────────────────
-      setIsSpinning(true);
-      setSelectedEnvelopeIndex(envelopeIndex);
+      if (!eventSlug) {
+        toast.error('Sự kiện không hợp lệ hoặc đã kết thúc.');
+        return;
+      }
 
-      const rewards = mysteryPickConceptConfig.defaultRewards || LUCKY_ENVELOPE_REWARDS;
-      const { reward } = selectRewardByWeight(rewards);
-
-      await new Promise((resolve) => setTimeout(resolve, 1200));
-
-      const nextSpins = Math.max(0, spinsLeft - 1);
-      const newEntry: MinigameHistoryEntry = {
-        id: `won_${Date.now()}`,
-        gameType: 'LUCKY_ENVELOPE',
-        reward,
-        wonAt: new Date().toISOString(),
-      };
-      const nextHistory = [newEntry, ...history];
-
-      persistState(nextSpins, lastDailyClaim, nextHistory);
-
-      setCurrentReward(reward);
-      setIsSpinning(false);
-      setIsRewardModalOpen(true);
-    },
-    [
-      isSpinning,
-      spinsLeft,
-      eventSlug,
-      selectRewardByWeight,
-      mysteryPickConceptConfig.defaultRewards,
-      history,
-      lastDailyClaim,
-      persistState,
-    ],
-  );
-
-  // Chơi Vòng Quay OCOP (Backend-first, Fallback Mock)
-  const playWheel = useCallback(async () => {
-    if (isSpinning) return;
-    if (spinsLeft <= 0) {
-      toast.error('Bạn đã hết lượt quay! Mua sắm đơn từ 300K để nhận thêm lượt nhé.');
-      return;
-    }
-
-    const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
-
-    // ── Luồng Backend Production ───────────────────────────────────────
-    if (token && eventSlug) {
       try {
         setIsSpinning(true);
+        setSelectedEnvelopeIndex(envelopeIndex);
 
-        const serverRes = await eventMinigameApi.play(eventSlug, 'WHEEL_SPIN');
+        const serverRes = await eventMinigameApi.play(eventSlug, 'LUCKY_ENVELOPE');
 
-        const rewards = LUCKY_WHEEL_REWARDS;
-        const sliceAngle = 360 / rewards.length;
-        const sliceIdx = serverRes.sliceIndex ?? 0;
-        const targetSliceCenter = sliceIdx * sliceAngle + sliceAngle / 2;
-        const randomExtraRounds = 5 + Math.floor(Math.random() * 3);
-        const targetRotation =
-          wheelRotation + randomExtraRounds * 360 + (360 - (targetSliceCenter % 360));
-
-        setWheelRotation(targetRotation);
-
-        await new Promise((resolve) => setTimeout(resolve, 4500));
+        await new Promise((resolve) => setTimeout(resolve, 1200));
 
         const newEntry: MinigameHistoryEntry = {
           id: `won_${Date.now()}`,
-          gameType: 'WHEEL_SPIN',
+          gameType: 'LUCKY_ENVELOPE',
           reward: serverRes.reward,
           wonAt: serverRes.wonAt,
         };
@@ -405,58 +293,82 @@ export function useEventMinigame({
         setCurrentReward(serverRes.reward);
         setIsSpinning(false);
         setIsRewardModalOpen(true);
-        return;
       } catch (err: unknown) {
         setIsSpinning(false);
+        setSelectedEnvelopeIndex(null);
         const errorObj = err as { response?: { data?: { message?: string } } };
-        const msg = errorObj?.response?.data?.message || 'Không thể quay vòng quay lúc này';
+        const msg = errorObj?.response?.data?.message || 'Không thể tham gia minigame lúc này';
         toast.error(msg);
-        return;
       }
+    },
+    [isSpinning, spinsLeft, eventSlug, router, history, lastDailyClaim, persistState],
+  );
+
+  const playWheel = useCallback(async () => {
+    if (isSpinning) return;
+    if (spinsLeft <= 0) {
+      toast.error('Bạn đã hết lượt quay! Mua sắm đơn từ 300K để nhận thêm lượt nhé.');
+      return;
     }
 
-    // ── Luồng Demo / Preview cục bộ ──────────────────────────────────
-    setIsSpinning(true);
+    const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
+    if (!token) {
+      toast.error('Vui lòng đăng nhập để tham gia vòng quay và nhận voucher!');
+      router.push('/dang-nhap');
+      return;
+    }
 
-    const rewards = LUCKY_WHEEL_REWARDS;
-    const { reward, index } = selectRewardByWeight(rewards);
+    if (!eventSlug) {
+      toast.error('Sự kiện không hợp lệ hoặc đã kết thúc.');
+      return;
+    }
 
-    const sliceAngle = 360 / rewards.length;
-    const targetSliceCenter = index * sliceAngle + sliceAngle / 2;
-    const randomExtraRounds = 5 + Math.floor(Math.random() * 3);
-    const targetRotation =
-      wheelRotation + randomExtraRounds * 360 + (360 - (targetSliceCenter % 360));
+    try {
+      setIsSpinning(true);
 
-    setWheelRotation(targetRotation);
+      const serverRes = await eventMinigameApi.play(eventSlug, 'WHEEL_SPIN');
 
-    await new Promise((resolve) => setTimeout(resolve, 4500));
+      const rewards = LUCKY_WHEEL_REWARDS;
+      const sliceAngle = 360 / rewards.length;
+      const sliceIdx = serverRes.sliceIndex ?? 0;
+      const targetSliceCenter = sliceIdx * sliceAngle + sliceAngle / 2;
+      const randomExtraRounds = 5 + Math.floor(Math.random() * 3);
+      const targetRotation =
+        wheelRotation + randomExtraRounds * 360 + (360 - (targetSliceCenter % 360));
 
-    const nextSpins = Math.max(0, spinsLeft - 1);
-    const newEntry: MinigameHistoryEntry = {
-      id: `won_${Date.now()}`,
-      gameType: 'WHEEL_SPIN',
-      reward,
-      wonAt: new Date().toISOString(),
-    };
-    const nextHistory = [newEntry, ...history];
+      setWheelRotation(targetRotation);
 
-    persistState(nextSpins, lastDailyClaim, nextHistory);
+      await new Promise((resolve) => setTimeout(resolve, 4500));
 
-    setCurrentReward(reward);
-    setIsSpinning(false);
-    setIsRewardModalOpen(true);
+      const newEntry: MinigameHistoryEntry = {
+        id: `won_${Date.now()}`,
+        gameType: 'WHEEL_SPIN',
+        reward: serverRes.reward,
+        wonAt: serverRes.wonAt,
+      };
+      const nextHistory = [newEntry, ...history];
+      persistState(serverRes.spinsLeft, lastDailyClaim, nextHistory);
+
+      setCurrentReward(serverRes.reward);
+      setIsSpinning(false);
+      setIsRewardModalOpen(true);
+    } catch (err: unknown) {
+      setIsSpinning(false);
+      const errorObj = err as { response?: { data?: { message?: string } } };
+      const msg = errorObj?.response?.data?.message || 'Không thể quay vòng quay lúc này';
+      toast.error(msg);
+    }
   }, [
     isSpinning,
     spinsLeft,
     eventSlug,
-    selectRewardByWeight,
+    router,
     wheelRotation,
     history,
     lastDailyClaim,
     persistState,
   ]);
 
-  // Sao chép mã voucher trúng thưởng
   const handleCopyCode = useCallback((code: string) => {
     if (navigator.clipboard) {
       void navigator.clipboard.writeText(code);
@@ -477,7 +389,7 @@ export function useEventMinigame({
   }, []);
 
   const closeGameModal = useCallback(() => {
-    if (isSpinning) return; // Không đóng khi đang quay
+    if (isSpinning) return;
     setIsGameModalOpen(false);
     setSelectedEnvelopeIndex(null);
   }, [isSpinning]);

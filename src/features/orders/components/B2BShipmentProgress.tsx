@@ -80,12 +80,9 @@ export function B2BShipmentProgress({ shipment, isB2B }: B2BShipmentProgressProp
                 key={idx}
                 className="flex items-start md:min-w-[240px] relative w-full md:w-auto"
               >
-                {/* Connector Line */}
                 {!isLast && (
                   <>
-                    {/* Vertical line for mobile */}
                     <div className="absolute left-[23px] top-6 bottom-[-48px] w-0.5 bg-stone-200 -z-10 md:hidden" />
-                    {/* Horizontal line for desktop */}
                     <div className="absolute left-6 top-6 right-0 h-0.5 bg-stone-200 -z-10 hidden md:block" />
                   </>
                 )}

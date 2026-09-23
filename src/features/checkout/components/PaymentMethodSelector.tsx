@@ -24,7 +24,6 @@ export const PaymentMethodSelector = memo(function PaymentMethodSelector({
 }: PaymentMethodSelectorProps) {
   const { data: methods, isLoading } = usePaymentMethods();
 
-  // Auto-select first method on load
   React.useEffect(() => {
     if (methods && methods.length > 0 && !selectedId) {
       onSelect(methods[0].code);

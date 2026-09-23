@@ -4,7 +4,7 @@ import { ISupplyChainLot, ILotQrCode } from '../types/supplyChainTypes';
 import { FiX, FiPrinter } from 'react-icons/fi';
 import { Button } from '@/components/ui/AppButton';
 import { supplyChainApi } from '../api/supplyChainApi';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 
 interface PrintQrModalProps {
   isOpen: boolean;
@@ -68,7 +68,6 @@ export const PrintQrModal = ({
 
   return (
     <div className="fixed inset-0 z-[100] bg-stone-900/60 backdrop-blur-xs flex flex-col print:static print:bg-white print:z-auto">
-      {/* Non-printable Control Header */}
       <div className="h-16 border-b flex items-center justify-between px-6 bg-white shrink-0 shadow-sm print:hidden">
         <div>
           <h2 className="font-bold text-lg text-stone-900 flex items-center gap-2">
@@ -130,7 +129,6 @@ export const PrintQrModal = ({
         </div>
       </div>
 
-      {/* Printable Sheet View */}
       <div className="flex-1 overflow-auto print:overflow-visible bg-stone-200 print:bg-white p-6 print:p-0 flex justify-center">
         <div className="tomy-sheet-page bg-white shadow-xl print:shadow-none w-full max-w-[210mm] min-h-[297mm] p-[10mm] print:p-0 print:m-0 box-border text-stone-900">
           <div
@@ -149,7 +147,6 @@ export const PrintQrModal = ({
                   className="border border-stone-300 print:border-stone-500 rounded-md p-2 flex items-center gap-2 bg-white break-inside-avoid print:break-inside-avoid"
                   style={{ minHeight: layout === 'tomy24' ? '31mm' : '26mm' }}
                 >
-                  {/* Left: QR Code */}
                   <div className="shrink-0 bg-white p-0.5 border border-stone-100 flex items-center justify-center">
                     <QRCode
                       value={qrValue}
@@ -159,7 +156,6 @@ export const PrintQrModal = ({
                     />
                   </div>
 
-                  {/* Right: Metadata */}
                   <div className="flex-1 min-w-0 flex flex-col justify-center leading-tight overflow-hidden">
                     <div className="flex items-center justify-between gap-1 mb-0.5">
                       <span className="text-[8px] font-black tracking-wider uppercase text-emerald-800 print:text-black">
@@ -191,7 +187,6 @@ export const PrintQrModal = ({
         </div>
       </div>
 
-      {/* Print CSS styling */}
       <style
         dangerouslySetInnerHTML={{
           __html: `

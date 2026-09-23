@@ -36,9 +36,7 @@ export const ShopPolicyTab = ({ shopSlug }: ShopPolicyTabProps) => {
 
   return (
     <div className="mt-4 sm:mt-6 pb-12">
-      {/* 3 Core Policy Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-        {/* Vận chuyển */}
         <div className="bg-white p-4 sm:p-6 md:p-7 rounded-2xl border border-stone-200/80 shadow-2xs">
           <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-3.5 sm:mb-5 border border-blue-100 shrink-0">
             <FiTruck size={20} />
@@ -57,7 +55,6 @@ export const ShopPolicyTab = ({ shopSlug }: ShopPolicyTabProps) => {
           )}
         </div>
 
-        {/* Đổi trả */}
         <div className="bg-white p-4 sm:p-6 md:p-7 rounded-2xl border border-stone-200/80 shadow-2xs">
           <div className="w-10 h-10 sm:w-12 sm:h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center mb-3.5 sm:mb-5 border border-amber-100 shrink-0">
             <FiRefreshCw size={20} />
@@ -76,7 +73,6 @@ export const ShopPolicyTab = ({ shopSlug }: ShopPolicyTabProps) => {
           )}
         </div>
 
-        {/* Bảo hành & Chất lượng */}
         <div className="bg-white p-4 sm:p-6 md:p-7 rounded-2xl border border-stone-200/80 shadow-2xs">
           <div className="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-3.5 sm:mb-5 border border-emerald-100 shrink-0">
             <FiShield size={20} />

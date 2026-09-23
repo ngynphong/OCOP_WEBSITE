@@ -13,7 +13,6 @@ export function SellerOrderCardSkeleton({ className }: SkeletonProps) {
         className,
       )}
     >
-      {/* Header */}
       <div className="bg-stone-50 px-5 py-3 border-b border-stone-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="h-4 w-24 bg-stone-200 rounded animate-pulse" />
@@ -23,7 +22,6 @@ export function SellerOrderCardSkeleton({ className }: SkeletonProps) {
         <div className="h-6 w-24 bg-stone-200 rounded-full animate-pulse" />
       </div>
 
-      {/* Items */}
       <div className="p-5 flex flex-col gap-4 border-b border-stone-100">
         {[1, 2].map((i) => (
           <div key={i} className="flex gap-4">
@@ -38,7 +36,6 @@ export function SellerOrderCardSkeleton({ className }: SkeletonProps) {
         ))}
       </div>
 
-      {/* Footer Summary */}
       <div className="px-5 py-4 bg-stone-50/50 flex flex-col sm:flex-row items-end sm:items-center justify-between gap-4">
         <div className="flex gap-2 w-full sm:w-auto opacity-50">
           <div className="h-8 w-24 bg-stone-200 rounded-lg animate-pulse" />

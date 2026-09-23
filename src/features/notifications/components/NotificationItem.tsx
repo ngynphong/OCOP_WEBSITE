@@ -160,7 +160,6 @@ export const NotificationItem = React.memo<{
     }
   };
 
-  // Fallback if actor is null (System notifications)
   const actorName = actor?.name || 'Hệ thống';
   const actorAvatar = actor?.avatarUrl;
 
@@ -173,14 +172,12 @@ export const NotificationItem = React.memo<{
         actionable && 'hover:shadow-inner',
       )}
     >
-      {/* Indicator for Unread */}
       {!read && (
         <div className="absolute left-1 top-1/2 -translate-y-1/2">
           <FiCircle className="text-[8px] fill-emerald-500 text-emerald-500 animate-pulse" />
         </div>
       )}
 
-      {/* Actor Avatar or Icon */}
       <div className="relative shrink-0">
         <div className="w-12 h-12 rounded-xl overflow-hidden bg-stone-100 border border-stone-200">
           {actorAvatar ? (
@@ -202,7 +199,6 @@ export const NotificationItem = React.memo<{
         </div>
       </div>
 
-      {/* Content */}
       <div className="flex-1 space-y-1 pr-8">
         <div className="flex justify-between items-start">
           <div
@@ -219,7 +215,6 @@ export const NotificationItem = React.memo<{
           {formatDistanceToNow(new Date(createdAt), { addSuffix: true, locale: vi })}
         </p>
 
-        {/* Render Inline Recommended Products */}
         {(() => {
           let recommendedProducts: IRecommendedProduct[] = [];
           if (payload?.products) {
@@ -289,7 +284,6 @@ export const NotificationItem = React.memo<{
         )}
       </div>
 
-      {/* Quick Actions */}
       <div className="absolute right-3 top-1/2 -translate-y-1/2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0 duration-300">
         {!read && (
           <button

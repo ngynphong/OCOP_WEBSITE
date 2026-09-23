@@ -43,7 +43,6 @@ export function CartSummary({ selectedItems, hasIssues }: CartSummaryProps) {
         if (res.data.valid) {
           router.push('/checkout');
         } else {
-          // Có issue — thông báo để user xử lý trước
           toast.error(
             `Vui lòng xử lý ${res.data.invalidItems} sản phẩm có vấn đề trước khi đặt hàng`,
           );
@@ -54,11 +53,9 @@ export function CartSummary({ selectedItems, hasIssues }: CartSummaryProps) {
 
   return (
     <div className="sticky top-28 space-y-4">
-      {/* Order Summary Card */}
       <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-sm">
         <h2 className="text-base font-bold text-stone-800 mb-5">Tóm tắt đơn hàng</h2>
 
-        {/* Price breakdown */}
         <div className="space-y-3">
           <div className="flex justify-between text-sm text-stone-600">
             <span>Tạm tính ({selectedItems.length} sản phẩm)</span>
@@ -70,13 +67,11 @@ export function CartSummary({ selectedItems, hasIssues }: CartSummaryProps) {
           </div>
         </div>
 
-        {/* Total */}
         <div className="flex justify-between items-center mt-4 pt-4 border-t border-stone-200">
           <span className="text-sm font-bold text-stone-700">Tổng cộng</span>
           <span className="text-2xl font-black text-green-700">{formatVND(total)}</span>
         </div>
 
-        {/* Checkout Button */}
         <button
           onClick={handleCheckout}
           disabled={!canCheckout || isValidating}
@@ -100,7 +95,6 @@ export function CartSummary({ selectedItems, hasIssues }: CartSummaryProps) {
           )}
         </button>
 
-        {/* Hint */}
         {!canCheckout && !isValidating && selectedItems.length === 0 && (
           <p className="text-center text-xs text-stone-400 mt-3">
             Chọn ít nhất 1 sản phẩm để đặt hàng
@@ -113,7 +107,6 @@ export function CartSummary({ selectedItems, hasIssues }: CartSummaryProps) {
         )}
       </div>
 
-      {/* Trust badge */}
       <div className="bg-green-50 rounded-xl p-4 flex items-start gap-3">
         <ShieldCheck className="w-5 h-5 text-green-600 shrink-0 mt-0.5" />
         <div>
@@ -124,7 +117,6 @@ export function CartSummary({ selectedItems, hasIssues }: CartSummaryProps) {
         </div>
       </div>
 
-      {/* OCOP Impact card */}
       <div className="bg-amber-50 rounded-xl p-4 flex items-start gap-3">
         <span className="text-xl shrink-0">🌾</span>
         <div>

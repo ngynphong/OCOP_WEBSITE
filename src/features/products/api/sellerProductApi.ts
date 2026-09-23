@@ -28,8 +28,6 @@ import {
 } from '@/features/products/types/productTypes';
 
 export const sellerProductApi = {
-  // ─── Product CRUD ──────────────────────────────────────────────────────────
-
   getProducts: (params?: ProductListParams): Promise<ProductListResponse> => {
     return axiosClient.get(API_ENDPOINTS.SELLER.PRODUCTS, {
       headers: { 'X-Silent-Loading': 'true' },
@@ -70,8 +68,6 @@ export const sellerProductApi = {
   discontinueProduct: (id: number): Promise<ProductDetailResponse> => {
     return axiosClient.post(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, id, 'discontinue'));
   },
-
-  // ─── Variants ─────────────────────────────────────────────────────────────
 
   getVariants: (productId: number): Promise<VariantListResponse> => {
     return axiosClient.get(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'variants'), {
@@ -127,8 +123,6 @@ export const sellerProductApi = {
     );
   },
 
-  // ─── Images ───────────────────────────────────────────────────────────────
-
   getImages: (productId: number): Promise<ImageListResponse> => {
     return axiosClient.get(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'images'), {
       headers: { 'X-Silent-Loading': 'true' },
@@ -163,8 +157,6 @@ export const sellerProductApi = {
     );
   },
 
-  // ─── Journals ─────────────────────────────────────────────────────────────
-
   getJournals: (productId: number): Promise<JournalListResponse> => {
     return axiosClient.get(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'journals'), {
       headers: { 'X-Silent-Loading': 'true' },
@@ -178,7 +170,6 @@ export const sellerProductApi = {
   ): Promise<JournalDetailResponse> => {
     const formData = new FormData();
 
-    // Append fields individually
     Object.entries(data).forEach(([key, value]) => {
       if (value !== undefined && value !== null && key !== 'images') {
         formData.append(key, value.toString());
@@ -266,7 +257,6 @@ export const sellerProductApi = {
     return axiosClient.get(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'qr'));
   },
 
-  // ─── Tier Prices ──────────────────────────────────────────────────────────
   getTierPrices: (
     productId: number,
     variantId?: number,

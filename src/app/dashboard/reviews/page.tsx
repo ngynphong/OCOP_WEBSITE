@@ -40,7 +40,6 @@ export default function SellerReviewsPage() {
       await reply({ reviewId: replyingReview.id, data: { content: replyContent } });
       setReplyingReview(null);
     } catch (err) {
-      // Error handled by hook
       console.error(err);
     }
   };
@@ -56,7 +55,6 @@ export default function SellerReviewsPage() {
         </div>
       </div>
 
-      {/* Filters (Mock UI) */}
       <div className="flex flex-wrap items-center gap-4 bg-white p-4 rounded-xl border border-stone-100 shadow-sm">
         <div className="relative flex-1 min-w-[240px]">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" size={18} />
@@ -66,14 +64,6 @@ export default function SellerReviewsPage() {
             className="w-full pl-11 pr-4 py-3 bg-stone-50 text-gray-700 border border-stone-100 rounded-xl text-sm focus:ring-2 focus:ring-green-500/20 outline-none transition-all"
           />
         </div>
-        {/* <div className="flex items-center gap-2">
-           <Filter size={16} className="text-stone-400" />
-           <select className="bg-stone-50 border border-stone-100 rounded-xl px-4 py-3 text-sm font-bold text-stone-700 outline-none">
-             <option>Tất cả đánh giá</option>
-             <option>Chưa phản hồi</option>
-             <option>Đã phản hồi</option>
-           </select>
-        </div> */}
       </div>
 
       {isLoading ? (
@@ -90,7 +80,6 @@ export default function SellerReviewsPage() {
             ))}
           </div>
 
-          {/* Pagination */}
           {totalPages > 1 && (
             <div className="p-6 border-t border-stone-50 flex justify-center gap-2">
               {Array.from({ length: totalPages }).map((_, idx) => (
@@ -122,7 +111,6 @@ export default function SellerReviewsPage() {
         </div>
       )}
 
-      {/* Reply Modal */}
       <Modal
         isOpen={!!replyingReview}
         onClose={() => setReplyingReview(null)}

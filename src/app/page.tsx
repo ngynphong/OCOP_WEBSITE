@@ -26,7 +26,6 @@ export const metadata: Metadata = {
   },
 };
 import { HeroSection } from '@/features/home/components/HeroSection';
-// import { FeatureHighlights } from '@/features/home/components/FeatureHighlights';
 import { QuickLinksRow } from '@/features/home/components/QuickLinksRow';
 import { FlashSaleSection } from '@/features/home/components/FlashSaleSection';
 import { BestSellersSection } from '@/features/home/components/BestSellersSection';
@@ -47,10 +46,8 @@ export default async function Home() {
     <EventProvider activeEvent={activeEvent}>
       <EventThemeProvider theme={activeEvent?.theme}>
         <div className="min-h-screen flex flex-col font-sans bg-[#f6faf4] md:bg-transparent relative">
-          {/* Background Layer */}
           <AmbientBackground banners={banners} />
 
-          {/* Content Layer */}
           <Header />
 
           <main className="relative z-10 flex-1 flex flex-col justify-start items-center w-full overflow-x-hidden bg-[#f6faf4] md:bg-transparent">
@@ -64,7 +61,6 @@ export default async function Home() {
                   <HeroSection banners={banners} />
                 </div>
               )}
-              {/* <FeatureHighlights /> */}
               <QuickLinksRow />
               <FlashSaleSection />
               <BestSellersSection />

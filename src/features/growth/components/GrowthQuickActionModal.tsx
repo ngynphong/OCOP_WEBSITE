@@ -25,7 +25,6 @@ export const GrowthQuickActionModal: React.FC<Props> = ({ isOpen, opportunity, o
   const durationHours = Number(payload.durationHours || 48);
   const prefix = String(payload.voucherCodePrefix || 'OCOP' + discountPercent);
 
-  // Auto-generate voucher code e.g. OCOP10-ABCD
   const autoCode = `${prefix}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
 
   const voucherTitle = prefix.toUpperCase().includes('TRIAN')
@@ -96,7 +95,6 @@ export const GrowthQuickActionModal: React.FC<Props> = ({ isOpen, opportunity, o
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden">
-        {/* Modal Header */}
         <div className="px-6 pt-6 pb-4 flex items-center justify-between border-b border-gray-100">
           <div className="flex items-center gap-2">
             <div className="p-2 rounded-xl bg-emerald-50 text-emerald-600">
@@ -115,7 +113,6 @@ export const GrowthQuickActionModal: React.FC<Props> = ({ isOpen, opportunity, o
           </button>
         </div>
 
-        {/* Modal Body */}
         <div className="p-6 space-y-4">
           <div className="space-y-1">
             <h4 className="text-base font-bold text-gray-900">{opportunity.title}</h4>
@@ -230,7 +227,6 @@ export const GrowthQuickActionModal: React.FC<Props> = ({ isOpen, opportunity, o
           )}
         </div>
 
-        {/* Modal Footer */}
         <div className="px-6 py-4 bg-gray-50/80 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-end gap-2.5">
           <button
             onClick={onClose}

@@ -31,7 +31,6 @@ function SellerWalletContent() {
   const [activeTab, setActiveTab] = useState<'PAYOUTS' | 'REFUNDS'>('PAYOUTS');
   const [isPolicyOpen, setIsPolicyOpen] = useState(false);
 
-  // Pagination states
   const [payoutPage, setPayoutPage] = useState<number>(1);
   const [payoutPageSize, setPayoutPageSize] = useState<number>(10);
   const [refundPage, setRefundPage] = useState<number>(1);
@@ -43,23 +42,19 @@ function SellerWalletContent() {
     setRefundPage(1);
   };
 
-  // 1. Fetch wallet overall metrics
   const { data: overviewData, isLoading: isOverviewLoading } = useGrowthOverview();
   const wallet = overviewData?.wallet;
 
-  // 2. Fetch linked bank account
   const { useBankAccountQuery } = useSellerShop();
   const { data: bankData, isLoading: isBankLoading } = useBankAccountQuery();
   const bankAccount = bankData?.data;
 
-  // 3. Fetch monthly revenue
   const { data: revenueData, isLoading: isRevenueLoading } = useSellerRevenueQuery(
     { period: 'month' },
     isB2B,
   );
   const revenue = revenueData?.data as unknown as IRevenueRes;
 
-  // 4. Fetch payouts list
   const { data: payoutsData, isLoading: isPayoutsLoading } = useSellerPayoutsQuery(
     { pageNo: payoutPage, pageSize: payoutPageSize },
     isB2B,
@@ -76,7 +71,6 @@ function SellerWalletContent() {
     (payoutsData?.data as unknown as IPayoutListRes)?.totalPages ??
     Math.max(1, Math.ceil(payoutTotalElements / payoutPageSize));
 
-  // 5. Fetch refunds list
   const { data: refundsData, isLoading: isRefundsLoading } = useSellerRefundsQuery(
     { pageNo: refundPage, pageSize: refundPageSize },
     isB2B,
@@ -93,24 +87,20 @@ function SellerWalletContent() {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-16">
-      {/* 1. Header */}
       <SellerWalletHeader
         isB2B={isB2B}
         onToggleB2B={handleToggleB2B}
         onOpenPolicy={() => setIsPolicyOpen(true)}
       />
 
-      {/* 2. Hero 4-card Balance Metrics */}
       <SellerWalletMetrics
         wallet={wallet}
         revenue={revenue}
         isLoading={isOverviewLoading || isRevenueLoading}
       />
 
-      {/* 3. Bank Account Information / Warning Banner */}
       <SellerBankAccountCard bankAccount={bankAccount} isLoading={isBankLoading} />
 
-      {/* 4. Tab selection: Payouts vs Refunds */}
       <div className="flex items-center gap-2 border-b border-gray-200">
         <button
           type="button"
@@ -149,7 +139,6 @@ function SellerWalletContent() {
         </button>
       </div>
 
-      {/* 5. Tab Content */}
       {activeTab === 'PAYOUTS' ? (
         <SellerPayoutHistoryTable
           payouts={payouts}
@@ -180,7 +169,6 @@ function SellerWalletContent() {
         />
       )}
 
-      {/* 6. Policy Modal */}
       <DisbursementPolicyModal isOpen={isPolicyOpen} onClose={() => setIsPolicyOpen(false)} />
     </div>
   );

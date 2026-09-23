@@ -33,7 +33,6 @@ export const CreateTicketModal = ({ isOpen, onClose }: CreateTicketModalProps) =
     },
   });
 
-  // Sử dụng local state để quản lý hiển thị nhằm tránh dùng watch() gây warning lint
   const [selectedCategory, setSelectedCategory] =
     React.useState<TicketRequest['category']>('OTHER');
   const [selectedPriority, setSelectedPriority] = React.useState<TicketRequest['priority']>('LOW');
@@ -50,7 +49,6 @@ export const CreateTicketModal = ({ isOpen, onClose }: CreateTicketModalProps) =
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Gửi yêu cầu hỗ trợ mới" maxWidth="max-w-2xl">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* Category Selection */}
         <div className="space-y-3">
           <label className="text-[10px] font-black text-stone-500 uppercase tracking-widest ml-1">
             Lĩnh vực hỗ trợ
@@ -102,7 +100,6 @@ export const CreateTicketModal = ({ isOpen, onClose }: CreateTicketModalProps) =
           )}
         </div>
 
-        {/* Priority & Subject */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="space-y-3">
             <label className="text-[10px] font-black text-stone-500 uppercase tracking-widest ml-1">
@@ -161,7 +158,6 @@ export const CreateTicketModal = ({ isOpen, onClose }: CreateTicketModalProps) =
           </div>
         </div>
 
-        {/* Description */}
         <div className="space-y-2">
           <label className="text-[10px] font-black text-stone-500 uppercase tracking-widest ml-1">
             Chi tiết nội dung cần hỗ trợ
@@ -177,7 +173,6 @@ export const CreateTicketModal = ({ isOpen, onClose }: CreateTicketModalProps) =
           )}
         </div>
 
-        {/* Footer */}
         <div className="flex gap-4 pt-4 border-t border-stone-50">
           <Button
             type="button"

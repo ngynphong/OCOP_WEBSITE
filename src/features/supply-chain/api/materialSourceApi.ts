@@ -18,7 +18,6 @@ import {
 } from '../types/materialSourceTypes';
 
 export const materialSourceApi = {
-  // --- Suppliers ---
   getSuppliers: async (page = 0, size = 10) => {
     return axiosClient.get<unknown, { data: IPageResponse<ISupplier> }>(
       API_ENDPOINTS.SELLER.SUPPLY_CHAIN_SUPPLIERS,
@@ -44,7 +43,6 @@ export const materialSourceApi = {
     return axiosClient.delete(`${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_SUPPLIERS}/${id}`);
   },
 
-  // --- Source Facilities ---
   getFacilities: async (page = 0, size = 10) => {
     return axiosClient.get<unknown, { data: IPageResponse<ISourceFacility> }>(
       API_ENDPOINTS.SELLER.SUPPLY_CHAIN_FACILITIES,
@@ -67,7 +65,6 @@ export const materialSourceApi = {
     return axiosClient.delete(`${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_FACILITIES}/${id}`);
   },
 
-  // --- Source Cycles ---
   getCyclesByFacility: async (facilityId: number, page = 0, size = 10) => {
     return axiosClient.get<unknown, { data: IPageResponse<ISourceCycle> }>(
       `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_FACILITIES}/${facilityId}/cycles`,
@@ -102,7 +99,6 @@ export const materialSourceApi = {
     return axiosClient.delete(`${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_CYCLES}/${id}`);
   },
 
-  // --- Source Cycle Logs ---
   getCycleLogs: async (cycleId: number, page = 0, size = 10) => {
     return axiosClient.get<unknown, { data: IPageResponse<ISourceCycleLog> }>(
       `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_CYCLES}/${cycleId}/logs`,
@@ -128,7 +124,6 @@ export const materialSourceApi = {
     return axiosClient.delete(`/api/v1/seller/source-cycles/logs/${id}`);
   },
 
-  // --- Harvests ---
   getHarvests: async (cycleId: number, page = 0, size = 10) => {
     return axiosClient.get<unknown, { data: IPageResponse<IHarvest> }>(
       `${API_ENDPOINTS.SELLER.SUPPLY_CHAIN_CYCLES}/${cycleId}/harvests`,
@@ -148,7 +143,6 @@ export const materialSourceApi = {
     return axiosClient.delete(`/api/v1/seller/harvests/${id}`);
   },
 
-  // --- Material Lots ---
   getMaterialLots: async (page = 0, size = 10) => {
     return axiosClient.get<unknown, { data: IPageResponse<IMaterialLot> }>(
       API_ENDPOINTS.SELLER.SUPPLY_CHAIN_MATERIAL_LOTS,

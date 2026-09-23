@@ -5,8 +5,6 @@ import { ReorderImagesRequest } from '@/features/products/types/productTypes';
 
 type ApiError = { response?: { data?: { message?: string } } };
 
-// ─── Standalone Query Hook ────────────────────────────────────────────────────
-
 export const useSellerImagesQuery = (productId: number | null | undefined) => {
   return useQuery({
     queryKey: ['seller-images', productId],
@@ -15,8 +13,6 @@ export const useSellerImagesQuery = (productId: number | null | undefined) => {
     staleTime: 30 * 1000,
   });
 };
-
-// ─── Mutation Hook ────────────────────────────────────────────────────────────
 
 export const useSellerImageMutations = (productId: number) => {
   const queryClient = useQueryClient();

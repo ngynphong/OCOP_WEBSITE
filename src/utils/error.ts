@@ -8,7 +8,6 @@ export class AppError extends Error {
     this.statusCode = statusCode;
     this.data = data;
 
-    // Đảm bảo prototype chain chuẩn xác (cần thiết khi extends thiết kế built-in của TS)
     Object.setPrototypeOf(this, new.target.prototype);
 
     if (Error.captureStackTrace) {

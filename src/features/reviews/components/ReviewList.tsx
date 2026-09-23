@@ -49,7 +49,6 @@ export const ReviewList = ({ productSlug }: ReviewListProps) => {
     }
   }, []);
 
-  // Scroll to top when page changes
   useEffect(() => {
     if ((params.pageNo ?? 1) > 1) {
       scrollToTop();
@@ -87,7 +86,6 @@ export const ReviewList = ({ productSlug }: ReviewListProps) => {
         <>
           <ReviewSummary summary={data.summary} />
 
-          {/* Filters */}
           <div className="flex flex-wrap items-center gap-3 mb-8">
             <div className="flex items-center gap-2 mr-2 text-stone-400">
               <Filter size={16} />
@@ -134,7 +132,6 @@ export const ReviewList = ({ productSlug }: ReviewListProps) => {
             </button>
           </div>
 
-          {/* Review List */}
           <div className="space-y-2">
             {data.content.length > 0 ? (
               data.content.map((review) => (
@@ -149,7 +146,6 @@ export const ReviewList = ({ productSlug }: ReviewListProps) => {
             )}
           </div>
 
-          {/* Pagination */}
           {data.totalPages > 1 && (
             <div className="flex justify-center gap-2 mt-12">
               {Array.from({ length: data.totalPages }).map((_, idx) => (

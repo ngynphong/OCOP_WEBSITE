@@ -19,18 +19,15 @@ export interface PaginatedResponse<T> {
 }
 
 export const chatApi = {
-  // Buyer: Create or get a chat room with a shop
   createRoom: (shopId: number | string) =>
     axiosClient.post<never, ApiResponse<ChatRoom>>(buildRoute(API_ENDPOINTS.CHAT.ROOMS, shopId)),
 
-  // Buyer: Get list of chat rooms
   getRooms: (pageNo = 1, pageSize = 20) =>
     axiosClient.get<never, ApiResponse<PaginatedResponse<ChatRoom>>>(API_ENDPOINTS.CHAT.ROOMS, {
       params: { pageNo, pageSize },
       headers: { 'X-Silent-Loading': 'true' },
     }),
 
-  // Seller: Get list of chat rooms
   getSellerRooms: (pageNo = 1, pageSize = 20) =>
     axiosClient.get<never, ApiResponse<PaginatedResponse<ChatRoom>>>(
       API_ENDPOINTS.SELLER.CHAT_ROOMS,
@@ -40,7 +37,6 @@ export const chatApi = {
       },
     ),
 
-  // Get message history for a room
   getMessages: (roomId: number | string, pageNo = 1, pageSize = 30) =>
     axiosClient.get<never, ApiResponse<PaginatedResponse<ChatMessage>>>(
       buildRoute(API_ENDPOINTS.CHAT.ROOMS, roomId, 'messages'),
@@ -50,7 +46,6 @@ export const chatApi = {
       },
     ),
 
-  // Mark all messages in a room as read
   markAsRead: (roomId: number | string) =>
     axiosClient.patch<never, ApiResponse<string>>(
       buildRoute(API_ENDPOINTS.CHAT.ROOMS, roomId, 'read'),
@@ -59,7 +54,6 @@ export const chatApi = {
       },
     ),
 
-  // Upload attachment
   uploadAttachment: (roomId: number | string, file: File) => {
     const formData = new FormData();
     formData.append('file', file);

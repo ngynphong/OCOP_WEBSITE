@@ -7,7 +7,6 @@ import { useAppSelector } from '@/store/hooks';
 
 const onConnectListeners = new Set<(receipt?: unknown) => void>();
 
-// Singleton instance to persist connection across navigation
 let globalClient: Client | null = null;
 let isConnecting = false;
 
@@ -31,7 +30,6 @@ export function useWebSocket() {
 
       client.onConnect = (receipt) => {
         isConnecting = false;
-        // console.log('[useWebSocket] Connected successfully');
         notifyConnect(receipt);
       };
 

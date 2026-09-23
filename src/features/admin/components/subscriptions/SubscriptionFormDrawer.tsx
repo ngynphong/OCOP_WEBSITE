@@ -107,7 +107,6 @@ const SubscriptionFormDrawer = ({ isOpen, onClose, planId }: SubscriptionFormDra
     }
   }, [plan, reset, isOpen, planId]);
 
-  // Auto-generate slug
   useEffect(() => {
     if (!planId && watchedName) {
       const generatedSlug = slugify(watchedName);

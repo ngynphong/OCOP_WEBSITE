@@ -16,7 +16,6 @@ const UserLoyaltyAdminPage = async ({ params }: LoyaltyPageProps) => {
 
   return (
     <div className="space-y-8 pb-20 max-w-7xl mx-auto">
-      {/* Header & Back */}
       <div className="flex items-center gap-4">
         <Link
           href={`/admin/users/${id}`}

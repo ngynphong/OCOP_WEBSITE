@@ -24,16 +24,13 @@ export const useToggleShopFollowMutation = (shopId: number) => {
       }
     },
     onMutate: async (isCurrentlyFollowing: boolean) => {
-      // Hủy các query đang chạy để tránh ghi đè
       await queryClient.cancelQueries({ queryKey: ['shop-follow-status', shopId] });
 
-      // Lấy snapshot trạng thái trước đó
       const previousStatus = queryClient.getQueryData<ShopFollowStatusResponse>([
         'shop-follow-status',
         shopId,
       ]);
 
-      // Optimistic Update ngay lập tức trên UI
       queryClient.setQueryData<ShopFollowStatusResponse>(['shop-follow-status', shopId], (old) => {
         if (!old?.data) return old;
         const newCount = isCurrentlyFollowing
@@ -51,7 +48,6 @@ export const useToggleShopFollowMutation = (shopId: number) => {
       return { previousStatus };
     },
     onError: (err: unknown, isCurrentlyFollowing, context) => {
-      // Rollback lại dữ liệu cũ nếu API thất bại
       if (context?.previousStatus) {
         queryClient.setQueryData(['shop-follow-status', shopId], context.previousStatus);
       }

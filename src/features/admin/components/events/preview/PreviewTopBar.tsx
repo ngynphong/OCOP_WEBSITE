@@ -84,7 +84,6 @@ export function PreviewTopBar({
 
   return (
     <header className="sticky top-0 z-40 bg-slate-950/95 backdrop-blur-md border-b border-slate-800 px-4 sm:px-6 py-2.5 flex items-center justify-between gap-3 select-none">
-      {/* ── LEFT: Back Link, Event Title & Quick Links ────────────────────── */}
       <div className="flex items-center gap-3 shrink-0">
         <Link
           href="/admin/events"
@@ -107,7 +106,6 @@ export function PreviewTopBar({
           </span>
         </div>
 
-        {/* Quick link to Commerce tab */}
         <Link
           href={`/admin/events/${event.id}/commerce`}
           className="hidden xl:inline-flex items-center gap-1.5 text-xs font-medium text-slate-400 hover:text-emerald-300 px-2.5 py-1 rounded-lg hover:bg-slate-800 transition cursor-pointer"
@@ -118,9 +116,7 @@ export function PreviewTopBar({
         </Link>
       </div>
 
-      {/* ── CENTER: Device Switcher & Zoom Controls ───────────────────────── */}
       <div className="flex items-center gap-2 sm:gap-3">
-        {/* Device Switcher */}
         <div className="flex items-center bg-slate-900 p-1 rounded-xl border border-slate-800 shadow-inner">
           <button
             type="button"
@@ -163,7 +159,6 @@ export function PreviewTopBar({
           </button>
         </div>
 
-        {/* Zoom Controls */}
         <div className="hidden md:flex items-center bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs">
           {(['fit', 50, 75, 100, 125] as PreviewZoom[]).map((val) => (
             <button
@@ -181,7 +176,6 @@ export function PreviewTopBar({
           ))}
         </div>
 
-        {/* Fullscreen Button */}
         <button
           type="button"
           onClick={onToggleFullscreen}
@@ -191,7 +185,6 @@ export function PreviewTopBar({
           {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
         </button>
 
-        {/* Refresh button */}
         <button
           type="button"
           onClick={onRefresh}
@@ -203,9 +196,7 @@ export function PreviewTopBar({
         </button>
       </div>
 
-      {/* ── RIGHT: QA Pill, Publish Button, Simulator Toggle ─────────────── */}
       <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-        {/* QA Checklist Indicator Pill */}
         <button
           type="button"
           onClick={() => onOpenQATab('qa')}
@@ -231,7 +222,6 @@ export function PreviewTopBar({
           </span>
         </button>
 
-        {/* Open Public Landing Page in New Tab */}
         <a
           href={`/events/${event.slug || event.code}`}
           target="_blank"
@@ -243,7 +233,6 @@ export function PreviewTopBar({
           <ExternalLink className="w-3.5 h-3.5" />
         </a>
 
-        {/* Publish Action Button */}
         <Button
           type="button"
           variant="primary"
@@ -254,7 +243,6 @@ export function PreviewTopBar({
           Xuất bản
         </Button>
 
-        {/* Toggle Simulator Sidebar */}
         <button
           type="button"
           onClick={onToggleSidebar}

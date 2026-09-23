@@ -1,7 +1,5 @@
 import { z } from 'zod';
 
-// ─── Tạo sản phẩm ────────────────────────────────────────────────────────────
-
 export const createProductSchema = z.object({
   name: z.string().min(3, 'Tên sản phẩm phải có ít nhất 3 ký tự').max(255, 'Tên quá dài'),
   slug: z.string().optional(),
@@ -22,8 +20,6 @@ export const createProductSchema = z.object({
 });
 
 export type CreateProductFormData = z.infer<typeof createProductSchema>;
-
-// ─── Tạo biến thể ────────────────────────────────────────────────────────────
 
 export const createVariantSchema = z.object({
   sku: z.string().max(100).optional(),
@@ -54,8 +50,6 @@ export const createVariantSchema = z.object({
 });
 
 export type CreateVariantFormData = z.infer<typeof createVariantSchema>;
-
-// ─── Tạo bước nhật ký ────────────────────────────────────────────────────────
 
 const journalStepTypes = [
   'RAW_MATERIAL',

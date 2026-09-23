@@ -39,19 +39,16 @@ export const RefundRequestModal: React.FC<RefundRequestModalProps> = ({
   const [images, setImages] = useState<File[]>([]);
   const [refundType, setRefundType] = useState('FULL');
 
-  // Quản lý bộ nhớ Object URL cho ảnh preview
   const previewUrls = React.useMemo(() => {
     return images.map((file) => URL.createObjectURL(file));
   }, [images]);
 
-  // Clean up Object URLs
   React.useEffect(() => {
     return () => {
       previewUrls.forEach((url) => URL.revokeObjectURL(url));
     };
   }, [previewUrls]);
 
-  // Reset state khi modal đóng/mở
   React.useEffect(() => {
     if (isOpen) {
       setStep(1);
@@ -68,7 +65,7 @@ export const RefundRequestModal: React.FC<RefundRequestModalProps> = ({
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const newFiles = Array.from(e.target.files);
-      setImages((prev) => [...prev, ...newFiles].slice(0, 5)); // Giới hạn 5 ảnh
+      setImages((prev) => [...prev, ...newFiles].slice(0, 5));
     }
   };
 
@@ -98,7 +95,6 @@ export const RefundRequestModal: React.FC<RefundRequestModalProps> = ({
       maxWidth="max-w-2xl"
     >
       <div className="mb-8">
-        {/* Progress Steps */}
         <div className="flex items-center justify-between relative">
           <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-stone-100 rounded-full z-0"></div>
           <div
@@ -125,7 +121,6 @@ export const RefundRequestModal: React.FC<RefundRequestModalProps> = ({
       </div>
 
       <div className="min-h-[300px]">
-        {/* Step 1: Chọn lý do */}
         {step === 1 && (
           <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
             <h4 className="font-semibold text-stone-800 text-lg">Vì sao bạn muốn trả hàng?</h4>
@@ -229,7 +224,6 @@ export const RefundRequestModal: React.FC<RefundRequestModalProps> = ({
           </div>
         )}
 
-        {/* Step 2: Upload Bằng chứng */}
         {step === 2 && (
           <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
             <div>
@@ -290,7 +284,6 @@ export const RefundRequestModal: React.FC<RefundRequestModalProps> = ({
           </div>
         )}
 
-        {/* Step 3: Chọn phương án */}
         {step === 3 && (
           <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
             <div>
@@ -388,7 +381,7 @@ export const RefundRequestModal: React.FC<RefundRequestModalProps> = ({
             <ArrowLeft className="w-4 h-4 mr-2" /> Quay lại
           </Button>
         ) : (
-          <div /> // Placeholder
+          <div />
         )}
 
         {step < 3 ? (

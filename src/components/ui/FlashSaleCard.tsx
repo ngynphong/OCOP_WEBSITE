@@ -69,7 +69,6 @@ export function FlashSaleCard({
     }
   };
 
-  // Determine bar text and color based on sold percent
   const isAlmostSoldOut = soldPercent >= 80;
   const barText = isAlmostSoldOut ? 'Sắp hết hàng' : `Đã bán ${soldPercent}%`;
 
@@ -91,7 +90,6 @@ export function FlashSaleCard({
           className="object-cover group-hover:scale-105 transition-transform duration-500"
         />
 
-        {/* Badges Overlay */}
         <div className="absolute inset-x-0 top-0 p-1.5 flex justify-between items-start z-10">
           <div className="flex flex-col gap-1">
             <div className="bg-red-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-xs">

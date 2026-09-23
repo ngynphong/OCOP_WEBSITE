@@ -3,8 +3,6 @@ import { complaintApi } from '../api/complaintApi';
 import { ComplaintRequest, AdminUpdateComplaintRequest } from '../types/complaintTypes';
 import { toast } from 'react-hot-toast';
 
-// --- User Hooks ---
-
 export const useCreateComplaint = () => {
   const queryClient = useQueryClient();
 
@@ -31,8 +29,6 @@ export const useUserComplaintDetail = (id?: number) => {
     enabled: !!id,
   });
 };
-
-// --- Admin Hooks ---
 
 export const useAdminComplaints = (params: {
   pageNo?: number;

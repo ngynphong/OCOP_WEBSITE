@@ -59,7 +59,6 @@ function SellerProductDetailContent() {
   const product = data?.data;
 
   React.useEffect(() => {
-    // Fire event to re-evaluate tour guide based on current active tab
     setTimeout(() => {
       window.dispatchEvent(new Event('trigger-onboarding-tour-auto'));
     }, 300);
@@ -110,7 +109,6 @@ function SellerProductDetailContent() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-3">
           <button
@@ -152,7 +150,6 @@ function SellerProductDetailContent() {
         </div>
       </div>
 
-      {/* Rejection note */}
       {product.status === 'REJECTED' && product.rejectionNote && (
         <div className="bg-red-50 border border-red-100 rounded-xl p-4">
           <p className="text-xs font-black text-red-500 uppercase tracking-widest mb-1">
@@ -162,7 +159,6 @@ function SellerProductDetailContent() {
         </div>
       )}
 
-      {/* Submit error warning */}
       {submitError && (
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
           <div className="p-0.5 text-amber-600 shrink-0">
@@ -177,7 +173,6 @@ function SellerProductDetailContent() {
 
       <ProductSetupProgress product={product} onNavigateTab={setActiveTab} />
 
-      {/* Tabs */}
       <div className="flex gap-1 p-1 bg-stone-100/50 rounded-xl w-fit border border-stone-100">
         {TABS.map((tab) => (
           <button
@@ -210,7 +205,6 @@ function SellerProductDetailContent() {
         ))}
       </div>
 
-      {/* Tab content */}
       <div>
         {activeTab === 'info' && <InfoTab productId={productId} onNextTab={setActiveTab} />}
         {activeTab === 'variants' && <VariantsTab productId={productId} onNextTab={setActiveTab} />}

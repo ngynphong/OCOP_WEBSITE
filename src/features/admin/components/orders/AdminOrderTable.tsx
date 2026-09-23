@@ -39,7 +39,6 @@ export const AdminOrderTable = ({
 }: AdminOrderTableProps) => {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-stone-100 overflow-hidden mt-8">
-      {/* Filters */}
       <AdminOrderFilterBar
         totalElement={totalElement}
         params={params}
@@ -47,7 +46,6 @@ export const AdminOrderTable = ({
         statusMap={statusMap}
       />
 
-      {/* Table */}
       <div className="overflow-x-auto">
         <table className="w-full text-left">
           <thead>
@@ -139,7 +137,6 @@ export const AdminOrderTable = ({
         </table>
       </div>
 
-      {/* Pagination */}
       <div className="px-8 py-5 border-t border-stone-50 bg-stone-50/30 flex items-center justify-between">
         <Pagination
           currentPage={params.pageNo || 1}

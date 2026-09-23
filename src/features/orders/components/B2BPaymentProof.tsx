@@ -85,7 +85,6 @@ export function B2BPaymentProof({ order, isUploading, onUpload }: B2BPaymentProo
             );
           }
 
-          // Khi đã thanh toán đầy đủ (PAID)
           return (
             order.paymentProofUrl && (
               <div className="relative aspect-video w-full rounded-xl overflow-hidden border border-white/20">

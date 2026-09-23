@@ -42,7 +42,6 @@ export default function CreateMaterialLotModal({ isOpen, onClose }: Props) {
           </div>
         )}
 
-        {/* THÔNG TIN CƠ BẢN */}
         <div>
           <h3 className="text-sm font-semibold text-stone-900 uppercase tracking-wider mb-4 pb-2 border-b border-stone-100 flex items-center gap-2">
             <FiBox className="text-emerald-600" /> Thông tin cơ bản
@@ -105,7 +104,6 @@ export default function CreateMaterialLotModal({ isOpen, onClose }: Props) {
           </div>
         </div>
 
-        {/* NGUỒN GỐC NGUYÊN LIỆU */}
         <div>
           <h3 className="text-sm font-semibold text-stone-900 uppercase tracking-wider mb-4 pb-2 border-b border-stone-100 flex items-center gap-2">
             <FiMapPin className="text-emerald-600" /> Nguồn gốc nguyên liệu
@@ -267,7 +265,6 @@ export default function CreateMaterialLotModal({ isOpen, onClose }: Props) {
           </div>
         </div>
 
-        {/* THỜI GIAN */}
         <div>
           <h3 className="text-sm font-semibold text-stone-900 uppercase tracking-wider mb-4 pb-2 border-b border-stone-100 flex items-center gap-2">
             <FiCalendar className="text-emerald-600" /> Thời gian

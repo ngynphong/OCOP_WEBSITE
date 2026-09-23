@@ -3,8 +3,6 @@ import { supportTicketApi } from '../api/supportTicketApi';
 import { TicketRequest, ReplyRequest, TicketStatus } from '../types/supportTicketTypes';
 import { toast } from 'react-hot-toast';
 
-// ─── Consumer Hooks ──────────────────────────────────────────────────────────
-
 export const useMyTickets = (params: { pageNo?: number; pageSize?: number; status?: string }) => {
   return useQuery({
     queryKey: ['my-tickets', params],
@@ -17,7 +15,7 @@ export const useTicketDetail = (id?: number) => {
     queryKey: ['ticket', id],
     queryFn: () => (id ? supportTicketApi.getTicketById(id) : null),
     enabled: !!id,
-    refetchInterval: 10000, // Tự động cập nhật mỗi 10s khi đang xem chi tiết (Polling đơn giản)
+    refetchInterval: 10000,
   });
 };
 
@@ -58,8 +56,6 @@ export const useCloseTicket = () => {
     },
   });
 };
-
-// ─── Admin Hooks ─────────────────────────────────────────────────────────────
 
 export const useAdminTickets = (params: {
   pageNo?: number;

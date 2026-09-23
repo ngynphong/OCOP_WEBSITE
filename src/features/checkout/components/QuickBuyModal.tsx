@@ -58,7 +58,6 @@ export function QuickBuyModal({
   const [redeemInfo, setRedeemInfo] = useState({ points: 0, discount: 0 });
   const [appliedVoucher, setAppliedVoucher] = useState<VoucherValidateResponse | null>(null);
 
-  // Set default address when addresses are loaded
   React.useEffect(() => {
     if (addresses && addresses.length > 0 && !selectedAddress) {
       const defaultAddr = addresses.find((a) => a.isDefault) || addresses[0];
@@ -66,14 +65,12 @@ export function QuickBuyModal({
     }
   }, [addresses, selectedAddress]);
 
-  // Set default payment method when methods are loaded
   React.useEffect(() => {
     if (paymentMethods && paymentMethods.length > 0 && !selectedPayment) {
       setSelectedPayment(paymentMethods[0].code);
     }
   }, [paymentMethods, selectedPayment]);
 
-  // Calculate shipping fee exactly like in CheckoutPage
   React.useEffect(() => {
     const calculateFee = async () => {
       if (!selectedAddress || !selectedShipping || !product.shop.id) {
@@ -189,7 +186,6 @@ export function QuickBuyModal({
   return (
     <AnimatePresence>
       <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-        {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -198,14 +194,12 @@ export function QuickBuyModal({
           className="absolute inset-0 bg-stone-900/60 backdrop-blur-sm"
         />
 
-        {/* Modal Content */}
         <motion.div
           initial={{ scale: 0.9, opacity: 0, y: 20 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.9, opacity: 0, y: 20 }}
           className="relative w-full max-w-4xl max-h-[90vh] bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col md:flex-row"
         >
-          {/* Close Button */}
           <button
             onClick={onClose}
             className="absolute top-6 right-6 z-20 p-2 bg-stone-100 hover:bg-stone-200 rounded-full text-stone-500 transition-colors"
@@ -213,7 +207,6 @@ export function QuickBuyModal({
             <X size={20} />
           </button>
 
-          {/* Left Side: Summary & Product */}
           <div className="w-full md:w-1/3 bg-stone-50 p-8 border-r border-stone-100 overflow-y-auto custom-scrollbar">
             <div className="relative aspect-square w-full rounded-xl overflow-hidden border border-stone-200 shadow-sm mb-6 bg-white">
               <Image
@@ -298,7 +291,6 @@ export function QuickBuyModal({
             </div>
           </div>
 
-          {/* Right Side: Selectors */}
           <div className="flex-1 p-8 overflow-y-auto custom-scrollbar">
             <div className="space-y-6">
               <AddressSelector selectedId={selectedAddress?.id} onSelect={setSelectedAddress} />

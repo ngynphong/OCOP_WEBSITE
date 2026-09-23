@@ -22,8 +22,6 @@ import { cn } from '@/lib/utils';
 import { Eye } from 'lucide-react';
 import { Pagination } from '@/components/ui/Pagination';
 
-// ─── Status config ────────────────────────────────────────────────────────────
-
 const STATUS_LABELS: Record<ProductStatus, string> = {
   DRAFT: 'Nháp',
   PENDING_REVIEW: 'Chờ duyệt',
@@ -39,8 +37,6 @@ const STATUS_COLORS: Record<ProductStatus, string> = {
   REJECTED: 'bg-red-50 text-red-500 border border-red-200',
   DISCONTINUED: 'bg-stone-100 text-stone-400',
 };
-
-// ─── Page ─────────────────────────────────────────────────────────────────────
 
 function SellerProductsContent() {
   const router = useRouter();
@@ -91,7 +87,6 @@ function SellerProductsContent() {
 
   const isSelected = (id: number) => selectedProducts.some((p) => p.id === id);
 
-  // Handle openCreate & productId from query params
   useEffect(() => {
     if (!openCreateParam && !productIdParam) return;
 
@@ -145,7 +140,6 @@ function SellerProductsContent() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <p className="text-xs text-stone-400 mt-1">{total} sản phẩm</p>
@@ -160,7 +154,6 @@ function SellerProductsContent() {
         </Button>
       </div>
 
-      {/* Filter tabs */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex flex-wrap gap-2">
           <button
@@ -221,7 +214,6 @@ function SellerProductsContent() {
         )}
       </div>
 
-      {/* Loading */}
       {isPending && (
         <div className="space-y-3 animate-pulse">
           {Array.from({ length: 5 }).map((_, i) => (
@@ -230,14 +222,12 @@ function SellerProductsContent() {
         </div>
       )}
 
-      {/* Error */}
       {isError && (
         <div className="flex items-center justify-center h-40 bg-red-50 rounded-xl border border-red-100">
           <p className="text-red-500 text-sm font-semibold">Không tải được danh sách sản phẩm</p>
         </div>
       )}
 
-      {/* Tab Content */}
       {activeTab === 'FLASH_SALE' ? (
         <FlashSaleManagementTab
           role="SELLER"
@@ -275,7 +265,6 @@ function SellerProductsContent() {
                         : 'border-stone-100 hover:border-emerald-200',
                     )}
                   >
-                    {/* Selection Checkbox */}
                     <div className="absolute left-3 top-3 z-10">
                       <input
                         type="checkbox"
@@ -285,7 +274,6 @@ function SellerProductsContent() {
                       />
                     </div>
 
-                    {/* Thumbnail */}
                     <div className="relative w-full sm:w-24 sm:h-24 aspect-square sm:aspect-auto rounded-xl bg-stone-50 overflow-hidden shrink-0 border border-stone-100">
                       {product?.thumbnailUrl ? (
                         <Image
@@ -304,7 +292,6 @@ function SellerProductsContent() {
                       )}
                     </div>
 
-                    {/* Info */}
                     <div className="flex-1 min-w-0 w-full">
                       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
                         <div className="min-w-0">
@@ -332,7 +319,6 @@ function SellerProductsContent() {
                             )}
                           </div>
                         </div>
-                        {/* Status */}
                         <div className="flex flex-col sm:items-end gap-1 shrink-0">
                           <span
                             className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold whitespace-nowrap border ${STATUS_COLORS[product.status]}`}
@@ -369,13 +355,11 @@ function SellerProductsContent() {
 
                       <div className="flex flex-col sm:flex-row sm:items-end justify-between mt-4 gap-4">
                         <div>
-                          {/* Pricing */}
                           <div className="font-black text-emerald-600 text-lg">
                             {product.minPrice === product.maxPrice
                               ? `${product.minPrice?.toLocaleString('vi-VN')} đ`
                               : `${product.minPrice?.toLocaleString('vi-VN')} đ - ${product.maxPrice?.toLocaleString('vi-VN')} đ`}
                           </div>
-                          {/* Stats */}
                           <div className="flex items-center gap-3 mt-1.5 text-xs text-stone-500 font-medium">
                             <span className="flex items-center gap-1" title="Đánh giá trung bình">
                               <span className="text-amber-500">
@@ -403,9 +387,7 @@ function SellerProductsContent() {
                           </div>
                         </div>
 
-                        {/* Actions */}
                         <div className="flex items-center gap-1.5 shrink-0 bg-stone-50 p-1.5 rounded-xl border border-stone-100">
-                          {/* Flash Sale Action */}
                           {product.status === 'APPROVED' && (
                             <button
                               onClick={() => {
@@ -506,14 +488,12 @@ function SellerProductsContent() {
         </div>
       )}
 
-      {/* Flash Sale Registration Drawer */}
       <FlashSaleFormDrawer
         isOpen={isFlashSaleDrawerOpen}
         onClose={handleCloseFlashSaleDrawer}
         products={selectedProducts}
       />
 
-      {/* Delete confirmation modal */}
       <ConfirmModal
         isOpen={confirmDelete !== null}
         title="Xóa sản phẩm này?"
@@ -530,7 +510,6 @@ function SellerProductsContent() {
         onCancel={() => setConfirmDelete(null)}
       />
 
-      {/* Render AI Chat Widget for the selected product */}
       {activeChatProductId && (
         <AiChatWidget
           productId={activeChatProductId}

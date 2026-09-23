@@ -15,7 +15,7 @@ export function useAdminEventAnalyticsQuery(eventId: number | null | undefined) 
     },
     enabled: Boolean(eventId && Number.isInteger(eventId) && eventId > 0),
     staleTime: 30 * 1000,
-    refetchInterval: 60 * 1000, // Poll every minute for active events
+    refetchInterval: 60 * 1000,
   });
 }
 

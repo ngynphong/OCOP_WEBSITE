@@ -22,16 +22,13 @@ export function AuthLayout({
 }: AuthLayoutProps) {
   return (
     <div className="h-screen overflow-hidden w-full flex flex-col md:flex-row font-sans">
-      {/* Left Section - Content & Branding */}
       <div className="w-full md:w-1/2 sm:flex hidden flex-col items-center justify-between p-6 lg:p-8 xl:p-12 relative overflow-y-auto md:overflow-hidden">
-        {/* Top Header Placeholder to push content roughly to center-top */}
         <div className="hidden md:block h-8"></div>
         <button className="absolute top-6 left-6">
           <Link href="/">
             <Image src="/images/logo.png" alt="Logo" width={150} height={150} />
           </Link>
         </button>
-        {/* Main Branding Text */}
         <div className="w-full flex flex-col items-center text-center mt-8 md:mt-0 xl:mt-12 z-10 shrink-0">
           <p className="text-xs font-bold text-amber-500 tracking-widest uppercase mb-4">
             Nền tảng TMĐT OCOP
@@ -41,7 +38,6 @@ export function AuthLayout({
             <br /> VÀ ĐẶC SẢN
             <br />
             VIỆT NAM.
-            {/* Green overlapping circles accent (matching the image) */}
             <span className="inline-flex relative ml-2 top-2">
               <span className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-green-900 absolute -left-8 mix-blend-multiply opacity-90"></span>
               <span className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-green-700 absolute -left-4 mix-blend-multiply opacity-90"></span>
@@ -49,7 +45,6 @@ export function AuthLayout({
             </span>
           </h1>
 
-          {/* Toggle Link (Login <-> Register) */}
           <div className="mt-8 sm:mt-12 flex flex-col items-center">
             <p className="text-stone-400 text-sm font-medium mb-2">{subtitle}</p>
             <Link
@@ -61,7 +56,6 @@ export function AuthLayout({
           </div>
         </div>
 
-        {/* Bottom Left Dark Card */}
         <div className="mt-8 md:mt-auto shrink-0 relative rounded-xl overflow-hidden bg-green-950 h-32 md:h-40 xl:h-48 shadow-2xl group w-full lg:max-w-xl mx-auto md:mx-0">
           <Image
             src="/images/left-side-login.jpg"
@@ -85,9 +79,7 @@ export function AuthLayout({
         </div>
       </div>
 
-      {/* Right Section - Form & Hero Background */}
       <div className="w-full md:w-1/2 relative bg-green-950 min-h-[600px] md:min-h-0 h-full flex flex-col items-center justify-center p-6 lg:p-12 overflow-y-auto overflow-x-hidden shadow-[-10px_0_30px_rgba(0,0,0,0.1)]">
-        {/* Background Image corresponding to the right side */}
         <Image
           src="/images/login-component.jpg"
           alt="Fresh produce background"
@@ -97,10 +89,8 @@ export function AuthLayout({
           priority
         />
 
-        {/* Subtle overlay gradient */}
         <div className="absolute inset-0 bg-linear-to-b from-green-950/60 via-black/20 to-green-950/80 pointer-events-none" />
 
-        {/* Top Titles inside right panel */}
         <div className="absolute top-12 left-0 w-full text-center z-10 flex flex-col items-center">
           <p className="text-white text-sm font-bold tracking-[0.2em] uppercase">
             {rightPanelLine1}
@@ -110,7 +100,6 @@ export function AuthLayout({
           </p>
         </div>
 
-        {/* The Form Component */}
         {children}
       </div>
     </div>

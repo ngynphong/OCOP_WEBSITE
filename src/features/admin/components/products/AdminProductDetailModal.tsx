@@ -1,6 +1,5 @@
 import React from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { adminProductApi } from '@/features/products/api/adminProductApi';
+import { useAdminProductDetailQuery } from '@/features/products/hooks/useAdminProducts';
 import { Modal } from '@/components/ui/Modal';
 import { formatCurrencyVND } from '@/utils/format';
 import { FiCheck, FiX, FiPackage, FiMapPin, FiBox, FiTag } from 'react-icons/fi';
@@ -23,15 +22,7 @@ export const AdminProductDetailModal = ({
   onOpenReject,
   isApproving,
 }: AdminProductDetailModalProps) => {
-  const {
-    data: res,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ['admin_product_detail', productId],
-    queryFn: () => adminProductApi.getProduct(productId!),
-    enabled: !!productId && isOpen,
-  });
+  const { data: res, isLoading, isError } = useAdminProductDetailQuery(productId, isOpen);
 
   const product = res?.data;
 
@@ -55,7 +46,6 @@ export const AdminProductDetailModal = ({
         {!isLoading && product && (
           <>
             <div className="flex flex-col md:flex-row gap-6">
-              {/* Product Images */}
               <div className="w-full md:w-1/3">
                 <div className="relative aspect-square rounded-xl overflow-hidden bg-stone-100 border border-stone-200">
                   {product.images && product.images.length > 0 ? (
@@ -90,7 +80,6 @@ export const AdminProductDetailModal = ({
                 </div>
               </div>
 
-              {/* Product Info */}
               <div className="flex-1 space-y-4">
                 <div>
                   <h3 className="text-xl font-bold text-stone-900">{product.name}</h3>
@@ -142,7 +131,6 @@ export const AdminProductDetailModal = ({
               </div>
             </div>
 
-            {/* Variants Preview */}
             {product.variants && product.variants.length > 0 && (
               <div className="mt-4 border-t border-stone-100 pt-4">
                 <h4 className="font-semibold text-stone-900 mb-3 text-sm">Danh sách Phân loại</h4>
@@ -165,7 +153,6 @@ export const AdminProductDetailModal = ({
               </div>
             )}
 
-            {/* Journals Preview */}
             {product.journals && product.journals.length > 0 && (
               <div className="mt-4 border-t border-stone-100 pt-4">
                 <h4 className="font-semibold text-stone-900 mb-3 text-sm">Nhật ký sản xuất</h4>
@@ -215,7 +202,6 @@ export const AdminProductDetailModal = ({
               </div>
             )}
 
-            {/* Action Buttons */}
             {product.status === 'PENDING_REVIEW' && (
               <div className="flex justify-end gap-3 pt-6 border-t border-stone-100 mt-6">
                 <button

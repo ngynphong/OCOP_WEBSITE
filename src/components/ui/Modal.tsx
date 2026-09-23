@@ -43,21 +43,18 @@ export const Modal = ({
 
   const modalContent = (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center overflow-x-hidden overflow-y-auto px-4 outline-none focus:outline-none">
-      {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* Modal Dialog */}
       <div
         className={cn(
           'relative z-[10000] w-full bg-white rounded-xl shadow-2xl transform transition-all animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]',
           maxWidth,
         )}
       >
-        {/* Header */}
         <div className="px-6 py-4 border-b border-stone-100 flex items-center justify-between shrink-0">
           <h3 className="text-xl font-black text-stone-900 tracking-tight">{title}</h3>
           {showClose && (
@@ -71,7 +68,6 @@ export const Modal = ({
           )}
         </div>
 
-        {/* Content */}
         <div className="p-6 overflow-y-auto">{children}</div>
       </div>
     </div>

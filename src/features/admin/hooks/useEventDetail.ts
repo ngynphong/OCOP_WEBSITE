@@ -17,7 +17,7 @@ export function useAdminEventDetailQuery(eventId: number | null | undefined) {
       return eventApi.getAdminEventById(eventId);
     },
     enabled: Boolean(eventId && Number.isInteger(eventId) && eventId > 0),
-    staleTime: 60 * 1000, // Cache for 1 minute
+    staleTime: 60 * 1000,
   });
 }
 

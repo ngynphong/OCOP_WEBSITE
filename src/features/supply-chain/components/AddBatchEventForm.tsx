@@ -195,7 +195,6 @@ export const AddBatchEventForm = ({
           setAiWarning(null);
         }
       } catch (_err) {
-        // Bỏ qua lỗi kết nối AI khi gõ
       } finally {
         setIsAiChecking(false);
       }
@@ -260,7 +259,6 @@ export const AddBatchEventForm = ({
   }
 
   const onSubmit = (data: FormValues) => {
-    // 1. Kiểm tra trường bắt buộc theo template
     for (const f of stepDynamicFields) {
       if (f.required) {
         const entry = effectiveDynamicFieldValues[f.key];
@@ -333,9 +331,7 @@ export const AddBatchEventForm = ({
       onClose();
     };
 
-    const handleError = (_error: unknown) => {
-      // The toast.error is handled by mutation hook
-    };
+    const handleError = (_error: unknown) => {};
 
     if (activeTab === 'FARMING' && sourceCycleId) {
       createLogMutation.mutate(

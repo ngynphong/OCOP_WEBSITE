@@ -46,7 +46,6 @@ export const SellerBankAccountCard: React.FC<Props> = ({ bankAccount, isLoading 
     );
   }
 
-  // Mask account number: e.g. ******1234
   const accNum = bankAccount.accountNumber;
   const maskedAcc =
     accNum.length > 4 ? `${'*'.repeat(Math.max(0, accNum.length - 4))}${accNum.slice(-4)}` : accNum;

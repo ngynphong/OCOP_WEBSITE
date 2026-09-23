@@ -130,7 +130,6 @@ export function EventCommerceManagement({ event }: EventCommerceManagementProps)
           </div>
         </div>
 
-        {/* Navigation Tabs */}
         <div className="flex items-center gap-2 overflow-x-auto border-t border-gray-100 bg-gray-50/70 px-4 sm:px-6">
           <button
             type="button"
@@ -182,10 +181,8 @@ export function EventCommerceManagement({ event }: EventCommerceManagementProps)
             </div>
           ) : (
             <>
-              {/* TAB 1: COLLECTIONS */}
               {activeTab === 'collections' && (
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-[320px_minmax(0,1fr)]">
-                  {/* Left Column: List & Add Collection */}
                   <div className="space-y-4">
                     <div className="p-4 rounded-xl bg-gray-50 border border-gray-200 shadow-2xs">
                       <h4 className="text-xs font-bold uppercase tracking-wider text-gray-700 mb-3">
@@ -221,7 +218,6 @@ export function EventCommerceManagement({ event }: EventCommerceManagementProps)
                       </form>
                     </div>
 
-                    {/* Collection List items */}
                     <div className="space-y-2">
                       <h4 className="text-xs font-bold uppercase tracking-wider text-gray-600">
                         Danh sách bộ sưu tập ({collections.length})
@@ -263,7 +259,6 @@ export function EventCommerceManagement({ event }: EventCommerceManagementProps)
                     </div>
                   </div>
 
-                  {/* Right 2 Columns: Products in Selected Collection */}
                   <div className="min-w-0 space-y-4">
                     {currentCollection ? (
                       <div className="p-4 rounded-xl bg-white border border-gray-200 shadow-2xs">
@@ -290,7 +285,6 @@ export function EventCommerceManagement({ event }: EventCommerceManagementProps)
                           </Button>
                         </div>
 
-                        {/* Product list */}
                         {currentCollection.products.length === 0 ? (
                           <div className="py-12 text-center text-gray-400">
                             <Package className="w-10 h-10 mx-auto mb-2 text-gray-300" />
@@ -404,13 +398,10 @@ export function EventCommerceManagement({ event }: EventCommerceManagementProps)
                 </div>
               )}
 
-              {/* TAB 2: FLASH SALES */}
               {activeTab === 'flashSales' && <EventFlashSaleManagement event={event} />}
 
-              {/* TAB 3: VOUCHERS */}
               {activeTab === 'vouchers' && (
                 <div className="space-y-6">
-                  {/* Link Form */}
                   <form
                     onSubmit={handleLinkVoucher}
                     className="p-4 rounded-xl bg-gray-50 border border-gray-200 flex flex-col sm:flex-row sm:items-end gap-3 shadow-2xs"
@@ -468,7 +459,6 @@ export function EventCommerceManagement({ event }: EventCommerceManagementProps)
                     </Button>
                   </form>
 
-                  {/* Vouchers list */}
                   <div className="space-y-3">
                     <div className="flex items-center justify-between gap-2">
                       <h4 className="text-xs font-bold uppercase tracking-wider text-gray-600">

@@ -53,7 +53,6 @@ export interface BankInfo {
   accountName: string;
 }
 
-// Zod Schemas for Validation
 export const createWithdrawalSchema = z.object({
   amount: z
     .number({ message: 'Vui lòng nhập số tiền hợp lệ' })

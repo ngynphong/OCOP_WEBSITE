@@ -23,7 +23,6 @@ export function ShopVouchersSection({ shopSlug }: ShopVouchersSectionProps) {
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const [copiedCode, setCopiedCode] = React.useState<string | null>(null);
 
-  // Fetch saved vouchers to check user saved status
   const { data: savedResp } = useSavedVouchers(1, 50, isAuthenticated);
 
   const vouchers = vouchersResp?.data || [];
@@ -105,7 +104,6 @@ export function ShopVouchersSection({ shopSlug }: ShopVouchersSectionProps) {
               whileHover={{ y: -3 }}
               className="relative flex bg-white border border-red-100 rounded-xl sm:rounded-2xl overflow-hidden shadow-xs hover:shadow-lg hover:shadow-red-900/5 transition-all group min-h-[110px] sm:min-h-[120px] min-w-[260px] sm:min-w-[300px] md:min-w-0 snap-start shrink-0 md:shrink"
             >
-              {/* Left Stub */}
               <div className="w-20 sm:w-24 bg-linear-to-br from-red-500 to-rose-600 flex flex-col items-center justify-center border-r border-dashed border-white/40 relative shrink-0 p-2 text-center text-white">
                 <div className="absolute top-0 right-0 w-3 h-3 sm:w-3.5 sm:h-3.5 bg-rose-50/60 rounded-full translate-x-1/2 -translate-y-1/2" />
                 <div className="absolute bottom-0 right-0 w-3 h-3 sm:w-3.5 sm:h-3.5 bg-rose-50/60 rounded-full translate-x-1/2 translate-y-1/2" />
@@ -126,7 +124,6 @@ export function ShopVouchersSection({ shopSlug }: ShopVouchersSectionProps) {
                 </span>
               </div>
 
-              {/* Right Content */}
               <div className="flex-1 p-2.5 sm:p-3.5 flex flex-col justify-between overflow-hidden">
                 <div className="space-y-1">
                   <div className="flex items-center justify-between gap-1">

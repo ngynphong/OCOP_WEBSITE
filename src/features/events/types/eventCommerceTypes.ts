@@ -11,7 +11,7 @@ export interface EventProductSummary {
   ratingAvg: number;
   ratingCount: number;
   soldCount: number;
-  ocopStar?: number; // 3, 4, 5
+  ocopStar?: number;
   provinceName?: string;
   shopId?: number;
   shopName?: string;

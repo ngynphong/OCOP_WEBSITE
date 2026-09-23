@@ -6,6 +6,6 @@ export const useAuditLogsQuery = (params: GetAuditLogsParams) => {
   return useQuery({
     queryKey: ['admin-audit-logs', params],
     queryFn: () => adminApi.getAuditLogs(params),
-    staleTime: 30 * 1000, // 30 seconds
+    staleTime: 30 * 1000,
   });
 };

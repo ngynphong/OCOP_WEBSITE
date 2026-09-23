@@ -149,7 +149,6 @@ export const PolicyFormModal = ({
                   {errors.slug && (
                     <p className="text-[10px] font-bold text-red-500 mt-1">{errors.slug.message}</p>
                   )}
-                  {/* Hidden field cho title */}
                   <input type="hidden" {...register('title')} />
                 </div>
 
@@ -207,7 +206,7 @@ export const PolicyFormModal = ({
                   render={({ field }) => (
                     <div className="flex flex-wrap gap-4 mt-1">
                       {ROLES.map((role) => {
-                        if (role.value === '') return null; // Skip "Tất cả" in checkboxes, we'll infer it if empty
+                        if (role.value === '') return null;
                         const isChecked = field.value.includes(role.value);
                         return (
                           <label

@@ -48,12 +48,10 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
 
   const { isAuthenticated } = useAppSelector((state) => state.auth);
 
-  // Wishlist
   const addToWishlist = useAddToWishlist();
   const removeFromWishlist = useRemoveFromWishlist();
   const isWishlistLoading = addToWishlist.isPending || removeFromWishlist.isPending;
 
-  // Cart
   const { mutate: addToCart, isPending: isAddingToCart } = useAddToCart();
 
   const handleWishlistClick = () => {
@@ -97,7 +95,6 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
   return (
     <>
       <div className="flex flex-col gap-5 lg:sticky lg:top-24">
-        {/* 1. Header Identity & Trust Area */}
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-1.5">
             <span className="text-emerald-700 font-bold uppercase tracking-wider text-[11px]">
@@ -124,7 +121,6 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
             </div>
           </div>
 
-          {/* Unified Trust Bar: OCOP Star + Rating + Sold + Origin */}
           <div className="flex flex-wrap items-center gap-y-2 gap-x-3 pt-0.5">
             <OcopBadge stars={product.ocopStar} />
 
@@ -150,9 +146,7 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
           </div>
         </div>
 
-        {/* 2. Primary Buy Box */}
         <div className="bg-white p-5 md:p-6 rounded-2xl border border-stone-200/90 flex flex-col gap-5 shadow-xs">
-          {/* Price Area */}
           <div className="flex flex-col gap-1 pb-4 border-b border-stone-100">
             <div className="flex items-baseline gap-3 flex-wrap">
               <span className="text-3xl md:text-4xl font-black text-emerald-700 tracking-tight">
@@ -179,7 +173,6 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
             </div>
           </div>
 
-          {/* Variants Selector (FIRST) */}
           {product.variants.length > 1 && (
             <div className="flex flex-col gap-2.5">
               <div className="flex justify-between items-center text-xs">
@@ -238,7 +231,6 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
             </div>
           )}
 
-          {/* Quick Specs Highlight (Linked to selected variant) */}
           <div className="grid grid-cols-2 gap-2 p-3 bg-stone-50/80 rounded-xl border border-stone-100 text-xs">
             <div className="flex items-center gap-2 min-w-0">
               <Package className="w-4 h-4 text-emerald-600 shrink-0" />
@@ -256,7 +248,6 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
             </div>
           </div>
 
-          {/* Wholesale Prices Table (SECOND - Underneath Variant Selector) */}
           {selectedVariant?.isWholesaleEnabled &&
             selectedVariant.wholesalePrices &&
             selectedVariant.wholesalePrices.length > 0 && (
@@ -290,7 +281,6 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
               </div>
             )}
 
-          {/* Purchase Actions (Desktop) */}
           <div className="hidden md:flex flex-col gap-3">
             {product.commercialStatus === 'AWAITING_LOT' ? (
               <div className="flex flex-col gap-3 p-4 bg-amber-50/70 border border-amber-200/80 rounded-2xl">
@@ -353,9 +343,7 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
               </div>
             ) : (
               <>
-                {/* Quantity + Add to Cart + Buy Now row */}
                 <div className="flex items-center gap-3">
-                  {/* Quantity Selector */}
                   <div className="flex items-center border border-stone-200 rounded-xl h-12 bg-white shrink-0 overflow-hidden shadow-xs">
                     <button
                       type="button"
@@ -387,7 +375,6 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
                     </button>
                   </div>
 
-                  {/* Thêm vào giỏ */}
                   <Button
                     variant="outline"
                     size="lg"
@@ -405,7 +392,6 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
                     {isAddingToCart ? 'Đang thêm...' : 'Thêm vào giỏ'}
                   </Button>
 
-                  {/* Mua ngay */}
                   <Button
                     variant="primary"
                     size="lg"
@@ -424,7 +410,6 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
                   </Button>
                 </div>
 
-                {/* RFQ Action */}
                 <Button
                   variant="outline"
                   size="md"
@@ -444,7 +429,6 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
             )}
           </div>
 
-          {/* Quality Commitments */}
           <div className="grid grid-cols-3 gap-2 pt-3 border-t border-stone-100 text-center">
             <div className="flex flex-col items-center gap-1">
               <Award className="w-4 h-4 text-amber-600" />
@@ -466,7 +450,6 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
           </div>
         </div>
 
-        {/* 3. Shop Info Overlay */}
         <Link
           href={product.shop?.slug ? `/cua-hang/${product.shop.slug}` : '#'}
           aria-label={`Xem cửa hàng ${product.shop?.name || 'Chủ thể'}`}

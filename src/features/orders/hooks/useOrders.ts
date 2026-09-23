@@ -43,7 +43,7 @@ export const useOrders = (params: IOrderListReq, isB2B = false) => {
   return useQuery({
     queryKey: [...orderKeys.list(params), isB2B],
     queryFn: () => (isB2B ? orderApi.getB2BOrders(params) : orderApi.getOrders(params)),
-    staleTime: 1000 * 60 * 2, // 2 minutes
+    staleTime: 1000 * 60 * 2,
   });
 };
 

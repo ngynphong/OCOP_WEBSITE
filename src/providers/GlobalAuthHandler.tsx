@@ -9,7 +9,6 @@ export function GlobalAuthHandler() {
 
   useEffect(() => {
     const unsubscribe = authEmitter.subscribe(() => {
-      // Use Next.js soft navigation instead of window.location.href
       router.push('/dang-nhap');
     });
 

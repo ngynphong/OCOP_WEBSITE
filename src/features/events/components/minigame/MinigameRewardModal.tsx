@@ -42,27 +42,22 @@ export function MinigameRewardModal({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
-      {/* Backdrop */}
       <div
         className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity animate-in fade-in"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* Modal Dialog with Max Height Guard for Mobile */}
       <div className="relative w-full max-w-md max-h-[92vh] flex flex-col bg-white rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden z-10 border border-slate-100 animate-in zoom-in-95 duration-200">
-        {/* Header Ribbon / Banner */}
         <div
           className="relative px-4 pt-6 pb-7 sm:px-6 sm:pt-8 sm:pb-10 text-center text-white overflow-hidden shrink-0"
           style={{
             background: `linear-gradient(135deg, ${reward.themeColor} 0%, #0F172A 140%)`,
           }}
         >
-          {/* Subtle decoration circles */}
           <div className="absolute -top-12 -right-12 w-36 h-36 rounded-full bg-white/10 blur-xl pointer-events-none" />
           <div className="absolute -bottom-8 -left-8 w-28 h-28 rounded-full bg-white/10 blur-lg pointer-events-none" />
 
-          {/* Close button */}
           <button
             type="button"
             onClick={onClose}
@@ -72,7 +67,6 @@ export function MinigameRewardModal({
             <X className="w-4 h-4" />
           </button>
 
-          {/* Icon Badge */}
           <div className="w-14 h-14 sm:w-20 sm:h-20 mx-auto rounded-2xl sm:rounded-3xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-xl mb-2 sm:mb-3 animate-bounce duration-1000">
             {reward.type === 'VOUCHER' ? (
               <Ticket className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
@@ -94,9 +88,7 @@ export function MinigameRewardModal({
           </h3>
         </div>
 
-        {/* Reward Details Body */}
         <div className="p-4 sm:p-7 space-y-3.5 sm:space-y-5 text-center overflow-y-auto flex-1">
-          {/* Voucher Box */}
           {reward.voucherCode && (
             <div className="p-3 sm:p-4 rounded-2xl bg-amber-50/60 border border-amber-200/80 space-y-2">
               <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-amber-800 block">
@@ -120,7 +112,6 @@ export function MinigameRewardModal({
             </div>
           )}
 
-          {/* Loyalty Points info */}
           {reward.type === 'POINTS' && (
             <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-1">
               <p className="text-sm font-bold text-emerald-800">
@@ -133,7 +124,6 @@ export function MinigameRewardModal({
             </div>
           )}
 
-          {/* Wish info */}
           {reward.type === 'WISH' && (
             <div className="p-4 rounded-2xl bg-purple-50 border border-purple-200 space-y-1">
               <p className="text-sm font-bold text-purple-900">
@@ -145,7 +135,6 @@ export function MinigameRewardModal({
             </div>
           )}
 
-          {/* Commercial Condition Notice */}
           <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/60 text-[11px] text-slate-500 text-left flex items-start gap-2">
             <Sparkles className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
             <span>
@@ -155,7 +144,6 @@ export function MinigameRewardModal({
             </span>
           </div>
 
-          {/* Actions */}
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-2.5">
             {spinsLeft > 0 && onPlayAgain ? (
               <Button

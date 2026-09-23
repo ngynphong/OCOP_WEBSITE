@@ -61,7 +61,6 @@ export interface VoucherValidateResponse {
   applicableCategoryIds: number[] | null;
 }
 
-// Zod Schema cho Form Validation (Dành cho Seller tạo voucher)
 export const voucherSchema = z
   .object({
     code: z

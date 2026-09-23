@@ -25,7 +25,7 @@ export const useChatHistory = (roomId: number | string | undefined) => {
     queryKey: CHAT_QUERY_KEYS.messages(roomId || ''),
     queryFn: () => chatApi.getMessages(roomId!),
     enabled: !!roomId,
-    staleTime: 0, // Keep it fresh for real-time
+    staleTime: 0,
   });
 };
 

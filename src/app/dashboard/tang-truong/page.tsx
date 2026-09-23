@@ -49,7 +49,6 @@ export default function GrowthCenterPage() {
 
   return (
     <div className="p-4 sm:p-6 md:p-8 space-y-6 md:space-y-8 min-h-screen bg-stone-50/40">
-      {/* 1. Header with Refresh */}
       <div className="space-y-4">
         <div className="flex justify-end">
           <button
@@ -71,10 +70,8 @@ export default function GrowthCenterPage() {
         />
       </div>
 
-      {/* 2. Top-level KPI Cards */}
       <GrowthKpiCards kpis={overviewData?.kpis} isLoading={isOverviewLoading} />
 
-      {/* 3. Growth Score & Seller Wallet in 2 columns */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <GrowthScoreCard
           score={overviewData?.kpis?.growthScore}
@@ -84,7 +81,6 @@ export default function GrowthCenterPage() {
         <SellerWalletSummaryCard wallet={overviewData?.wallet} isLoading={isOverviewLoading} />
       </div>
 
-      {/* 4. Today's Recommended Actions (Top Priority) */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div>
@@ -107,7 +103,6 @@ export default function GrowthCenterPage() {
         />
       </div>
 
-      {/* 5. All Active Growth Opportunities */}
       <div className="space-y-3">
         <div>
           <h2 className="text-base font-bold text-gray-900">Kho cơ hội tăng trưởng</h2>
@@ -124,10 +119,8 @@ export default function GrowthCenterPage() {
         />
       </div>
 
-      {/* 6. Product Growth & Health Section */}
       <ProductGrowthSection products={productData ?? []} isLoading={isProductsLoading} />
 
-      {/* 7. 1-Click Action Modal */}
       <GrowthQuickActionModal
         isOpen={!!actionOpportunity}
         opportunity={actionOpportunity}
