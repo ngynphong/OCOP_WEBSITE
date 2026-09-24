@@ -1,6 +1,6 @@
 type Listener = (isLoading: boolean, message: string) => void;
 
-class LoadingEmitter {
+export class LoadingEmitter {
   private activeRequests = 0;
   private listeners: Listener[] = [];
   private timeoutId: NodeJS.Timeout | null = null;
@@ -29,6 +29,16 @@ class LoadingEmitter {
     } else {
       this.notify(true, this.currentMessage);
     }
+  }
+
+  reset() {
+    this.activeRequests = 0;
+    this.listeners = [];
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+      this.timeoutId = null;
+    }
+    this.currentMessage = 'Đang xử lý...';
   }
 
   private notify(isLoading: boolean, message?: string) {

@@ -18,6 +18,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { LoyaltyCheckoutRedeem } from '@/features/loyalty/components/LoyaltyCheckoutRedeem';
 import { VoucherCheckoutInput } from '@/features/vouchers/components/VoucherCheckoutInput';
 import type { VoucherValidateResponse } from '@/features/vouchers/types';
+import { calculateCheckoutPricing } from '@/features/checkout/utils/checkoutPricing';
 import { Button } from '@/components/ui/AppButton';
 
 interface QuickBuyModalProps {
@@ -119,22 +120,20 @@ export function QuickBuyModal({
   const oldPrice = selectedVariant.comparePrice || product.maxPrice;
   const subtotal = price * qty;
 
-  const voucherDiscount = React.useMemo(() => {
-    if (!appliedVoucher || !appliedVoucher.valid) return 0;
-    let disc = 0;
-    if (appliedVoucher.type === 'PERCENT') {
-      disc = (subtotal * appliedVoucher.discountValue) / 100;
-      if (appliedVoucher.maxDiscount && appliedVoucher.maxDiscount > 0) {
-        disc = Math.min(disc, appliedVoucher.maxDiscount);
-      }
-    } else {
-      disc = appliedVoucher.discountValue;
-    }
-    return Math.min(disc, subtotal);
-  }, [appliedVoucher, subtotal]);
+  const pricing = React.useMemo(
+    () =>
+      calculateCheckoutPricing({
+        subtotal,
+        shippingFee,
+        voucher: appliedVoucher,
+        redeemDiscount: isUsePoints ? redeemInfo.discount : 0,
+      }),
+    [subtotal, shippingFee, appliedVoucher, isUsePoints, redeemInfo.discount],
+  );
 
-  const totalDiscount = (isUsePoints ? redeemInfo.discount : 0) + voucherDiscount;
-  const total = Math.max(0, subtotal + shippingFee - totalDiscount);
+  const voucherDiscount = pricing.voucherDiscount;
+  const totalDiscount = pricing.totalDiscount;
+  const total = pricing.total;
 
   const handleBuy = () => {
     if (!selectedAddress) {

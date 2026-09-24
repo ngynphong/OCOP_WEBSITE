@@ -19,6 +19,7 @@ import {
 } from '@/features/products/types/productTypes';
 import { StandardProcessWorkflow } from '@/features/supply-chain/components/StandardProcessWorkflow';
 import { ISupplyChainLot } from '@/features/supply-chain/types/supplyChainTypes';
+import { parseGs1DigitalLink } from '@/features/supply-chain/utils/gs1Parser';
 
 import {
   getCodeStatus,
@@ -41,7 +42,7 @@ function TraceContent({ code }: { code: string }) {
   const serial = searchParams.get('serial');
 
   const isLotCode = code.startsWith('LOT-');
-  const isGs1Code = code.startsWith('01-') && code.includes('-10-');
+  const isGs1Code = parseGs1DigitalLink(code).isGs1;
 
   const { data: traceData, isLoading: isTraceLoading } = useTraceDetailQuery(
     isLotCode ? undefined : code,

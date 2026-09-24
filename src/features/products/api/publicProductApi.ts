@@ -1,6 +1,7 @@
 import { publicAxiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
 import { buildRoute } from '@/lib/routeBuilder';
+import { parseGs1DigitalLink } from '@/features/supply-chain/utils/gs1Parser';
 
 import {
   PublicProductListParams,
@@ -73,11 +74,9 @@ export const publicProductApi = {
   },
 
   traceQrDetail: (qrCode: string): Promise<TraceDetailResponse> => {
-    if (qrCode.startsWith('01-') && qrCode.includes('-10-')) {
-      const parts = qrCode.split('-');
-      const gtin = parts[1];
-      const lotCode = parts.slice(3).join('-');
-      return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.TRACE}/01/${gtin}/10/${lotCode}`);
+    const parsedGs1 = parseGs1DigitalLink(qrCode);
+    if (parsedGs1.isGs1 && parsedGs1.endpointPath) {
+      return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.TRACE}${parsedGs1.endpointPath}`);
     }
     return publicAxiosClient.get(buildRoute(API_ENDPOINTS.PUBLIC.TRACE, qrCode));
   },

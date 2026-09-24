@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/AppButton';
 
 import { VoucherCheckoutInput } from '@/features/vouchers/components/VoucherCheckoutInput';
 import type { VoucherValidateResponse } from '@/features/vouchers/types';
+import { calculateCheckoutPricing } from '@/features/checkout/utils/checkoutPricing';
 
 interface CheckoutSummaryProps {
   subtotal: number;
@@ -33,25 +34,19 @@ export const CheckoutSummary = memo(function CheckoutSummary({
   affiliateCode,
   onAffiliateCodeChange,
 }: CheckoutSummaryProps) {
-  const discount = useMemo(() => {
-    if (!appliedVoucher || !appliedVoucher.valid) return 0;
-
-    let disc = 0;
-    if (appliedVoucher.type === 'PERCENT') {
-      disc = (subtotal * appliedVoucher.discountValue) / 100;
-      if (appliedVoucher.maxDiscount && appliedVoucher.maxDiscount > 0) {
-        disc = Math.min(disc, appliedVoucher.maxDiscount);
-      }
-    } else {
-      disc = appliedVoucher.discountValue;
-    }
-    return Math.min(disc, subtotal);
-  }, [appliedVoucher, subtotal]);
-
-  const total = useMemo(
-    () => subtotal + shippingFee - discount - redeemDiscount,
-    [subtotal, shippingFee, discount, redeemDiscount],
+  const pricing = useMemo(
+    () =>
+      calculateCheckoutPricing({
+        subtotal,
+        shippingFee,
+        voucher: appliedVoucher,
+        redeemDiscount,
+      }),
+    [subtotal, shippingFee, appliedVoucher, redeemDiscount],
   );
+
+  const discount = pricing.voucherDiscount;
+  const total = pricing.total;
 
   return (
     <div className="bg-white rounded-xl p-8 border border-stone-100 shadow-xl shadow-stone-200/50 sticky top-28">
