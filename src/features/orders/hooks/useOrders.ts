@@ -118,7 +118,10 @@ export const useConfirmReceived = () => {
   return useMutation({
     mutationFn: (orderCode: string) => orderApi.confirmReceived(orderCode),
     onSuccess: (res, variables) => {
-      toast.success('Đã xác nhận lấy hàng thành công');
+      const msg =
+        (res as { data?: { message?: string } })?.data?.message ||
+        'Đã xác nhận nhận hàng thành công';
+      toast.success(msg);
       queryClient.invalidateQueries({ queryKey: orderKeys.detail(variables) });
       queryClient.invalidateQueries({ queryKey: orderKeys.lists() });
     },

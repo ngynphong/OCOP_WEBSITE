@@ -101,6 +101,30 @@ export const useRejectOrderMutation = () => {
   });
 };
 
+export const useConfirmPaymentMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      orderCode,
+      data,
+    }: {
+      orderCode: string;
+      data?: { note?: string; delivered?: boolean };
+    }) => sellerOrderApi.confirmPayment(orderCode, data),
+    onSuccess: (_, variables) => {
+      toast.success('Xác nhận đã nhận tiền COD thành công');
+      queryClient.invalidateQueries({ queryKey: sellerOrderKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: sellerOrderKeys.detail(variables.orderCode) });
+    },
+    onError: (error: unknown) => {
+      toast.error(
+        (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+          'Có lỗi khi xác nhận nhận tiền COD',
+      );
+    },
+  });
+};
+
 export const useConfirmB2BPaymentMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({

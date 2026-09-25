@@ -92,7 +92,7 @@ export const OrderActionButtons: React.FC<OrderActionButtonsProps> = ({
     });
   };
 
-  const showConfirmReceive = orderStatus === 'DELIVERED';
+  const showConfirmReceive = orderStatus === 'DELIVERED' || orderStatus === 'SHIPPED';
 
   return (
     <div className="flex flex-wrap items-center justify-end gap-3">

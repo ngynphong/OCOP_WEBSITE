@@ -66,8 +66,18 @@ export const SellerOrderCard: React.FC<SellerOrderCardProps> = ({ order }) => {
 
           <div className="mt-3 flex flex-col sm:flex-row justify-between sm:items-end gap-3 sm:gap-0">
             <div>
-              <p className="text-[10px] md:text-xs font-bold px-2 py-1 bg-stone-100 text-stone-600 rounded-lg uppercase inline-block whitespace-nowrap">
-                {order.paymentStatus === 'PAID' ? 'Đã thanh toán' : 'Thanh toán COD'}
+              <p
+                className={`text-[10px] md:text-xs font-bold px-2.5 py-1 rounded-lg uppercase inline-block whitespace-nowrap ${
+                  order.paymentStatus === 'PAID'
+                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                    : 'bg-amber-50 text-amber-700 border border-amber-200'
+                }`}
+              >
+                {order.paymentStatus === 'PAID'
+                  ? 'Đã thanh toán'
+                  : order.paymentMethod === 'COD'
+                    ? 'COD • Chưa thu tiền'
+                    : 'Chưa thanh toán'}
               </p>
             </div>
             <div className="text-left sm:text-right flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto">

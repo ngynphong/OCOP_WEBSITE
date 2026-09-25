@@ -1,5 +1,6 @@
 export interface IRecentOrder {
   orderId: string;
+  orderName?: string;
   shopName?: string;
   customerName?: string;
   totalAmount: number;

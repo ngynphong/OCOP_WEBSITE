@@ -42,6 +42,13 @@ export const sellerOrderApi = {
     );
   },
 
+  confirmPayment: async (orderCode: string, data?: { note?: string; delivered?: boolean }) => {
+    return axiosClient.post<unknown, { data: unknown }>(
+      buildRoute(API_ENDPOINTS.SELLER.ORDERS, orderCode, 'confirm-payment'),
+      data || {},
+    );
+  },
+
   getRevenue: async (params: IRevenueReq) => {
     return axiosClient.get<unknown, { data: IRevenueRes }>(API_ENDPOINTS.SELLER.ORDERS_REVENUE, {
       params,

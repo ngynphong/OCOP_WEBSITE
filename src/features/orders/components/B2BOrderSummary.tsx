@@ -110,13 +110,27 @@ export function B2BOrderSummary({ order, isB2B, itemCount, children }: B2BOrderS
           </div>
         )}
 
-        <div className="pt-2">
+        <div className="pt-2 space-y-2">
           <div className="bg-stone-900/40 rounded-xl p-3 md:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1.5 sm:gap-0 backdrop-blur-sm">
             <span className="text-[10px] md:text-xs text-white/80 font-bold uppercase">
               Phương thức thanh toán
             </span>
             <span className="text-sm md:text-xs font-black">
               {order.paymentMethod || 'Tiền mặt (COD)'}
+            </span>
+          </div>
+          <div className="bg-stone-900/40 rounded-xl p-3 md:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1.5 sm:gap-0 backdrop-blur-sm">
+            <span className="text-[10px] md:text-xs text-white/80 font-bold uppercase">
+              Trạng thái thanh toán
+            </span>
+            <span
+              className={`text-xs font-black px-2.5 py-0.5 rounded-md uppercase tracking-wider ${
+                order.paymentStatus === 'PAID'
+                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-400/30'
+                  : 'bg-amber-500/20 text-amber-300 border border-amber-400/30'
+              }`}
+            >
+              {order.paymentStatus === 'PAID' ? 'Đã thanh toán' : 'Chưa thanh toán'}
             </span>
           </div>
         </div>

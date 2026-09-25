@@ -10,6 +10,7 @@ import {
   useSellerOrderDetailsQuery,
   useConfirmOrderMutation,
   useRejectOrderMutation,
+  useConfirmPaymentMutation,
   useConfirmB2BPaymentMutation,
   useUpdateB2BOrderStatusMutation,
   useUpdateB2BShippingInfoMutation,
@@ -83,12 +84,20 @@ function SellerOrderDetailsContent({ params }: PageProps) {
 
   const { mutate: confirmOrder, isPending: isConfirming } = useConfirmOrderMutation();
   const { mutate: rejectOrder, isPending: isRejecting } = useRejectOrderMutation();
+  const { mutate: confirmPayment, isPending: isConfirmingPayment } = useConfirmPaymentMutation();
   const { mutate: updateTracking, isPending: isUpdatingTracking } = useUpdateTrackingMutation();
   const { mutate: confirmB2BPayment, isPending: isConfirmingB2B } = useConfirmB2BPaymentMutation();
   const { mutate: updateB2BStatus, isPending: isUpdatingB2BStatus } =
     useUpdateB2BOrderStatusMutation();
   const { mutate: updateB2BShipping, isPending: isUpdatingB2BShipping } =
     useUpdateB2BShippingInfoMutation();
+
+  const handleConfirmPayment = (paymentData?: { note?: string; delivered?: boolean }) => {
+    confirmPayment({
+      orderCode,
+      data: paymentData,
+    });
+  };
 
   const handleConfirmB2BPayment = (type: 'DEPOSIT' | 'FINAL') => {
     confirmB2BPayment({
@@ -401,9 +410,11 @@ function SellerOrderDetailsContent({ params }: PageProps) {
             isUpdatingB2BStatus={isUpdatingB2BStatus}
             isConfirming={isConfirming}
             isRejecting={isRejecting}
+            isConfirmingPayment={isConfirmingPayment}
             onUpdateB2BStatus={handleUpdateB2BStatus}
             onOpenConfirmModal={() => setConfirmModalOpen(true)}
             onOpenRejectModal={() => setRejectModalOpen(true)}
+            onConfirmPayment={handleConfirmPayment}
           />
 
           <div className="bg-white rounded-xl p-6 border border-stone-100 shadow-sm">

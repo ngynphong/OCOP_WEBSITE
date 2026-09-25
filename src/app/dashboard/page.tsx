@@ -405,17 +405,32 @@ const DashboardPage = () => {
             <div className="bg-white border border-stone-100 rounded-xl overflow-hidden shadow-sm">
               <div className="divide-y divide-stone-100">
                 {recentOrders.slice(0, 4).map((order) => (
-                  <div
+                  <Link
                     key={order.orderId}
-                    className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-stone-50 transition-colors"
+                    href={
+                      isSellerMode
+                        ? `/dashboard/cua-hang/don-hang/${order.orderId}`
+                        : `/dashboard/don-hang/${order.orderId}`
+                    }
+                    className="group p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-emerald-50/50 transition-all cursor-pointer"
                   >
-                    <div className="flex items-start sm:items-center gap-3">
-                      <div className="w-10 h-10 bg-green-50 text-green-600 rounded-xl flex items-center justify-center shrink-0">
+                    <div className="flex items-start sm:items-center gap-3 min-w-0 flex-1">
+                      <div className="w-10 h-10 bg-green-50 text-green-600 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-105 group-hover:bg-green-100 transition-all">
                         <FiShoppingBag size={18} />
                       </div>
-                      <div>
-                        <p className="text-sm font-bold text-stone-800">{order.orderId}</p>
-                        <p className="text-xs text-stone-500">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-bold text-stone-800 group-hover:text-emerald-700 transition-colors truncate">
+                          {order.orderId}
+                        </p>
+                        {order.orderName && (
+                          <p
+                            className="text-xs font-semibold text-stone-700 line-clamp-1"
+                            title={order.orderName}
+                          >
+                            {order.orderName}
+                          </p>
+                        )}
+                        <p className="text-xs text-stone-500 truncate">
                           {isSellerMode ? order.customerName : order.shopName}
                         </p>
                       </div>
@@ -426,7 +441,7 @@ const DashboardPage = () => {
                       </p>
                       <OrderStatusBadge status={order.status} />
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>
