@@ -5,6 +5,8 @@ import {
   CreateProductRequest,
   UpdateProductRequest,
   ProductListParams,
+  ProductCertificationRequest,
+  ProductDetailResponse,
 } from '@/features/products/types/productTypes';
 
 type ApiError = { response?: { data?: { message?: string } } };
@@ -123,6 +125,30 @@ export const useSellerProductMutations = () => {
     },
   });
 
+  const submitCertificationMutation = useMutation({
+    mutationFn: ({
+      id,
+      data,
+      file,
+    }: {
+      id: number;
+      data: ProductCertificationRequest;
+      file?: File;
+    }) => sellerProductApi.submitCertification(id, data, file),
+    onSuccess: (response, { id }) => {
+      toast.success('Nộp giấy chứng nhận OCOP thành công! Đang chờ kiểm duyệt.');
+      queryClient.setQueryData<ProductDetailResponse>(['seller-product', id], response);
+      invalidateProducts();
+      invalidateProduct(id);
+      queryClient.invalidateQueries({
+        queryKey: ['seller-product-certification-eligibility', id],
+      });
+    },
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data?.message || 'Có lỗi khi nộp giấy chứng nhận OCOP');
+    },
+  });
+
   return {
     createProduct: createProductMutation.mutateAsync,
     isCreating: createProductMutation.isPending,
@@ -138,5 +164,7 @@ export const useSellerProductMutations = () => {
     isDuplicating: duplicateProductMutation.isPending,
     discontinueProduct: discontinueProductMutation.mutateAsync,
     isDiscontinuing: discontinueProductMutation.isPending,
+    submitCertification: submitCertificationMutation.mutateAsync,
+    isSubmittingCertification: submitCertificationMutation.isPending,
   };
 };

@@ -34,6 +34,7 @@ export const useAdminProductMutations = () => {
 
   const invalidate = (id?: number) => {
     queryClient.invalidateQueries({ queryKey: queryKeys.adminProducts.all });
+    queryClient.invalidateQueries({ queryKey: ['adminDashboard'] });
     if (id) queryClient.invalidateQueries({ queryKey: queryKeys.adminProducts.detail(id) });
   };
 
@@ -130,6 +131,29 @@ export const useAdminProductMutations = () => {
     },
   });
 
+  const approveCertificationMutation = useMutation({
+    mutationFn: (id: number) => adminProductApi.approveCertification(id),
+    onSuccess: (_, id) => {
+      toast.success('Duyệt Giấy chứng nhận OCOP thành công!');
+      invalidate(id);
+    },
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data?.message || 'Có lỗi khi duyệt Giấy chứng nhận');
+    },
+  });
+
+  const rejectCertificationMutation = useMutation({
+    mutationFn: ({ id, reason }: { id: number; reason: string }) =>
+      adminProductApi.rejectCertification(id, reason),
+    onSuccess: (_, { id }) => {
+      toast.success('Đã từ chối Giấy chứng nhận OCOP');
+      invalidate(id);
+    },
+    onError: (error: ApiError) => {
+      toast.error(error?.response?.data?.message || 'Có lỗi khi từ chối Giấy chứng nhận');
+    },
+  });
+
   return {
     approveProduct: approveProductMutation.mutateAsync,
     isApproving: approveProductMutation.isPending,
@@ -147,5 +171,9 @@ export const useAdminProductMutations = () => {
     isUpdatingCategory: updateCategoryMutation.isPending,
     syncAllToAi: syncAllToAiMutation.mutateAsync,
     isSyncingToAi: syncAllToAiMutation.isPending,
+    approveCertification: approveCertificationMutation.mutateAsync,
+    isApprovingCertification: approveCertificationMutation.isPending,
+    rejectCertification: rejectCertificationMutation.mutateAsync,
+    isRejectingCertification: rejectCertificationMutation.isPending,
   };
 };

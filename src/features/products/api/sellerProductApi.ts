@@ -25,6 +25,8 @@ import {
   QrCodeResponse,
   ResponseBase,
   WholesalePrice,
+  ProductCertificationRequest,
+  ProductCertificationEligibility,
 } from '@/features/products/types/productTypes';
 
 export const sellerProductApi = {
@@ -280,5 +282,38 @@ export const sellerProductApi = {
     return axiosClient.delete(buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'tier-prices'), {
       params: { variantId },
     });
+  },
+
+  submitCertification: (
+    productId: number,
+    data: ProductCertificationRequest,
+    file?: File,
+  ): Promise<ProductDetailResponse> => {
+    const formData = new FormData();
+    formData.append('certNumber', data.certNumber);
+    formData.append('ocopStar', data.ocopStar.toString());
+    if (data.issuedTo) formData.append('issuedTo', data.issuedTo);
+    formData.append('issuedAt', data.issuedAt);
+    formData.append('expiredAt', data.expiredAt);
+    formData.append('issuedBy', data.issuedBy);
+    if (data.provinceId) formData.append('provinceId', data.provinceId.toString());
+    if (data.documentUrl) formData.append('documentUrl', data.documentUrl);
+    if (file) formData.append('file', file);
+
+    return axiosClient.post(
+      buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'certification'),
+      formData,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      },
+    );
+  },
+
+  getCertificationEligibility: (
+    productId: number,
+  ): Promise<ResponseBase<ProductCertificationEligibility>> => {
+    return axiosClient.get(
+      buildRoute(API_ENDPOINTS.SELLER.PRODUCTS, productId, 'certification', 'eligibility'),
+    );
   },
 };

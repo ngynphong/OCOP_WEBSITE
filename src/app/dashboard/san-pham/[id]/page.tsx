@@ -9,6 +9,7 @@ import {
 } from '@/features/products/hooks/useSellerProducts';
 import { Button } from '@/components/ui/AppButton';
 import { ProductStatusBadge } from '@/features/products/components/ProductStatusBadge';
+import { ProductOcopStatusBadge } from '@/features/products/components/ProductOcopStatusBadge';
 import { InfoTab } from '@/features/products/components/ProductDetail/InfoTab';
 import { VariantsTab } from '@/features/products/components/ProductDetail/VariantsTab';
 import { ImagesTab } from '@/features/products/components/ProductDetail/ImagesTab';
@@ -118,9 +119,10 @@ function SellerProductDetailContent() {
             <FiArrowLeft size={18} />
           </button>
           <div className="flex flex-col">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5 flex-wrap">
               <h2 className="text-xl font-black text-stone-900 leading-none">{product.name}</h2>
               <ProductStatusBadge status={product.status} />
+              <ProductOcopStatusBadge product={product} onClick={() => setActiveTab('info')} />
             </div>
             <p className="text-xs text-stone-400 mt-1">{product.category?.name}</p>
           </div>

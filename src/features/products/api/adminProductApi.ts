@@ -59,4 +59,17 @@ export const adminProductApi = {
   syncAllToAi: (): Promise<{ message?: string }> => {
     return axiosClient.post(`${API_ENDPOINTS.ADMIN.PRODUCTS}/sync-ai`);
   },
+
+  approveCertification: (id: number): Promise<ProductDetailResponse> => {
+    return axiosClient.post(
+      buildRoute(API_ENDPOINTS.ADMIN.PRODUCTS, id, 'certification', 'approve'),
+    );
+  },
+
+  rejectCertification: (id: number, reason: string): Promise<ProductDetailResponse> => {
+    return axiosClient.post(
+      buildRoute(API_ENDPOINTS.ADMIN.PRODUCTS, id, 'certification', 'reject'),
+      { reason },
+    );
+  },
 };

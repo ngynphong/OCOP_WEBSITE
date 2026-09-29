@@ -8,6 +8,7 @@ export const useAdminDashboard = (params: IAdminDashboardParams) => {
     queryFn: () => dashboardApi.getAdminDashboard(params),
     placeholderData: (previousData) => previousData,
     staleTime: 5 * 60 * 1000,
+    refetchInterval: 60 * 1000,
     retry: 1,
   });
 };

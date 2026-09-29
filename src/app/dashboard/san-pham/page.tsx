@@ -4,7 +4,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { FiPlus, FiTrash2, FiSend, FiCopy, FiSlash } from 'react-icons/fi';
+import { FiPlus, FiTrash2, FiSend, FiCopy, FiSlash, FiAward } from 'react-icons/fi';
 import { RiStarFill } from 'react-icons/ri';
 import {
   useSellerProductsQuery,
@@ -17,6 +17,7 @@ import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { FlashSaleManagementTab } from '@/features/flash-sale/components/FlashSaleManagementTab';
 import { FlashSaleFormDrawer } from '@/features/flash-sale/components/FlashSaleFormDrawer';
 import { AiChatWidget } from '@/features/products/components/ProductDetail/AiChatWidget';
+import { ProductOcopStatusBadge } from '@/features/products/components/ProductOcopStatusBadge';
 import { FiZap } from 'react-icons/fi';
 import { cn } from '@/lib/utils';
 import { Eye } from 'lucide-react';
@@ -307,11 +308,7 @@ function SellerProductsContent() {
                                 {categoryName}
                               </span>
                             )}
-                            {product.ocopStar > 0 && (
-                              <span className="font-bold text-amber-500 bg-amber-50 px-2 py-0.5 rounded-full flex items-center gap-0.5">
-                                {'★'.repeat(product.ocopStar)}
-                              </span>
-                            )}
+                            <ProductOcopStatusBadge product={product} />
                             {extendedProduct.provinceName && (
                               <span className="text-stone-500">
                                 • {extendedProduct.provinceName}
@@ -407,6 +404,24 @@ function SellerProductsContent() {
                             className="p-2 rounded-lg text-stone-400 hover:bg-white hover:shadow-sm hover:text-emerald-600 transition cursor-pointer"
                           >
                             <Eye size={16} />
+                          </button>
+
+                          <button
+                            onClick={() =>
+                              router.push(`/dashboard/san-pham/${product.id}?tab=info`)
+                            }
+                            title={
+                              product.certification?.status === 'ACTIVE'
+                                ? 'Xem chứng nhận OCOP'
+                                : 'Bổ sung / Cập nhật chứng nhận OCOP'
+                            }
+                            className={`p-2 rounded-lg transition cursor-pointer ${
+                              product.certification?.status === 'ACTIVE'
+                                ? 'text-amber-500 hover:bg-amber-50'
+                                : 'text-stone-400 hover:bg-white hover:shadow-sm hover:text-amber-600'
+                            }`}
+                          >
+                            <FiAward size={16} />
                           </button>
 
                           {(product.status === 'DRAFT' || product.status === 'REJECTED') && (

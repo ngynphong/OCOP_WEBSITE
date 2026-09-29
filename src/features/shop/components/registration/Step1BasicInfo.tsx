@@ -38,7 +38,7 @@ const Step1BasicInfo: React.FC<Step1BasicInfoProps> = memo(
         <FormField label="Slug (URL định danh)" error={errors.slug?.message} required>
           <div className="relative">
             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 text-sm select-none">
-              ocop.vn/shop/
+              ocop.iesconnect.vn/shop/
             </span>
             <input
               {...register('slug')}

@@ -5,6 +5,7 @@ import React from 'react';
 import {
   FiAlertTriangle,
   FiArrowUpRight,
+  FiAward,
   FiBox,
   FiCreditCard,
   FiHelpCircle,
@@ -58,6 +59,20 @@ export const AdminActionQueue = ({ actionRequired }: AdminActionQueueProps) => {
       icon: FiBox,
       tone: 'border-sky-200 bg-sky-50/70 hover:border-sky-300',
       iconTone: 'bg-sky-100 text-sky-700',
+    },
+    {
+      label: 'Chứng nhận OCOP chờ duyệt',
+      description: 'Hồ sơ chứng nhận cần xác minh',
+      count: actionRequired.pendingCertifications ?? 0,
+      href: '/admin/products?view=certifications',
+      permissions: [
+        PERMISSIONS.PRODUCT_VIEW,
+        PERMISSIONS.PRODUCT_MANAGE,
+        PERMISSIONS.PRODUCT_APPROVE,
+      ],
+      icon: FiAward,
+      tone: 'border-violet-200 bg-violet-50/70 hover:border-violet-300',
+      iconTone: 'bg-violet-100 text-violet-700',
     },
     {
       label: 'Hoàn tiền chờ duyệt',
@@ -133,7 +148,7 @@ export const AdminActionQueue = ({ actionRequired }: AdminActionQueueProps) => {
           <Link
             key={item.label}
             href={item.href}
-            className={`group rounded-2xl border p-4 transition-all hover:-translate-y-0.5 hover:shadow-md ${item.tone}`}
+            className={`group rounded-2xl border p-4 transition-all hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 ${item.tone}`}
           >
             <div className="flex items-start justify-between gap-3">
               <span

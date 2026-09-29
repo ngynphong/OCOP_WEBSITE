@@ -22,6 +22,7 @@ interface AdminProductTableRowProps {
   onHide: (id: number) => void;
   onOpenCategory: (product: Product) => void;
   onOpenDetail: (id: number) => void;
+  certificationReviewMode?: boolean;
 }
 
 export const AdminProductTableRow = memo(function AdminProductTableRow({
@@ -39,6 +40,7 @@ export const AdminProductTableRow = memo(function AdminProductTableRow({
   onHide,
   onOpenCategory,
   onOpenDetail,
+  certificationReviewMode = false,
 }: AdminProductTableRowProps) {
   return (
     <tr className="hover:bg-stone-50/50 transition-colors">
@@ -77,6 +79,13 @@ export const AdminProductTableRow = memo(function AdminProductTableRow({
               {product.ocopStar > 0 && (
                 <span className="text-[11px] font-bold text-amber-500 bg-amber-50 px-2 py-0.5 rounded-full flex items-center gap-0.5">
                   {'★'.repeat(product.ocopStar)} {product.ocopStar} sao
+                </span>
+              )}
+              {(product.certificationStatus === 'PENDING_APPROVAL' ||
+                product.certification?.status === 'PENDING_APPROVAL') && (
+                <span className="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full flex items-center gap-1 border border-amber-200">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                  OCOP Chờ duyệt
                 </span>
               )}
             </div>
@@ -208,10 +217,15 @@ export const AdminProductTableRow = memo(function AdminProductTableRow({
           )}
           <button
             onClick={() => onOpenDetail(product.id)}
-            title="Xem chi tiết"
-            className="p-1.5 rounded-lg bg-stone-50 text-stone-600 hover:bg-stone-100 transition cursor-pointer flex items-center justify-center"
+            title={certificationReviewMode ? 'Mở hồ sơ chứng nhận để duyệt' : 'Xem chi tiết'}
+            className={`rounded-lg transition cursor-pointer flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 ${
+              certificationReviewMode
+                ? 'px-3 py-2 bg-violet-600 text-white hover:bg-violet-700 font-bold whitespace-nowrap'
+                : 'p-1.5 bg-stone-50 text-stone-600 hover:bg-stone-100'
+            }`}
           >
             <FiEye size={14} />
+            {certificationReviewMode && <span className="text-xs">Mở hồ sơ duyệt</span>}
           </button>
         </div>
       </td>

@@ -5,6 +5,24 @@ export type { ResponseBase, PaginatedResponse };
 
 export type ProductStatus = 'DRAFT' | 'PENDING_REVIEW' | 'APPROVED' | 'REJECTED' | 'DISCONTINUED';
 
+export type CertStatus = 'PENDING_APPROVAL' | 'ACTIVE' | 'EXPIRED' | 'REVOKED' | 'REJECTED';
+
+export interface ProductCertification {
+  id: number;
+  certNumber: string;
+  starLevel: number;
+  issuedTo?: string | null;
+  issuedAt: string;
+  expiredAt: string;
+  issuedBy: string;
+  documentUrl?: string | null;
+  rejectionReason?: string | null;
+  status: CertStatus | string;
+  isValid?: boolean;
+  verifiedByName?: string | null;
+  verifiedAt?: string | null;
+}
+
 export type JournalStepType =
   | 'RAW_MATERIAL'
   | 'PLANTING'
@@ -153,6 +171,7 @@ export interface Product {
   description: string;
   ocopStar: number;
   status: ProductStatus;
+  certificationStatus?: CertStatus | null;
   isFeatured: boolean;
   isFeaturedStory?: boolean;
   storyTitle?: string;
@@ -196,6 +215,7 @@ export interface Product {
   url?: string;
   journals: ProductJournal[];
   qrCode: ProductQrCode | null;
+  certification?: ProductCertification | null;
 }
 
 export interface ProductStory {
@@ -355,6 +375,7 @@ export interface ProductListParams {
 export interface AdminProductListParams extends ProductListParams {
   shopId?: number;
   isFeatured?: boolean;
+  certificationStatus?: CertStatus;
 }
 
 export interface PublicProductListParams {
@@ -488,3 +509,25 @@ export interface AdminApproveResponse {
 }
 
 export type AdminApproveProductResponse = ResponseBase<AdminApproveResponse>;
+
+export interface ProductCertificationRequest {
+  certNumber: string;
+  ocopStar: number;
+  issuedTo?: string;
+  issuedAt: string;
+  expiredAt: string;
+  issuedBy: string;
+  provinceId?: number;
+  documentUrl?: string;
+}
+
+export interface ProductCertificationEligibility {
+  eligible: boolean;
+  lotsCount: number;
+  qualifyingLotId?: number | null;
+  qualifyingLotCode?: string | null;
+}
+
+export interface RejectCertificationRequest {
+  reason: string;
+}

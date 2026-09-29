@@ -241,7 +241,7 @@ export const BannerFormModal = memo(function BannerFormModal({
             <input
               {...register('link')}
               className="w-full px-4 py-3 bg-stone-50 border text-gray-700 border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all"
-              placeholder="https://ocop.vn/..."
+              placeholder="https://ocop.iesconnect.vn/..."
             />
             {errors.link && <p className="text-xs text-red-500 font-bold">{errors.link.message}</p>}
           </div>

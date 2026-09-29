@@ -1,8 +1,21 @@
-import React from 'react';
-import { useAdminProductDetailQuery } from '@/features/products/hooks/useAdminProducts';
+import React, { useState } from 'react';
+import {
+  useAdminProductDetailQuery,
+  useAdminProductMutations,
+} from '@/features/products/hooks/useAdminProducts';
 import { Modal } from '@/components/ui/Modal';
-import { formatCurrencyVND } from '@/utils/format';
-import { FiCheck, FiX, FiPackage, FiMapPin, FiBox, FiTag } from 'react-icons/fi';
+import { formatCurrencyVND, formatDate, formatDateOnly } from '@/utils/format';
+import {
+  FiCheck,
+  FiX,
+  FiPackage,
+  FiMapPin,
+  FiBox,
+  FiTag,
+  FiAward,
+  FiExternalLink,
+  FiAlertCircle,
+} from 'react-icons/fi';
 import Image from 'next/image';
 
 interface AdminProductDetailModalProps {
@@ -23,8 +36,37 @@ export const AdminProductDetailModal = ({
   isApproving,
 }: AdminProductDetailModalProps) => {
   const { data: res, isLoading, isError } = useAdminProductDetailQuery(productId, isOpen);
+  const {
+    approveCertification,
+    isApprovingCertification,
+    rejectCertification,
+    isRejectingCertification,
+  } = useAdminProductMutations();
+
+  const [isRejectCertOpen, setIsRejectCertOpen] = useState(false);
+  const [rejectCertReason, setRejectCertReason] = useState('');
 
   const product = res?.data;
+
+  const handleApproveCert = async () => {
+    if (!product) return;
+    try {
+      await approveCertification(product.id);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleRejectCert = async () => {
+    if (!product || !rejectCertReason.trim()) return;
+    try {
+      await rejectCertification({ id: product.id, reason: rejectCertReason.trim() });
+      setIsRejectCertOpen(false);
+      setRejectCertReason('');
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Chi tiết Sản phẩm (Duyệt)" maxWidth="max-w-4xl">
@@ -131,6 +173,163 @@ export const AdminProductDetailModal = ({
               </div>
             </div>
 
+            {/* OCOP Certification Review Section */}
+            <div className="mt-4 border-t border-stone-200/80 pt-4">
+              <div className="bg-stone-50/80 rounded-2xl border border-stone-200 p-4 space-y-3">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-lg bg-amber-100 flex items-center justify-center text-amber-700">
+                      <FiAward size={16} />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-stone-900 text-sm">
+                        Hồ sơ Giấy chứng nhận OCOP
+                      </h4>
+                      <p className="text-[11px] text-stone-400">
+                        Thẩm định chứng nhận độc lập với duyệt bán hàng
+                      </p>
+                    </div>
+                  </div>
+                  {product.certification ? (
+                    product.certification.status === 'PENDING_APPROVAL' ? (
+                      <span className="px-2.5 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-bold border border-amber-200 flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                        Chờ kiểm duyệt chứng nhận
+                      </span>
+                    ) : product.certification.status === 'ACTIVE' ? (
+                      <span className="px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold border border-emerald-200 flex items-center gap-1">
+                        <FiCheck size={12} /> Đã duyệt chứng thực
+                      </span>
+                    ) : product.certification.status === 'REJECTED' ? (
+                      <span className="px-2.5 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold border border-red-200 flex items-center gap-1">
+                        <FiX size={12} /> Chứng nhận bị từ chối
+                      </span>
+                    ) : (
+                      <span className="px-2.5 py-1 bg-stone-100 text-stone-600 rounded-full text-xs font-bold">
+                        {product.certification.status}
+                      </span>
+                    )
+                  ) : (
+                    <span className="px-2.5 py-1 bg-stone-100 text-stone-500 rounded-full text-xs font-medium">
+                      Chưa nộp chứng nhận
+                    </span>
+                  )}
+                </div>
+
+                {product.certification ? (
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs bg-white p-3 rounded-xl border border-stone-200">
+                      <div>
+                        <span className="text-stone-400 font-bold uppercase tracking-wider text-[10px] block">
+                          Số chứng nhận / QĐ
+                        </span>
+                        <span className="font-bold text-stone-800 text-sm">
+                          {product.certification.certNumber}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-stone-400 font-bold uppercase tracking-wider text-[10px] block">
+                          Hạng sao công nhận
+                        </span>
+                        <span className="font-bold text-amber-600 text-sm">
+                          {'★'.repeat(product.certification.starLevel || 3)}{' '}
+                          {product.certification.starLevel} Sao
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-stone-400 font-bold uppercase tracking-wider text-[10px] block">
+                          Cơ quan cấp
+                        </span>
+                        <span className="font-medium text-stone-700">
+                          {product.certification.issuedBy}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-stone-400 font-bold uppercase tracking-wider text-[10px] block">
+                          Thời hạn hiệu lực
+                        </span>
+                        <span className="font-medium text-stone-700">
+                          {formatDateOnly(product.certification.issuedAt)} –{' '}
+                          {formatDateOnly(product.certification.expiredAt)}
+                        </span>
+                      </div>
+
+                      {product.certification.issuedTo && (
+                        <div className="col-span-2">
+                          <span className="text-stone-400 font-bold uppercase tracking-wider text-[10px] block">
+                            Chủ thể được cấp
+                          </span>
+                          <span className="font-medium text-stone-700">
+                            {product.certification.issuedTo}
+                          </span>
+                        </div>
+                      )}
+
+                      {product.certification.documentUrl && (
+                        <div className="col-span-2 flex items-center">
+                          <a
+                            href={product.certification.documentUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 hover:text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 hover:bg-emerald-100 transition"
+                          >
+                            <FiExternalLink size={13} />
+                            Xem bản scan Giấy chứng nhận (PDF/Ảnh)
+                          </a>
+                        </div>
+                      )}
+                    </div>
+
+                    {product.certification.status === 'REJECTED' &&
+                      product.certification.rejectionReason && (
+                        <div className="p-2.5 bg-red-50 text-red-700 rounded-lg text-xs border border-red-100">
+                          <span className="font-bold">Lý do từ chối trước đó: </span>
+                          {product.certification.rejectionReason}
+                        </div>
+                      )}
+
+                    {product.certification.status === 'ACTIVE' &&
+                      product.certification.verifiedByName && (
+                        <div className="text-[11px] text-stone-500">
+                          Đã thẩm định bởi <strong>{product.certification.verifiedByName}</strong>
+                          {product.certification.verifiedAt &&
+                            ` vào lúc ${formatDate(product.certification.verifiedAt)}`}
+                        </div>
+                      )}
+
+                    {product.certification.status === 'PENDING_APPROVAL' && (
+                      <div className="flex items-center justify-end gap-2 pt-2 border-t border-stone-200/60">
+                        <button
+                          type="button"
+                          onClick={() => setIsRejectCertOpen(true)}
+                          disabled={isRejectingCertification}
+                          className="px-3.5 py-1.5 rounded-lg border border-red-200 text-red-600 font-bold text-xs hover:bg-red-50 transition cursor-pointer"
+                        >
+                          Từ chối chứng nhận
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleApproveCert}
+                          disabled={isApprovingCertification}
+                          className="px-4 py-1.5 rounded-lg bg-emerald-600 text-white font-bold text-xs hover:bg-emerald-700 transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                        >
+                          <FiCheck size={13} />
+                          {isApprovingCertification
+                            ? 'Đang duyệt...'
+                            : 'Duyệt Giấy chứng nhận OCOP'}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-xs text-stone-500 italic">
+                    Sản phẩm chưa nộp Giấy chứng nhận OCOP. Seller có thể bổ sung sau khi có quyết
+                    định công nhận từ địa phương.
+                  </p>
+                )}
+              </div>
+            </div>
+
             {product.variants && product.variants.length > 0 && (
               <div className="mt-4 border-t border-stone-100 pt-4">
                 <h4 className="font-semibold text-stone-900 mb-3 text-sm">Danh sách Phân loại</h4>
@@ -228,6 +427,51 @@ export const AdminProductDetailModal = ({
           </>
         )}
       </div>
+
+      {/* Reject Certification Dialog */}
+      {isRejectCertOpen && (
+        <div className="fixed inset-0 z-[10001] flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl p-6 w-full max-w-md mx-4 animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center gap-2 mb-3 text-red-600">
+              <FiAlertCircle size={20} />
+              <h3 className="text-base font-black text-stone-900">Từ chối Giấy chứng nhận OCOP</h3>
+            </div>
+            <p className="text-xs text-stone-500 mb-3">
+              Vui lòng nêu rõ lý do từ chối (ví dụ: Bản scan mờ, Số chứng nhận không khớp, Hết
+              hạn...) để Seller bổ sung lại.
+            </p>
+            <textarea
+              value={rejectCertReason}
+              onChange={(e) => setRejectCertReason(e.target.value)}
+              placeholder="Nhập lý do từ chối chứng nhận..."
+              rows={3}
+              className="w-full border border-stone-200 rounded-xl p-3 text-xs text-stone-700 resize-none outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition"
+              autoFocus
+            />
+            <div className="flex justify-end gap-2.5 mt-4">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsRejectCertOpen(false);
+                  setRejectCertReason('');
+                }}
+                disabled={isRejectingCertification}
+                className="px-4 py-2 text-xs font-bold text-stone-500 hover:text-stone-700 transition cursor-pointer"
+              >
+                Hủy
+              </button>
+              <button
+                type="button"
+                onClick={handleRejectCert}
+                disabled={isRejectingCertification || !rejectCertReason.trim()}
+                className="px-4 py-2 bg-red-600 text-white text-xs font-bold rounded-xl hover:bg-red-700 disabled:opacity-50 transition cursor-pointer flex items-center gap-1.5"
+              >
+                {isRejectingCertification ? 'Đang xử lý...' : 'Xác nhận từ chối'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </Modal>
   );
 };

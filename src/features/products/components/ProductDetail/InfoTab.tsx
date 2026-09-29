@@ -19,6 +19,7 @@ import { useLocation } from '@/features/admin/hooks/useLocation';
 import { flattenCategories } from '../../utils/productUtils';
 import { PRODUCT_UNITS } from '../../utils/ProductConstants';
 import { PROVINCES_34_MAP, PROVINCES_63_MAP, ProvinceMode } from '@/constants/regions-map';
+import { ProductCertificationCard } from './ProductCertificationCard';
 
 interface InfoTabProps {
   productId: number;
@@ -27,7 +28,7 @@ interface InfoTabProps {
   ) => void;
 }
 
-export function InfoTab({ productId }: InfoTabProps) {
+export function InfoTab({ productId, onNextTab }: InfoTabProps) {
   const {
     data,
     isLoading: isLoadingProduct,
@@ -422,6 +423,10 @@ export function InfoTab({ productId }: InfoTabProps) {
           />
         </div>
       </div>
+
+      {product && (
+        <ProductCertificationCard product={product} onNavigateToLots={() => onNextTab?.('lots')} />
+      )}
 
       <div className="p-4 bg-stone-50/70 rounded-2xl border border-stone-200/80 space-y-4">
         <h4 className="text-xs font-bold text-stone-700 uppercase tracking-wider">

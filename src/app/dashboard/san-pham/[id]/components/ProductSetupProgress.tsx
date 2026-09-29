@@ -13,7 +13,9 @@ import {
   Package,
   BookOpen,
   ArrowRight,
+  Award,
 } from 'lucide-react';
+import { useProductCertificationEligibility } from '@/features/products/hooks/useProductCertificationEligibility';
 import { TabId } from '../page';
 
 interface Props {
@@ -37,11 +39,20 @@ export function ProductSetupProgress({ product, onNavigateTab }: Props) {
     product?.id ?? 0,
   );
 
+  const hasActiveCertification = product?.certification?.status === 'ACTIVE';
+  const { isEligible, isLoading: isLoadingEligibility } = useProductCertificationEligibility(
+    product?.id ?? 0,
+    !hasActiveCertification,
+  );
+
   const templates = templatesData || [];
   const lotsCount = lotsData?.data?.totalElements || 0;
   const journals = journalsResponse?.data || [];
 
-  if (product && (isLoadingTemplates || isLoadingLots || isLoadingJournals)) {
+  if (
+    product &&
+    (isLoadingTemplates || isLoadingLots || isLoadingJournals || isLoadingEligibility)
+  ) {
     return <div className="h-28 bg-stone-100 rounded-2xl animate-pulse mb-6" />;
   }
 
@@ -65,7 +76,10 @@ export function ProductSetupProgress({ product, onNavigateTab }: Props) {
   const hasLots = lotsCount > 0;
   if (hasLots) completedCount++;
 
-  const progress = Math.round((completedCount / 6) * 100);
+  const hasCert = !!hasActiveCertification;
+  if (hasCert) completedCount++;
+
+  const progress = Math.round((completedCount / 7) * 100);
 
   const steps = [
     {
@@ -118,6 +132,14 @@ export function ProductSetupProgress({ product, onNavigateTab }: Props) {
       actionText: 'Kể ngay',
       onClick: () => onNavigateTab?.('journals'),
     },
+    {
+      id: 'certification',
+      label: 'Chứng nhận OCOP',
+      isCompleted: hasCert,
+      icon: Award,
+      actionText: product?.certification ? 'Xem hồ sơ' : isEligible ? 'Bổ sung ngay' : 'Chờ lô đạt',
+      onClick: () => onNavigateTab?.('info'),
+    },
   ];
 
   if (progress === 100) return null;
@@ -146,7 +168,7 @@ export function ProductSetupProgress({ product, onNavigateTab }: Props) {
         />
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3">
         {steps.map((step) => {
           const Icon = step.icon;
           return (

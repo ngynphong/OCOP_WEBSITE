@@ -42,8 +42,20 @@ export const parseVNDInput = (formattedValue: string): number => {
   return isNaN(num) ? 0 : num;
 };
 
+const dateOnlyFormatter = new Intl.DateTimeFormat('vi-VN', {
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+});
+
 export const formatDate = (date: string | Date): string => {
   if (!date) return '-';
   const d = typeof date === 'string' ? new Date(date) : date;
   return dateFormatter.format(d);
+};
+
+export const formatDateOnly = (date: string | Date): string => {
+  if (!date) return '-';
+  const d = typeof date === 'string' ? new Date(date) : date;
+  return dateOnlyFormatter.format(d);
 };

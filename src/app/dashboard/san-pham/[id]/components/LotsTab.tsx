@@ -211,7 +211,7 @@ export const LotsTab = ({ product }: LotsTabProps) => {
                   </div>
                 </div>
 
-                <div className="px-4 pt-3 pb-1">
+                <div className="px-4 pt-3 pb-1 space-y-1.5">
                   {lot.isFlaggedByAi ? (
                     <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-rose-50 text-rose-800 border border-rose-200 rounded-lg text-xs font-semibold">
                       <AlertTriangle className="w-3.5 h-3.5 text-rose-600 shrink-0" />

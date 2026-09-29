@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import { FiZap } from 'react-icons/fi';
+import { useSearchParams } from 'next/navigation';
+import { FiAward, FiZap } from 'react-icons/fi';
 import { Bot } from 'lucide-react';
 import {
   useAdminProductsQuery,
@@ -38,8 +39,16 @@ const STATUS_COLORS: Record<ProductStatus, string> = {
 };
 
 export const AdminProductsTable = () => {
-  const [params, setParams] = useState<AdminProductListParams>({ pageNo: 1, pageSize: 20 });
-  const [activeTab, setActiveTab] = useState<'PRODUCTS' | 'FLASH_SALE'>('PRODUCTS');
+  const searchParams = useSearchParams();
+  const opensCertificationQueue = searchParams.get('view') === 'certifications';
+  const [params, setParams] = useState<AdminProductListParams>(() => ({
+    pageNo: 1,
+    pageSize: 20,
+    certificationStatus: opensCertificationQueue ? 'PENDING_APPROVAL' : undefined,
+  }));
+  const [activeTab, setActiveTab] = useState<'PRODUCTS' | 'CERTIFICATIONS' | 'FLASH_SALE'>(
+    opensCertificationQueue ? 'CERTIFICATIONS' : 'PRODUCTS',
+  );
   const [rejectModal, setRejectModal] = useState<{ open: boolean; productId: number | null }>({
     open: false,
     productId: null,
@@ -105,6 +114,16 @@ export const AdminProductsTable = () => {
   }, [productDetail, storyModal.open]);
 
   const products: Product[] = data?.data?.items ?? [];
+
+  const showAllProducts = useCallback(() => {
+    setActiveTab('PRODUCTS');
+    setParams({ pageNo: 1, pageSize: 20 });
+  }, []);
+
+  const showCertificationQueue = useCallback(() => {
+    setActiveTab('CERTIFICATIONS');
+    setParams({ pageNo: 1, pageSize: 20, certificationStatus: 'PENDING_APPROVAL' });
+  }, []);
 
   const handleApprove = useCallback(
     async (id: number) => {
@@ -198,7 +217,7 @@ export const AdminProductsTable = () => {
     <div className="space-y-4 animate-in fade-in duration-500">
       <div className="flex items-center gap-4 border-b border-stone-100 pb-1">
         <button
-          onClick={() => setActiveTab('PRODUCTS')}
+          onClick={showAllProducts}
           className={`px-4 py-2 text-sm font-black uppercase tracking-widest transition-all relative cursor-pointer ${
             activeTab === 'PRODUCTS' ? 'text-emerald-700' : 'text-stone-400 hover:text-stone-600'
           }`}
@@ -206,6 +225,20 @@ export const AdminProductsTable = () => {
           Tất cả sản phẩm
           {activeTab === 'PRODUCTS' && (
             <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-600" />
+          )}
+        </button>
+        <button
+          onClick={showCertificationQueue}
+          className={`px-4 py-2 text-sm font-black uppercase tracking-widest transition-all relative flex items-center gap-2 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-600 focus-visible:ring-offset-2 ${
+            activeTab === 'CERTIFICATIONS'
+              ? 'text-violet-700'
+              : 'text-stone-400 hover:text-stone-600'
+          }`}
+        >
+          <FiAward />
+          Duyệt chứng nhận OCOP
+          {activeTab === 'CERTIFICATIONS' && (
+            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-violet-600" />
           )}
         </button>
         {canViewFlashSale && (
@@ -226,6 +259,23 @@ export const AdminProductsTable = () => {
 
       {activeTab === 'FLASH_SALE' && canViewFlashSale ? (
         <FlashSaleManagementTab role="ADMIN" />
+      ) : activeTab === 'CERTIFICATIONS' ? (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-violet-200 bg-violet-50/70 px-4 py-3">
+          <div className="flex items-center gap-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-violet-100 text-violet-700">
+              <FiAward aria-hidden="true" />
+            </span>
+            <div>
+              <p className="text-sm font-black text-violet-950">Hồ sơ chứng nhận đang chờ duyệt</p>
+              <p className="text-xs font-medium text-violet-700">
+                Chỉ hiển thị sản phẩm có Giấy chứng nhận OCOP cần quản trị viên xác minh.
+              </p>
+            </div>
+          </div>
+          <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-violet-700 shadow-sm">
+            {data?.data?.totalElement ?? products.length} hồ sơ
+          </span>
+        </div>
       ) : (
         <>
           <div className="flex flex-wrap gap-3 items-center justify-between">
@@ -268,7 +318,7 @@ export const AdminProductsTable = () => {
         </>
       )}
 
-      {activeTab === 'PRODUCTS' && (
+      {(activeTab === 'PRODUCTS' || activeTab === 'CERTIFICATIONS') && (
         <div className="bg-white rounded-xl border border-stone-100 overflow-hidden shadow-sm">
           <table className="w-full text-sm">
             <thead>
@@ -294,7 +344,9 @@ export const AdminProductsTable = () => {
               {products.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="text-center py-16 text-stone-400 text-xs font-bold">
-                    Không có sản phẩm nào
+                    {activeTab === 'CERTIFICATIONS'
+                      ? 'Không có hồ sơ chứng nhận nào đang chờ duyệt'
+                      : 'Không có sản phẩm nào'}
                   </td>
                 </tr>
               ) : (
@@ -315,6 +367,7 @@ export const AdminProductsTable = () => {
                     onHide={handleHide}
                     onOpenCategory={handleOpenCategory}
                     onOpenDetail={handleOpenDetail}
+                    certificationReviewMode={activeTab === 'CERTIFICATIONS'}
                   />
                 ))
               )}

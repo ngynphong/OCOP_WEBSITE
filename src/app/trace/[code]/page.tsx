@@ -256,10 +256,7 @@ function TraceContent({ code }: { code: string }) {
         </div>
 
         <p className="text-center text-xs text-stone-400 font-medium mt-4 pt-4 border-t border-stone-200/60">
-          Thông tin được xác thực bởi Hệ thống OCOP •{' '}
-          <Link href="/" className="text-emerald-800 font-bold hover:underline">
-            ocop.vn
-          </Link>
+          Thông tin được xác thực bởi Hệ thống OCOP
         </p>
       </div>
     </div>

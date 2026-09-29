@@ -68,6 +68,7 @@ export interface IAdminDashboardOrderOverview {
 export interface IAdminDashboardActionRequired {
   pendingShops: number;
   pendingProducts: number;
+  pendingCertifications: number;
   pendingRefunds: number;
   pendingPayouts: number;
   openSupportTickets: number;
