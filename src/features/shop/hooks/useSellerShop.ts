@@ -5,6 +5,7 @@ import { sellerApi } from '../api/sellerApi';
 import {
   CreateShopRequest,
   UpdateShopRequest,
+  UpdateDeliverySettingsRequest,
   UpdateShopPolicyRequest,
   CreateSubscriptionRequest,
   ShopDocumentType,
@@ -87,6 +88,18 @@ export const useSellerShop = () => {
     onError: (error: unknown) => {
       // @ts-expect-error - Axios error structure
       toast.error(error?.response?.data?.message || 'Có lỗi khi cập nhật shop');
+    },
+  });
+
+  const updateDeliverySettingsMutation = useMutation({
+    mutationFn: (data: UpdateDeliverySettingsRequest) => sellerApi.updateDeliverySettings(data),
+    onSuccess: () => {
+      toast.success('Cập nhật cấu hình tự giao hàng thành công');
+      queryClient.invalidateQueries({ queryKey: ['seller-my-shop'] });
+    },
+    onError: (error: unknown) => {
+      // @ts-expect-error - Axios error structure
+      toast.error(error?.response?.data?.message || 'Có lỗi khi cập nhật cấu hình giao hàng');
     },
   });
 
@@ -200,6 +213,8 @@ export const useSellerShop = () => {
     isCreatingShop: createShopMutation.isPending,
     updateShop: updateShopMutation.mutateAsync,
     isUpdatingShop: updateShopMutation.isPending,
+    updateDeliverySettings: updateDeliverySettingsMutation.mutateAsync,
+    isUpdatingDeliverySettings: updateDeliverySettingsMutation.isPending,
     resubmitShop: resubmitShopMutation.mutateAsync,
     isResubmittingShop: resubmitShopMutation.isPending,
 

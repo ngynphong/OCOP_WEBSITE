@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useMemo, useSyncExternalStore, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import type { EventType, EventTheme, EventMinigameConfigDetail } from '../types/eventTypes';
 import type {
   MinigameType,
@@ -16,8 +16,29 @@ import {
   LUCKY_WHEEL_REWARDS,
   resolveMysteryPickConcept,
 } from '../constants/minigamePresets';
-import { eventMinigameApi } from '../api/eventMinigameApi';
+import { eventMinigameApi, type UserMinigameStatusResponse } from '../api/eventMinigameApi';
 import toast from 'react-hot-toast';
+
+function normalizeReward(
+  raw: MinigameReward | (MinigameReward & { title?: string }),
+): MinigameReward {
+  const title = raw.name || (raw as { title?: string }).title || 'Phần thưởng may mắn';
+  const type = raw.type || 'VOUCHER';
+  const defaultColor =
+    type === 'VOUCHER'
+      ? '#EA580C'
+      : type === 'FREESHIP'
+        ? '#0284C7'
+        : type === 'POINTS'
+          ? '#059669'
+          : '#7C3AED';
+
+  return {
+    ...raw,
+    name: title,
+    themeColor: raw.themeColor || defaultColor,
+  };
+}
 
 interface UseEventMinigameOptions {
   eventId: number | string;
@@ -61,6 +82,7 @@ export function useEventMinigame({
   minigameConfig,
 }: UseEventMinigameOptions) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const decorationConceptId = useMemo(() => {
     if (!theme?.decorationsJson) return null;
     try {
@@ -150,37 +172,31 @@ export function useEventMinigame({
   const userState = useMemo<MinigameUserState>(() => {
     if (!rawStorage) {
       return {
-        spinsLeft: 1,
+        spinsLeft: 0,
         lastDailyClaim: null,
         history: [],
       };
     }
     try {
       const parsed: MinigameUserState = JSON.parse(rawStorage);
-      const hasClaimedToday = parsed.lastDailyClaim === todayStr;
-      const spins = !hasClaimedToday && (parsed.spinsLeft ?? 0) <= 0 ? 1 : (parsed.spinsLeft ?? 1);
       const safeHistory = Array.isArray(parsed.history)
         ? parsed.history.filter((item): item is MinigameHistoryEntry =>
             Boolean(item && item.reward),
           )
         : [];
       return {
-        spinsLeft: spins,
+        spinsLeft: typeof parsed.spinsLeft === 'number' ? Math.max(0, parsed.spinsLeft) : 0,
         lastDailyClaim: parsed.lastDailyClaim || null,
         history: safeHistory,
       };
     } catch {
       return {
-        spinsLeft: 1,
+        spinsLeft: 0,
         lastDailyClaim: null,
         history: [],
       };
     }
-  }, [rawStorage, todayStr]);
-
-  const spinsLeft = userState.spinsLeft;
-  const lastDailyClaim = userState.lastDailyClaim;
-  const history = userState.history;
+  }, [rawStorage]);
 
   const persistState = useCallback(
     (newSpins: number, newClaim: string | null, newHistory: MinigameHistoryEntry[]) => {
@@ -190,7 +206,7 @@ export function useEventMinigame({
           ? newHistory.filter((item): item is MinigameHistoryEntry => Boolean(item && item.reward))
           : [];
         const data: MinigameUserState = {
-          spinsLeft: newSpins,
+          spinsLeft: Math.max(0, newSpins),
           lastDailyClaim: newClaim,
           history: safeHistory,
         };
@@ -220,9 +236,20 @@ export function useEventMinigame({
     }
   }, [remoteStatus, persistState]);
 
+  const spinsLeft =
+    remoteStatus?.spinsLeft !== undefined
+      ? Math.max(0, remoteStatus.spinsLeft)
+      : userState.spinsLeft;
+
+  const lastDailyClaim = remoteStatus?.lastDailyClaimDate ?? userState.lastDailyClaim;
+  const history = userState.history;
+
   const canClaimDailyFreeSpin = useMemo(() => {
+    if (typeof remoteStatus?.canClaimDaily === 'boolean') {
+      return remoteStatus.canClaimDaily;
+    }
     return lastDailyClaim !== todayStr;
-  }, [lastDailyClaim, todayStr]);
+  }, [remoteStatus?.canClaimDaily, lastDailyClaim, todayStr]);
 
   const handleClaimDailyFreeSpin = useCallback(async () => {
     if (!canClaimDailyFreeSpin) {
@@ -245,26 +272,28 @@ export function useEventMinigame({
     try {
       const res = await eventMinigameApi.claimDailySpin(eventSlug);
       persistState(res.spinsLeft, res.lastDailyClaimDate, res.recentHistory);
+      queryClient.setQueryData(['event-minigame-user-status', eventSlug], res);
       toast.success('Nhận thành công +1 lượt chơi miễn phí hôm nay!');
     } catch (err: unknown) {
       const errorObj = err as { response?: { data?: { message?: string } } };
       const msg = errorObj?.response?.data?.message || 'Bạn đã nhận lượt miễn phí hôm nay rồi.';
       toast.error(msg);
     }
-  }, [canClaimDailyFreeSpin, eventSlug, router, persistState]);
+  }, [canClaimDailyFreeSpin, eventSlug, router, persistState, queryClient]);
 
   const playEnvelope = useCallback(
     async (envelopeIndex: number) => {
       if (isSpinning) return;
-      if (spinsLeft <= 0) {
-        toast.error('Bạn đã hết lượt bốc lì xì! Mua sắm đơn từ 300K để nhận thêm lượt nhé.');
-        return;
-      }
 
       const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
       if (!token) {
         toast.error('Vui lòng đăng nhập để tham gia bốc quà và nhận voucher!');
         router.push('/dang-nhap');
+        return;
+      }
+
+      if (spinsLeft <= 0) {
+        toast.error('Bạn đã hết lượt bốc lì xì! Mua sắm đơn từ 300K để nhận thêm lượt nhé.');
         return;
       }
 
@@ -278,43 +307,66 @@ export function useEventMinigame({
         setSelectedEnvelopeIndex(envelopeIndex);
 
         const serverRes = await eventMinigameApi.play(eventSlug, 'LUCKY_ENVELOPE');
+        const normalizedReward = normalizeReward(serverRes.reward);
 
         await new Promise((resolve) => setTimeout(resolve, 1200));
 
         const newEntry: MinigameHistoryEntry = {
           id: `won_${Date.now()}`,
           gameType: 'LUCKY_ENVELOPE',
-          reward: serverRes.reward,
+          reward: normalizedReward,
           wonAt: serverRes.wonAt,
         };
         const nextHistory = [newEntry, ...history];
         persistState(serverRes.spinsLeft, lastDailyClaim, nextHistory);
+        queryClient.setQueryData(
+          ['event-minigame-user-status', eventSlug],
+          (old?: UserMinigameStatusResponse) => {
+            if (!old) return old;
+            return {
+              ...old,
+              spinsLeft: serverRes.spinsLeft,
+              totalSpinsUsed: (old.totalSpinsUsed ?? 0) + 1,
+            };
+          },
+        );
 
-        setCurrentReward(serverRes.reward);
+        setCurrentReward(normalizedReward);
         setIsSpinning(false);
         setIsRewardModalOpen(true);
       } catch (err: unknown) {
         setIsSpinning(false);
         setSelectedEnvelopeIndex(null);
-        const errorObj = err as { response?: { data?: { message?: string } } };
+        const errorObj = err as {
+          response?: { data?: { code?: number; message?: string } };
+        };
+        const errCode = errorObj?.response?.data?.code;
         const msg = errorObj?.response?.data?.message || 'Không thể tham gia minigame lúc này';
+        if (errCode === 8028 || msg?.includes('hết lượt')) {
+          persistState(0, lastDailyClaim, history);
+          queryClient.setQueryData(
+            ['event-minigame-user-status', eventSlug],
+            (old?: UserMinigameStatusResponse) => (old ? { ...old, spinsLeft: 0 } : old),
+          );
+        }
         toast.error(msg);
       }
     },
-    [isSpinning, spinsLeft, eventSlug, router, history, lastDailyClaim, persistState],
+    [isSpinning, spinsLeft, eventSlug, router, history, lastDailyClaim, persistState, queryClient],
   );
 
   const playWheel = useCallback(async () => {
     if (isSpinning) return;
-    if (spinsLeft <= 0) {
-      toast.error('Bạn đã hết lượt quay! Mua sắm đơn từ 300K để nhận thêm lượt nhé.');
-      return;
-    }
 
     const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
     if (!token) {
       toast.error('Vui lòng đăng nhập để tham gia vòng quay và nhận voucher!');
       router.push('/dang-nhap');
+      return;
+    }
+
+    if (spinsLeft <= 0) {
+      toast.error('Bạn đã hết lượt quay! Mua sắm đơn từ 300K để nhận thêm lượt nhé.');
       return;
     }
 
@@ -327,6 +379,7 @@ export function useEventMinigame({
       setIsSpinning(true);
 
       const serverRes = await eventMinigameApi.play(eventSlug, 'WHEEL_SPIN');
+      const normalizedReward = normalizeReward(serverRes.reward);
 
       const rewards = LUCKY_WHEEL_REWARDS;
       const sliceAngle = 360 / rewards.length;
@@ -343,19 +396,40 @@ export function useEventMinigame({
       const newEntry: MinigameHistoryEntry = {
         id: `won_${Date.now()}`,
         gameType: 'WHEEL_SPIN',
-        reward: serverRes.reward,
+        reward: normalizedReward,
         wonAt: serverRes.wonAt,
       };
       const nextHistory = [newEntry, ...history];
       persistState(serverRes.spinsLeft, lastDailyClaim, nextHistory);
+      queryClient.setQueryData(
+        ['event-minigame-user-status', eventSlug],
+        (old?: UserMinigameStatusResponse) => {
+          if (!old) return old;
+          return {
+            ...old,
+            spinsLeft: serverRes.spinsLeft,
+            totalSpinsUsed: (old.totalSpinsUsed ?? 0) + 1,
+          };
+        },
+      );
 
-      setCurrentReward(serverRes.reward);
+      setCurrentReward(normalizedReward);
       setIsSpinning(false);
       setIsRewardModalOpen(true);
     } catch (err: unknown) {
       setIsSpinning(false);
-      const errorObj = err as { response?: { data?: { message?: string } } };
+      const errorObj = err as {
+        response?: { data?: { code?: number; message?: string } };
+      };
+      const errCode = errorObj?.response?.data?.code;
       const msg = errorObj?.response?.data?.message || 'Không thể quay vòng quay lúc này';
+      if (errCode === 8028 || msg?.includes('hết lượt')) {
+        persistState(0, lastDailyClaim, history);
+        queryClient.setQueryData(
+          ['event-minigame-user-status', eventSlug],
+          (old?: UserMinigameStatusResponse) => (old ? { ...old, spinsLeft: 0 } : old),
+        );
+      }
       toast.error(msg);
     }
   }, [
@@ -367,6 +441,7 @@ export function useEventMinigame({
     history,
     lastDailyClaim,
     persistState,
+    queryClient,
   ]);
 
   const handleCopyCode = useCallback((code: string) => {

@@ -97,12 +97,13 @@ function CheckoutContent() {
   }, [checkoutItems]);
 
   const shopsInCart = useMemo(() => {
-    const shops: Record<number, { weight: number }> = {};
+    const shops: Record<number, { weight: number; subtotal: number }> = {};
     checkoutItems.forEach((item) => {
       if (!shops[item.shopId]) {
-        shops[item.shopId] = { weight: 0 };
+        shops[item.shopId] = { weight: 0, subtotal: 0 };
       }
       shops[item.shopId].weight += (item as CheckoutCartItem).weightGram || 500 * item.qty;
+      shops[item.shopId].subtotal += item.currentPrice * item.qty;
     });
     return shops;
   }, [checkoutItems]);
@@ -116,12 +117,15 @@ function CheckoutContent() {
         if (selectedShipping) {
           let totalFee = 0;
           for (const shopId of Object.keys(shopsInCart)) {
+            const shopData = shopsInCart[parseInt(shopId)];
             const res = await estimateFee({
               providerId: selectedShipping.id,
               shopId: parseInt(shopId),
+              toProvinceId: effectiveAddress.provinceId,
               toDistrictId: effectiveAddress.districtId,
               toWardCode: effectiveAddress.wardId.toString(),
-              weightGram: shopsInCart[parseInt(shopId)].weight,
+              weightGram: shopData.weight,
+              subtotal: shopData.subtotal,
               insuranceValue: 0,
               height: 0,
               length: 0,

@@ -84,9 +84,11 @@ export function QuickBuyModal({
         const res = await estimateFee({
           providerId: selectedShipping.id,
           shopId: product.shop.id,
+          toProvinceId: selectedAddress.provinceId,
           toDistrictId: selectedAddress.districtId,
           toWardCode: selectedAddress.wardId.toString(),
           weightGram: weight,
+          subtotal: price * qty,
           insuranceValue: 0,
           height: 0,
           length: 0,

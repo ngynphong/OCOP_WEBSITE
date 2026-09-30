@@ -26,7 +26,11 @@ export const paymentApi = {
     axiosClient.patch(buildRoute(API_ENDPOINTS.ADMIN.PAYMENT_GATEWAYS, id, 'config'), data),
 
   getUserGateways: (): Promise<ApiResponse<IPaymentGateway[]>> =>
-    axiosClient.get(API_ENDPOINTS.PUBLIC.PAYMENT_GATEWAYS),
+    axiosClient.get(API_ENDPOINTS.PUBLIC.PAYMENT_GATEWAYS, {
+      headers: {
+        'X-Silent-Loading': 'true',
+      },
+    }),
 
   handlePaymentWebhook: (
     gateway: string,

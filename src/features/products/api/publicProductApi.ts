@@ -58,7 +58,9 @@ export const publicProductApi = {
   },
 
   traceQr: (qrCode: string): Promise<QrCodeResponse> => {
-    return publicAxiosClient.get(buildRoute(API_ENDPOINTS.PUBLIC.TRACE, qrCode));
+    return publicAxiosClient.get(buildRoute(API_ENDPOINTS.PUBLIC.TRACE, qrCode), {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   getCategories: (): Promise<PublicCategoryListResponse> => {
@@ -82,7 +84,9 @@ export const publicProductApi = {
   },
 
   recordQrScan: (qrCode: string): Promise<ResponseBase<string>> => {
-    return publicAxiosClient.post(buildRoute(API_ENDPOINTS.PUBLIC.TRACE, qrCode, 'scan'));
+    return publicAxiosClient.post(buildRoute(API_ENDPOINTS.PUBLIC.TRACE, qrCode, 'scan'), {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   getProvinces: (): Promise<ResponseBase<{ id: number; name: string }[]>> => {

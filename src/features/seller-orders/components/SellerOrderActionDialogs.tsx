@@ -145,11 +145,13 @@ export const ConfirmOrderModal: React.FC<ConfirmOrderModalProps> = ({
               <label className="block text-sm font-bold text-stone-700 mb-1">Cước phí (VNĐ)</label>
               <input
                 type="text"
-                className="w-full border-2 border-stone-200 text-gray-700 rounded-xl p-3 focus:outline-none focus:border-green-600 font-medium"
-                placeholder="VD: 35.000"
-                value={formatVNDInput(shippingFee)}
-                onChange={(e) => setShippingFee(parseVNDInput(e.target.value))}
+                disabled
+                className="w-full border-2 border-stone-200 text-stone-600 bg-stone-100 rounded-xl p-3 font-semibold cursor-not-allowed"
+                value={formatVNDInput(defaultShippingFee || 0)}
               />
+              <span className="text-[11px] text-stone-400 mt-1 block">
+                Cố định theo cấu hình khi khách đặt hàng
+              </span>
             </div>
           </div>
 
@@ -174,7 +176,7 @@ export const ConfirmOrderModal: React.FC<ConfirmOrderModalProps> = ({
                 note,
                 providerId,
                 trackingNumber.trim() ? trackingNumber.trim() : null,
-                Number(shippingFee) || 0,
+                Number(defaultShippingFee) || 0,
                 estimatedDelivery,
               )
             }

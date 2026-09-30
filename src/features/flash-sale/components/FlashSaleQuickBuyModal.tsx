@@ -75,9 +75,11 @@ export function FlashSaleQuickBuyModal({ isOpen, onClose, item }: FlashSaleQuick
         const res = await estimateFee({
           providerId: selectedShipping.id,
           shopId: product.shop.id,
+          toProvinceId: activeAddress.provinceId,
           toDistrictId: activeAddress.districtId,
           toWardCode: activeAddress.wardId.toString(),
           weightGram: weight,
+          subtotal: (item.salePrice || item.originalPrice || 0) * qty,
           insuranceValue: 0,
           height: 0,
           length: 0,

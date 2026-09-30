@@ -457,6 +457,9 @@ export function EventMinigameSection({
           onCopyCode={minigame.handleCopyCode}
           onPlayAgain={() => {
             minigame.closeRewardModal();
+            if (minigame.spinsLeft <= 0) {
+              return;
+            }
             if (minigame.activeGameType === 'WHEEL_SPIN') {
               minigame.playWheel();
             }

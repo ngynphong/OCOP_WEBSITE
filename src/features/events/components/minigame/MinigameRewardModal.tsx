@@ -39,6 +39,17 @@ export function MinigameRewardModal({
   };
 
   const isVoucherOrShip = reward.type === 'VOUCHER' || reward.type === 'FREESHIP';
+  const displayName =
+    reward.name || (reward as unknown as { title?: string }).title || 'Phần Thưởng May Mắn';
+  const themeColor =
+    reward.themeColor ||
+    (reward.type === 'VOUCHER'
+      ? '#EA580C'
+      : reward.type === 'FREESHIP'
+        ? '#0284C7'
+        : reward.type === 'POINTS'
+          ? '#059669'
+          : '#7C3AED');
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
@@ -52,7 +63,7 @@ export function MinigameRewardModal({
         <div
           className="relative px-4 pt-6 pb-7 sm:px-6 sm:pt-8 sm:pb-10 text-center text-white overflow-hidden shrink-0"
           style={{
-            background: `linear-gradient(135deg, ${reward.themeColor} 0%, #0F172A 140%)`,
+            background: `linear-gradient(135deg, ${themeColor} 0%, #0F172A 140%)`,
           }}
         >
           <div className="absolute -top-12 -right-12 w-36 h-36 rounded-full bg-white/10 blur-xl pointer-events-none" />
@@ -84,7 +95,7 @@ export function MinigameRewardModal({
           </span>
 
           <h3 className="text-lg sm:text-2xl font-black tracking-tight leading-tight">
-            {reward.name}
+            {displayName}
           </h3>
         </div>
 

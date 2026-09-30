@@ -5,6 +5,7 @@ import { buildRoute } from '@/lib/routeBuilder';
 import {
   CreateShopRequest,
   UpdateShopRequest,
+  UpdateDeliverySettingsRequest,
   UpdateShopPolicyRequest,
   CreateSubscriptionRequest,
   ShopDetailResponse,
@@ -36,6 +37,12 @@ export const sellerApi = {
 
   updateShop: (data: UpdateShopRequest): Promise<ShopDetailResponse> => {
     return axiosClient.put(API_ENDPOINTS.SELLER.SHOP, data, {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
+  },
+
+  updateDeliverySettings: (data: UpdateDeliverySettingsRequest): Promise<ShopDetailResponse> => {
+    return axiosClient.put(API_ENDPOINTS.SELLER.SHOP_DELIVERY_SETTINGS, data, {
       headers: { 'X-Silent-Loading': 'true' },
     });
   },

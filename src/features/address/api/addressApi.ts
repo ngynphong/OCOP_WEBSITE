@@ -6,13 +6,21 @@ import { IUserAddress, ICreateAddressRequest, IUpdateAddressRequest, ApiResponse
 
 export const addressApi = {
   getAddresses: (): Promise<ApiResponse<IUserAddress[]>> =>
-    axiosClient.get(API_ENDPOINTS.USERS.ADDRESSES),
+    axiosClient.get(API_ENDPOINTS.USERS.ADDRESSES, {
+      headers: {
+        'X-Silent-Loading': 'true',
+      },
+    }),
 
   getAddressById: (id: number): Promise<ApiResponse<IUserAddress>> =>
     axiosClient.get(buildRoute(API_ENDPOINTS.USERS.ADDRESSES, id)),
 
   getDefaultAddress: (): Promise<ApiResponse<IUserAddress>> =>
-    axiosClient.get(`${API_ENDPOINTS.USERS.ADDRESSES}/default`),
+    axiosClient.get(`${API_ENDPOINTS.USERS.ADDRESSES}/default`, {
+      headers: {
+        'X-Silent-Loading': 'true',
+      },
+    }),
 
   createAddress: (data: ICreateAddressRequest): Promise<ApiResponse<IUserAddress>> =>
     axiosClient.post(API_ENDPOINTS.USERS.ADDRESSES, data),

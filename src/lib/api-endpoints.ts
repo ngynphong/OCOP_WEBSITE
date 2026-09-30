@@ -69,6 +69,7 @@ export const API_ENDPOINTS = {
   },
   SELLER: {
     SHOP: '/seller/shop',
+    SHOP_DELIVERY_SETTINGS: '/seller/shop/delivery-settings',
     SHOP_RESUBMIT: '/seller/shop/resubmit',
     SHOP_LOGO: '/seller/shop/logo',
     SHOP_BANNER: '/seller/shop/banner',

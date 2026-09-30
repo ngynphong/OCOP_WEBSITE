@@ -114,6 +114,7 @@ export const eventMinigameApi = {
     const res = (await axiosClient.post<ResponseBase<PlayMinigameResponse>>(
       `/users/events/${slug}/minigame/play`,
       { gameType },
+      { headers: { 'X-Silent-Loading': 'true' } },
     )) as unknown as ResponseBase<PlayMinigameResponse>;
     return res.data;
   },

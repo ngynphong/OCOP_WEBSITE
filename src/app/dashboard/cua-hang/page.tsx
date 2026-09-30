@@ -22,6 +22,7 @@ import {
 import { useSellerShop } from '@/features/shop/hooks/useSellerShop';
 import { useAuthProfile } from '@/features/auth/hooks/useAuthProfile';
 import { ShopEditForm } from '@/features/shop/components/ShopEditForm';
+import { ShopDeliveryConfigCard } from '@/features/shop/components/ShopDeliveryConfigCard';
 import { ShopStatus } from '@/features/shop/types/shopTypes';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
@@ -393,6 +394,7 @@ export default function SellerShopPage() {
           </div>
         </div>
       )}
+      {!isEditing && <ShopDeliveryConfigCard shop={shop} />}
       {!isEditing && currentSub && (
         <div className="bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden">
           <div className="p-5 border-b border-stone-50 bg-stone-50/50 flex justify-between items-center">

@@ -27,9 +27,11 @@ export const UpdateShippingProviderSchema = CreateShippingProviderSchema.partial
 export const EstimateFeeRequestSchema = z.object({
   providerId: z.string(),
   shopId: z.number(),
+  toProvinceId: z.number().optional(),
   toDistrictId: z.number(),
   toWardCode: z.string(),
   weightGram: z.number().min(1, 'Trọng lượng tối thiểu là 1g'),
+  subtotal: z.number().optional(),
   insuranceValue: z.number().optional().default(0),
   height: z.number().optional().default(0),
   length: z.number().optional().default(0),

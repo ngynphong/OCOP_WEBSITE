@@ -34,6 +34,10 @@ export interface ShopInfo {
   followerCount?: number;
   planName: string;
   approvedAt: string | null;
+  hasSelfDelivery?: boolean;
+  selfDeliveryIntraFee?: number;
+  selfDeliveryInterFee?: number;
+  selfDeliveryFreeshipThreshold?: number | null;
   createdAt: string;
 }
 
@@ -127,6 +131,17 @@ export interface UpdateShopRequest {
   addressLine: string;
   taxCode: string;
   businessRegNo: string;
+  hasSelfDelivery?: boolean;
+  selfDeliveryIntraFee?: number;
+  selfDeliveryInterFee?: number;
+  selfDeliveryFreeshipThreshold?: number | null;
+}
+
+export interface UpdateDeliverySettingsRequest {
+  hasSelfDelivery?: boolean;
+  selfDeliveryIntraFee?: number;
+  selfDeliveryInterFee?: number;
+  selfDeliveryFreeshipThreshold?: number | null;
 }
 
 export interface UpdateShopPolicyRequest {
