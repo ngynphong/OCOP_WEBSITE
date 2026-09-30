@@ -94,7 +94,7 @@ export function EventBasicInfoSection({
 
         <div>
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-            Mã Sự Kiện (Unique Code) <span className="text-red-500">*</span>
+            Mã Sự Kiện <span className="text-red-500">*</span>
           </label>
           <input
             type="text"

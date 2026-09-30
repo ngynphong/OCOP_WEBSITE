@@ -78,9 +78,13 @@ export const publicProductApi = {
   traceQrDetail: (qrCode: string): Promise<TraceDetailResponse> => {
     const parsedGs1 = parseGs1DigitalLink(qrCode);
     if (parsedGs1.isGs1 && parsedGs1.endpointPath) {
-      return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.TRACE}${parsedGs1.endpointPath}`);
+      return publicAxiosClient.get(`${API_ENDPOINTS.PUBLIC.TRACE}${parsedGs1.endpointPath}`, {
+        headers: { 'X-Silent-Loading': 'true' },
+      });
     }
-    return publicAxiosClient.get(buildRoute(API_ENDPOINTS.PUBLIC.TRACE, qrCode));
+    return publicAxiosClient.get(buildRoute(API_ENDPOINTS.PUBLIC.TRACE, qrCode), {
+      headers: { 'X-Silent-Loading': 'true' },
+    });
   },
 
   recordQrScan: (qrCode: string): Promise<ResponseBase<string>> => {

@@ -106,6 +106,8 @@ export function FlashSaleQuickBuyModal({ isOpen, onClose, item }: FlashSaleQuick
     product?.weightGram,
     product?.variants,
     item.variantId,
+    item.originalPrice,
+    item.salePrice,
     qty,
     estimateFee,
   ]);

@@ -13,7 +13,12 @@ import {
 
 export const wishlistApi = {
   getWishlist: (pageNo = 1, pageSize = 10): Promise<WishlistListResponse> => {
-    return axiosClient.get(API_ENDPOINTS.WISHLIST.BASE, { params: { pageNo, pageSize } });
+    return axiosClient.get(API_ENDPOINTS.WISHLIST.BASE, {
+      params: { pageNo, pageSize },
+      headers: {
+        'X-Silent-Loading': 'true',
+      },
+    });
   },
 
   addToWishlist: (productId: number): Promise<WishlistActionResponse> => {
@@ -44,6 +49,10 @@ export const wishlistApi = {
   },
 
   moveToCart: (data: MoveToCartRequest): Promise<MoveToCartResponse> => {
-    return axiosClient.post(`${API_ENDPOINTS.WISHLIST.BASE}/move-to-cart`, data);
+    return axiosClient.post(`${API_ENDPOINTS.WISHLIST.BASE}/move-to-cart`, data, {
+      headers: {
+        'X-Silent-Loading': 'true',
+      },
+    });
   },
 };

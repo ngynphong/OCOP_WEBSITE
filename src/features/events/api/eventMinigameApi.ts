@@ -3,7 +3,6 @@ import type { ResponseBase } from '@/features/auth/types';
 import type {
   MinigameType,
   MinigameReward,
-  MinigameHistoryEntry,
   MysteryPickConceptId,
   MysteryPickItem,
   MysteryPickConceptConfig,
@@ -49,7 +48,18 @@ export interface UserMinigameStatusResponse {
   totalSpinsUsed: number;
   canClaimDaily: boolean;
   lastDailyClaimDate: string | null;
-  recentHistory: MinigameHistoryEntry[];
+  recentHistory: MinigameHistoryResponse[];
+}
+
+export interface MinigameHistoryResponse {
+  id: number | string;
+  gameType: MinigameType;
+  rewardType: 'VOUCHER' | 'FREESHIP' | 'POINT' | 'WISH';
+  rewardTitle: string;
+  rewardValue?: number;
+  voucherCode?: string;
+  minOrderValue?: number;
+  wonAt: string;
 }
 
 export interface PlayMinigameResponse {

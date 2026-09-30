@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { X, Copy, ShoppingBag, Sparkles, Check, Gift, Ticket, Truck, Coins } from 'lucide-react';
 import { Button } from '@/components/ui/AppButton';
 import type { MinigameReward } from '../../types/eventMinigameTypes';
@@ -22,23 +23,23 @@ export function MinigameRewardModal({
   onCopyCode,
   onPlayAgain,
 }: MinigameRewardModalProps) {
-  const [copied, setCopied] = React.useState(false);
-
-  React.useEffect(() => {
-    setCopied(false);
-  }, [reward]);
+  const [copiedCode, setCopiedCode] = React.useState<string | null>(null);
 
   if (!isOpen || !reward) return null;
+
+  const copied = Boolean(reward.voucherCode && copiedCode === reward.voucherCode);
 
   const handleCopy = () => {
     if (reward.voucherCode) {
       onCopyCode(reward.voucherCode);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2500);
+      setCopiedCode(reward.voucherCode);
+      setTimeout(() => setCopiedCode(null), 2500);
     }
   };
 
   const isVoucherOrShip = reward.type === 'VOUCHER' || reward.type === 'FREESHIP';
+  const isPoints = reward.type === 'POINTS' || (reward.type as string) === 'POINT';
+  const pointAmount = reward.points ?? reward.value ?? 0;
   const displayName =
     reward.name || (reward as unknown as { title?: string }).title || 'Phần Thưởng May Mắn';
   const themeColor =
@@ -47,7 +48,7 @@ export function MinigameRewardModal({
       ? '#EA580C'
       : reward.type === 'FREESHIP'
         ? '#0284C7'
-        : reward.type === 'POINTS'
+        : isPoints
           ? '#059669'
           : '#7C3AED');
 
@@ -83,7 +84,7 @@ export function MinigameRewardModal({
               <Ticket className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
             ) : reward.type === 'FREESHIP' ? (
               <Truck className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
-            ) : reward.type === 'POINTS' ? (
+            ) : isPoints ? (
               <Coins className="w-8 h-8 sm:w-10 sm:h-10 text-amber-300" />
             ) : (
               <Sparkles className="w-8 h-8 sm:w-10 sm:h-10 text-amber-300" />
@@ -123,11 +124,9 @@ export function MinigameRewardModal({
             </div>
           )}
 
-          {reward.type === 'POINTS' && (
+          {isPoints && (
             <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-1">
-              <p className="text-sm font-bold text-emerald-800">
-                +{reward.points} Điểm OCOP Loyalty
-              </p>
+              <p className="text-sm font-bold text-emerald-800">+{pointAmount} Điểm OCOP Loyalty</p>
               <p className="text-xs text-emerald-600">
                 Điểm thưởng đã được ghi nhận vào tài khoản của bạn để đổi quà và giảm giá cho các
                 đơn hàng tiếp theo.
@@ -149,13 +148,23 @@ export function MinigameRewardModal({
           <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/60 text-[11px] text-slate-500 text-left flex items-start gap-2">
             <Sparkles className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
             <span>
-              {isVoucherOrShip
-                ? 'Mã voucher được lưu tự động vào tài khoản. Hãy nhanh tay sử dụng trong thời gian diễn ra sự kiện để không bỏ lỡ ưu đãi.'
+              {isVoucherOrShip || reward.voucherCode
+                ? 'Mã voucher đã được tự động lưu vào Ví Voucher của bạn và có hạn dùng đến khi kết thúc sự kiện.'
                 : 'Mỗi ngày điểm danh sự kiện sẽ nhận thêm 1 lượt chơi miễn phí. Đơn hàng từ 300K tặng thêm +1 lượt.'}
             </span>
           </div>
 
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-2.5">
+            {(isVoucherOrShip || reward.voucherCode) && (
+              <Link
+                href="/dashboard/vouchers"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors"
+              >
+                <Ticket className="w-3.5 h-3.5" />
+                <span>Xem Ví Voucher</span>
+              </Link>
+            )}
+
             {spinsLeft > 0 && onPlayAgain ? (
               <Button
                 type="button"

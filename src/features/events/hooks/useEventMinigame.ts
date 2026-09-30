@@ -17,6 +17,8 @@ import {
   resolveMysteryPickConcept,
 } from '../constants/minigamePresets';
 import { eventMinigameApi, type UserMinigameStatusResponse } from '../api/eventMinigameApi';
+import type { MinigameHistoryResponse } from '../api/eventMinigameApi';
+import { useAppSelector } from '@/store/hooks';
 import toast from 'react-hot-toast';
 
 function normalizeReward(
@@ -74,6 +76,67 @@ function getTodayString(): string {
   ).padStart(2, '0')}`;
 }
 
+function getTokenSubject(token: string | null): string | null {
+  if (!token || typeof window === 'undefined') return null;
+  try {
+    const payload = token.split('.')[1];
+    if (!payload) return null;
+    const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+    const normalized = base64.padEnd(Math.ceil(base64.length / 4) * 4, '=');
+    const parsed = JSON.parse(window.atob(normalized)) as { sub?: string };
+    return parsed.sub || null;
+  } catch {
+    return null;
+  }
+}
+
+function mapHistoryEntry(item: MinigameHistoryResponse): MinigameHistoryEntry {
+  const isPoint = item.rewardType === 'POINT';
+  const rewardType: MinigameReward['type'] = isPoint
+    ? 'POINTS'
+    : (item.rewardType as Exclude<MinigameReward['type'], 'POINTS'>);
+  const value = Number(item.rewardValue || 0);
+
+  return {
+    id: String(item.id),
+    gameType: item.gameType || 'WHEEL_SPIN',
+    reward: {
+      id: `h_${item.id}`,
+      type: rewardType,
+      name: item.rewardTitle || 'Phần thưởng OCOP',
+      badge: item.rewardTitle || '',
+      description: '',
+      value,
+      points: isPoint ? value : undefined,
+      voucherCode: item.voucherCode || undefined,
+      minOrderValue: item.minOrderValue ? Number(item.minOrderValue) : undefined,
+      iconName: isPoint
+        ? 'coins'
+        : item.rewardType === 'FREESHIP'
+          ? 'truck'
+          : item.rewardType === 'VOUCHER'
+            ? 'ticket'
+            : 'sparkles',
+      themeColor: '#D97706',
+      weight: 1,
+    },
+    wonAt: item.wonAt || new Date().toISOString(),
+  };
+}
+
+function toHistoryResponse(entry: MinigameHistoryEntry): MinigameHistoryResponse {
+  return {
+    id: entry.id,
+    gameType: entry.gameType,
+    rewardType: entry.reward.type === 'POINTS' ? 'POINT' : entry.reward.type,
+    rewardTitle: entry.reward.name,
+    rewardValue: entry.reward.value,
+    voucherCode: entry.reward.voucherCode,
+    minOrderValue: entry.reward.minOrderValue,
+    wonAt: entry.wonAt,
+  };
+}
+
 export function useEventMinigame({
   eventId,
   eventSlug,
@@ -83,6 +146,7 @@ export function useEventMinigame({
 }: UseEventMinigameOptions) {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { token, isAuthenticated } = useAppSelector((state) => state.auth);
   const decorationConceptId = useMemo(() => {
     if (!theme?.decorationsJson) return null;
     try {
@@ -152,6 +216,18 @@ export function useEventMinigame({
     return 'LUCKY_ENVELOPE';
   }, [minigameConfig?.gameType, eventType]);
 
+  const configuredWheelRewards = useMemo<MinigameReward[]>(() => {
+    if (minigameConfig?.rewardsJson) {
+      try {
+        const parsed = JSON.parse(minigameConfig.rewardsJson);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map(normalizeReward);
+        }
+      } catch {}
+    }
+    return LUCKY_WHEEL_REWARDS;
+  }, [minigameConfig?.rewardsJson]);
+
   const [activeGameType, setActiveGameType] = useState<MinigameType>(defaultGameType);
   const [isSpinning, setIsSpinning] = useState<boolean>(false);
   const [currentReward, setCurrentReward] = useState<MinigameReward | null>(null);
@@ -160,12 +236,17 @@ export function useEventMinigame({
   const [wheelRotation, setWheelRotation] = useState<number>(0);
   const [selectedEnvelopeIndex, setSelectedEnvelopeIndex] = useState<number | null>(null);
 
-  const storageKey = `${STORAGE_KEY_PREFIX}${eventId}`;
+  const userSubject = useMemo(() => getTokenSubject(token), [token]);
+  const storageKey = userSubject ? `${STORAGE_KEY_PREFIX}${userSubject}_${eventId}` : null;
+  const statusQueryKey = useMemo(
+    () => ['event-minigame-user-status', userSubject, eventSlug] as const,
+    [userSubject, eventSlug],
+  );
   const todayStr = getTodayString();
 
   const rawStorage = useSyncExternalStore(
     subscribeMinigameStorage,
-    () => (typeof window !== 'undefined' ? localStorage.getItem(storageKey) : null),
+    () => (typeof window !== 'undefined' && storageKey ? localStorage.getItem(storageKey) : null),
     () => null,
   );
 
@@ -200,7 +281,7 @@ export function useEventMinigame({
 
   const persistState = useCallback(
     (newSpins: number, newClaim: string | null, newHistory: MinigameHistoryEntry[]) => {
-      if (typeof window === 'undefined') return;
+      if (typeof window === 'undefined' || !storageKey) return;
       try {
         const safeHistory = Array.isArray(newHistory)
           ? newHistory.filter((item): item is MinigameHistoryEntry => Boolean(item && item.reward))
@@ -218,21 +299,17 @@ export function useEventMinigame({
   );
 
   const { data: remoteStatus } = useQuery({
-    queryKey: ['event-minigame-user-status', eventSlug],
+    queryKey: statusQueryKey,
     queryFn: () => (eventSlug ? eventMinigameApi.getUserStatus(eventSlug) : Promise.reject()),
-    enabled: Boolean(
-      eventSlug && typeof window !== 'undefined' && Boolean(localStorage.getItem('access_token')),
-    ),
+    enabled: Boolean(eventSlug && isAuthenticated),
     staleTime: 30 * 1000,
   });
 
   useEffect(() => {
     if (remoteStatus) {
-      persistState(
-        remoteStatus.spinsLeft,
-        remoteStatus.lastDailyClaimDate,
-        remoteStatus.recentHistory,
-      );
+      const mappedHistory = (remoteStatus.recentHistory || []).map(mapHistoryEntry);
+
+      persistState(remoteStatus.spinsLeft, remoteStatus.lastDailyClaimDate, mappedHistory);
     }
   }, [remoteStatus, persistState]);
 
@@ -271,15 +348,19 @@ export function useEventMinigame({
 
     try {
       const res = await eventMinigameApi.claimDailySpin(eventSlug);
-      persistState(res.spinsLeft, res.lastDailyClaimDate, res.recentHistory);
-      queryClient.setQueryData(['event-minigame-user-status', eventSlug], res);
+      persistState(
+        res.spinsLeft,
+        res.lastDailyClaimDate,
+        (res.recentHistory || []).map(mapHistoryEntry),
+      );
+      queryClient.setQueryData(statusQueryKey, res);
       toast.success('Nhận thành công +1 lượt chơi miễn phí hôm nay!');
     } catch (err: unknown) {
       const errorObj = err as { response?: { data?: { message?: string } } };
       const msg = errorObj?.response?.data?.message || 'Bạn đã nhận lượt miễn phí hôm nay rồi.';
       toast.error(msg);
     }
-  }, [canClaimDailyFreeSpin, eventSlug, router, persistState, queryClient]);
+  }, [canClaimDailyFreeSpin, eventSlug, router, persistState, queryClient, statusQueryKey]);
 
   const playEnvelope = useCallback(
     async (envelopeIndex: number) => {
@@ -319,17 +400,24 @@ export function useEventMinigame({
         };
         const nextHistory = [newEntry, ...history];
         persistState(serverRes.spinsLeft, lastDailyClaim, nextHistory);
-        queryClient.setQueryData(
-          ['event-minigame-user-status', eventSlug],
-          (old?: UserMinigameStatusResponse) => {
-            if (!old) return old;
-            return {
-              ...old,
-              spinsLeft: serverRes.spinsLeft,
-              totalSpinsUsed: (old.totalSpinsUsed ?? 0) + 1,
-            };
-          },
-        );
+        queryClient.setQueryData(statusQueryKey, (old?: UserMinigameStatusResponse) => {
+          if (!old) return old;
+          return {
+            ...old,
+            spinsLeft: serverRes.spinsLeft,
+            totalSpinsUsed: (old.totalSpinsUsed ?? 0) + 1,
+            recentHistory: [toHistoryResponse(newEntry), ...(old.recentHistory || [])].slice(0, 5),
+          };
+        });
+
+        if (
+          normalizedReward.voucherCode ||
+          normalizedReward.type === 'VOUCHER' ||
+          normalizedReward.type === 'FREESHIP'
+        ) {
+          queryClient.invalidateQueries({ queryKey: ['vouchers', 'saved'] });
+          queryClient.invalidateQueries({ queryKey: ['saved-vouchers'] });
+        }
 
         setCurrentReward(normalizedReward);
         setIsSpinning(false);
@@ -344,15 +432,24 @@ export function useEventMinigame({
         const msg = errorObj?.response?.data?.message || 'Không thể tham gia minigame lúc này';
         if (errCode === 8028 || msg?.includes('hết lượt')) {
           persistState(0, lastDailyClaim, history);
-          queryClient.setQueryData(
-            ['event-minigame-user-status', eventSlug],
-            (old?: UserMinigameStatusResponse) => (old ? { ...old, spinsLeft: 0 } : old),
+          queryClient.setQueryData(statusQueryKey, (old?: UserMinigameStatusResponse) =>
+            old ? { ...old, spinsLeft: 0 } : old,
           );
         }
         toast.error(msg);
       }
     },
-    [isSpinning, spinsLeft, eventSlug, router, history, lastDailyClaim, persistState, queryClient],
+    [
+      isSpinning,
+      spinsLeft,
+      eventSlug,
+      router,
+      history,
+      lastDailyClaim,
+      persistState,
+      queryClient,
+      statusQueryKey,
+    ],
   );
 
   const playWheel = useCallback(async () => {
@@ -381,9 +478,12 @@ export function useEventMinigame({
       const serverRes = await eventMinigameApi.play(eventSlug, 'WHEEL_SPIN');
       const normalizedReward = normalizeReward(serverRes.reward);
 
-      const rewards = LUCKY_WHEEL_REWARDS;
+      const rewards = configuredWheelRewards;
       const sliceAngle = 360 / rewards.length;
-      const sliceIdx = serverRes.sliceIndex ?? 0;
+      const sliceIdx =
+        serverRes.sliceIndex >= 0
+          ? serverRes.sliceIndex
+          : Math.floor(Math.random() * configuredWheelRewards.length);
       const targetSliceCenter = sliceIdx * sliceAngle + sliceAngle / 2;
       const randomExtraRounds = 5 + Math.floor(Math.random() * 3);
       const targetRotation =
@@ -401,17 +501,24 @@ export function useEventMinigame({
       };
       const nextHistory = [newEntry, ...history];
       persistState(serverRes.spinsLeft, lastDailyClaim, nextHistory);
-      queryClient.setQueryData(
-        ['event-minigame-user-status', eventSlug],
-        (old?: UserMinigameStatusResponse) => {
-          if (!old) return old;
-          return {
-            ...old,
-            spinsLeft: serverRes.spinsLeft,
-            totalSpinsUsed: (old.totalSpinsUsed ?? 0) + 1,
-          };
-        },
-      );
+      queryClient.setQueryData(statusQueryKey, (old?: UserMinigameStatusResponse) => {
+        if (!old) return old;
+        return {
+          ...old,
+          spinsLeft: serverRes.spinsLeft,
+          totalSpinsUsed: (old.totalSpinsUsed ?? 0) + 1,
+          recentHistory: [toHistoryResponse(newEntry), ...(old.recentHistory || [])].slice(0, 5),
+        };
+      });
+
+      if (
+        normalizedReward.voucherCode ||
+        normalizedReward.type === 'VOUCHER' ||
+        normalizedReward.type === 'FREESHIP'
+      ) {
+        queryClient.invalidateQueries({ queryKey: ['vouchers', 'saved'] });
+        queryClient.invalidateQueries({ queryKey: ['saved-vouchers'] });
+      }
 
       setCurrentReward(normalizedReward);
       setIsSpinning(false);
@@ -425,9 +532,8 @@ export function useEventMinigame({
       const msg = errorObj?.response?.data?.message || 'Không thể quay vòng quay lúc này';
       if (errCode === 8028 || msg?.includes('hết lượt')) {
         persistState(0, lastDailyClaim, history);
-        queryClient.setQueryData(
-          ['event-minigame-user-status', eventSlug],
-          (old?: UserMinigameStatusResponse) => (old ? { ...old, spinsLeft: 0 } : old),
+        queryClient.setQueryData(statusQueryKey, (old?: UserMinigameStatusResponse) =>
+          old ? { ...old, spinsLeft: 0 } : old,
         );
       }
       toast.error(msg);
@@ -442,6 +548,8 @@ export function useEventMinigame({
     lastDailyClaim,
     persistState,
     queryClient,
+    configuredWheelRewards,
+    statusQueryKey,
   ]);
 
   const handleCopyCode = useCallback((code: string) => {
@@ -485,7 +593,10 @@ export function useEventMinigame({
     mysteryPickConceptConfig,
     pickItems: mysteryPickConceptConfig.defaultItems,
     envelopeRewards: mysteryPickConceptConfig.defaultRewards || LUCKY_ENVELOPE_REWARDS,
-    wheelRewards: LUCKY_WHEEL_REWARDS,
+    wheelRewards: configuredWheelRewards,
+    dailyFreeSpins: minigameConfig?.freeSpinsPerDay ?? 1,
+    minOrderValueForBonusSpin: minigameConfig?.minOrderValueForBonusSpin ?? 300000,
+    spinsPerOrder: minigameConfig?.spinsPerOrder ?? 1,
     handleClaimDailyFreeSpin,
     playEnvelope,
     playPick: playEnvelope,

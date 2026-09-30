@@ -252,6 +252,7 @@ export interface ActiveEventResponse {
   backgroundUrl?: string;
   theme?: EventTheme;
   sections?: EventSection[];
+  minigameConfig?: EventMinigameConfigDetail;
 }
 
 export interface CreateEventInput {

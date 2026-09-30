@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/AppButton';
-import { formatVNDInput, parseVNDInput } from '@/utils/format';
+import { formatVNDInput } from '@/utils/format';
 
 interface RejectOrderModalProps {
   isOpen: boolean;
@@ -75,17 +75,15 @@ export const ConfirmOrderModal: React.FC<ConfirmOrderModalProps> = ({
   const [note, setNote] = useState('Đã chuẩn bị hàng');
   const [providerId, setProviderId] = useState(0);
   const [trackingNumber, setTrackingNumber] = useState('');
-  const [shippingFee, setShippingFee] = useState<number | ''>(defaultShippingFee || '');
   const [estimatedDelivery, setEstimatedDelivery] = useState('');
 
   React.useEffect(() => {
     if (isOpen) {
-      setShippingFee(defaultShippingFee || '');
       const defaultDate = new Date();
       defaultDate.setDate(defaultDate.getDate() + 3);
       setEstimatedDelivery(defaultDate.toISOString().split('T')[0]);
     }
-  }, [isOpen, defaultShippingFee]);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 

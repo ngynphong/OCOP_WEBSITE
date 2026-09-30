@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Calendar, Package } from 'lucide-react';
+import { MapPin, Package } from 'lucide-react';
 import { ISupplyChainLot } from '@/features/supply-chain/types/supplyChainTypes';
 import { BatchEventTimeline } from '@/features/supply-chain/components/BatchEventTimeline';
 

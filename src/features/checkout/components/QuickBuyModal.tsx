@@ -72,6 +72,10 @@ export function QuickBuyModal({
     }
   }, [paymentMethods, selectedPayment]);
 
+  const price = selectedVariant.price || product.minPrice;
+  const oldPrice = selectedVariant.comparePrice || product.maxPrice;
+  const subtotal = price * qty;
+
   React.useEffect(() => {
     const calculateFee = async () => {
       if (!selectedAddress || !selectedShipping || !product.shop.id) {
@@ -114,13 +118,10 @@ export function QuickBuyModal({
     product.shop.id,
     product.weightGram,
     selectedVariant.weightGram,
+    price,
     qty,
     estimateFee,
   ]);
-
-  const price = selectedVariant.price || product.minPrice;
-  const oldPrice = selectedVariant.comparePrice || product.maxPrice;
-  const subtotal = price * qty;
 
   const pricing = React.useMemo(
     () =>
@@ -134,7 +135,6 @@ export function QuickBuyModal({
   );
 
   const voucherDiscount = pricing.voucherDiscount;
-  const totalDiscount = pricing.totalDiscount;
   const total = pricing.total;
 
   const handleBuy = () => {

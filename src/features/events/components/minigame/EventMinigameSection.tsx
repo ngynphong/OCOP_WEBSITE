@@ -63,6 +63,7 @@ export function EventMinigameSection({
   });
 
   const concept = minigame.mysteryPickConceptConfig;
+  const configuredGameType = (event as EventDetailResponse).minigameConfig?.gameType;
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
   const isEnvelopeTab = minigame.activeGameType === 'LUCKY_ENVELOPE';
@@ -88,7 +89,7 @@ export function EventMinigameSection({
             <h2
               className={`${isMobilePreview ? 'text-lg sm:text-xl' : 'text-xl sm:text-2xl md:text-3xl'} font-black text-slate-900 dark:text-white tracking-tight`}
             >
-              {concept.tabLabel} & Vòng Quay May Mắn
+              {configuredGameType === 'WHEEL_SPIN' ? 'Vòng Quay May Mắn' : concept.gameTitle}
             </h2>
 
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
@@ -97,34 +98,38 @@ export function EventMinigameSection({
           </div>
 
           <div className="w-full md:w-auto flex justify-center md:justify-end">
-            <div className="grid grid-cols-2 sm:flex items-center p-1 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-inner w-full sm:w-auto">
-              <button
-                type="button"
-                onClick={() => minigame.setActiveGameType('LUCKY_ENVELOPE')}
-                disabled={minigame.isSpinning}
-                className={`w-full sm:w-auto justify-center px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                  isEnvelopeTab
-                    ? 'bg-red-600 text-white shadow-sm'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                {getConceptTabIcon(concept.id)}
-                <span>{concept.tabLabel}</span>
-              </button>
+            <div className="flex items-center p-1 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-inner w-full sm:w-auto">
+              {configuredGameType !== 'WHEEL_SPIN' && (
+                <button
+                  type="button"
+                  onClick={() => minigame.setActiveGameType('LUCKY_ENVELOPE')}
+                  disabled={minigame.isSpinning}
+                  className={`w-full sm:w-auto justify-center px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    isEnvelopeTab
+                      ? 'bg-red-600 text-white shadow-sm'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  {getConceptTabIcon(concept.id)}
+                  <span>{concept.tabLabel}</span>
+                </button>
+              )}
 
-              <button
-                type="button"
-                onClick={() => minigame.setActiveGameType('WHEEL_SPIN')}
-                disabled={minigame.isSpinning}
-                className={`w-full sm:w-auto justify-center px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                  !isEnvelopeTab
-                    ? 'bg-emerald-600 text-white shadow-sm'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                <Trophy className="w-4 h-4 shrink-0" />
-                <span>Vòng Quay OCOP</span>
-              </button>
+              {configuredGameType === 'WHEEL_SPIN' && (
+                <button
+                  type="button"
+                  onClick={() => minigame.setActiveGameType('WHEEL_SPIN')}
+                  disabled={minigame.isSpinning}
+                  className={`w-full sm:w-auto justify-center px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    !isEnvelopeTab
+                      ? 'bg-emerald-600 text-white shadow-sm'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <Trophy className="w-4 h-4 shrink-0" />
+                  <span>Vòng Quay OCOP</span>
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -140,7 +145,8 @@ export function EventMinigameSection({
               </span>
             </div>
             <span className="text-slate-400 dark:text-slate-500 text-[11px] hidden md:inline">
-              • Tặng thêm lượt khi mua đơn từ 300.000đ
+              • Tặng thêm {minigame.spinsPerOrder} lượt khi mua đơn từ{' '}
+              {minigame.minOrderValueForBonusSpin.toLocaleString('vi-VN')}đ
             </span>
           </div>
 
@@ -154,7 +160,7 @@ export function EventMinigameSection({
                 leftIcon={<Sparkles className="w-3.5 h-3.5 text-amber-500 shrink-0" />}
                 className="w-full sm:w-auto justify-center bg-white dark:bg-slate-900 border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-200 hover:bg-amber-50 shadow-xs text-xs font-bold cursor-pointer"
               >
-                Điểm danh nhận +1 lượt hôm nay
+                Điểm danh nhận +{minigame.dailyFreeSpins} lượt hôm nay
               </Button>
             ) : (
               <span className="w-full sm:w-auto justify-center inline-flex items-center gap-1 text-emerald-700 dark:text-emerald-400 font-semibold bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-1 rounded-lg border border-emerald-200/80 text-xs">
@@ -338,7 +344,7 @@ export function EventMinigameSection({
                 <div className="flex items-center gap-2">
                   <Trophy className="w-4 h-4 text-amber-500" />
                   <h4 className="font-extrabold text-xs sm:text-sm uppercase tracking-wide text-slate-900 dark:text-white">
-                    8 Phần Thưởng Vòng Quay
+                    {wheelRewards.length} Phần Thưởng Vòng Quay
                   </h4>
                 </div>
 
@@ -365,7 +371,9 @@ export function EventMinigameSection({
                 </div>
 
                 <p className="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 pt-1">
-                  * Mỗi đơn hàng hoàn tất từ 150.000đ sẽ tự động được cộng thêm 1 lượt quay.
+                  * Mỗi đơn hàng hoàn tất từ{' '}
+                  {minigame.minOrderValueForBonusSpin.toLocaleString('vi-VN')}đ sẽ tự động được cộng
+                  thêm {minigame.spinsPerOrder} lượt quay.
                 </p>
               </div>
             </div>

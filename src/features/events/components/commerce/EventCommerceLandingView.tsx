@@ -222,11 +222,13 @@ export function EventCommerceLandingView({
             ) : null}
           </section>
 
-          <EventMinigameSection
-            event={event}
-            isMobilePreview={isMobile}
-            className={`py-6 max-w-7xl mx-auto ${isMobile ? 'px-2.5' : 'px-3 sm:px-6 lg:px-8'}`}
-          />
+          {(!isCustomerView || (event as EventDetailResponse).minigameConfig?.isActive) && (
+            <EventMinigameSection
+              event={event}
+              isMobilePreview={isMobile}
+              className={`py-6 max-w-7xl mx-auto ${isMobile ? 'px-2.5' : 'px-3 sm:px-6 lg:px-8'}`}
+            />
+          )}
         </main>
 
         <EventLandingFooter />
