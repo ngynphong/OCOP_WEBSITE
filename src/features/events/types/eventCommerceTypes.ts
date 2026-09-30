@@ -173,6 +173,7 @@ export interface EventVoucher {
   usedCount: number;
   expiredAt?: string;
   status: string;
+  isUsable?: boolean;
   sortOrder: number;
   shopName?: string;
 }

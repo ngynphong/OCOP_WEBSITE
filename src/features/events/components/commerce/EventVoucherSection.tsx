@@ -74,6 +74,15 @@ export function EventVoucherSection({ vouchers }: EventVoucherSectionProps) {
         {vouchers.map((v) => {
           const isSaved = savedVoucherIds.has(v.voucherId);
           const isSaving = saveVoucher.isPending && saveVoucher.variables === v.voucherId;
+          const isExpired = v.status === 'EXPIRED';
+          const isExhausted = v.usageLimit != null && v.usedCount >= v.usageLimit;
+          const isUnavailable =
+            v.isUsable === false || v.status !== 'ACTIVE' || isExpired || isExhausted;
+          const unavailableLabel = isExpired
+            ? 'Hết hạn'
+            : isExhausted
+              ? 'Đã hết lượt'
+              : 'Không khả dụng';
           const isPercent = v.type === 'PERCENT';
           const discountDisplay = isPercent
             ? `Giảm ${v.discountValue}%`
@@ -137,17 +146,21 @@ export function EventVoucherSection({ vouchers }: EventVoucherSectionProps) {
                   <button
                     type="button"
                     onClick={() => handleSave(v.voucherId)}
-                    disabled={isSaved || isSaving}
+                    disabled={isSaved || isSaving || isUnavailable}
                     className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                      isSaved
+                      isSaved || isUnavailable
                         ? 'bg-slate-100 dark:bg-slate-700 text-slate-400 cursor-not-allowed'
                         : 'text-white shadow-sm hover:scale-105'
                     }`}
                     style={
-                      !isSaved ? { backgroundColor: 'var(--event-primary, #DC2626)' } : undefined
+                      !isSaved && !isUnavailable
+                        ? { backgroundColor: 'var(--event-primary, #DC2626)' }
+                        : undefined
                     }
                   >
-                    {isSaved ? (
+                    {isUnavailable ? (
+                      unavailableLabel
+                    ) : isSaved ? (
                       <span className="flex items-center gap-1">
                         <Check className="w-3.5 h-3.5" /> Đã lưu ví
                       </span>

@@ -144,8 +144,10 @@ export const SearchBox: React.FC<SearchBoxProps> = ({
                   : 'Tìm mật ong, trà, gạo ST25, lụa Bảo Lộc...'
           }
           className={cn(
-            'flex-1 bg-transparent border-none outline-none px-3 py-1 font-sans text-sm md:text-base',
-            variant === 'header' ? 'text-white placeholder:text-emerald-100/50' : 'text-stone-800',
+            'flex-1 bg-transparent border-none outline-none px-3 py-1 font-sans text-sm md:text-base min-w-0',
+            variant === 'header'
+              ? 'text-white placeholder:text-emerald-100/50 lg:placeholder:text-transparent xl:placeholder:text-emerald-100/50'
+              : 'text-stone-800',
           )}
         />
         {query && (

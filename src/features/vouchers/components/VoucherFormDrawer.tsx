@@ -133,6 +133,7 @@ export function VoucherFormDrawer({
               <label className="text-sm font-bold text-stone-700">Mã Voucher</label>
               <input
                 {...register('code')}
+                maxLength={20}
                 placeholder="VD: OCOPNEW50"
                 className={cn(
                   'w-full px-4 py-3 bg-stone-50 border text-stone-800 border-stone-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all uppercase font-bold',

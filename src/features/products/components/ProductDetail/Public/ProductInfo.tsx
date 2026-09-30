@@ -343,71 +343,86 @@ export function ProductInfo({ product, isWishlisted = false }: ProductInfoProps)
               </div>
             ) : (
               <>
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center border border-stone-200 rounded-xl h-12 bg-white shrink-0 overflow-hidden shadow-xs">
-                    <button
-                      type="button"
-                      onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
-                      disabled={quantity <= 1}
-                      className="w-10 h-full flex items-center justify-center text-stone-600 hover:bg-stone-100 disabled:opacity-30 disabled:hover:bg-transparent transition cursor-pointer text-base font-bold"
-                      aria-label="Giảm số lượng"
-                    >
-                      -
-                    </button>
-                    <input
-                      type="number"
-                      min={1}
-                      max={selectedVariant?.stockQty || 999}
-                      value={quantity}
-                      onChange={(e) => {
-                        const val = parseInt(e.target.value, 10);
-                        if (!isNaN(val) && val >= 1) setQuantity(val);
-                      }}
-                      className="w-12 text-center text-sm font-bold text-stone-800 border-none outline-hidden focus:ring-0 p-0"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setQuantity((prev) => prev + 1)}
-                      className="w-10 h-full flex items-center justify-center text-stone-600 hover:bg-stone-100 transition cursor-pointer text-base font-bold"
-                      aria-label="Tăng số lượng"
-                    >
-                      +
-                    </button>
+                <div className="flex flex-col gap-3.5">
+                  <div className="flex items-center justify-between sm:justify-start gap-4">
+                    <span className="text-xs font-bold text-stone-700 uppercase tracking-wider shrink-0">
+                      Số lượng
+                    </span>
+                    <div className="flex items-center border border-stone-200 rounded-xl h-11 bg-white shrink-0 overflow-hidden shadow-xs">
+                      <button
+                        type="button"
+                        onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
+                        disabled={quantity <= 1}
+                        className="w-10 h-full flex items-center justify-center text-stone-600 hover:bg-stone-100 disabled:opacity-30 disabled:hover:bg-transparent transition cursor-pointer text-base font-bold"
+                        aria-label="Giảm số lượng"
+                      >
+                        -
+                      </button>
+                      <input
+                        type="number"
+                        min={1}
+                        max={selectedVariant?.stockQty || 999}
+                        value={quantity}
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value, 10);
+                          if (!isNaN(val) && val >= 1) setQuantity(val);
+                        }}
+                        className="w-12 text-center text-sm font-bold text-stone-800 border-none outline-hidden focus:ring-0 p-0"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setQuantity((prev) => prev + 1)}
+                        className="w-10 h-full flex items-center justify-center text-stone-600 hover:bg-stone-100 transition cursor-pointer text-base font-bold"
+                        aria-label="Tăng số lượng"
+                      >
+                        +
+                      </button>
+                    </div>
+
+                    {selectedVariant?.stockQty !== undefined && selectedVariant.stockQty > 0 && (
+                      <span className="text-xs text-stone-500 font-medium">
+                        (Còn {selectedVariant.stockQty} sản phẩm)
+                      </span>
+                    )}
                   </div>
 
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="flex-1 h-12 rounded-xl text-sm font-bold border-stone-200 hover:bg-stone-50 text-stone-700"
-                    leftIcon={
-                      isAddingToCart ? (
-                        <Loader2 className="w-4 h-4 animate-spin text-emerald-600" />
-                      ) : (
-                        <ShoppingCart className="w-4 h-4 text-emerald-600" />
-                      )
-                    }
-                    onClick={handleAddToCart}
-                    disabled={isAddingToCart || !selectedVariant}
-                  >
-                    {isAddingToCart ? 'Đang thêm...' : 'Thêm vào giỏ'}
-                  </Button>
+                  <div className="grid grid-cols-2 gap-3">
+                    <Button
+                      variant="outline"
+                      size="md"
+                      className="w-full h-12 rounded-xl text-xs sm:text-sm font-bold border-stone-200 hover:bg-stone-50 text-stone-700 px-2 sm:px-4 whitespace-nowrap shadow-xs"
+                      leftIcon={
+                        isAddingToCart ? (
+                          <Loader2 className="w-4 h-4 animate-spin text-emerald-600 shrink-0" />
+                        ) : (
+                          <ShoppingCart className="w-4 h-4 text-emerald-600 shrink-0" />
+                        )
+                      }
+                      onClick={handleAddToCart}
+                      disabled={isAddingToCart || !selectedVariant}
+                    >
+                      <span className="truncate">
+                        {isAddingToCart ? 'Đang thêm...' : 'Thêm vào giỏ'}
+                      </span>
+                    </Button>
 
-                  <Button
-                    variant="primary"
-                    size="lg"
-                    className="flex-1 h-12 rounded-xl text-sm font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs"
-                    leftIcon={
-                      isAddingToCart ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <Zap className="w-4 h-4 fill-current" />
-                      )
-                    }
-                    onClick={handleBuyNow}
-                    disabled={isAddingToCart || !selectedVariant}
-                  >
-                    Mua ngay
-                  </Button>
+                    <Button
+                      variant="primary"
+                      size="md"
+                      className="w-full h-12 rounded-xl text-xs sm:text-sm font-bold bg-emerald-600 hover:bg-emerald-700 text-white px-2 sm:px-4 whitespace-nowrap shadow-xs"
+                      leftIcon={
+                        isAddingToCart ? (
+                          <Loader2 className="w-4 h-4 animate-spin shrink-0" />
+                        ) : (
+                          <Zap className="w-4 h-4 fill-current shrink-0" />
+                        )
+                      }
+                      onClick={handleBuyNow}
+                      disabled={isAddingToCart || !selectedVariant}
+                    >
+                      <span className="truncate">Mua ngay</span>
+                    </Button>
+                  </div>
                 </div>
 
                 <Button

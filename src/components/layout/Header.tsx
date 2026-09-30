@@ -105,7 +105,7 @@ export function Header() {
         )}
       >
         <div className="w-full max-w-7xl px-4 lg:px-6 py-2 md:py-2 grid grid-cols-[48px_minmax(0,1fr)_auto] lg:flex lg:justify-between items-center">
-          <div className="flex justify-start items-center lg:gap-8 lg:pl-4 relative z-[103]">
+          <div className="flex justify-start items-center lg:gap-5 xl:gap-8 lg:pl-2 xl:pl-4 relative z-[103] shrink-0">
             <button
               suppressHydrationWarning
               className="lg:hidden h-12 w-12 text-white flex items-center justify-center cursor-pointer hover:bg-white/10 rounded-full transition-colors"
@@ -129,7 +129,7 @@ export function Header() {
                 sizes="174px"
               />
             </Link>
-            <nav className="hidden lg:flex justify-start items-center gap-6">
+            <nav className="hidden lg:flex justify-start items-center gap-3.5 xl:gap-6 shrink-0">
               <Link
                 href="/"
                 suppressHydrationWarning
@@ -226,10 +226,10 @@ export function Header() {
               sizes="116px"
             />
           </Link>
-          <div className="hidden lg:flex flex-1 max-w-[512px] px-8 flex-col justify-start items-start">
+          <div className="hidden lg:flex flex-1 lg:max-w-[160px] xl:max-w-[512px] min-w-0 px-2 lg:px-3 xl:px-8 flex-col justify-start items-start">
             <SearchBox variant="header" />
           </div>
-          <div className="justify-self-end flex justify-end items-center gap-0 md:gap-2.5 relative z-[103]">
+          <div className="justify-self-end flex justify-end items-center gap-0 md:gap-2.5 relative z-[103] shrink-0">
             <button
               suppressHydrationWarning
               className="lg:hidden h-11 w-11 text-white flex items-center justify-center hover:bg-white/10 rounded-full transition-colors cursor-pointer"

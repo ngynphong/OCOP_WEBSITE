@@ -116,6 +116,15 @@ export const EventLandingVoucherSection: React.FC<EventLandingVoucherSectionProp
           {vouchers.map((v) => {
             const isSaved =
               savedVoucherIds.has(v.id) || (v.voucherId ? savedVoucherIds.has(v.voucherId) : false);
+            const isExpired = v.status === 'EXPIRED';
+            const isExhausted = v.usageLimit != null && v.usedCount >= v.usageLimit;
+            const isUnavailable =
+              v.isUsable === false || v.status !== 'ACTIVE' || isExpired || isExhausted;
+            const unavailableLabel = isExpired
+              ? 'Hết hạn'
+              : isExhausted
+                ? 'Đã hết lượt'
+                : 'Không khả dụng';
 
             return (
               <div
@@ -156,16 +165,23 @@ export const EventLandingVoucherSection: React.FC<EventLandingVoucherSectionProp
                   <button
                     type="button"
                     onClick={() => onSaveVoucher(v)}
-                    className={`px-3 py-1 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1 ${
-                      isSaved
-                        ? 'bg-emerald-600 text-white'
-                        : 'text-slate-900 font-bold hover:opacity-90 shadow-2xs'
+                    disabled={isSaved || isUnavailable}
+                    className={`px-3 py-1 rounded-xl text-xs font-bold transition flex items-center gap-1 ${
+                      isUnavailable
+                        ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
+                        : isSaved
+                          ? 'bg-emerald-600 text-white'
+                          : 'text-slate-900 font-bold hover:opacity-90 shadow-2xs cursor-pointer'
                     }`}
                     style={
-                      !isSaved ? { backgroundColor: 'var(--event-secondary, #F59E0B)' } : undefined
+                      !isSaved && !isUnavailable
+                        ? { backgroundColor: 'var(--event-secondary, #F59E0B)' }
+                        : undefined
                     }
                   >
-                    {isSaved ? (
+                    {isUnavailable ? (
+                      <span>{unavailableLabel}</span>
+                    ) : isSaved ? (
                       <>
                         <Check className="w-3 h-3" />
                         <span>Đã lưu</span>
