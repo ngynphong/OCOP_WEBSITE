@@ -42,7 +42,6 @@ const Step1BasicInfo: React.FC<Step1BasicInfoProps> = memo(
             </span>
             <input
               {...register('slug')}
-              placeholder="mat-ong-rung-tay-nguyen"
               className={cn(inputCls, 'pl-[108px]', errors.slug && 'border-red-400')}
             />
           </div>

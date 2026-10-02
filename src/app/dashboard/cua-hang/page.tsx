@@ -21,6 +21,9 @@ import {
 } from 'react-icons/fi';
 import { useSellerShop } from '@/features/shop/hooks/useSellerShop';
 import { useAuthProfile } from '@/features/auth/hooks/useAuthProfile';
+import { useAppSelector } from '@/store/hooks';
+import { useDispatch } from 'react-redux';
+import { setDashboardMode } from '@/store/features/authSlice';
 import { ShopEditForm } from '@/features/shop/components/ShopEditForm';
 import { ShopDeliveryConfigCard } from '@/features/shop/components/ShopDeliveryConfigCard';
 import { ShopStatus } from '@/features/shop/types/shopTypes';
@@ -85,16 +88,56 @@ export default function SellerShopPage() {
   } = useSellerShop();
 
   const { profile, isLoadingProfile } = useAuthProfile();
-  const { data: shopData, isPending, isError } = useMyShopQuery();
-  const { data: subData } = useCurrentSubscriptionQuery();
+  const { dashboardMode } = useAppSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  const isSellerMode = dashboardMode === 'SELLER';
+  const isSeller = profile?.roles?.includes('SELLER') || Boolean(profile?.isOwnerShop);
+
+  const {
+    data: shopData,
+    isPending,
+    isError,
+  } = useMyShopQuery({
+    enabled: isSellerMode && Boolean(profile?.isOwnerShop),
+  });
+  const { data: subData } = useCurrentSubscriptionQuery({
+    enabled: isSellerMode && Boolean(profile?.isOwnerShop),
+  });
   const [isEditing, setIsEditing] = useState(false);
 
-  if (isLoadingProfile || (isPending && profile?.isOwnerShop)) {
+  if (isLoadingProfile || (isPending && profile?.isOwnerShop && isSellerMode)) {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-3 text-stone-400">
         <FiLoader size={28} className="animate-spin text-green-500" />
         <p className="text-sm">Đang tải thông tin cửa hàng...</p>
       </div>
+    );
+  }
+
+  if (isSeller && !isSellerMode) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex flex-col items-center justify-center py-16 gap-6 max-w-md mx-auto text-center"
+      >
+        <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center text-amber-600">
+          <FiAlertCircle size={36} />
+        </div>
+        <div>
+          <h2 className="text-xl font-extrabold text-stone-900">Bạn đang ở chế độ Mua hàng</h2>
+          <p className="text-sm text-stone-500 mt-2 leading-relaxed">
+            Vui lòng chuyển sang chế độ Bán hàng để xem và quản lý thông tin cửa hàng của bạn.
+          </p>
+        </div>
+        <button
+          onClick={() => dispatch(setDashboardMode('SELLER'))}
+          className="flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 shadow-lg shadow-green-500/25 transition-all cursor-pointer"
+        >
+          Chuyển sang chế độ Bán hàng
+        </button>
+      </motion.div>
     );
   }
 

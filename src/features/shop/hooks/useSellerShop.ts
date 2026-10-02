@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { useAuthProfile } from '@/features/auth/hooks/useAuthProfile';
+import { useAppSelector } from '@/store/hooks';
 import { sellerApi } from '../api/sellerApi';
 import {
   CreateShopRequest,
@@ -15,13 +16,19 @@ import {
 export const useSellerShop = () => {
   const queryClient = useQueryClient();
 
-  const useMyShopQuery = () => {
+  const useMyShopQuery = (options?: { enabled?: boolean }) => {
     const { profile } = useAuthProfile();
+    const { dashboardMode } = useAppSelector((state) => state.auth);
+
+    const isEnabled =
+      options?.enabled !== undefined
+        ? options.enabled
+        : !!profile?.isOwnerShop && dashboardMode === 'SELLER';
 
     return useQuery({
       queryKey: ['seller-my-shop'],
       queryFn: () => sellerApi.getMyShop(),
-      enabled: !!profile?.isOwnerShop,
+      enabled: isEnabled,
       retry: 1,
     });
   };
@@ -40,30 +47,47 @@ export const useSellerShop = () => {
     });
   };
 
-  const useCurrentSubscriptionQuery = () => {
+  const useCurrentSubscriptionQuery = (options?: { enabled?: boolean }) => {
     const { profile } = useAuthProfile();
+    const { dashboardMode } = useAppSelector((state) => state.auth);
+
+    const isEnabled =
+      options?.enabled !== undefined
+        ? options.enabled
+        : !!profile?.isOwnerShop && dashboardMode === 'SELLER';
 
     return useQuery({
       queryKey: ['seller-subscription-current'],
       queryFn: () => sellerApi.getCurrentSubscription(),
-      enabled: !!profile?.isOwnerShop,
+      enabled: isEnabled,
     });
   };
 
-  const useSubscriptionHistoryQuery = () => {
+  const useSubscriptionHistoryQuery = (options?: { enabled?: boolean }) => {
     const { profile } = useAuthProfile();
+    const { dashboardMode } = useAppSelector((state) => state.auth);
+
+    const isEnabled =
+      options?.enabled !== undefined
+        ? options.enabled
+        : !!profile?.isOwnerShop && dashboardMode === 'SELLER';
 
     return useQuery({
       queryKey: ['seller-subscription-history'],
       queryFn: () => sellerApi.getSubscriptionHistory(),
-      enabled: !!profile?.isOwnerShop,
+      enabled: isEnabled,
     });
   };
 
-  const useBankAccountQuery = () => {
+  const useBankAccountQuery = (options?: { enabled?: boolean }) => {
+    const { dashboardMode } = useAppSelector((state) => state.auth);
+
+    const isEnabled = options?.enabled !== undefined ? options.enabled : dashboardMode === 'SELLER';
+
     return useQuery({
       queryKey: ['seller-bank-account'],
       queryFn: () => sellerApi.getBankAccount(),
+      enabled: isEnabled,
     });
   };
 

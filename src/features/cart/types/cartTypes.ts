@@ -52,7 +52,9 @@ export interface CartResponse {
 }
 
 export interface CartCountData {
-  count: number;
+  count?: number;
+  totalItems?: number;
+  itemCount?: number;
 }
 
 export interface CartCountResponse {

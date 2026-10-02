@@ -51,6 +51,39 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     }
   }, [isInitialized, isLoadingProfile, profile, isAuthenticated, isErrorProfile, router]);
 
+  const isSeller = profile?.roles?.includes('SELLER') || Boolean(profile?.isOwnerShop);
+
+  React.useEffect(() => {
+    if (!isMounted || !isInitialized || isLoadingProfile || !isAuthenticated || !profile) return;
+
+    const isSellerOnlyRoute =
+      (pathname.startsWith('/dashboard/cua-hang') &&
+        pathname !== '/dashboard/cua-hang/dang-ky' &&
+        pathname !== '/dashboard/cua-hang') ||
+      pathname.startsWith('/dashboard/san-pham') ||
+      pathname.startsWith('/dashboard/seller-wallet') ||
+      pathname.startsWith('/dashboard/kho-hang') ||
+      pathname.startsWith('/dashboard/su-kien') ||
+      pathname.startsWith('/dashboard/tang-truong') ||
+      pathname.startsWith('/dashboard/nguon-nguyen-lieu') ||
+      pathname.startsWith('/dashboard/lo-san-xuat') ||
+      pathname.startsWith('/dashboard/reviews');
+
+    if ((!isSeller || dashboardMode === 'USER') && isSellerOnlyRoute) {
+      router.replace('/dashboard');
+    }
+  }, [
+    isMounted,
+    isInitialized,
+    isLoadingProfile,
+    isAuthenticated,
+    profile,
+    pathname,
+    dashboardMode,
+    isSeller,
+    router,
+  ]);
+
   if (!isMounted || !isInitialized || isLoadingProfile) {
     return null;
   }
@@ -75,8 +108,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </div>
     );
   }
-
-  const isSeller = profile?.roles?.includes('SELLER');
 
   const getPageTitle = () => {
     if (pathname.includes('/su-kien')) return 'Sự kiện của sàn';
@@ -288,7 +319,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         onConfirm={handleConfirmLogout}
         onCancel={() => setIsLogoutModalOpen(false)}
       />
-      {isSeller && <SellerTourGuide />}
+      {isSeller && dashboardMode === 'SELLER' && <SellerTourGuide />}
     </div>
   );
 }

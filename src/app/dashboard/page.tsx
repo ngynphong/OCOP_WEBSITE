@@ -275,9 +275,9 @@ const DashboardPage = () => {
         </div>
       )}
 
-      {!isSellerMode && (
+      {!isSellerMode && !hasStore && !profile?.roles?.includes('SELLER') && (
         <Link
-          href="/dashboard/cua-hang"
+          href="/dashboard/cua-hang/dang-ky"
           className="group flex items-center gap-5 p-5 rounded-xl bg-linear-to-r from-green-700 to-emerald-600 text-white shadow-xl shadow-green-700/25 hover:shadow-green-600/40 transition-all hover:-translate-y-0.5"
         >
           <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center shrink-0">

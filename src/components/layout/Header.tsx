@@ -19,7 +19,9 @@ import { useAppSelector } from '@/store/hooks';
 import { useAuthProfile } from '@/features/auth/hooks/useAuthProfile';
 import { useLogout } from '@/features/auth/hooks/useLogout';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
-import { useCartCount } from '@/features/cart/hooks/useCart';
+import { useQueryClient } from '@tanstack/react-query';
+import { useCartCount, CART_QUERY_KEYS } from '@/features/cart/hooks/useCart';
+import type { CartResponse } from '@/features/cart/types/cartTypes';
 import dynamic from 'next/dynamic';
 
 import { cn } from '@/lib/utils';
@@ -54,8 +56,18 @@ export function Header() {
   const { logout, isLoggingOut, handleClientLogout } = useLogout();
   const role = useAppSelector((state) => state.auth.roles);
 
+  const queryClient = useQueryClient();
   const { data: cartCountResp } = useCartCount();
-  const cartCount = cartCountResp?.data?.count ?? 0;
+  const cachedCart = queryClient.getQueryData<CartResponse>(CART_QUERY_KEYS.cart);
+
+  const cartCount =
+    cartCountResp?.data?.totalItems ??
+    cartCountResp?.data?.count ??
+    cartCountResp?.data?.itemCount ??
+    cachedCart?.data?.totalItems ??
+    cachedCart?.data?.itemCount ??
+    0;
+  const displayCount = isHydrated ? cartCount : 0;
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -340,13 +352,13 @@ export function Header() {
             <Link
               href="/gio-hang"
               suppressHydrationWarning
-              aria-label={`Giỏ hàng${cartCount > 0 ? ` (${cartCount} sản phẩm)` : ''}`}
+              aria-label={`Giỏ hàng${displayCount > 0 ? ` (${displayCount} sản phẩm)` : ''}`}
               className="h-11 w-11 md:h-10 md:w-10 flex justify-center items-center text-white hover:bg-white/10 rounded-full transition-colors relative cursor-pointer group"
             >
               <ShoppingCart className="w-5 h-5 group-hover:scale-110 transition-transform" />
-              {cartCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 min-w-[20px] h-5 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-green-700 shadow-sm px-1 animate-in fade-in zoom-in duration-300">
-                  {cartCount > 99 ? '99+' : cartCount}
+              {displayCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 min-w-[20px] h-5 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-emerald-700 shadow-sm px-1 animate-in fade-in zoom-in duration-300">
+                  {displayCount > 99 ? '99+' : displayCount}
                 </span>
               )}
             </Link>

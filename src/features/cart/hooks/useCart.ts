@@ -17,9 +17,27 @@ export const CART_QUERY_KEYS = {
 } as const;
 
 export const useCart = () => {
+  const queryClient = useQueryClient();
+
   return useQuery({
     queryKey: CART_QUERY_KEYS.cart,
-    queryFn: () => cartApi.getCart(),
+    queryFn: async () => {
+      const res = await cartApi.getCart();
+      if (res?.data) {
+        const total =
+          res.data.totalItems ?? res.data.items?.reduce((sum, item) => sum + item.qty, 0) ?? 0;
+        const itemsCount = res.data.itemCount ?? res.data.items?.length ?? 0;
+        queryClient.setQueryData(CART_QUERY_KEYS.count, {
+          code: res.code ?? 1000,
+          data: {
+            count: total,
+            totalItems: total,
+            itemCount: itemsCount,
+          },
+        });
+      }
+      return res;
+    },
     staleTime: 0,
     refetchOnWindowFocus: true,
   });
@@ -54,7 +72,17 @@ export const useAddToCart = () => {
 
       queryClient.setQueryData<{ data: CartCountData }>(CART_QUERY_KEYS.count, (old) => {
         if (!old?.data) return old;
-        return { data: { count: old.data.count + data.qty } };
+        const prevTotal = old.data.totalItems ?? old.data.count ?? 0;
+        const newTotal = prevTotal + data.qty;
+        return {
+          ...old,
+          data: {
+            ...old.data,
+            count: newTotal,
+            totalItems: newTotal,
+            itemCount: (old.data.itemCount ?? 0) + 1,
+          },
+        };
       });
 
       return { previousCart, previousCount };
@@ -70,6 +98,16 @@ export const useAddToCart = () => {
     },
     onSuccess: (data, variables) => {
       toast.success('Đã thêm vào giỏ hàng');
+      if (data?.data) {
+        queryClient.setQueryData(CART_QUERY_KEYS.count, {
+          code: data.code ?? 1000,
+          data: {
+            count: data.data.totalItems,
+            totalItems: data.data.totalItems,
+            itemCount: data.data.itemCount,
+          },
+        });
+      }
       if (variables?.productId) {
         trackAddToCart(variables.productId);
       }
@@ -104,6 +142,18 @@ export const useUpdateCartItem = () => {
       }
 
       return { previousCart };
+    },
+    onSuccess: (data) => {
+      if (data?.data) {
+        queryClient.setQueryData(CART_QUERY_KEYS.count, {
+          code: data.code ?? 1000,
+          data: {
+            count: data.data.totalItems,
+            totalItems: data.data.totalItems,
+            itemCount: data.data.itemCount,
+          },
+        });
+      }
     },
     onError: (err, variables, context) => {
       if (context?.previousCart) {
@@ -142,8 +192,18 @@ export const useRemoveCartItem = () => {
       }
       toast.error('Lỗi khi xóa sản phẩm');
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast.success('Đã xóa sản phẩm khỏi giỏ hàng');
+      if (data?.data) {
+        queryClient.setQueryData(CART_QUERY_KEYS.count, {
+          code: data.code ?? 1000,
+          data: {
+            count: data.data.totalItems,
+            totalItems: data.data.totalItems,
+            itemCount: data.data.itemCount,
+          },
+        });
+      }
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: CART_QUERY_KEYS.cart });
@@ -177,8 +237,18 @@ export const useRemoveCartItems = () => {
       }
       toast.error('Lỗi khi xóa các sản phẩm');
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast.success('Đã xóa các sản phẩm khỏi giỏ hàng');
+      if (data?.data) {
+        queryClient.setQueryData(CART_QUERY_KEYS.count, {
+          code: data.code ?? 1000,
+          data: {
+            count: data.data.totalItems,
+            totalItems: data.data.totalItems,
+            itemCount: data.data.itemCount,
+          },
+        });
+      }
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: CART_QUERY_KEYS.cart });
@@ -206,7 +276,7 @@ export const useClearCart = () => {
         return { data: { ...old.data, items: [], totalItems: 0, totalAmount: 0 } };
       });
       queryClient.setQueryData<{ data: CartCountData }>(CART_QUERY_KEYS.count, {
-        data: { count: 0 },
+        data: { count: 0, totalItems: 0, itemCount: 0 },
       });
 
       return { previousCart, previousCount };
@@ -261,6 +331,16 @@ export const useMergeCart = () => {
     onSuccess: (data) => {
       if (data) {
         clearSessionId();
+        if (data.data) {
+          queryClient.setQueryData(CART_QUERY_KEYS.count, {
+            code: data.code ?? 1000,
+            data: {
+              count: data.data.totalItems,
+              totalItems: data.data.totalItems,
+              itemCount: data.data.itemCount,
+            },
+          });
+        }
         queryClient.invalidateQueries({ queryKey: CART_QUERY_KEYS.cart });
         queryClient.invalidateQueries({ queryKey: CART_QUERY_KEYS.count });
       }

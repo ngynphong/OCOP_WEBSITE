@@ -22,6 +22,8 @@ export const useLogout = () => {
     Cookies.remove('user_roles');
     dispatch(reduxLogout());
     queryClient.removeQueries({ queryKey: ['profile'] });
+    queryClient.removeQueries({ queryKey: ['cart'] });
+    queryClient.removeQueries({ queryKey: ['cart-count'] });
     toast.success('Đăng xuất thành công');
     router.replace('/dang-nhap');
   };

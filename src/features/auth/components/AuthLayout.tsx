@@ -33,7 +33,7 @@ export function AuthLayout({
           <p className="text-xs font-bold text-amber-500 tracking-widest uppercase mb-4">
             Nền tảng TMĐT OCOP
           </p>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-amber-900 leading-[1.1] md:leading-[1.15] tracking-tight max-w-[90%] lg:max-w-[80%] relative">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-amber-900 leading-[1.1] md:leading-[1.15] tracking-tight max-w-[90%] lg:max-w-[80%] relative">
             KẾT NỐI NÔNG SẢN
             <br /> VÀ ĐẶC SẢN
             <br />

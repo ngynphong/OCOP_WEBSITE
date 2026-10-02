@@ -37,12 +37,12 @@ export const useHandleAuthSuccess = () => {
         try {
           await cartApi.mergeCart({ sessionId });
           clearSessionId();
-          queryClient.invalidateQueries({ queryKey: ['cart'] });
-          queryClient.invalidateQueries({ queryKey: ['cart-count'] });
         } catch (error) {
           console.error('Lỗi khi merge giỏ hàng:', error);
         }
       }
+      queryClient.invalidateQueries({ queryKey: ['cart'] });
+      queryClient.invalidateQueries({ queryKey: ['cart-count'] });
 
       toast.success(successMessage);
 

@@ -222,14 +222,14 @@ const MENU_GROUPS: MenuGroup[] = [
     id: 'operations-legal',
     label: 'Vận hành & Pháp lý',
     icon: FiShield,
-    roles: ['USER', 'SELLER'],
+    roles: ['SELLER'],
     items: [
       {
         id: 'shop',
         label: 'Thông tin cửa hàng',
         icon: FiTag,
         href: '/dashboard/cua-hang',
-        roles: ['USER', 'SELLER'],
+        roles: ['SELLER'],
         exact: true,
       },
       {
@@ -322,10 +322,13 @@ const DashboardSidebar = ({ onMobileClose }: { onMobileClose?: () => void }) => 
 
   useEffect(() => {
     const savedMode = localStorage.getItem('dashboard_mode');
-    if (savedMode === 'USER' || savedMode === 'SELLER') {
+    const isSeller = profile?.roles?.includes('SELLER') || Boolean(profile?.isOwnerShop);
+    if (savedMode === 'SELLER' && !isSeller) {
+      dispatch(setDashboardMode('USER'));
+    } else if (savedMode === 'USER' || (savedMode === 'SELLER' && isSeller)) {
       dispatch(setDashboardMode(savedMode));
     }
-  }, [dispatch]);
+  }, [dispatch, profile]);
 
   const filteredGroups = useMemo(() => {
     return MENU_GROUPS.filter((group) => group.roles.includes(dashboardMode))
