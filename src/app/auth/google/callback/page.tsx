@@ -67,11 +67,11 @@ function GoogleCallbackHandler() {
         <div className="relative flex items-center justify-center w-24 h-24">
           <div className="absolute inset-0 flex items-center justify-center p-3 z-10">
             <Image
-              src="/images/logo.png"
+              src="/images/icon.png"
               alt="OCOP"
-              width={150}
-              height={50}
-              className="w-14 h-auto object-contain scale-110"
+              width={48}
+              height={48}
+              className="w-12 h-12 object-contain"
               priority
             />
           </div>

@@ -27,11 +27,11 @@ export const LoadingOverlay = memo(function LoadingOverlay() {
         <div className="relative flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24">
           <div className="absolute inset-0 flex items-center justify-center p-2.5 sm:p-3 z-10">
             <Image
-              src="/images/logo.png"
-              alt="OCOP IES CONNECT"
-              width={100}
-              height={30}
-              className="w-11 sm:w-14 h-auto object-contain scale-110"
+              src="/images/icon.png"
+              alt="OCOP"
+              width={48}
+              height={48}
+              className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
             />
           </div>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { FiBox } from 'react-icons/fi';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
@@ -11,8 +11,14 @@ interface SidebarLogoProps {
 export const SidebarLogo = ({ isCollapsed }: SidebarLogoProps) => {
   return (
     <div className={cn('mb-10 flex items-center gap-3', isCollapsed ? 'justify-center' : 'px-2')}>
-      <div className="w-10 h-10 shrink-0 rounded-xl bg-white/10 flex items-center justify-center backdrop-blur-md border border-white/10">
-        <FiBox className="text-white text-xl" />
+      <div className="w-10 h-10 shrink-0 rounded-xl bg-white/10 flex items-center justify-center backdrop-blur-md border border-white/10 overflow-hidden p-1">
+        <Image
+          src="/images/icon.png"
+          alt="OCOP"
+          width={32}
+          height={32}
+          className="w-full h-full object-contain"
+        />
       </div>
       {!isCollapsed && (
         <motion.div

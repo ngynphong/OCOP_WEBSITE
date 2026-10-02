@@ -24,11 +24,16 @@ export function AuthLayout({
     <div className="h-screen overflow-hidden w-full flex flex-col md:flex-row font-sans">
       <div className="w-full md:w-1/2 sm:flex hidden flex-col items-center justify-between p-6 lg:p-8 xl:p-12 relative overflow-y-auto md:overflow-hidden">
         <div className="hidden md:block h-8"></div>
-        <button className="absolute top-6 left-6">
-          <Link href="/">
-            <Image src="/images/logo.png" alt="Logo" width={150} height={150} />
-          </Link>
-        </button>
+        <Link href="/" className="absolute top-6 left-6 inline-block">
+          <Image
+            src="/images/logo-text.png"
+            alt="OCOP IES Connect"
+            width={140}
+            height={100}
+            className="w-28 sm:w-32 h-auto object-contain hover:opacity-90 transition-opacity"
+            priority
+          />
+        </Link>
         <div className="w-full flex flex-col items-center text-center mt-8 md:mt-0 xl:mt-12 z-10 shrink-0">
           <p className="text-xs font-bold text-amber-500 tracking-widest uppercase mb-4">
             Nền tảng TMĐT OCOP

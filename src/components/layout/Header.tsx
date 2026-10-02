@@ -133,12 +133,11 @@ export function Header() {
             >
               <Image
                 src="/images/logo.png"
-                alt="OCOP IES CONNECT"
-                width={360}
-                height={183}
-                className="h-[88px] w-auto scale-135"
+                alt="OCOP IES Connect"
+                width={150}
+                height={111}
+                className="h-14 w-auto object-contain hover:scale-105 transition-transform"
                 priority
-                sizes="174px"
               />
             </Link>
             <nav className="hidden lg:flex justify-start items-center gap-3.5 xl:gap-6 shrink-0">
@@ -226,16 +225,15 @@ export function Header() {
           <Link
             href="/"
             suppressHydrationWarning
-            className="lg:hidden justify-self-center flex w-[116px] max-w-full items-center"
+            className="lg:hidden justify-self-center flex items-center justify-center"
           >
             <Image
               src="/images/logo-header.webp"
-              alt="OCOP IES CONNECT"
-              width={360}
-              height={183}
-              className="h-auto w-full"
+              alt="OCOP IES Connect"
+              width={120}
+              height={89}
+              className="h-11 w-auto object-contain"
               priority
-              sizes="116px"
             />
           </Link>
           <div className="hidden lg:flex flex-1 lg:max-w-[160px] xl:max-w-[512px] min-w-0 px-2 lg:px-3 xl:px-8 flex-col justify-start items-start">

@@ -2,7 +2,7 @@ export const siteConfig = {
   name: 'OCOP',
   description: 'Sàn thương mại điện tử OCOP - Tinh hoa hàng Việt, Đặc sản vùng miền.',
   url: process.env.NEXT_PUBLIC_SITE_URL || 'https://www.ocop.iesconnect.vn',
-  ogImage: '/images/logo.png',
+  ogImage: '/images/og-logo.png',
   links: {
     facebook: 'https://www.facebook.com/ies.focus.lms',
   },
