@@ -132,7 +132,7 @@ export function Header() {
               className="hidden lg:inline-flex shrink-0 flex-row justify-start items-center"
             >
               <Image
-                src="/images/logo.png"
+                src="/images/logo-ocop-2026.png"
                 alt="OCOP IES Connect"
                 width={150}
                 height={111}
@@ -228,7 +228,7 @@ export function Header() {
             className="lg:hidden justify-self-center flex items-center justify-center"
           >
             <Image
-              src="/images/logo-header.webp"
+              src="/images/logo-ocop-2026.png"
               alt="OCOP IES Connect"
               width={120}
               height={89}
