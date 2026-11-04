@@ -29,9 +29,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     if (isInitialized) {
-      const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
-
-      if (!token) {
+      if (!isAuthenticated) {
         router.push('/dang-nhap');
         return;
       }
@@ -45,7 +43,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         router.push('/');
       }
     }
-  }, [profile, isLoadingProfile, router, isAdminUser, isInitialized, hasAdminRoleInStore]);
+  }, [
+    profile,
+    isLoadingProfile,
+    router,
+    isAdminUser,
+    isInitialized,
+    isAuthenticated,
+    hasAdminRoleInStore,
+  ]);
 
   useEffect(() => {
     if (!isInitialized || isLoadingProfile || (isAuthenticated && !profile)) {

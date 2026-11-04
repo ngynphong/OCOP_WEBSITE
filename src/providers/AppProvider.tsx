@@ -5,6 +5,8 @@ import { createPortal } from 'react-dom';
 import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
+import { authApi } from '@/features/auth/api/authApi';
+import { completeInitialization, setCredentials } from '@/store/features/authSlice';
 import { makeStore } from '@/store/store';
 import { WebSocketProvider } from '@/features/notifications/providers/WebSocketProvider';
 import { GlobalPolicyConsentModal } from '@/features/policies/components/GlobalPolicyConsentModal';
@@ -13,26 +15,6 @@ import { GlobalAuthHandler } from './GlobalAuthHandler';
 const emptySubscribe = () => () => {};
 const getSnapshot = () => true;
 const getServerSnapshot = () => false;
-
-function decodeJwt(token: string) {
-  try {
-    const base64Url = token.split('.')[1];
-    if (!base64Url) return null;
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split('')
-        .map(function (c) {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        })
-        .join(''),
-    );
-    return JSON.parse(jsonPayload);
-  } catch (e) {
-    console.error('Failed to decode JWT', e);
-    return null;
-  }
-}
 
 const Toaster = dynamic(() => import('react-hot-toast').then((mod) => mod.Toaster), {
   ssr: false,
@@ -57,41 +39,28 @@ export default function AppProvider({ children }: { children: React.ReactNode })
   const mounted = useSyncExternalStore(emptySubscribe, getSnapshot, getServerSnapshot);
 
   useEffect(() => {
-    const token = localStorage.getItem('access_token');
-    const rolesStr = localStorage.getItem('user_roles');
-
-    if (token) {
-      let roles: string[] = [];
-
-      const decoded = decodeJwt(token);
-      if (decoded && decoded.roles && Array.isArray(decoded.roles)) {
-        roles = decoded.roles;
-      } else if (decoded && (decoded.scp || decoded.scope)) {
-        const scope = decoded.scp || decoded.scope;
-        roles = typeof scope === 'string' ? scope.split(' ') : scope;
-      }
-
-      roles = roles
-        .filter((role): role is string => typeof role === 'string')
-        .map((role) => role.replace(/^ROLE_/, '').toUpperCase());
-
-      if (roles.length === 0) {
-        try {
-          roles = rolesStr ? JSON.parse(rolesStr) : [];
-        } catch (e) {
-          console.error('Failed to parse roles from localStorage', e);
-        }
-      }
-
-      store.dispatch({
-        type: 'auth/setCredentials',
-        payload: { token, roles },
-      });
-    } else {
-      store.dispatch({
-        type: 'auth/completeInitialization',
-      });
+    // Discard credentials written by older releases. Existing web users sign in again.
+    for (const name of ['access_token', 'refresh_token', 'user_roles']) {
+      localStorage.removeItem(name);
+      document.cookie = name + '=; Max-Age=0; Path=/; SameSite=Lax';
     }
+    let cancelled = false;
+    authApi
+      .getSession()
+      .then(({ data }) => {
+        if (!cancelled && !store.getState().auth.isInitialized && data.authenticated) {
+          store.dispatch(setCredentials({ roles: data.roles, subject: data.subject }));
+        }
+      })
+      .catch(() => {
+        // Anonymous users and unavailable sessions initialize without credentials.
+      })
+      .finally(() => {
+        if (!cancelled) store.dispatch(completeInitialization());
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [store]);
 
   const [queryClient] = useState(

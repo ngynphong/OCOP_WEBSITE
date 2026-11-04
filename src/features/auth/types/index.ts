@@ -18,8 +18,6 @@ export interface ResponseBase<T> {
 }
 
 export type LoginResponseData = {
-  accessToken: string;
-  refreshToken: string;
   authenticated: boolean;
   requireOtp: boolean;
   roles: string[];
@@ -32,11 +30,6 @@ export type RegisterResponse = ResponseBase<AuthUser>;
 export type LogoutResponse = ResponseBase<null>;
 
 export type VerifyEmailResponse = ResponseBase<LoginResponseData>;
-
-export type RefreshTokenResponse = ResponseBase<{
-  accessToken: string;
-  refreshToken?: string;
-}>;
 
 export interface ForgotPasswordRequest {
   email: string;
@@ -55,10 +48,6 @@ export type VerifyOtpResponse = ResponseBase<VerifyOtpResponseData>;
 export interface ResetPasswordRequest {
   resetToken: string;
   newPassword: string;
-}
-
-export interface LogoutRequest {
-  refreshToken: string;
 }
 
 export interface VerifyAccountResponse {
@@ -121,10 +110,6 @@ export interface Verify2FARequest {
   target: string;
   code: string;
   deviceType?: 'WEB' | 'MOBILE' | 'DESKTOP';
-}
-
-export interface RefreshTokenRequest {
-  refreshToken: string;
 }
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

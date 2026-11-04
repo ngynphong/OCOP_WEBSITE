@@ -1,17 +1,12 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/ocop/api/v1';
+import { ACCESS_COOKIE, API_URL, REFRESH_COOKIE, clearSessionCookies } from '@/lib/web-session';
+
 const ADMIN_ROLES = new Set(['ADMIN', 'SUPER_ADMIN']);
-const AUTH_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 
 type SessionVerification = {
   status: number;
   roles: string[];
-};
-
-type RefreshedSession = {
-  accessToken: string;
-  refreshToken?: string;
 };
 
 const normalizeRoles = (value: unknown): string[] => {
@@ -33,6 +28,8 @@ const verifySession = async (accessToken: string): Promise<SessionVerification> 
     const response = await fetch(`${API_URL}/auth/introspect`, {
       headers: { Authorization: `Bearer ${accessToken}` },
       cache: 'no-store',
+      redirect: 'error',
+      signal: AbortSignal.timeout(10000),
     });
 
     if (!response.ok) {
@@ -50,64 +47,12 @@ const verifySession = async (accessToken: string): Promise<SessionVerification> 
   }
 };
 
-const refreshSession = async (refreshToken: string): Promise<RefreshedSession | null> => {
-  try {
-    const response = await fetch(`${API_URL}/auth/refresh-token`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refreshToken }),
-      cache: 'no-store',
-    });
-
-    if (!response.ok) return null;
-
-    const payload = await response.json();
-    const accessToken = payload?.data?.accessToken;
-    if (typeof accessToken !== 'string' || !accessToken) return null;
-
-    return {
-      accessToken,
-      refreshToken:
-        typeof payload?.data?.refreshToken === 'string' ? payload.data.refreshToken : undefined,
-    };
-  } catch (error) {
-    console.error('[MW-AUTH-ERROR] Failed to refresh session:', error);
-    return null;
-  }
-};
-
-const clearAuthCookies = (response: NextResponse) => {
-  response.cookies.delete('access_token');
-  response.cookies.delete('refresh_token');
-  response.cookies.delete('user_roles');
-};
-
-const setAuthCookies = (
-  response: NextResponse,
-  request: NextRequest,
-  session: RefreshedSession,
-  roles: string[],
-) => {
-  const options = {
-    maxAge: AUTH_COOKIE_MAX_AGE,
-    path: '/',
-    sameSite: 'lax' as const,
-    secure: request.nextUrl.protocol === 'https:',
-  };
-
-  response.cookies.set('access_token', session.accessToken, options);
-  if (session.refreshToken) {
-    response.cookies.set('refresh_token', session.refreshToken, options);
-  }
-  response.cookies.set('user_roles', JSON.stringify(roles), options);
-};
-
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
   if (!pathname.startsWith('/admin')) return NextResponse.next();
 
-  const accessToken = request.cookies.get('access_token')?.value;
-  const refreshToken = request.cookies.get('refresh_token')?.value;
+  const accessToken = request.cookies.get(ACCESS_COOKIE)?.value;
+  const refreshToken = request.cookies.get(REFRESH_COOKIE)?.value;
 
   if (!accessToken && !refreshToken) {
     const loginUrl = new URL('/dang-nhap', request.url);
@@ -115,18 +60,12 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  let activeAccessToken = accessToken;
-  let refreshedSession: RefreshedSession | null = null;
-  let verification = activeAccessToken
-    ? await verifySession(activeAccessToken)
-    : { status: 401, roles: [] };
+  const verification = accessToken ? await verifySession(accessToken) : { status: 401, roles: [] };
 
   if (verification.status === 401 && refreshToken) {
-    refreshedSession = await refreshSession(refreshToken);
-    if (refreshedSession) {
-      activeAccessToken = refreshedSession.accessToken;
-      verification = await verifySession(activeAccessToken);
-    }
+    const resumeUrl = new URL('/phien-dang-nhap', request.url);
+    resumeUrl.searchParams.set('redirect', pathname + search);
+    return NextResponse.redirect(resumeUrl, { headers: { 'Cache-Control': 'private, no-store' } });
   }
 
   if (verification.status === 0) {
@@ -151,7 +90,7 @@ export async function middleware(request: NextRequest) {
     const loginUrl = new URL('/dang-nhap', request.url);
     loginUrl.searchParams.set('redirect', `${pathname}${search}`);
     const response = NextResponse.redirect(loginUrl);
-    clearAuthCookies(response);
+    clearSessionCookies(response);
     return response;
   }
 
@@ -164,18 +103,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(unauthorizedUrl);
   }
 
-  const response = NextResponse.next();
-  if (refreshedSession) {
-    setAuthCookies(response, request, refreshedSession, roles);
-  } else {
-    response.cookies.set('user_roles', JSON.stringify(roles), {
-      maxAge: AUTH_COOKIE_MAX_AGE,
-      path: '/',
-      sameSite: 'lax',
-      secure: request.nextUrl.protocol === 'https:',
-    });
-  }
-  return response;
+  return NextResponse.next();
 }
 
 export const config = {

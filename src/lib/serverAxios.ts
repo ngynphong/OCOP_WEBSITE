@@ -1,5 +1,6 @@
 import axios, { InternalAxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import { cookies } from 'next/headers';
+import { ACCESS_COOKIE, API_URL } from './web-session';
 import { AppError } from '../utils/error';
 
 export interface ApiErrorResponse {
@@ -9,7 +10,7 @@ export interface ApiErrorResponse {
 }
 
 const serverAxios = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: API_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -19,7 +20,7 @@ const serverAxios = axios.create({
 serverAxios.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
     const cookieStore = await cookies();
-    const token = cookieStore.get('access_token')?.value;
+    const token = cookieStore.get(ACCESS_COOKIE)?.value;
 
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;

@@ -53,7 +53,7 @@ export function Header() {
   const pathname = usePathname();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const { profile } = useAuthProfile();
-  const { logout, isLoggingOut, handleClientLogout } = useLogout();
+  const { logout, isLoggingOut } = useLogout();
   const role = useAppSelector((state) => state.auth.roles);
 
   const queryClient = useQueryClient();
@@ -92,12 +92,7 @@ export function Header() {
   };
 
   const handleConfirmLogout = () => {
-    const refreshToken = localStorage.getItem('refresh_token');
-    if (refreshToken) {
-      logout({ refreshToken });
-    } else {
-      handleClientLogout();
-    }
+    logout();
     setIsLogoutModalOpen(false);
   };
 

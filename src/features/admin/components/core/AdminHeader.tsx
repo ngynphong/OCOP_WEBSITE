@@ -38,7 +38,7 @@ const BREADCRUMB_MAP: Record<string, string> = {
 const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
   const pathname = usePathname();
   const { profile } = useAuthProfile();
-  const { logout, isLoggingOut, handleClientLogout } = useLogout();
+  const { logout, isLoggingOut } = useLogout();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
 
@@ -53,12 +53,7 @@ const AdminHeader = ({ isSidebarCollapsed }: AdminHeaderProps) => {
   };
 
   const handleConfirmLogout = () => {
-    const refreshToken = localStorage.getItem('refresh_token');
-    if (refreshToken) {
-      logout({ refreshToken });
-    } else {
-      handleClientLogout();
-    }
+    logout();
     setIsLogoutModalOpen(false);
   };
 

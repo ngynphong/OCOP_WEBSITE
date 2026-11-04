@@ -15,16 +15,16 @@ function notifyConnect(receipt?: unknown) {
 }
 
 export function useWebSocket() {
-  const { token, isAuthenticated } = useAppSelector((state) => state.auth);
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
   const clientRef = useRef<Client | null>(null);
 
   const connect = useCallback(() => {
     if (globalClient?.active || isConnecting) return;
-    if (!isAuthenticated || !token) return;
+    if (!isAuthenticated) return;
 
     isConnecting = true;
     try {
-      const client = createStompClient(token);
+      const client = createStompClient();
       globalClient = client;
       clientRef.current = client;
 
@@ -47,7 +47,7 @@ export function useWebSocket() {
       isConnecting = false;
       console.error('[useWebSocket] Connection attempt failed:', err);
     }
-  }, [isAuthenticated, token]);
+  }, [isAuthenticated]);
 
   const disconnect = useCallback(() => {
     if (globalClient) {

@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface AuthState {
   isAuthenticated: boolean;
   isInitialized: boolean;
-  token: string | null;
+  subject: string | null;
   roles: string[];
   dashboardMode: 'USER' | 'SELLER';
   isShopApproved: boolean;
@@ -12,7 +12,7 @@ interface AuthState {
 const initialState: AuthState = {
   isAuthenticated: false,
   isInitialized: false,
-  token: null,
+  subject: null,
   roles: [],
   dashboardMode: 'USER',
   isShopApproved: false,
@@ -22,14 +22,14 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setCredentials: (state, action: PayloadAction<{ token: string; roles: string[] }>) => {
-      state.token = action.payload.token;
+    setCredentials: (state, action: PayloadAction<{ subject?: string; roles: string[] }>) => {
+      if (action.payload.subject !== undefined) state.subject = action.payload.subject;
       state.roles = action.payload.roles;
       state.isAuthenticated = true;
       state.isInitialized = true;
     },
     logout: (state) => {
-      state.token = null;
+      state.subject = null;
       state.roles = [];
       state.isAuthenticated = false;
       state.isInitialized = true;

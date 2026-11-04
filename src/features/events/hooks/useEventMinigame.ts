@@ -76,20 +76,6 @@ function getTodayString(): string {
   ).padStart(2, '0')}`;
 }
 
-function getTokenSubject(token: string | null): string | null {
-  if (!token || typeof window === 'undefined') return null;
-  try {
-    const payload = token.split('.')[1];
-    if (!payload) return null;
-    const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
-    const normalized = base64.padEnd(Math.ceil(base64.length / 4) * 4, '=');
-    const parsed = JSON.parse(window.atob(normalized)) as { sub?: string };
-    return parsed.sub || null;
-  } catch {
-    return null;
-  }
-}
-
 function mapHistoryEntry(item: MinigameHistoryResponse): MinigameHistoryEntry {
   const isPoint = item.rewardType === 'POINT';
   const rewardType: MinigameReward['type'] = isPoint
@@ -146,16 +132,18 @@ export function useEventMinigame({
 }: UseEventMinigameOptions) {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { token, isAuthenticated } = useAppSelector((state) => state.auth);
+  const { subject: userSubject, isAuthenticated } = useAppSelector((state) => state.auth);
+  const decorationsJson = theme?.decorationsJson;
+  const themeCode = theme?.code;
   const decorationConceptId = useMemo(() => {
-    if (!theme?.decorationsJson) return null;
+    if (!decorationsJson) return null;
     try {
-      const parsed = JSON.parse(theme.decorationsJson);
+      const parsed = JSON.parse(decorationsJson);
       return parsed.conceptId || null;
     } catch {
       return null;
     }
-  }, [theme?.decorationsJson]);
+  }, [decorationsJson]);
 
   const mysteryPickConceptConfig = useMemo<MysteryPickConceptConfig>(() => {
     if (minigameConfig?.conceptConfig) {
@@ -183,7 +171,7 @@ export function useEventMinigame({
     const baseConfig = resolveMysteryPickConcept({
       minigameConcept: minigameConfig?.mysteryPickConcept,
       conceptId: decorationConceptId,
-      themeCode: theme?.code,
+      themeCode,
       eventType,
       slug: eventSlug,
     });
@@ -204,29 +192,24 @@ export function useEventMinigame({
       gameSubtitle: minigameConfig?.customPickSubtitle?.trim() || baseConfig.gameSubtitle,
       defaultItems: items,
     };
-  }, [minigameConfig, decorationConceptId, theme?.code, eventType, eventSlug]);
+  }, [minigameConfig, decorationConceptId, themeCode, eventType, eventSlug]);
 
-  const defaultGameType: MinigameType = useMemo(() => {
-    if (minigameConfig?.gameType) {
-      return minigameConfig.gameType;
-    }
-    if (eventType === 'COMMERCE' || eventType === 'REGIONAL') {
-      return 'WHEEL_SPIN';
-    }
-    return 'LUCKY_ENVELOPE';
-  }, [minigameConfig?.gameType, eventType]);
+  const defaultGameType: MinigameType =
+    minigameConfig?.gameType ??
+    (eventType === 'COMMERCE' || eventType === 'REGIONAL' ? 'WHEEL_SPIN' : 'LUCKY_ENVELOPE');
 
+  const rewardsJson = minigameConfig?.rewardsJson;
   const configuredWheelRewards = useMemo<MinigameReward[]>(() => {
-    if (minigameConfig?.rewardsJson) {
+    if (rewardsJson) {
       try {
-        const parsed = JSON.parse(minigameConfig.rewardsJson);
+        const parsed = JSON.parse(rewardsJson);
         if (Array.isArray(parsed) && parsed.length > 0) {
           return parsed.map(normalizeReward);
         }
       } catch {}
     }
     return LUCKY_WHEEL_REWARDS;
-  }, [minigameConfig?.rewardsJson]);
+  }, [rewardsJson]);
 
   const [activeGameType, setActiveGameType] = useState<MinigameType>(defaultGameType);
   const [isSpinning, setIsSpinning] = useState<boolean>(false);
@@ -236,7 +219,6 @@ export function useEventMinigame({
   const [wheelRotation, setWheelRotation] = useState<number>(0);
   const [selectedEnvelopeIndex, setSelectedEnvelopeIndex] = useState<number | null>(null);
 
-  const userSubject = useMemo(() => getTokenSubject(token), [token]);
   const storageKey = userSubject ? `${STORAGE_KEY_PREFIX}${userSubject}_${eventId}` : null;
   const statusQueryKey = useMemo(
     () => ['event-minigame-user-status', userSubject, eventSlug] as const,
@@ -334,8 +316,7 @@ export function useEventMinigame({
       return;
     }
 
-    const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
-    if (!token) {
+    if (!isAuthenticated) {
       toast.error('Vui lòng đăng nhập để nhận lượt chơi miễn phí mỗi ngày!');
       router.push('/dang-nhap');
       return;
@@ -360,14 +341,21 @@ export function useEventMinigame({
       const msg = errorObj?.response?.data?.message || 'Bạn đã nhận lượt miễn phí hôm nay rồi.';
       toast.error(msg);
     }
-  }, [canClaimDailyFreeSpin, eventSlug, router, persistState, queryClient, statusQueryKey]);
+  }, [
+    canClaimDailyFreeSpin,
+    isAuthenticated,
+    eventSlug,
+    router,
+    persistState,
+    queryClient,
+    statusQueryKey,
+  ]);
 
   const playEnvelope = useCallback(
     async (envelopeIndex: number) => {
       if (isSpinning) return;
 
-      const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
-      if (!token) {
+      if (!isAuthenticated) {
         toast.error('Vui lòng đăng nhập để tham gia bốc quà và nhận voucher!');
         router.push('/dang-nhap');
         return;
@@ -441,6 +429,7 @@ export function useEventMinigame({
     },
     [
       isSpinning,
+      isAuthenticated,
       spinsLeft,
       eventSlug,
       router,
@@ -455,8 +444,7 @@ export function useEventMinigame({
   const playWheel = useCallback(async () => {
     if (isSpinning) return;
 
-    const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
-    if (!token) {
+    if (!isAuthenticated) {
       toast.error('Vui lòng đăng nhập để tham gia vòng quay và nhận voucher!');
       router.push('/dang-nhap');
       return;
@@ -540,6 +528,7 @@ export function useEventMinigame({
     }
   }, [
     isSpinning,
+    isAuthenticated,
     spinsLeft,
     eventSlug,
     router,

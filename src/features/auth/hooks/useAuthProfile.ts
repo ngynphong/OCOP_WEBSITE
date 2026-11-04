@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/store/hooks';
-import Cookies from 'js-cookie';
 import { authApi } from '../api/authApi';
 import { setCredentials, setShopApproved } from '@/store/features/authSlice';
 import { useEffect } from 'react';
@@ -24,14 +23,7 @@ export const useAuthProfile = () => {
       const reduxRolesStr = JSON.stringify(reduxRoles);
 
       if (serverRolesStr !== reduxRolesStr) {
-        console.warn('Local roles do not match server roles. Overwriting...');
-        localStorage.setItem('user_roles', serverRolesStr);
-        Cookies.set('user_roles', serverRolesStr, { expires: 7 });
-
-        const token = localStorage.getItem('access_token');
-        if (token) {
-          dispatch(setCredentials({ token, roles: serverRoles }));
-        }
+        dispatch(setCredentials({ roles: serverRoles }));
       }
 
       const hasSellerOnServer = serverRoles.includes('SELLER');

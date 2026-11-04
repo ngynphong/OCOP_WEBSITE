@@ -1,3 +1,4 @@
+import axios, { AxiosHeaders } from 'axios';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { axiosClient } from '../axios';
 import { AppError } from '@/utils/error';
@@ -25,17 +26,18 @@ describe('axiosClient Interceptors', () => {
   });
 
   describe('Request Interceptor', () => {
-    it('attaches Bearer authorization header when token exists in storage', async () => {
+    it('ignores legacy bearer tokens and sends the CSRF guard header', async () => {
       store['access_token'] = 'test-mock-jwt-token';
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const requestInterceptor = (axiosClient.interceptors.request as any).handlers[0].fulfilled;
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const config: any = { headers: {} };
+      const config: any = { headers: new AxiosHeaders() };
       const modifiedConfig = await requestInterceptor(config);
 
-      expect(modifiedConfig.headers.Authorization).toBe('Bearer test-mock-jwt-token');
+      expect(modifiedConfig.headers.get('Authorization')).toBeUndefined();
+      expect(modifiedConfig.headers.get('X-OCOP-Request')).toBe('1');
     });
 
     it('attaches X-Session-Id when user is not authenticated', async () => {
@@ -44,11 +46,11 @@ describe('axiosClient Interceptors', () => {
       const requestInterceptor = (axiosClient.interceptors.request as any).handlers[0].fulfilled;
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const config: any = { headers: {} };
+      const config: any = { headers: new AxiosHeaders() };
       const modifiedConfig = await requestInterceptor(config);
 
       expect(modifiedConfig.headers.Authorization).toBeUndefined();
-      expect(modifiedConfig.headers['X-Session-Id']).toBeDefined();
+      expect(modifiedConfig.headers.get('X-Session-Id')).toBeDefined();
     });
 
     it('handles X-Silent-Loading header properly without leaking it', async () => {
@@ -56,7 +58,7 @@ describe('axiosClient Interceptors', () => {
       const requestInterceptor = (axiosClient.interceptors.request as any).handlers[0].fulfilled;
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const config: any = { headers: { 'X-Silent-Loading': 'true' } };
+      const config: any = { headers: new AxiosHeaders({ 'X-Silent-Loading': 'true' }) };
       const modifiedConfig = await requestInterceptor(config);
 
       expect(modifiedConfig._isSilent).toBe(true);
@@ -99,6 +101,23 @@ describe('axiosClient Interceptors', () => {
   describe('Response Error Interceptor', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const errorInterceptor = (axiosClient.interceptors.response as any).handlers[0].rejected;
+
+    it('waits for a user action before renewing on the admin recovery page', async () => {
+      vi.stubGlobal('location', { pathname: '/phien-dang-nhap' });
+      const post = vi.spyOn(axios, 'post');
+      try {
+        await expect(
+          errorInterceptor({
+            config: { url: '/auth/introspect' },
+            response: { status: 401, data: { code: 1009 }, headers: { 'x-ocop-refresh': '1' } },
+          }),
+        ).rejects.toBeInstanceOf(AppError);
+        expect(post).not.toHaveBeenCalled();
+      } finally {
+        post.mockRestore();
+        vi.unstubAllGlobals();
+      }
+    });
 
     it('transforms network or unreachable server error into AppError with status 503', async () => {
       const networkError = {

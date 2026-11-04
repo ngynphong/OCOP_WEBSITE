@@ -1,9 +1,8 @@
-import { axiosClient, publicAxiosClient } from '@/lib/axios';
+import { axiosClient, logoutWebSession, publicAxiosClient } from '@/lib/axios';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
 import {
   LoginRequest,
   LoginResponse,
-  LogoutRequest,
   LogoutResponse,
   RegisterRequest,
   RegisterResponse,
@@ -11,8 +10,6 @@ import {
   VerifyEmailTraditionalRequest,
   Verify2FARequest,
   VerifyEmailResponse,
-  RefreshTokenRequest,
-  RefreshTokenResponse,
   ForgotPasswordRequest,
   VerifyOtpRequest,
   VerifyOtpResponse,
@@ -47,9 +44,10 @@ export const authApi = {
     return publicAxiosClient.post(API_ENDPOINTS.AUTH.SIMPLE_REGISTER, data);
   },
 
-  logout: (data: LogoutRequest): Promise<LogoutResponse> => {
-    return axiosClient.post(API_ENDPOINTS.AUTH.LOGOUT, data);
-  },
+  logout: (): Promise<LogoutResponse> => logoutWebSession<LogoutResponse>(),
+
+  getSession: (): Promise<{ data: { authenticated: boolean; subject: string; roles: string[] } }> =>
+    axiosClient.get('/auth/introspect', { headers: { 'X-Silent-Loading': 'true' } }),
 
   verifyEmail: (data: VerifyEmailRequest): Promise<VerifyEmailResponse> => {
     return publicAxiosClient.post(API_ENDPOINTS.AUTH.SIMPLE_VERIFY, data);
@@ -61,10 +59,6 @@ export const authApi = {
 
   verify2fa: (data: Verify2FARequest): Promise<LoginResponse> => {
     return publicAxiosClient.post(API_ENDPOINTS.AUTH.VERIFY_2FA, data);
-  },
-
-  refreshToken: (data: RefreshTokenRequest): Promise<RefreshTokenResponse> => {
-    return publicAxiosClient.post(API_ENDPOINTS.AUTH.REFRESH_TOKEN, data);
   },
 
   forgotPassword: (data: ForgotPasswordRequest): Promise<ForgotPasswordResponse> => {

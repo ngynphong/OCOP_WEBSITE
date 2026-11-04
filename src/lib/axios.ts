@@ -1,5 +1,4 @@
 import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
-import Cookies from 'js-cookie';
 import toast from 'react-hot-toast';
 import { AppError } from '../utils/error';
 import { globalLoading } from '../utils/eventEmitter';
@@ -16,7 +15,8 @@ const updateLoadingState = (delta: number) => {
 };
 
 const axiosClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: '/api/ocop',
+  allowAbsoluteUrls: false,
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
@@ -27,7 +27,8 @@ const axiosClient = axios.create({
 });
 
 const publicAxiosClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: '/api/ocop',
+  allowAbsoluteUrls: false,
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
@@ -37,23 +38,35 @@ const publicAxiosClient = axios.create({
   },
 });
 
-let isRefreshing = false;
-let failedQueue: Array<{
-  resolve: (value?: unknown) => void;
-  reject: (reason?: unknown) => void;
-}> = [];
+let pendingRefresh: Promise<void> | undefined;
+let loggingOut = false;
 
-const processQueue = (error: Error | null, token: string | null = null) => {
-  failedQueue.forEach((prom) => {
-    if (error) {
-      prom.reject(error);
-    } else {
-      prom.resolve(token);
-    }
-  });
+export async function refreshWebSession() {
+  if (!pendingRefresh) {
+    pendingRefresh = axios
+      .post('/api/ocop/auth/refresh-token', null, {
+        headers: { 'X-OCOP-Request': '1' },
+        timeout: 20000,
+      })
+      .then(({ data }) => {
+        if (data?.data?.authenticated !== true) throw new Error('Session not refreshed');
+      })
+      .finally(() => {
+        pendingRefresh = undefined;
+      });
+  }
+  return pendingRefresh;
+}
 
-  failedQueue = [];
-};
+export async function logoutWebSession<T>() {
+  loggingOut = true;
+  try {
+    await pendingRefresh?.catch(() => {});
+    return await axiosClient.post<unknown, T>('/auth/logout');
+  } finally {
+    loggingOut = false;
+  }
+}
 
 interface CustomRequestConfig extends InternalAxiosRequestConfig {
   _isSilent?: boolean;
@@ -71,16 +84,8 @@ const onRequest = (config: InternalAxiosRequestConfig) => {
     delete config.headers?.['X-Silent-Loading'];
   }
 
-  let token = '';
-  if (typeof window !== 'undefined') {
-    token = localStorage.getItem('access_token') || '';
-  }
-
-  if (token && config.headers) {
-    config.headers.Authorization = `Bearer ${token}`;
-  } else if (config.headers) {
-    config.headers['X-Session-Id'] = getOrCreateSessionId();
-  }
+  config.headers.set('X-OCOP-Request', '1');
+  config.headers.set('X-Session-Id', getOrCreateSessionId());
 
   return config;
 };
@@ -142,109 +147,32 @@ const onResponseError = async (error: AxiosError) => {
     'Có lỗi xảy ra, vui lòng thử lại sau';
 
   if (
-    (code === 1009 || status === 401 || code === 401) &&
+    status === 401 &&
+    error.response.headers?.['x-ocop-refresh'] === '1' &&
     originalRequest &&
     !originalRequest._retry &&
-    originalRequest.headers.Authorization
+    (typeof window === 'undefined' || window.location?.pathname !== '/phien-dang-nhap') &&
+    !loggingOut
   ) {
     originalRequest._retry = true;
-
-    if (isRefreshing) {
-      return new Promise((resolve, reject) => {
-        failedQueue.push({ resolve, reject });
-      })
-        .then((token) => {
-          if (originalRequest.headers) {
-            originalRequest.headers.Authorization = `Bearer ${token}`;
-          }
-          return axiosClient(originalRequest);
-        })
-        .catch((err) => Promise.reject(err));
-    }
-
-    isRefreshing = true;
-
     try {
-      const refreshToken = localStorage.getItem('refresh_token');
-      if (!refreshToken) {
-        throw new Error('Không tìm thấy Refresh Token');
-      }
-
-      const response = await axios.post(`${axiosClient.defaults.baseURL}/auth/refresh-token`, {
-        refreshToken,
-      });
-
-      const refreshData = response.data;
-      const newAccessToken = refreshData?.data?.accessToken || refreshData?.accessToken;
-      const newRefreshToken = refreshData?.data?.refreshToken || refreshData?.refreshToken;
-
-      if (!newAccessToken) {
-        throw new Error('Dữ liệu trả về mới không chứa Access Token');
-      }
-
-      localStorage.setItem('access_token', newAccessToken);
-      Cookies.set('access_token', newAccessToken, {
-        expires: 7,
-        path: '/',
-        sameSite: 'lax',
-        secure: window.location.protocol === 'https:',
-      });
-      if (newRefreshToken) {
-        localStorage.setItem('refresh_token', newRefreshToken);
-        Cookies.set('refresh_token', newRefreshToken, {
-          expires: 7,
-          path: '/',
-          sameSite: 'lax',
-          secure: window.location.protocol === 'https:',
-        });
-      }
-
-      const refreshedRoles = refreshData?.data?.roles || refreshData?.roles;
-      if (Array.isArray(refreshedRoles)) {
-        const serializedRoles = JSON.stringify(refreshedRoles);
-        localStorage.setItem('user_roles', serializedRoles);
-        Cookies.set('user_roles', serializedRoles, {
-          expires: 7,
-          path: '/',
-          sameSite: 'lax',
-          secure: window.location.protocol === 'https:',
-        });
-      }
-
-      processQueue(null, newAccessToken);
-
-      if (originalRequest.headers) {
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-      }
-      return axiosClient(originalRequest);
+      await refreshWebSession();
     } catch (refreshError) {
-      processQueue(refreshError as Error, null);
-
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
-      localStorage.removeItem('user_roles');
-      Cookies.remove('access_token', { path: '/' });
-      Cookies.remove('refresh_token', { path: '/' });
-      Cookies.remove('user_roles', { path: '/' });
-
-      toast.error('Phiên đăng nhập hết hạn. Bạn sẽ được chuyển hướng về trang chủ.');
-      if (typeof window !== 'undefined') {
-        setTimeout(() => {
-          import('../utils/authEmitter').then(({ authEmitter }) => {
-            authEmitter.emit('UNAUTHORIZED');
-          });
-        }, 1500);
+      if (axios.isAxiosError(refreshError) && refreshError.response?.status === 401) {
+        if (originalRequest.url !== '/auth/introspect') {
+          const { authEmitter } = await import('../utils/authEmitter');
+          authEmitter.emit('UNAUTHORIZED');
+        }
+        return Promise.reject(new AppError('Session expired', 1009));
       }
-
-      return Promise.reject(new AppError('Session expired', 1009));
-    } finally {
-      isRefreshing = false;
+      return Promise.reject(new AppError('Không thể làm mới phiên đăng nhập', 503));
     }
+    return axiosClient(originalRequest);
   }
 
   const SILENT_CODES = [1009, 403];
   if (!SILENT_CODES.includes(status) && !SILENT_CODES.includes(code)) {
-    toast.error(errorMessage);
+    if (originalRequest?.url !== '/auth/introspect') toast.error(errorMessage);
   }
 
   return Promise.reject(new AppError(errorMessage, code, errorData));

@@ -27,7 +27,7 @@ describe('authSlice', () => {
   const initialState = {
     isAuthenticated: false,
     isInitialized: false,
-    token: null,
+    subject: null,
     roles: [],
     dashboardMode: 'USER' as const,
     isShopApproved: false,
@@ -36,11 +36,11 @@ describe('authSlice', () => {
   it('sets credentials upon successful login', () => {
     const state = authReducer(
       initialState,
-      setCredentials({ token: 'mock-jwt-token', roles: ['ROLE_SELLER'] }),
+      setCredentials({ subject: 'user@example.test', roles: ['ROLE_SELLER'] }),
     );
     expect(state.isAuthenticated).toBe(true);
     expect(state.isInitialized).toBe(true);
-    expect(state.token).toBe('mock-jwt-token');
+    expect(state.subject).toBe('user@example.test');
     expect(state.roles).toEqual(['ROLE_SELLER']);
   });
 
@@ -48,14 +48,14 @@ describe('authSlice', () => {
     const loggedInState = {
       isAuthenticated: true,
       isInitialized: true,
-      token: 'jwt',
+      subject: 'user@example.test',
       roles: ['ROLE_SELLER'],
       dashboardMode: 'SELLER' as const,
       isShopApproved: true,
     };
     const state = authReducer(loggedInState, logout());
     expect(state.isAuthenticated).toBe(false);
-    expect(state.token).toBeNull();
+    expect(state.subject).toBeNull();
     expect(state.roles).toEqual([]);
     expect(state.dashboardMode).toBe('USER');
     expect(state.isShopApproved).toBe(false);

@@ -20,24 +20,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useDispatch();
-  const { logout, handleClientLogout, isLoggingOut } = useLogout();
+  const { logout, isLoggingOut } = useLogout();
   const { profile, isLoadingProfile, isErrorProfile } = useAuthProfile();
   const { dashboardMode, isInitialized, isAuthenticated } = useAppSelector((state) => state.auth);
-  const [isMounted, setIsMounted] = React.useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = React.useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = React.useState(false);
 
-  React.useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
   const handleConfirmLogout = () => {
-    const refreshToken = localStorage.getItem('refresh_token');
-    if (refreshToken) {
-      logout({ refreshToken });
-    } else {
-      handleClientLogout();
-    }
+    logout();
     setIsLogoutModalOpen(false);
   };
 
@@ -54,7 +44,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const isSeller = profile?.roles?.includes('SELLER') || Boolean(profile?.isOwnerShop);
 
   React.useEffect(() => {
-    if (!isMounted || !isInitialized || isLoadingProfile || !isAuthenticated || !profile) return;
+    if (!isInitialized || isLoadingProfile || !isAuthenticated || !profile) return;
 
     const isSellerOnlyRoute =
       (pathname.startsWith('/dashboard/cua-hang') &&
@@ -73,7 +63,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       router.replace('/dashboard');
     }
   }, [
-    isMounted,
     isInitialized,
     isLoadingProfile,
     isAuthenticated,
@@ -84,7 +73,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     router,
   ]);
 
-  if (!isMounted || !isInitialized || isLoadingProfile) {
+  if (!isInitialized || isLoadingProfile) {
     return null;
   }
 
@@ -178,9 +167,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <span className="text-sm font-medium hidden sm:inline-block">Hướng dẫn</span>
             </button>
 
-            {isMounted && (
-              <NotificationBell className="text-stone-500 hover:text-stone-900 hover:bg-stone-100 border border-stone-100 shadow-xs" />
-            )}
+            <NotificationBell className="text-stone-500 hover:text-stone-900 hover:bg-stone-100 border border-stone-100 shadow-xs" />
 
             <button
               onClick={() => setIsLogoutModalOpen(true)}
@@ -191,7 +178,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <FiLogOut size={20} />
             </button>
 
-            {isMounted && isSeller && (
+            {isSeller && (
               <div className="flex items-center gap-2 sm:gap-3 bg-stone-50 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full border border-stone-200 shadow-xs ml-auto sm:ml-0">
                 <span
                   className={cn(
