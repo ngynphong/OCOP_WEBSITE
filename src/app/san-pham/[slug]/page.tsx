@@ -83,7 +83,7 @@ export default async function ProductDetailPage({ params }: { params: { slug: st
       {jsonLd && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
         />
       )}
       <ProductDetailClient initialProduct={product} />

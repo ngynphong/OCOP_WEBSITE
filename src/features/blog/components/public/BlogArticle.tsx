@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import DOMPurify from 'isomorphic-dompurify';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -11,7 +12,7 @@ import { BlogLeftSidebar } from './BlogLeftSidebar';
 import { BlogRightSidebar, TOCItem } from './BlogRightSidebar';
 import { Blog } from '../../types/blogTypes';
 
-const generateTOCAndProcessHTML = (html: string, fallbackAlt: string = 'Hình ảnh') => {
+export const generateTOCAndProcessHTML = (html: string, fallbackAlt: string = 'Hình ảnh') => {
   const toc: TOCItem[] = [];
   const seenIds = new Set<string>();
 
@@ -54,7 +55,10 @@ const generateTOCAndProcessHTML = (html: string, fallbackAlt: string = 'Hình �
     return `<img ${newAttrs.trim()}>`;
   });
 
-  return { toc, processedHtml };
+  return {
+    toc,
+    processedHtml: DOMPurify.sanitize(processedHtml, { USE_PROFILES: { html: true } }),
+  };
 };
 
 interface BlogArticleProps {
