@@ -130,7 +130,8 @@ async function handle(request: NextRequest, context: { params: Promise<{ path: s
       payload.code === 1000 &&
       typeof data?.accessToken === 'string' &&
       Boolean(data.accessToken) &&
-      (refresh || (typeof data.refreshToken === 'string' && Boolean(data.refreshToken)));
+      typeof data.refreshToken === 'string' &&
+      Boolean(data.refreshToken);
     if (upstream.ok && payload.code === 1000 && !authenticated && data?.requireOtp !== true) {
       return error(502, 'Phản hồi xác thực không hợp lệ');
     }

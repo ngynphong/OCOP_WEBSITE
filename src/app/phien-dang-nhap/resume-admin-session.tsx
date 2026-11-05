@@ -1,8 +1,10 @@
 'use client';
 
 import axios from 'axios';
+import Link from 'next/link';
 import { useMutation } from '@tanstack/react-query';
 import { refreshWebSession } from '@/lib/axios';
+import { WebSessionLockUnavailableError } from '@/lib/web-session-lock';
 
 export function ResumeAdminSession({ destination }: { destination: string }) {
   const resume = useMutation({
@@ -29,7 +31,17 @@ export function ResumeAdminSession({ destination }: { destination: string }) {
       </button>
       {resume.isError && (
         <p role="alert" className="mt-4">
-          Không thể làm mới phiên. Vui lòng thử lại.
+          {resume.error instanceof WebSessionLockUnavailableError
+            ? resume.error.message
+            : 'Không thể làm mới phiên. Vui lòng thử lại.'}
+          {resume.error instanceof WebSessionLockUnavailableError && (
+            <>
+              {' '}
+              <Link href={'/dang-nhap?redirect=' + encodeURIComponent(destination)}>
+                Đến trang đăng nhập
+              </Link>
+            </>
+          )}
         </p>
       )}
     </main>

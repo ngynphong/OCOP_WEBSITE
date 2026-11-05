@@ -3,6 +3,7 @@ import toast from 'react-hot-toast';
 import { AppError } from '../utils/error';
 import { globalLoading } from '../utils/eventEmitter';
 import { getOrCreateSessionId } from '@/features/cart/utils/cartSession';
+import { WebSessionLockUnavailableError, withWebSessionLock } from './web-session-lock';
 
 export interface ApiErrorResponse {
   message?: string;
@@ -43,17 +44,18 @@ let loggingOut = false;
 
 export async function refreshWebSession() {
   if (!pendingRefresh) {
-    pendingRefresh = axios
-      .post('/api/ocop/auth/refresh-token', null, {
-        headers: { 'X-OCOP-Request': '1' },
-        timeout: 20000,
-      })
-      .then(({ data }) => {
-        if (data?.data?.authenticated !== true) throw new Error('Session not refreshed');
-      })
-      .finally(() => {
-        pendingRefresh = undefined;
-      });
+    const refresh = () =>
+      axios
+        .post('/api/ocop/auth/refresh-token', null, {
+          headers: { 'X-OCOP-Request': '1' },
+          timeout: 20000,
+        })
+        .then(({ data }) => {
+          if (data?.data?.authenticated !== true) throw new Error('Session not refreshed');
+        });
+    pendingRefresh = withWebSessionLock(refresh).finally(() => {
+      pendingRefresh = undefined;
+    });
   }
   return pendingRefresh;
 }
@@ -62,7 +64,10 @@ export async function logoutWebSession<T>() {
   loggingOut = true;
   try {
     await pendingRefresh?.catch(() => {});
-    return await axiosClient.post<unknown, T>('/auth/logout');
+    const logout = () => axiosClient.post<unknown, T>('/auth/logout');
+    const locks = typeof navigator !== 'undefined' ? navigator.locks : undefined;
+    if (locks) return await locks.request('ocop-session-refresh', logout);
+    return await logout();
   } finally {
     loggingOut = false;
   }
@@ -158,6 +163,14 @@ const onResponseError = async (error: AxiosError) => {
     try {
       await refreshWebSession();
     } catch (refreshError) {
+      if (refreshError instanceof WebSessionLockUnavailableError) {
+        toast.error(refreshError.message, { id: 'session-lock-unsupported' });
+        if (originalRequest.url !== '/auth/introspect') {
+          const { authEmitter } = await import('../utils/authEmitter');
+          authEmitter.emit('UNAUTHORIZED');
+        }
+        return Promise.reject(new AppError(refreshError.message, 1009));
+      }
       if (axios.isAxiosError(refreshError) && refreshError.response?.status === 401) {
         if (originalRequest.url !== '/auth/introspect') {
           const { authEmitter } = await import('../utils/authEmitter');

@@ -114,6 +114,46 @@ describe('browser session API', () => {
     expect(response.cookies.get(REFRESH_COOKIE)?.maxAge).toBe(0);
   });
 
+  it('replaces the refresh cookie with the rotated credential', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(
+        Response.json({
+          code: 1000,
+          data: { accessToken: 'new-access', refreshToken: 'new-refresh' },
+        }),
+      ),
+    );
+    const response = await POST(
+      post('auth/refresh-token', {
+        cookie: `${REFRESH_COOKIE}=old-refresh`,
+      }),
+      context('auth/refresh-token'),
+    );
+    expect(response.cookies.get(REFRESH_COOKIE)?.value).toBe('new-refresh');
+    expect(JSON.stringify(await response.json())).not.toContain('new-refresh');
+  });
+
+  it('does not accept a refresh response without a replacement credential', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(
+        Response.json({
+          code: 1000,
+          data: { accessToken: 'new-access' },
+        }),
+      ),
+    );
+    const response = await POST(
+      post('auth/refresh-token', {
+        cookie: `${REFRESH_COOKIE}=old-refresh`,
+      }),
+      context('auth/refresh-token'),
+    );
+    expect(response.status).toBe(502);
+    expect(response.headers.has('set-cookie')).toBe(false);
+  });
+
   it('forwards only the server cookie as bearer and never forwards upstream Set-Cookie', async () => {
     const upstream = vi.fn().mockResolvedValue(
       Response.json(

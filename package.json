@@ -12,6 +12,8 @@
     "prepare": "husky",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:security:locks": "playwright test --config=security-tests/session-lock.config.ts",
+    "test:security:session": "playwright test --config=security-tests/session-integration.config.ts",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui"
   },

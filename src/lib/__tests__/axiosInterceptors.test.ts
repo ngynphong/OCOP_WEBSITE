@@ -1,6 +1,6 @@
 import axios, { AxiosHeaders } from 'axios';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { axiosClient } from '../axios';
+import { axiosClient, refreshWebSession } from '../axios';
 import { AppError } from '@/utils/error';
 
 describe('axiosClient Interceptors', () => {
@@ -23,6 +23,35 @@ describe('axiosClient Interceptors', () => {
         delete store[key];
       },
     };
+  });
+
+  it('serializes web refreshes using the browser lock when available', async () => {
+    const request = vi.fn(async (_name: string, callback: () => Promise<void>) => callback());
+    vi.stubGlobal('navigator', { locks: { request } });
+    const post = vi
+      .spyOn(axios, 'post')
+      .mockResolvedValue({ data: { data: { authenticated: true } } });
+    try {
+      await Promise.all([refreshWebSession(), refreshWebSession()]);
+      expect(request).toHaveBeenCalledTimes(1);
+      expect(request).toHaveBeenCalledWith('ocop-session-refresh', expect.any(Function));
+      expect(post).toHaveBeenCalledTimes(1);
+    } finally {
+      post.mockRestore();
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('does not submit a single-use refresh token without cross-tab locking', async () => {
+    vi.stubGlobal('navigator', {});
+    const post = vi.spyOn(axios, 'post');
+    try {
+      await expect(refreshWebSession()).rejects.toThrow('không hỗ trợ');
+      expect(post).not.toHaveBeenCalled();
+    } finally {
+      post.mockRestore();
+      vi.unstubAllGlobals();
+    }
   });
 
   describe('Request Interceptor', () => {
