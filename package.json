@@ -84,5 +84,9 @@
     "typescript": "^5",
     "vite": "^8.3.0",
     "vitest": "^5.0.1"
+  },
+  "overrides": {
+    "postcss-selector-parser": "^6.1.5",
+    "d3-color": "^3.1.0"
   }
 }

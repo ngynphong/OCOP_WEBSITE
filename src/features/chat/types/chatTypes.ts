@@ -33,6 +33,7 @@ export interface ChatUploadResponse {
   attachmentName: string;
   attachmentMimeType: string;
   attachmentSizeBytes: number;
+  attachmentProof: string;
 }
 
 export interface ChatSendMessageRequest {
@@ -42,4 +43,5 @@ export interface ChatSendMessageRequest {
   attachmentName?: string;
   attachmentMimeType?: string;
   attachmentSizeBytes?: number;
+  attachmentProof?: string;
 }

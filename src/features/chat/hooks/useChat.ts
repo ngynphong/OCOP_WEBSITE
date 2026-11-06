@@ -91,6 +91,7 @@ export function useChat(roomId?: number) {
       attachmentName: string;
       attachmentMimeType: string;
       attachmentSizeBytes: number;
+      attachmentProof: string;
       content?: string;
     }) => {
       if (!client?.connected || !roomId) return;
@@ -102,6 +103,7 @@ export function useChat(roomId?: number) {
         attachmentName: data.attachmentName,
         attachmentMimeType: data.attachmentMimeType,
         attachmentSizeBytes: data.attachmentSizeBytes,
+        attachmentProof: data.attachmentProof,
       };
 
       client.publish({
