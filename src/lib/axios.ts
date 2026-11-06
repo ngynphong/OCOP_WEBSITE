@@ -80,7 +80,8 @@ interface CustomRequestConfig extends InternalAxiosRequestConfig {
 
 const onRequest = (config: InternalAxiosRequestConfig) => {
   const customConfig = config as CustomRequestConfig;
-  const isSilent = config.headers?.['X-Silent-Loading'] === 'true';
+  const isSilent =
+    customConfig._isSilent === true || config.headers?.['X-Silent-Loading'] === 'true';
   customConfig._isSilent = isSilent;
 
   if (!isSilent) {

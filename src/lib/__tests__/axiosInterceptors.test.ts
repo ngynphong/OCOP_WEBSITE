@@ -92,6 +92,8 @@ describe('axiosClient Interceptors', () => {
 
       expect(modifiedConfig._isSilent).toBe(true);
       expect(modifiedConfig.headers['X-Silent-Loading']).toBeUndefined();
+      const retriedConfig = await requestInterceptor(modifiedConfig);
+      expect(retriedConfig._isSilent).toBe(true);
     });
   });
 
