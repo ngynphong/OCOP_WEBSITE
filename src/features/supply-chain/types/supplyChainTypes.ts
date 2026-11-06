@@ -305,6 +305,7 @@ export interface IEvidenceDocument {
   expiryDate?: string | null;
   verificationStatus?: TVerificationStatus;
   uploadedAt?: string;
+  capturedAt?: string;
   uploadedBy?: string;
   deviceInfo?: string;
   latitude?: number;

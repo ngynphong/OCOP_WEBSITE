@@ -113,7 +113,11 @@ const onResponse = (response: AxiosResponse) => {
   }
   const resData = response.data;
 
-  if (resData && typeof resData.code === 'number' && resData.code !== 1000) {
+  const evidenceCreated =
+    response.config.url === '/seller/evidences/upload' &&
+    response.status === 201 &&
+    resData?.code === 201;
+  if (resData && typeof resData.code === 'number' && resData.code !== 1000 && !evidenceCreated) {
     const errorMessage = resData.message || 'Lỗi hệ thống';
 
     const error = new AxiosError(

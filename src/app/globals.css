@@ -45,6 +45,12 @@ body {
   background-color: #fafaf2;
 }
 
+@media (max-width: 1023px) {
+  .tsqd-parent-container {
+    display: none;
+  }
+}
+
 h1,
 h2,
 h3,

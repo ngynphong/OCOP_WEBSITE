@@ -446,7 +446,15 @@ export const BatchEventTimeline = ({ events, templateSteps }: BatchEventTimeline
                                     </span>
                                   )}
 
-                                  {doc.latitude && doc.longitude && (
+                                  {doc.capturedAt &&
+                                    !Number.isNaN(new Date(doc.capturedAt).getTime()) && (
+                                      <span className="text-[10px] text-stone-500">
+                                        Thời gian chụp (thiết bị):{' '}
+                                        {format(new Date(doc.capturedAt), 'dd/MM/yyyy HH:mm:ss')}
+                                      </span>
+                                    )}
+
+                                  {doc.latitude != null && doc.longitude != null && (
                                     <a
                                       href={`https://www.google.com/maps?q=${doc.latitude},${doc.longitude}`}
                                       target="_blank"

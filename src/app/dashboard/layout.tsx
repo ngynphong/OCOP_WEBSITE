@@ -15,6 +15,7 @@ import { NotificationBell } from '@/features/notifications/components/Notificati
 import { FiLogOut, FiHelpCircle } from 'react-icons/fi';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { SellerTourGuide, triggerTourEvent } from '@/components/Onboarding/SellerTourGuide';
+import { SellerMobileBar } from '@/features/dashboard/components/SellerMobileBar';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -45,6 +46,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   React.useEffect(() => {
     if (!isInitialized || isLoadingProfile || !isAuthenticated || !profile) return;
+    // The sidebar restores the persisted mode after profile loading; do not redirect
+    // a direct seller link during that brief initialization window.
+    if (isSeller && dashboardMode === 'USER' && localStorage.getItem('dashboard_mode') === 'SELLER')
+      return;
 
     const isSellerOnlyRoute =
       (pathname.startsWith('/dashboard/cua-hang') &&
@@ -115,6 +120,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     if (pathname.match(/\/san-pham\/\d+/)) return 'Chi tiết sản phẩm';
     if (pathname.includes('/san-pham/tao-moi')) return 'Tạo sản phẩm mới';
     if (pathname.includes('/san-pham')) return 'Sản phẩm của tôi';
+    if (pathname.includes('/lo-san-xuat')) return 'Truy xuất';
     if (pathname.includes('/chat')) return 'Tin nhắn';
     if (pathname.includes('/cai-dat-thong-bao')) return 'Cài đặt thông báo';
     if (pathname.includes('/thong-bao')) return 'Thông báo';
@@ -122,12 +128,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   };
 
   return (
-    <div className="h-screen flex flex-col bg-stone-50 overflow-hidden">
-      <div className="bg-white border-b border-stone-200 shrink-0">
-        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
+    <div className="min-h-dvh flex flex-col bg-stone-50 lg:h-dvh lg:overflow-hidden">
+      <div className="bg-white border-b border-stone-200 shrink-0 pt-[env(safe-area-inset-top)] lg:pt-0">
+        <div className="max-w-screen-2xl mx-auto px-3 sm:px-6 lg:px-8 py-1.5 sm:py-3 flex items-center justify-between gap-1 sm:gap-4">
+          <div className="flex items-center gap-1 sm:gap-3 min-w-0">
             <button
-              className="lg:hidden p-3 -ml-2 text-stone-500 hover:text-stone-900 focus:outline-none"
+              className="lg:hidden p-2.5 -ml-1 text-stone-500 hover:text-stone-900 focus:outline-none shrink-0"
               onClick={() => setIsMobileSidebarOpen(true)}
               aria-label="Mở menu"
             >
@@ -140,15 +146,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 />
               </svg>
             </button>
-            <Breadcrumb
-              items={[
-                { label: 'Trang chủ', href: '/' },
-                { label: 'Dashboard', href: '/dashboard' },
-                { label: getPageTitle() },
-              ]}
-            />
+            <span className="sm:hidden truncate text-sm font-bold text-stone-900">
+              {getPageTitle()}
+            </span>
+            <div className="hidden sm:block">
+              <Breadcrumb
+                items={[
+                  { label: 'Trang chủ', href: '/' },
+                  { label: 'Dashboard', href: '/dashboard' },
+                  { label: getPageTitle() },
+                ]}
+              />
+            </div>
           </div>
-          <div className="flex flex-wrap items-center gap-2 sm:gap-4 justify-end sm:justify-start w-full sm:w-auto">
+          <div className="flex flex-nowrap items-center gap-1 sm:gap-4 justify-end shrink-0">
             <div className="hidden md:flex items-center gap-2">
               <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">
                 Lần đăng nhập cuối:
@@ -160,7 +171,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
             <button
               onClick={() => window.dispatchEvent(triggerTourEvent)}
-              className="flex items-center gap-2 p-2 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors border border-emerald-100 shadow-xs"
+              className="hidden sm:flex items-center gap-2 p-2 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors border border-emerald-100 shadow-xs"
               title="Xem hướng dẫn thao tác"
             >
               <FiHelpCircle className="w-5 h-5" />
@@ -172,17 +183,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <button
               onClick={() => setIsLogoutModalOpen(true)}
               disabled={isLoggingOut}
-              className="p-2 text-stone-500 hover:text-red-600 hover:bg-red-50 border border-stone-100 shadow-xs rounded-full transition-all duration-300 cursor-pointer"
+              className="hidden sm:block p-2 text-stone-500 hover:text-red-600 hover:bg-red-50 border border-stone-100 shadow-xs rounded-full transition-all duration-300 cursor-pointer"
               title="Đăng xuất"
             >
               <FiLogOut size={20} />
             </button>
 
             {isSeller && (
-              <div className="flex items-center gap-2 sm:gap-3 bg-stone-50 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full border border-stone-200 shadow-xs ml-auto sm:ml-0">
+              <div className="flex items-center gap-1 sm:gap-3 bg-stone-50 px-2 sm:px-4 py-1 sm:py-1.5 rounded-full border border-stone-200 shadow-xs">
                 <span
                   className={cn(
-                    'text-[10px] sm:text-xs font-semibold transition-colors uppercase tracking-wider whitespace-nowrap',
+                    'hidden sm:block text-[10px] sm:text-xs font-semibold transition-colors uppercase tracking-wider whitespace-nowrap',
                     dashboardMode === 'USER' ? 'text-stone-900' : 'text-stone-400',
                   )}
                 >
@@ -192,7 +203,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <button
                   type="button"
                   className={cn(
-                    'relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none text-sm font-medium',
+                    'relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center justify-start rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none text-sm font-medium',
                     dashboardMode === 'SELLER' ? 'bg-green-600' : 'bg-stone-300',
                   )}
                   role="switch"
@@ -233,16 +244,23 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
       </div>
 
-      <div className="flex-1 overflow-hidden">
-        <div className="h-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-full">
+      <div className="flex-1 min-h-0 lg:overflow-hidden">
+        <div
+          className={cn(
+            'lg:h-full max-w-screen-2xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-6',
+            isSeller &&
+              dashboardMode === 'SELLER' &&
+              'pb-[calc(6rem+env(safe-area-inset-bottom))] lg:pb-6',
+          )}
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:h-full min-w-0">
             <aside className="hidden lg:block lg:col-span-1 h-full overflow-y-auto pr-1 custom-scrollbar">
               <DashboardSidebar />
             </aside>
 
-            <main className="lg:col-span-3 h-full flex flex-col overflow-hidden">
-              <div className="bg-white rounded-xl border border-stone-200 shadow-sm flex flex-col h-full overflow-hidden">
-                <div className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 custom-scrollbar">
+            <main className="lg:col-span-3 min-w-0 lg:h-full flex flex-col lg:overflow-hidden">
+              <div className="lg:bg-white lg:rounded-xl lg:border lg:border-stone-200 lg:shadow-sm flex flex-col lg:h-full lg:overflow-hidden min-w-0">
+                <div className="min-w-0 lg:flex-1 lg:overflow-y-auto lg:p-8 custom-scrollbar">
                   {children}
                 </div>
               </div>
@@ -291,6 +309,28 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
           <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
             <DashboardSidebar onMobileClose={() => setIsMobileSidebarOpen(false)} />
+            <div className="mt-4 grid gap-2">
+              <button
+                type="button"
+                className="flex items-center gap-3 rounded-xl bg-white px-4 py-3 text-left text-sm font-semibold text-stone-700"
+                onClick={() => {
+                  setIsMobileSidebarOpen(false);
+                  window.dispatchEvent(triggerTourEvent);
+                }}
+              >
+                <FiHelpCircle size={19} /> Hướng dẫn thao tác
+              </button>
+              <button
+                type="button"
+                className="flex items-center gap-3 rounded-xl bg-white px-4 py-3 text-left text-sm font-semibold text-red-700"
+                onClick={() => {
+                  setIsMobileSidebarOpen(false);
+                  setIsLogoutModalOpen(true);
+                }}
+              >
+                <FiLogOut size={19} /> Đăng xuất
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -307,6 +347,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         onCancel={() => setIsLogoutModalOpen(false)}
       />
       {isSeller && dashboardMode === 'SELLER' && <SellerTourGuide />}
+      {isSeller && dashboardMode === 'SELLER' && (
+        <SellerMobileBar permissions={profile?.permissions || []} />
+      )}
     </div>
   );
 }

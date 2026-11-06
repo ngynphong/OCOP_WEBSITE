@@ -1,6 +1,7 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  devIndicators: false,
   // Bundle the ESM-only patched d3-color with its CommonJS dependants.
   transpilePackages: [
     'react-simple-maps',

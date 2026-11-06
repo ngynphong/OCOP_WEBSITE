@@ -55,7 +55,7 @@ export const Modal = ({
           maxWidth,
         )}
       >
-        <div className="px-6 py-4 border-b border-stone-100 flex items-center justify-between shrink-0">
+        <div className="px-4 sm:px-6 py-4 border-b border-stone-100 flex items-center justify-between shrink-0">
           <h3 className="text-xl font-black text-stone-900 tracking-tight">{title}</h3>
           {showClose && (
             <button
@@ -68,7 +68,7 @@ export const Modal = ({
           )}
         </div>
 
-        <div className="p-6 overflow-y-auto">{children}</div>
+        <div className="p-4 sm:p-6 overflow-y-auto min-w-0">{children}</div>
       </div>
     </div>
   );

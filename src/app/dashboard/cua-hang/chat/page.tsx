@@ -45,7 +45,7 @@ export default function SellerChatPage() {
   };
 
   return (
-    <div className="flex h-full w-full overflow-hidden bg-white">
+    <div className="flex h-[calc(100dvh-10rem)] min-h-[20rem] lg:h-full w-full overflow-hidden bg-white rounded-xl">
       <ChatList
         rooms={rooms}
         activeRoomId={selectedRoom?.id}
@@ -53,7 +53,12 @@ export default function SellerChatPage() {
         isLoading={isLoading}
         role="SELLER"
       />
-      <ChatWindow room={selectedRoom} isLoading={isLoading} role="SELLER" />
+      <ChatWindow
+        room={selectedRoom}
+        isLoading={isLoading}
+        role="SELLER"
+        onBack={() => setSelectedRoom(null)}
+      />
     </div>
   );
 }

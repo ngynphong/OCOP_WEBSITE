@@ -36,7 +36,16 @@ const ReactQueryDevtools = dynamic(
 
 export default function AppProvider({ children }: { children: React.ReactNode }) {
   const [store] = useState(() => makeStore());
+  const [showDevtools, setShowDevtools] = useState(false);
   const mounted = useSyncExternalStore(emptySubscribe, getSnapshot, getServerSnapshot);
+
+  useEffect(() => {
+    const desktop = window.matchMedia('(min-width: 1024px)');
+    const update = () => setShowDevtools(desktop.matches);
+    update();
+    desktop.addEventListener('change', update);
+    return () => desktop.removeEventListener('change', update);
+  }, []);
 
   useEffect(() => {
     // Discard credentials written by older releases. Existing web users sign in again.
@@ -114,7 +123,7 @@ export default function AppProvider({ children }: { children: React.ReactNode })
         <LoadingOverlay />
         <GlobalAuthHandler />
         <GlobalPolicyConsentModal />
-        <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
+        {showDevtools && <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />}
       </QueryClientProvider>
     </Provider>
   );

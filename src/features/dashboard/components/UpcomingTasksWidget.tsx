@@ -76,7 +76,7 @@ export default function UpcomingTasksWidget() {
         {tasks.map((task) => (
           <Link
             key={task.id}
-            href={`/dashboard/lo-san-xuat/${task.lotId}`}
+            href={`/dashboard/lo-san-xuat/${task.lotId}?ghi-nhat-ky=${encodeURIComponent(String(task.stepId))}`}
             className="flex items-start gap-3 p-3 hover:bg-gray-50 rounded-lg transition-colors border-b border-gray-50 last:border-0 group"
           >
             <div className="flex-1 min-w-0">

@@ -181,7 +181,7 @@ function OrdersManagementContent() {
       <RevenueSummary isB2B={isB2B} />
 
       <div className="bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden">
-        <div className="border-b border-stone-100 bg-stone-50 flex px-2 pt-2">
+        <div className="border-b border-stone-100 bg-stone-50 flex overflow-x-auto px-2 pt-2 [&>button]:shrink-0 [&>button]:whitespace-nowrap">
           <button
             onClick={() => setActiveMainTab('orders')}
             className={`px-6 py-3 font-bold text-sm rounded-t-xl transition-colors ${activeMainTab === 'orders' ? 'bg-white text-green-700 border-t border-x border-stone-100 shadow-sm' : 'text-stone-500 hover:text-stone-800'}`}
@@ -202,7 +202,7 @@ function OrdersManagementContent() {
           </button>
         </div>
 
-        <div className="p-6">
+        <div className="p-3 sm:p-6 min-w-0">
           {activeMainTab === 'orders' && (
             <>
               <div className="mb-6 border-b border-stone-100">

@@ -14,7 +14,7 @@ export const StepEvidenceRuleBanner: React.FC<StepEvidenceRuleBannerProps> = ({
   }
 
   return (
-    <div className="mt-4 p-3 bg-amber-50/70 border border-amber-200/80 rounded-xl flex items-center justify-between">
+    <div className="mt-4 p-3 bg-amber-50/70 border border-amber-200/80 rounded-xl flex flex-wrap gap-2 items-center justify-between">
       <div className="flex items-center gap-2">
         <FiCamera className="text-amber-700 shrink-0" size={16} />
         <span className="text-xs font-bold text-amber-900">

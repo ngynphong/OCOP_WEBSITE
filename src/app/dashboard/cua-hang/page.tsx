@@ -221,7 +221,7 @@ export default function SellerShopPage() {
             alt="Banner"
             className="w-full h-full object-cover"
           />
-          <label className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+          <label className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity cursor-pointer">
             <div className="flex flex-col items-center gap-1 text-white">
               {isUploadingBanner ? (
                 <FiLoader size={20} className="animate-spin" />
@@ -250,7 +250,7 @@ export default function SellerShopPage() {
               <FiImage size={24} className="text-green-300" />
             </div>
           )}
-          <label className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer rounded-xl">
+          <label className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity cursor-pointer rounded-xl">
             {isUploadingLogo ? (
               <FiLoader size={16} className="animate-spin text-white" />
             ) : (

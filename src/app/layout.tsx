@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { DM_Sans, Inter, Playfair_Display } from 'next/font/google';
 import './globals.css';
 import AppProvider from '../providers/AppProvider';
@@ -27,6 +27,8 @@ import { defaultMetadata, siteConfig } from '@/lib/seo';
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   ...defaultMetadata,
+  manifest: '/manifest.webmanifest',
+  appleWebApp: { capable: true, title: 'OCOP', statusBarStyle: 'default' },
   icons: {
     icon: [
       { url: '/images/icon.png', sizes: '256x256', type: 'image/png' },
@@ -35,6 +37,13 @@ export const metadata: Metadata = {
     shortcut: '/favicon.ico',
     apple: [{ url: '/images/icon.png', sizes: '256x256', type: 'image/png' }],
   },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: '#ffffff',
 };
 
 import { ShopApprovedModal } from '@/components/layout/ShopApprovedModal';

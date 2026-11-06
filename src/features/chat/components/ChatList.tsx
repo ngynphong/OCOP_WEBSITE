@@ -23,6 +23,12 @@ export const ChatList = ({
   isLoading,
   role = 'USER',
 }: ChatListProps) => {
+  const [search, setSearch] = React.useState('');
+  const filteredRooms = rooms.filter((room) =>
+    (role === 'SELLER' ? room.buyerEmail : room.shopName)
+      .toLowerCase()
+      .includes(search.trim().toLowerCase()),
+  );
   return (
     <div
       className={cn(
@@ -37,6 +43,8 @@ export const ChatList = ({
           <input
             type="text"
             placeholder="Tìm kiếm người dùng..."
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
             className="w-full pl-10 pr-4 py-2.5 bg-stone-50 text-gray-700 border border-stone-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all font-medium"
           />
         </div>
@@ -49,13 +57,15 @@ export const ChatList = ({
           </div>
         )}
 
-        {!isLoading && rooms.length === 0 && (
+        {!isLoading && filteredRooms.length === 0 && (
           <div className="flex flex-col items-center justify-center py-10 px-6 text-center text-stone-400">
-            <p className="text-sm font-medium">Chưa có hội thoại nào</p>
+            <p className="text-sm font-medium">
+              {rooms.length ? 'Không tìm thấy hội thoại' : 'Chưa có hội thoại nào'}
+            </p>
           </div>
         )}
 
-        {rooms.map((room) => (
+        {filteredRooms.map((room) => (
           <button
             key={room.id}
             onClick={() => onRoomSelect(room)}

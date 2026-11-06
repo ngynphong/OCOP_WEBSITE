@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import React, { Suspense, useState, useMemo } from 'react';
+import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { FiArrowLeft, FiAward, FiLock, FiCheck, FiClock } from 'react-icons/fi';
 import { Plus } from 'lucide-react';
 import { useProductionBatch } from '@/features/supply-chain/hooks/useProductionBatch';
@@ -26,9 +26,14 @@ import type {
   TQrStatus,
 } from '@/features/supply-chain/types/supplyChainTypes';
 
-export default function ProductionBatchDetailPage() {
+function ProductionBatchDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const requestedStep = searchParams.get('ghi-nhat-ky');
+  const requestedStepId =
+    requestedStep && /^\d+$/.test(requestedStep) ? Number(requestedStep) : null;
   const lotId = Number(params.id);
 
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
@@ -41,7 +46,19 @@ export default function ProductionBatchDetailPage() {
   const [isCertModalOpen, setIsCertModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<
     'INFO' | 'ASSIGNMENTS' | 'TIMELINE' | 'PACKAGING' | 'AUDIT'
-  >('INFO');
+  >(requestedStep !== null ? 'TIMELINE' : 'INFO');
+
+  const visibleTab = requestedStep !== null ? 'TIMELINE' : activeTab;
+
+  const closeEventForm = () => {
+    setIsAddEventOpen(false);
+    if (requestedStep !== null) {
+      setActiveTab('TIMELINE');
+      const next = new URLSearchParams(searchParams.toString());
+      next.delete('ghi-nhat-ky');
+      router.replace(`${pathname}${next.size ? `?${next.toString()}` : ''}`, { scroll: false });
+    }
+  };
 
   const {
     useGetProductionBatchDetail,
@@ -159,7 +176,7 @@ export default function ProductionBatchDetailPage() {
   if (!lot) return <div className="p-8 text-center text-red-500">Không tìm thấy lô sản xuất</div>;
 
   return (
-    <div className="p-6 space-y-6 max-w-5xl mx-auto">
+    <div className="space-y-6 max-w-5xl mx-auto sm:p-6">
       <div className="flex items-center justify-between">
         <button
           type="button"
@@ -170,11 +187,13 @@ export default function ProductionBatchDetailPage() {
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden">
-        <div className="p-6 border-b border-stone-100 space-y-4">
-          <div className="flex justify-between items-start">
-            <div>
-              <h1 className="text-2xl font-bold text-stone-900 mb-1">Lô SX: {lot.lotCode}</h1>
+      <div className="sm:bg-white sm:rounded-xl sm:shadow-sm sm:border sm:border-stone-200 min-w-0">
+        <div className="p-4 sm:p-6 bg-white rounded-xl sm:rounded-none border border-stone-100 sm:border-0 sm:border-b space-y-4">
+          <div className="flex flex-wrap gap-2 justify-between items-start">
+            <div className="min-w-0 flex-1">
+              <h1 className="text-xl sm:text-2xl font-bold text-stone-900 mb-1 [overflow-wrap:anywhere]">
+                Lô SX: {lot.lotCode}
+              </h1>
               <p className="text-stone-500 text-sm">
                 Sản phẩm: <span className="font-medium text-stone-900">{lot.productName}</span>
               </p>
@@ -272,7 +291,7 @@ export default function ProductionBatchDetailPage() {
               </div>
             )
           ) : (
-            <div className="bg-stone-50 border border-stone-200/80 rounded-xl p-3 flex items-center justify-between gap-3 text-xs text-stone-600">
+            <div className="bg-stone-50 border border-stone-200/80 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs text-stone-600">
               <div className="flex items-center gap-2">
                 <FiLock className="text-stone-400 shrink-0" size={14} />
                 <span>
@@ -291,11 +310,14 @@ export default function ProductionBatchDetailPage() {
           )}
         </div>
 
-        <div className="flex border-b border-stone-200">
+        <div
+          className="mt-3 sm:mt-0 flex overflow-x-auto bg-white rounded-xl sm:rounded-none border-b border-stone-200 [&>button]:shrink-0 [&>button]:whitespace-nowrap"
+          aria-label="Các mục lô sản xuất"
+        >
           <button
             type="button"
             className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
-              activeTab === 'INFO'
+              visibleTab === 'INFO'
                 ? 'border-emerald-600 text-emerald-600'
                 : 'border-transparent text-stone-500 hover:text-stone-700 hover:border-stone-300'
             }`}
@@ -307,7 +329,7 @@ export default function ProductionBatchDetailPage() {
             type="button"
             id="tour-assignments-tab"
             className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
-              activeTab === 'ASSIGNMENTS'
+              visibleTab === 'ASSIGNMENTS'
                 ? 'border-emerald-600 text-emerald-600'
                 : 'border-transparent text-stone-500 hover:text-stone-700 hover:border-stone-300'
             }`}
@@ -318,7 +340,7 @@ export default function ProductionBatchDetailPage() {
           <button
             type="button"
             className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
-              activeTab === 'TIMELINE'
+              visibleTab === 'TIMELINE'
                 ? 'border-emerald-600 text-emerald-600'
                 : 'border-transparent text-stone-500 hover:text-stone-700 hover:border-stone-300'
             }`}
@@ -330,7 +352,7 @@ export default function ProductionBatchDetailPage() {
             type="button"
             id="tour-qr-tab"
             className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
-              activeTab === 'PACKAGING'
+              visibleTab === 'PACKAGING'
                 ? 'border-emerald-600 text-emerald-600'
                 : 'border-transparent text-stone-500 hover:text-stone-700 hover:border-stone-300'
             }`}
@@ -341,7 +363,7 @@ export default function ProductionBatchDetailPage() {
           <button
             type="button"
             className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
-              activeTab === 'AUDIT'
+              visibleTab === 'AUDIT'
                 ? 'border-emerald-600 text-emerald-600'
                 : 'border-transparent text-stone-500 hover:text-stone-700 hover:border-stone-300'
             }`}
@@ -351,14 +373,14 @@ export default function ProductionBatchDetailPage() {
           </button>
         </div>
 
-        <div className="p-6">
-          {activeTab === 'INFO' && (
+        <div className="py-4 sm:p-6 min-w-0">
+          {visibleTab === 'INFO' && (
             <LotGeneralInfoTab lot={lot} onOpenTemplateModal={() => setIsTemplateModalOpen(true)} />
           )}
 
-          {activeTab === 'ASSIGNMENTS' && <LotAssignmentsTab lot={lot} />}
+          {visibleTab === 'ASSIGNMENTS' && <LotAssignmentsTab lot={lot} />}
 
-          {activeTab === 'TIMELINE' && (
+          {visibleTab === 'TIMELINE' && (
             <div className="space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-stone-50 p-4 rounded-xl border border-stone-200">
                 <div>
@@ -385,7 +407,7 @@ export default function ProductionBatchDetailPage() {
             </div>
           )}
 
-          {activeTab === 'PACKAGING' && (
+          {visibleTab === 'PACKAGING' && (
             <LotPackagingTab
               lot={lot}
               qrs={qrs}
@@ -403,7 +425,7 @@ export default function ProductionBatchDetailPage() {
             />
           )}
 
-          {activeTab === 'AUDIT' && <LotAuditTab auditLogs={auditLogs} />}
+          {visibleTab === 'AUDIT' && <LotAuditTab auditLogs={auditLogs} />}
         </div>
       </div>
 
@@ -434,18 +456,23 @@ export default function ProductionBatchDetailPage() {
 
       <QrPreviewModal previewQr={previewQr} onClose={() => setPreviewQr(null)} lot={lot} />
 
-      <AddBatchEventForm
-        isOpen={isAddEventOpen}
-        onClose={() => setIsAddEventOpen(false)}
-        lotId={lot.id}
-        lotCode={lot.lotCode}
-        productId={lot.productId}
-        templateSteps={lot.templateSteps || []}
-        sourceCycleId={lot.sourceCycleId}
-        sourceCycleStatus={lot.sourceCycleStatus}
-        completedProcessingStepIds={(lot.events || []).map((e) => e.templateStepId)}
-        lotUnit={lot.unit}
-      />
+      {(isAddEventOpen || requestedStep !== null) && (
+        <AddBatchEventForm
+          key={requestedStep ?? 'manual'}
+          isOpen
+          onClose={closeEventForm}
+          lotId={lot.id}
+          lotCode={lot.lotCode}
+          productId={lot.productId}
+          templateSteps={lot.templateSteps || []}
+          sourceCycleId={lot.sourceCycleId}
+          sourceCycleStatus={lot.sourceCycleStatus}
+          completedProcessingStepIds={(lot.events || []).map((e) => e.templateStepId)}
+          lotUnit={lot.unit}
+          requestedStepId={requestedStepId}
+          openedFromTask={requestedStep !== null}
+        />
+      )}
 
       {lot && (
         <ProductCertificationModal
@@ -458,5 +485,13 @@ export default function ProductionBatchDetailPage() {
         />
       )}
     </div>
+  );
+}
+
+export default function ProductionBatchDetailPageBoundary() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-stone-500">Đang tải dữ liệu...</div>}>
+      <ProductionBatchDetailPage />
+    </Suspense>
   );
 }

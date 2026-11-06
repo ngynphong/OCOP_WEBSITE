@@ -47,7 +47,7 @@ export default function ProductionBatchPage() {
   };
 
   return (
-    <div className="space-y-4 md:space-y-6 pb-20 md:pb-6">
+    <div className="space-y-4 md:space-y-6 md:pb-6 min-w-0">
       <div className="flex flex-col md:flex-row justify-between md:items-center bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-100 gap-4">
         <div>
           <h1 className="text-xl md:text-2xl font-bold text-slate-800 flex items-center gap-2">
@@ -190,7 +190,7 @@ export default function ProductionBatchPage() {
                   ) : (
                     <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-lg text-xs font-semibold">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                      <span>Đạt chuẩn kỹ thuật OCOP</span>
+                      <span>Chưa có cảnh báo AI</span>
                     </div>
                   )}
                 </div>
@@ -215,7 +215,7 @@ export default function ProductionBatchPage() {
                         Vụ mùa:
                       </span>
                       <span className="font-semibold text-slate-800">
-                        {lot.sourceCycleName || 'Đông Xuân 2026'}
+                        {lot.sourceCycleName || 'Chưa cập nhật'}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">

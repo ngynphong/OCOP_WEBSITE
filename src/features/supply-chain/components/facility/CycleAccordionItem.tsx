@@ -10,6 +10,22 @@ export interface CycleAccordionItemProps {
   onCycleDeleted: () => void;
 }
 
+function evidenceUrls(value?: string): string[] {
+  if (!value) return [];
+  try {
+    const parsed: unknown = JSON.parse(value);
+    return Array.isArray(parsed)
+      ? parsed.filter(
+          (url): url is string =>
+            typeof url === 'string' &&
+            (/^https?:\/\//i.test(url) || (url.startsWith('/') && !url.startsWith('//'))),
+        )
+      : [];
+  } catch {
+    return [];
+  }
+}
+
 export function CycleAccordionItem({ cycle, onCycleDeleted }: CycleAccordionItemProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -128,11 +144,31 @@ export function CycleAccordionItem({ cycle, onCycleDeleted }: CycleAccordionItem
                           {log.description}
                         </p>
                       )}
+                      {evidenceUrls(log.evidenceUrls).length > 0 && (
+                        <div className="mt-2 flex flex-wrap gap-2" aria-label="Ảnh minh chứng">
+                          {evidenceUrls(log.evidenceUrls).map((url, index) => (
+                            <a
+                              key={`${url}-${index}`}
+                              href={url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="block rounded border border-stone-200 overflow-hidden"
+                            >
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={url}
+                                alt={`Ảnh minh chứng ${index + 1}`}
+                                className="h-16 w-16 object-cover"
+                              />
+                            </a>
+                          ))}
+                        </div>
+                      )}
                     </div>
 
                     <button
                       onClick={() => handleDeleteLog(log.id)}
-                      className="text-stone-400 hover:text-red-500 p-1 rounded hover:bg-red-50 transition-colors opacity-0 group-hover:opacity-100"
+                      className="text-stone-400 hover:text-red-500 p-2 rounded hover:bg-red-50 transition-colors sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100"
                       title="Xóa dòng nhật ký"
                     >
                       <FiTrash2 size={12} />

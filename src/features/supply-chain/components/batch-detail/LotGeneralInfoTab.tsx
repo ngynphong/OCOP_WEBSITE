@@ -12,32 +12,32 @@ interface LotGeneralInfoTabProps {
 
 export function LotGeneralInfoTab({ lot, onOpenTemplateModal }: LotGeneralInfoTabProps) {
   return (
-    <div className="bg-stone-50 rounded-xl p-5 border border-stone-100 flex flex-col gap-5">
-      <div className="bg-white p-4 rounded-xl border border-stone-200 shadow-2xs">
+    <div className="sm:bg-stone-50 sm:rounded-xl sm:p-5 sm:border sm:border-stone-100 flex flex-col gap-5 min-w-0 [overflow-wrap:anywhere]">
+      <div className="bg-white p-4 rounded-xl border border-stone-200 shadow-2xs min-w-0">
         <h3 className="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-3 flex items-center gap-1.5">
           <Sprout className="w-4 h-4 text-emerald-600" />
           <span>Thông tin nhận diện thực địa</span>
         </h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-          <div className="bg-stone-50 p-3 rounded-lg border border-stone-100">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 text-sm">
+          <div className="min-w-0 bg-stone-50 p-3 rounded-lg border border-stone-100">
             <span className="text-xs text-stone-500 flex items-center gap-1.5 mb-1">
               <MapPin className="w-3.5 h-3.5 text-stone-400 shrink-0" />
               Vùng trồng / Cơ sở:
             </span>
             <span className="font-bold text-stone-800">
-              {lot.farmName || lot.shopName || 'Cơ sở OCOP'}
+              {lot.farmName || lot.shopName || 'Chưa cập nhật'}
             </span>
           </div>
-          <div className="bg-stone-50 p-3 rounded-lg border border-stone-100">
+          <div className="min-w-0 bg-stone-50 p-3 rounded-lg border border-stone-100">
             <span className="text-xs text-stone-500 flex items-center gap-1.5 mb-1">
               <Calendar className="w-3.5 h-3.5 text-stone-400 shrink-0" />
               Vụ canh tác:
             </span>
             <span className="font-bold text-stone-800">
-              {lot.sourceCycleName || 'Đông Xuân 2026'}
+              {lot.sourceCycleName || 'Chưa cập nhật'}
             </span>
           </div>
-          <div className="bg-stone-50 p-3 rounded-lg border border-stone-100">
+          <div className="min-w-0 bg-stone-50 p-3 rounded-lg border border-stone-100">
             <span className="text-xs text-stone-500 flex items-center gap-1.5 mb-1">
               <User className="w-3.5 h-3.5 text-stone-400 shrink-0" />
               Người phụ trách:
@@ -46,7 +46,7 @@ export function LotGeneralInfoTab({ lot, onOpenTemplateModal }: LotGeneralInfoTa
               {lot.responsiblePerson || 'Chủ hộ tự đảm nhiệm'}
             </span>
           </div>
-          <div className="bg-stone-50 p-3 rounded-lg border border-stone-100">
+          <div className="min-w-0 bg-stone-50 p-3 rounded-lg border border-stone-100">
             <span className="text-xs text-stone-500 flex items-center gap-1.5 mb-1">
               <Package className="w-3.5 h-3.5 text-stone-400 shrink-0" />
               Quy mô sản lượng:
@@ -58,7 +58,7 @@ export function LotGeneralInfoTab({ lot, onOpenTemplateModal }: LotGeneralInfoTa
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 [&>div]:min-w-0">
         <div>
           <h3 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1">
             Sản phẩm
@@ -99,7 +99,7 @@ export function LotGeneralInfoTab({ lot, onOpenTemplateModal }: LotGeneralInfoTa
 
       <hr className="border-stone-200" />
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 [&>div]:min-w-0">
         <div>
           <h3 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1">
             Sản lượng

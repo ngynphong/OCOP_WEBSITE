@@ -80,6 +80,7 @@ export const ChatWindow = ({
           {onBack && (
             <button
               onClick={onBack}
+              aria-label="Quay lại danh sách hội thoại"
               className="md:hidden p-2 -ml-2 text-stone-500 hover:text-stone-700 active:bg-stone-100 rounded-full transition-colors shrink-0"
             >
               <FiChevronLeft size={24} />

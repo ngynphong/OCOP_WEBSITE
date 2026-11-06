@@ -3,7 +3,10 @@
 # test
 /playwright-report/
 /test-results/
-/tests/
+/tests/*
+!/tests/e2e/
+/tests/e2e/*
+!/tests/e2e/seller-mobile.spec.ts
 
 # dependencies
 /node_modules

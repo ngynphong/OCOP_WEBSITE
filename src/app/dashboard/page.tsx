@@ -174,14 +174,14 @@ const DashboardPage = () => {
     <div className="space-y-6 md:space-y-8">
       <div
         className={cn(
-          'flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-xl border transition-colors bg-green-50 border-green-100',
+          'flex flex-col md:flex-row md:items-center justify-between gap-3 p-4 sm:p-6 rounded-xl border transition-colors bg-green-50 border-green-100',
         )}
       >
         <div>
           <h2 className={cn('text-xl font-bold text-green-900')}>
             {isSellerMode ? 'Seller Center' : 'Chào mừng trở lại'}, {profile?.firstName}! 👋
           </h2>
-          <p className={cn('text-sm mt-1', isSellerMode ? 'text-stone-400' : 'text-green-700')}>
+          <p className={cn('text-sm mt-1', isSellerMode ? 'text-stone-600' : 'text-green-700')}>
             {isSellerMode
               ? 'Hôm nay tình hình kinh doanh của shop thế nào?'
               : 'Hôm nay bạn muốn thưởng thức tinh hoa OCOP nào?'}
@@ -218,14 +218,14 @@ const DashboardPage = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-6">
         {stats.map((stat, idx) => (
           <motion.div
             key={stat.label}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: idx * 0.1 }}
-            className="p-5 bg-white border border-stone-100 rounded-xl shadow-sm hover:shadow-md transition-shadow"
+            className="min-w-0 p-3 sm:p-5 bg-white border border-stone-100 rounded-xl shadow-sm hover:shadow-md transition-shadow"
           >
             <div
               className={`w-10 h-10 ${stat.color} rounded-xl flex items-center justify-center text-white mb-3 shadow-lg shadow-${stat.color.split('-')[1]}-500/20`}
@@ -235,7 +235,9 @@ const DashboardPage = () => {
             <p className="text-stone-500 text-xs font-semibold uppercase tracking-wider">
               {stat.label}
             </p>
-            <p className="text-2xl font-bold text-stone-900 mt-1">{stat.value}</p>
+            <p className="text-lg sm:text-2xl font-bold text-stone-900 mt-1 [overflow-wrap:anywhere]">
+              {stat.value}
+            </p>
           </motion.div>
         ))}
       </div>
